@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.IO.Compression;
+using System.Diagnostics;
 
 namespace WebApplication {
 
@@ -25,10 +26,11 @@ namespace WebApplication {
                 await file.CopyToAsync(stream);
             }
 
+            var fileInfo = new FileInfo(path);
+            var decompressedPath = path.Remove((int)(fileInfo.FullName.Length - fileInfo.Extension.Length));
+
             { // Decompression Test
-                var fileInfo = new FileInfo(path);
                 using (var compressedStream = new FileStream(path, FileMode.Open)) {
-                    var decompressedPath = path.Remove((int)(fileInfo.FullName.Length - fileInfo.Extension.Length));
                     using (var decompressedFileStream = new FileStream(decompressedPath, FileMode.Create)) {
                         using (var decompressionStream = new GZipStream(compressedStream, CompressionMode.Decompress)) {
                             decompressionStream.CopyTo(decompressedFileStream);
@@ -38,7 +40,12 @@ namespace WebApplication {
             }
             
             { // Convert Decompressed File to ogg and add to playlist
-                
+                var process = new Process();
+                process.StartInfo.FileName = "ffmpeg";
+                var flacFileInfo = new FileInfo(decompressedPath);
+                var oggPath = flacFileInfo.FullName.Remove((int)(flacFileInfo.FullName.Length - flacFileInfo.Extension.Length)) + ".ogg";
+                process.StartInfo.Arguments = "-i " + decompressedPath + " " + oggPath;
+                process.Start();
             }
 
             return Content("File received");
