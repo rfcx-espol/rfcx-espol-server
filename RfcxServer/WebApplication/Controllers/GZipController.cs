@@ -46,6 +46,12 @@ namespace WebApplication {
                 var oggPath = flacFileInfo.FullName.Remove((int)(flacFileInfo.FullName.Length - flacFileInfo.Extension.Length)) + ".ogg";
                 process.StartInfo.Arguments = "-i " + decompressedPath + " " + oggPath;
                 process.Start();
+
+                var playlist_path = Path.Combine(Directory.GetCurrentDirectory(), "uploaded", "playlist.txt");
+                using (StreamWriter sw = new StreamWriter("playlist_path"))
+                {
+                   sw.WriteLine(oggPath + "/n");
+                }
             }
 
             return Content("File received");
