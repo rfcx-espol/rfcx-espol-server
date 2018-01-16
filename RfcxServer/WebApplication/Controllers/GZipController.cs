@@ -5,23 +5,29 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.IO.Compression;
 using System.Diagnostics;
+using Microsoft.Extensions.FileProviders;
 
 namespace WebApplication {
 
     public class GZipController : Controller {
+
+        private readonly IFileProvider _fileProvider;
+        public GZipController(IFileProvider fileProvider) {
+            _fileProvider = fileProvider;
+        }
+
         public IActionResult Index() {
             return View();
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> UploadFile(IFormFile file) {
             if (file == null || file.Length == 0)
                 return Content("File not selected");
- 
-            var path = Path.Combine(Directory.GetCurrentDirectory(), 
-                                    "uploaded",
+
+            var path = Path.Combine(Core.FilesFolderPath,
                                     file.FileName);
- 
+
             using (var stream = new FileStream(path, FileMode.Create)) {
                 await file.CopyToAsync(stream);
             }
