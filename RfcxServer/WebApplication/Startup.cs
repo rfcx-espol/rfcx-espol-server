@@ -31,29 +31,33 @@ namespace WebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            { // Start Icecast
-                Process p = new Process();
-                p.StartInfo.FileName = "icecast";
-                p.StartInfo.Arguments = "-c " + icecast_config_file;
-                p.Start();
-            }
-
-            { // Start IceS
-                for (int i = 0; i < stream_clients_number; i++)
-                {
-
-                    ices_config_file = Path.Combine(Directory.GetCurrentDirectory(), "icecast", "config", "ices-playlist-1.xml");
-                     Process p = new Process();
-                    p.StartInfo.FileName = "ices2";
-                    p.StartInfo.Arguments = ices_config_file;
-                    p.Start();
-                }
-            }
+            
 
             services.AddSingleton<IFileProvider>(
                 new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), 
                     "uploaded")));
+            
+            // { // Start Icecast
+            //     Process p = new Process();
+            //     p.StartInfo.FileName = "icecast";
+            //     p.StartInfo.Arguments = "-c " + icecast_config_file;
+            //     p.Start();
+            // }
+
+            // { // Start IceS
+            //     for (int i = 0; i < stream_clients_number; i++)
+            //     {
+
+            //         ices_config_file = Path.Combine(Directory.GetCurrentDirectory(), "icecast", "config", "ices-playlist-1.xml");
+            //          Process p = new Process();
+            //         p.StartInfo.FileName = "ices";
+            //         p.StartInfo.Arguments = ices_config_file;
+            //         p.Start();
+            //     }
+            // }
+
+
             services.AddMvc();
         }
 

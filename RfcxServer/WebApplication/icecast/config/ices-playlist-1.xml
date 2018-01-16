@@ -3,7 +3,7 @@
     <!-- run in background -->
     <background>0</background>
     <!-- where logs, etc go. -->
-    <logpath>/home/javier/Documents/pasantias/rfcx-espol-server/RfcxServer/WebApplication/icecast/logs</logpath>
+    <logpath>/home_local/cvr/Desktop/rfcx-espol-server/RfcxServer/WebApplication/icecast/debug</logpath>
     <logfile>ices.log</logfile>
     <!-- 1=error,2=warn,3=info,4=debug -->
     <loglevel>4</loglevel>
@@ -31,7 +31,7 @@
 
         <input>
             <param name="type">script</param>
-            <param name="program">/home/javier/Documents/pasantias/rfcx-espol-server/RfcxServer/WebApplication/icecast/playlist/playlist</param>
+            <param name="program">/home_local/cvr/Desktop/rfcx-espol-server/RfcxServer/WebApplication/icecast/playlist/playlist</param>
         </input>
 
 		<!-- Stream instance

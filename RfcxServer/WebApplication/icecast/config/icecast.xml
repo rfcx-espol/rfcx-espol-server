@@ -195,9 +195,9 @@
 
         <!-- Note that if <chroot> is turned on below, these paths must both
              be relative to the new root, not the original root -->
-        <logdir>/home/javier/Documents/pasantias/rfcx-espol-server/RfcxServer/WebApplication/icecast/logs</logdir>
-        <webroot>/home/javier/Documents/pasantias/rfcx-espol-server/RfcxServer/WebApplication/icecast/web</webroot>
-        <adminroot>/home/javier/Documents/pasantias/rfcx-espol-server/RfcxServer/WebApplication/icecast/admin</adminroot>
+        <logdir>/home_local/cvr/Desktop/rfcx-espol-server/RfcxServer/WebApplication/icecast/debug</logdir>
+        <webroot>/home_local/cvr/Desktop/rfcx-espol-server/RfcxServer/WebApplication/icecast/web</webroot>
+        <adminroot>/home_local/cvr/Desktop/rfcx-espol-server/RfcxServer/WebApplication/icecast/admin</adminroot>
         <!-- <pidfile>/usr/local/share/icecast/icecast.pid</pidfile> -->
 
         <!-- Aliases: treat requests for 'source' path as being for 'dest' path
