@@ -47,8 +47,8 @@ namespace WebApplication {
                 process.StartInfo.Arguments = "-i " + decompressedPath + " " + oggPath;
                 process.Start();
 
-                var playlist_path = Path.Combine(Directory.GetCurrentDirectory(), "uploaded", "playlist.txt");
-                using (StreamWriter sw = new StreamWriter("playlist_path"))
+                var playlist_path = Path.Combine(Directory.GetCurrentDirectory(), "icecast", "playlist", "playlist.txt");
+                using (StreamWriter sw = new StreamWriter("playlist_path",false))
                 {
                    sw.WriteLine(oggPath + "/n");
                 }
