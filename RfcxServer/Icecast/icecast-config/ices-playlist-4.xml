@@ -3,7 +3,7 @@
     <!-- run in background -->
     <background>0</background>
     <!-- where logs, etc go. -->
-    <logpath>/home/javier/icecast-log</logpath>
+    <logpath>/var/rfcx-espol-server/icecast-log</logpath>
     <logfile>ices.log</logfile>
     <!-- 1=error,2=warn,3=info,4=debug -->
     <loglevel>4</loglevel>

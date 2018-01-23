@@ -34,13 +34,13 @@
 
     <authentication>
         <!-- Sources log in with username 'source' -->
-        <source-password>hackme</source-password>
+        <source-password>rfcx1234</source-password>
         <!-- Relays log in with username 'relay' -->
-        <relay-password>hackme</relay-password>
+        <relay-password>rfcx1234</relay-password>
 
         <!-- Admin logs in with the username given below -->
         <admin-user>admin</admin-user>
-        <admin-password>hackme</admin-password>
+        <admin-password>rfcx1234</admin-password>
     </authentication>
 
     <!-- set the mountpoint for a shoutcast source to use, the default if not
@@ -196,9 +196,9 @@
 
         <!-- Note that if <chroot> is turned on below, these paths must both
              be relative to the new root, not the original root -->
-        <logdir>/home/javier/icecast-log</logdir>
-        <webroot>/home/javier/icecast-web</webroot>
-        <adminroot>/home/javier/icecast-admin</adminroot>
+        <logdir>/var/rfcx-espol-server/icecast-log</logdir>
+        <webroot>/var/rfcx-espol-server/icecast-web</webroot>
+        <adminroot>/var/rfcx-espol-server/icecast-admin</adminroot>
         <!-- <pidfile>/usr/local/share/icecast/icecast.pid</pidfile> -->
 
         <!-- Aliases: treat requests for 'source' path as being for 'dest' path

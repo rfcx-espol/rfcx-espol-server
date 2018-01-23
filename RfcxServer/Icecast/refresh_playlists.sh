@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-icecast_command="icecast -b -c /home/javier/icecast-config/icecast.xml"
+icecast_command="icecast -b -c /var/rfcx-espol-server/icecast-config/icecast.xml"
 echo | $icecast_command
 
 while [ 1 -gt 0 ]; do
@@ -10,7 +10,7 @@ while [ 1 -gt 0 ]; do
 
 	pid=`ps ax | awk '/[i]ces2/{print $1}'`
 
-	for i in 1 2 3 4
+	for i in 0 1 2 3
 	do
 		
 		find ./device$i/ogg -mmin +10 -type f -delete
@@ -19,7 +19,7 @@ while [ 1 -gt 0 ]; do
 
 		var=`echo $pid | awk -v i="$i" '{print $i}'`
 		echo $var
-		ices_command="ices2 /home/javier/icecast-config/ices-playlist-$i.xml"
+		ices_command="ices2 /var/rfcx-espol-server/icecast-config/ices-playlist-$i.xml"
 		$ices_command &
 	done
 	echo ices raise
