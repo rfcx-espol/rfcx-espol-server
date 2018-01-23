@@ -25,18 +25,18 @@ namespace WebApplication {
             if (file == null || file.Length == 0)
                 return Content("File not selected");
 
-            var path = Path.Combine(Core.FilesFolderPath,
-                                    file.FileName);
+            var gzipFilePath = Path.Combine(Core.GzipFolderPath,
+                                            file.FileName);
 
-            using (var stream = new FileStream(path, FileMode.Create)) {
+            using (var stream = new FileStream(gzipFilePath, FileMode.Create)) {
                 await file.CopyToAsync(stream);
             }
 
-            var fileInfo = new FileInfo(path);
-            var decompressedPath = path.Remove((int)(fileInfo.FullName.Length - fileInfo.Extension.Length));
+            var gzipFileInfo = new FileInfo(gzipFilePath);
+            var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));
 
             { // Decompression Test
-                using (var compressedStream = new FileStream(path, FileMode.Open)) {
+                using (var compressedStream = new FileStream(gzipFilePath, FileMode.Open)) {
                     using (var decompressedFileStream = new FileStream(decompressedPath, FileMode.Create)) {
                         using (var decompressionStream = new GZipStream(compressedStream, CompressionMode.Decompress)) {
                             decompressionStream.CopyTo(decompressedFileStream);
@@ -48,9 +48,10 @@ namespace WebApplication {
             { // Convert Decompressed File to ogg and add to playlist
                 var process = new Process();
                 process.StartInfo.FileName = "ffmpeg";
-                var flacFileInfo = new FileInfo(decompressedPath);
-                var oggPath = flacFileInfo.FullName.Remove((int)(flacFileInfo.FullName.Length - flacFileInfo.Extension.Length)) + ".ogg";
-                process.StartInfo.Arguments = "-i " + decompressedPath + " " + oggPath;
+                var decompressedFileInfo = new FileInfo(decompressedPath);
+                var oggFilename = decompressedFileInfo.Name.Remove((int)(decompressedFileInfo.Name.Length - decompressedFileInfo.Extension.Length)) + ".ogg";
+                var oggFilePath = Path.Combine(Core.OggFolderPath, oggFilename) ;
+                process.StartInfo.Arguments = "-i " + decompressedPath + " " + oggFilePath;
                 process.Start();
             }
 

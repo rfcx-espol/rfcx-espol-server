@@ -59,7 +59,7 @@
             <hostname>localhost</hostname>
             <port>8000</port>
             <password>hackme</password>
-            <mount>/station1.ogg</mount>
+            <mount>/station2.ogg</mount>
 
             <!-- Reconnect parameters:
                 When something goes wrong (e.g. the server crashes, or the

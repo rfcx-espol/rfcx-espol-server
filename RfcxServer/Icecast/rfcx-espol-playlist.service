@@ -1,0 +1,12 @@
+[Unit]
+ Description=Rfcx Espol Playlist
+
+ [Service]
+ WorkingDirectory=/var/rfcx-espol-server/
+ ExecStart=/var/rfcx-espol-server/refresh_playlist.sh
+ Restart=always
+ RestartSec=10
+ SyslogIdentifier=rfcx-espol-playlist
+
+ [Install]
+ WantedBy=multi-user.target
