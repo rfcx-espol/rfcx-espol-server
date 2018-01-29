@@ -1,5 +1,25 @@
-@page
+﻿@page
+@{
+}
+
+@{
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "Download";
+}
+
+<h1>BOSQUE PROTECTOR</h1>
+<h2>Sound files downloader</h2>
+
+
 <form method="post" enctype="multipart/form-data" action="/GZip/UploadFile">
-    <input type="file" name="file" />
+    Choose file:<br>
+    <input type="file" name="file" /><br>
+    Initial date:<br>
+    <input type="date" name="initialDate" /><br>
+    Final Date:<br>
+    <input type="date" name="finalDate" /><br><br>
     <button type="submit">Upload File</button>
 </form>

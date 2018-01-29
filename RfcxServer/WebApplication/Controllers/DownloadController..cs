@@ -15,11 +15,12 @@ namespace WebApplication {
         public DownloadController(IFileProvider fileProvider) {
             _fileProvider = fileProvider;
         }
-
-        public IActionResult Index() {
+        
+        public IActionResult Index()
+        {
             return View();
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> UploadFile(IFormFile file) {
             if (file == null || file.Length == 0)

@@ -1,0 +1,22 @@
+﻿@page
+@{
+}
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "Download";
+}
+
+<h2>Index</h2>
+
+<p>Hello from our View Template!</p>
+
+<form method="post" enctype="multipart/form-data" action="/GZip/UploadFile">
+    <input type="file" name="file" />
+    <input type="date" name="initialDate" />
+    <input type="date" name="finalDate" />
+    <button type="submit">Upload File</button>
+</form>
