@@ -32,7 +32,7 @@
         <input>
             <module>playlist</module>
             <param name="type">basic</param>
-            <param name="file">/home/javier/playlist.txt</param>
+            <param name="file">/var/rfcx-espol-server/files/device2/playlist.txt</param>
             <!-- random play -->
             <param name="random">0</param>
             <!-- if the playlist get updated that start at the beginning -->
@@ -58,7 +58,7 @@
                 the source password and mountpoint.  -->
             <hostname>localhost</hostname>
             <port>8000</port>
-            <password>hackme</password>
+            <password>rfcx1234</password>
             <mount>/station2.ogg</mount>
 
             <!-- Reconnect parameters:
