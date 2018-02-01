@@ -3,7 +3,7 @@ using System.IO;
 namespace WebApplication {
     public static class Core {
 
-        public static string FilesFolderName { get {return "files";} }
+        public static string FilesFolderName { get {return "files\\device1";} }
 
         public static string GzipFolderPath { get {
             return Path.Combine(Directory.GetCurrentDirectory(), FilesFolderName, "gzip");
