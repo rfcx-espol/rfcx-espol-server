@@ -35,14 +35,12 @@ namespace WebApplication
             if (file == null || file.Length == 0)
                 return Content("File not selected");            
             
-            var gzipFilePath = Path.Combine(Core.GzipFolderPath, file.FileName);
 
-            
             { // Compression Test
-                using (FileStream compressedStream = new FileStream(file.FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                using (FileStream compressedStream = new FileStream(Core.GzipFolderPath + @"\" + file.FileName, FileMode.Open, FileAccess.ReadWrite))
                 {
                     using (FileStream outfolder = new FileStream(Core.GzipFolderPath + @"\"+ file.FileName + ".gz", 
-                                                                    FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                                                                    FileMode.Open, FileAccess.ReadWrite))
                     {
                         using (GZipStream gzip = new GZipStream(outfolder, CompressionMode.Compress)) {
                             compressedStream.CopyTo(gzip);
