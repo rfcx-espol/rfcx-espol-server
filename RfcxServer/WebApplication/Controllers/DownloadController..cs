@@ -33,22 +33,58 @@ namespace WebApplication
 
             //Verifyng Existing Files
             if (file == null || file.Length == 0)
-                return Content("File not selected");            
+                return Content("File not selected");
+
+
+            //{ // Compression Test
+            //    using (FileStream compressedStream = new FileStream(Core.GzipFolderPath + @"\" + file.FileName, FileMode.Open, FileAccess.ReadWrite))
+            //    {
+
+            //        using (FileStream outfolder = new FileStream(Core.GzipFolderPath + @"\" + file.FileName + ".gz",
+            //                                                        FileMode.Open, FileAccess.ReadWrite))
+            //        {
+            //            using (GZipStream gzip = new GZipStream(outfolder, CompressionMode.Compress))
+            //            {
+            //                compressedStream.CopyTo(gzip);
+            //                //return File(gzip, "application/octet-stream", file.FileName);
+
+            //                //var net = new System.Net.WebClient();
+            //                //var data = net.DownloadData("https://www.google.com.ec/");
+            //                ////var content = new System.IO.MemoryStream(gzip);
+            //                //var contentType = "APPLICATION/octet-stream";
+            //                //var fileName = file.FileName;
+            //                //return File(gzip, contentType, fileName);
+            //            }
+
+
+            //        }
+            //    }
+            //}
+
+            FileStream compressedStream = new FileStream(Core.GzipFolderPath + @"\" + file.FileName, FileMode.Open, FileAccess.ReadWrite);
+            FileStream outfolder = new FileStream(Core.GzipFolderPath + @"\" + file.FileName + ".gz",
+                                                                    FileMode.Open, FileAccess.ReadWrite);
+            GZipStream gzip = new GZipStream(outfolder, CompressionMode.Compress);
+            compressedStream.CopyTo(gzip);
+
+            compressedStream.Close();
+            outfolder.Close();
+            //gzip.Close();
+
+
+            //string fileAddress = "http://localhost:59956/filesTest/" + file.FileName;
+            string fileAddress = "http://localhost:59956/Download/";
+            //string myStringWebResource = fileAddress + file.FileName;
+
+            var net = new System.Net.WebClient();
+            var data = net.DownloadData(fileAddress);
+            var content = new System.IO.MemoryStream(data);
+            var contentType = "APPLICATION/octet-stream";
+            var fileName = file.FileName;
+            return File(content, contentType, fileName);
             
 
-            { // Compression Test
-                using (FileStream compressedStream = new FileStream(Core.GzipFolderPath + @"\" + file.FileName, FileMode.Open, FileAccess.ReadWrite))
-                {
-                    using (FileStream outfolder = new FileStream(Core.GzipFolderPath + @"\"+ file.FileName + ".gz", 
-                                                                    FileMode.Open, FileAccess.ReadWrite))
-                    {
-                        using (GZipStream gzip = new GZipStream(outfolder, CompressionMode.Compress)) {
-                            compressedStream.CopyTo(gzip);
-                        }
-                    }
-                }
-            }
-            return Content("File received");
+            //return Content("File received");
         }
     }
 }
