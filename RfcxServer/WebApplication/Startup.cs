@@ -43,6 +43,13 @@ namespace WebApplication
             }
 
             app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "files")),
+                RequestPath = "/files"
+            });
             // app.Map("/hello", HandleHello);
             // app.Map("/sendgz", GZReceiver.HandleGZFile);
             // app.Map("/getzip", GZReceiver.HandleSendZipFile);
