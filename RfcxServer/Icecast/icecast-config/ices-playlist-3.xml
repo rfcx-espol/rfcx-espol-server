@@ -59,7 +59,7 @@
             <hostname>localhost</hostname>
             <port>8000</port>
             <password>rfcx1234</password>
-            <mount>/station3.ogg</mount>
+            <mount>/station4.ogg</mount>
 
             <!-- Reconnect parameters:
                 When something goes wrong (e.g. the server crashes, or the
@@ -92,7 +92,7 @@
             <encode>  
                 <nominal-bitrate>64000</nominal-bitrate> <!-- bps. e.g. 64000 for 64 kbps -->
                 <samplerate>44100</samplerate>
-                <channels>2</channels>
+                <channels>1</channels>
             </encode>
         </instance>
 
