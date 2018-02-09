@@ -66,6 +66,7 @@ artifacts/
 *.tmp
 *.tmp_proj
 *.log
+![Ii]cecast/icecast-log/*.log
 *.vspscc
 *.vssscc
 .builds
