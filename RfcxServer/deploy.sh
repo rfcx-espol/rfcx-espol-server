@@ -1,9 +1,11 @@
 type ffmpeg # ffmpeg is a dependency
 . ./config.sh
-#APP_DIR=/var/rfcx-espol-server/
 
 mkdir $APP_DIR
-find $APP_DIR  -type f ! -name 'files' -print0 | xargs -0 rm -vf
+files_to_delete=`ls $APP_DIR | grep -v files`
+for file in $files_to_delete; do
+    rm -rv $APP_DIR$file
+done;
 
 # Web Application
 cd ./WebApplication

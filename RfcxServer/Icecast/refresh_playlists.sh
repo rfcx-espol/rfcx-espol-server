@@ -16,7 +16,7 @@ while [ 1 -gt 0 ]; do
 	do
 		
 		find $var_path$i$extension -mmin +10 -type f -delete
-		find $var_path$i$extension -type f > $var_path$i/playlist.txt
+		find $var_path$i$extension -type f -size +20k > $var_path$i/playlist.txt
 	
 
 		# var=`echo $pid | awk -v i="$i" '{print $i}'`
