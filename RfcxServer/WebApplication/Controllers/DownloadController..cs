@@ -7,9 +7,19 @@ using Microsoft.Extensions.FileProviders;
 using System;
 using Microsoft.IdentityModel.Protocols;
 using System.Collections.Generic;
+using System.Linq;
+using Ionic.Zip;
+using System.Text;
 
 namespace WebApplication
 {
+
+    public class IndexModel
+    {
+        public IDirectoryContents Devices { get; set; }
+        public IDirectoryContents Files { get; set; }
+        
+    }
 
     public class DownloadController : Controller {
         
@@ -18,69 +28,67 @@ namespace WebApplication
         public DownloadController(IFileProvider fileProvider) {
             _fileProvider = fileProvider;
         }
-        
+
         public IActionResult Index()
         {
-            //var contents = _fileProvider.GetDirectoryContents("http://localhost:59956/files/device1/gzip/");
-            var contents = _fileProvider.GetDirectoryContents("/files/device1/gzip");
-            return View(contents);
-            //return View();
+            string device = "device1";
+            //if (Request.Method == "POST")
+            //{
+            //    device = Request.HttpContext["device1"];
+            //}
+            var contents = _fileProvider.GetDirectoryContents("/files/" + device + "/gzip");
+            IndexModel content = new IndexModel();
+            content.Files = contents;
+            content.Devices = _fileProvider.GetDirectoryContents("/files/");
+
+
+            return View(content);
         }
-        
+
         [HttpPost]
-        public async Task<IActionResult> UploadFile(IFormFile file, DateTime initialDate, DateTime finalDate) {
-            
+        public async Task<IActionResult> DownloadFiles(String device, DateTime initialDate, DateTime finalDate) {
+
+
             ////Comparing dates
             //int result = DateTime.Compare(initialDate, finalDate);
             //if (result > 0)
             //{
             //    return Content("Dates not matching.");
             //}
-            
+
             ////Verifyng Existing Files
             //if (file == null || file.Length == 0)
             //    return Content("File not selected");
 
+            device = "device1";
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            var enc1252 = Encoding.GetEncoding(1252);
 
+            DirectoryInfo DI = new DirectoryInfo("files/" + device + "/gzip");
+           Ionic.Zip.ZipFile zip;
+            using (zip = new Ionic.Zip.ZipFile())
+            {
+
+                // Add the file to the Zip archive's root folder.
+               // zip.AddFile(item.Name, item.DirectoryName);
+                // Save the Zip file.
+                zip.AddDirectory( DI.FullName);
+                zip.ParallelDeflateThreshold = -1;
+                zip.Save(DI.FullName+@"/comprimido.gz");
+            }
             
-            //DirectoryInfo DI = new DirectoryInfo("files/device1/gzip");
-            //foreach (var item in DI.GetFiles())
-            //{
-            //    FileStream compressedStream = new FileStream(Core.GzipFolderPath + @"\" + item.Name, FileMode.Open, FileAccess.ReadWrite);
-            //    FileStream outfolder = new FileStream(Core.GzipFolderPath + @"\" + item.Name + ".gz", FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            //    GZipStream gzip = new GZipStream(outfolder, CompressionMode.Compress);
-            //    compressedStream.CopyTo(gzip);
-
-            //    gzip.Close();
-            //    outfolder.Close();
-            //    compressedStream.Close();
-            //}
-
-            // COMPRESSING FILE
-            FileStream compressedStream = new FileStream(Core.GzipFolderPath + @"\" + file.FileName, FileMode.Open, FileAccess.ReadWrite);
-            FileStream outfolder = new FileStream(Core.GzipFolderPath + @"\" + file.FileName + ".gz", FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            GZipStream gzip = new GZipStream(outfolder, CompressionMode.Compress);
-            compressedStream.CopyTo(gzip);
-
-            gzip.Close();
-            outfolder.Close();
-            compressedStream.Close();
-
-
             // DOWNLOADING FILE (.tg)
-            string fileAddress = "http://localhost:59956/files/device1/gzip/" + file.FileName + ".gz";
+            string fileAddress = DI.FullName+@"/comprimido.gz";
             var net = new System.Net.WebClient();
             var data = net.DownloadData(fileAddress);
             var content = new System.IO.MemoryStream(data);
             var contentType = "APPLICATION/octet-stream";
-            var fileName = file.FileName + ".gz";
-            //var fileName = "prueba.gz";
-
-            System.IO.File.Delete("files/device1/gzip/" + file.FileName + ".gz");
+            var fileName = "comprimido.gz";
+            
+            System.IO.File.Delete("files/" + device + "/gzip/comprimido.gz");
 
             return File(content, contentType, fileName);
             
-
         }
     }
 }

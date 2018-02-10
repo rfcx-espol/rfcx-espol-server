@@ -1,5 +1,5 @@
 ﻿@using Microsoft.Extensions.FileProviders
-@model IDirectoryContents
+@model WebApplication.IndexModel
 
 
 
@@ -14,35 +14,41 @@
 <h1>BOSQUE PROTECTOR</h1>
 <h2>Sound files downloader</h2>
 
-
-<form method="post" enctype="multipart/form-data" action="/Download/UploadFile">
-
-Choose file:<br>
-<input type="file" name="file" multiple /><br>
-<table>
-<thead>
-    <tr>
-        <th>FILES</th>
-        <th></th>
-
-    </tr>
-                                              
-</thead>
-<tbody>
+<form method="post" enctype="multipart/form-data" action="/Download">
     
-        @foreach (IFileInfo item in Model)
-         {
-    <tr>
-        <td>
-            @item.Name <br />
-        </td>
-    </tr>
+    <select id="device1" onchange="this.form.submit()">
+       @foreach (IFileInfo device in Model.Devices)
+        {
+            <option value="@device.PhysicalPath"> @device.Name</option>
+
         }
+    </select>
 
+</form>
+
+
+<form method="post" enctype="multipart/form-data" action="/Download/DownloadFiles">
+
+    <table>
+        <thead>
+            <tr>
+                <th>FILES</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+           @foreach (IFileInfo item in Model.Files)
+            {
+            <tr>
+                <td>
+                    @item.Name <br />
+                </td>
+            </tr>
+            }
+
+        </tbody>
+    </table>
     
-</tbody>
-</table>
-
-
-<button type="submit">Download</button>
+    <button type="submit">Download</button>
 </form>
