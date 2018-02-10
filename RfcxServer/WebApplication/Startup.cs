@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using NonFactors.Mvc.Grid;
+
 
 namespace WebApplication
 {
@@ -25,9 +29,12 @@ namespace WebApplication
         public void ConfigureServices(IServiceCollection services)
         {
             Core.MakeFilesFolder();
-            services.AddSingleton<IFileProvider>(
-                new PhysicalFileProvider(Core.FilesFolderPath));
+            services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Core.FilesFolderPath));
             services.AddMvc();
+
+            IFileProvider physicalProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory());
+            services.AddSingleton<IFileProvider>(physicalProvider);
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,7 +48,7 @@ namespace WebApplication
             {
                 app.UseExceptionHandler("/Error");
             }
-
+            app.UseMvcWithDefaultRoute();
             app.UseStaticFiles();
 
             app.UseStaticFiles(new StaticFileOptions
@@ -50,6 +57,8 @@ namespace WebApplication
             Path.Combine(Directory.GetCurrentDirectory(), "files")),
                 RequestPath = "/files"
             });
+
+            
             // app.Map("/hello", HandleHello);
             // app.Map("/sendgz", GZReceiver.HandleGZFile);
             // app.Map("/getzip", GZReceiver.HandleSendZipFile);
