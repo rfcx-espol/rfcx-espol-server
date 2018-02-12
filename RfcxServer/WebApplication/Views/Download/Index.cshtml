@@ -11,25 +11,38 @@
     ViewBag.Title = "Download";
 }
 
-<h1>BOSQUE PROTECTOR</h1>
-<h2>Sound files downloader</h2>
+<h1>Sound Files Downloader</h1><br />
+
 
 <form method="post" enctype="multipart/form-data" action="/Download">
-    
-    <select id="device1" onchange="this.form.submit()">
-       @foreach (IFileInfo device in Model.Devices)
+
+    <div class="form-group">
+        <label for="ddl">Device</label>
+        @Html.DropDownList("ddl", Model.Devices.Select(item => new SelectListItem
         {
-            <option value="@device.PhysicalPath"> @device.Name</option>
+            Value = item.Name.ToString(),
+            Text = item.Name.ToString(),
+            Selected = item.Name == Model.selected
 
-        }
-    </select>
+        }), new { onchange = "this.form.submit();" })
+    </div>
+    <div class="form-group">
+        <label id="ReportBeginDate">Report Begin Date</label>
+        <input type="date" name="start" value="@if (Model.start != null) {@Model.start_d.ToString("yyyy-MM-dd"); }else{@DateTime.Today.ToString("yyyy-MM-dd");}" />
+    </div>
 
+    <div class="form-group">
+        <label id="ReportEndDate">Report End Date</label>
+        <input type="date" name="end" value="@if (Model.end != null) {@Model.end_d.ToString("yyyy-MM-dd"); }else{@DateTime.Today.ToString("yyyy-MM-dd");}" />
+    </div>
+
+    <button type="submit">Search</button>
 </form>
 
 
 <form method="post" enctype="multipart/form-data" action="/Download/DownloadFiles">
 
-    <table>
+    <table class="table">
         <thead>
             <tr>
                 <th>FILES</th>
@@ -38,17 +51,39 @@
         </thead>
         <tbody>
 
-           @foreach (IFileInfo item in Model.Files)
+            @foreach (IFileInfo item in Model.Files)
             {
-            <tr>
-                <td>
-                    @item.Name <br />
-                </td>
-            </tr>
+                <tr>
+                    @if (Model.start != null && Model.end != null)
+                    {
+
+
+                        @if (Model.start_d.CompareTo(item.LastModified.Date) <= 0 && Model.end_d.CompareTo(item.LastModified.Date) >= 0)
+                        {
+                    <td>
+                        @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name })
+                    </td>
+
+                        }
+
+
+                    }
+                    else
+                    {
+                    <td>
+                        @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name })
+                    </td>
+
+                    }
+
+                </tr>
             }
 
         </tbody>
     </table>
-    
+
+    <input type="hidden" name="start" value="@if (Model.start != null) {@Model.start_d.ToString("yyyy-MM-dd"); }" />
+    <input type="hidden" name="end" value="@if (Model.end != null) {@Model.end_d.ToString("yyyy-MM-dd"); }" />
+    <input id="ddt" name="device" type="hidden" value="@Model.selected" />
     <button type="submit">Download</button>
 </form>
