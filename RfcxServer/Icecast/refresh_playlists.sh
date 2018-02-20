@@ -1,5 +1,6 @@
 #!/bin/sh
 
+#File implementing Icecast and Ices services
 #variables to use in script
 
 var_path="/var/rfcx-espol-server/files/device"
