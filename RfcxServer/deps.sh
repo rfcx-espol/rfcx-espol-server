@@ -1,3 +1,5 @@
+#File used to install and configure the dependencies for rfcx-espol Web and Stream Servers
+
 # dotnet core
 # https://www.microsoft.com/net/learn/get-started/linuxubuntu
 # This is the process for Ubuntu 16.04
@@ -21,6 +23,7 @@ apt-get install libshout3-dev
 apt-get install libvorbis-dev
 wget http://downloads.xiph.org/releases/icecast/icecast-2.4.3.tar.gz
 tar zxvf icecast-2.4.3.tar.gz
+rm icecast-2.4.3.tar.gz
 cd icecast-2.4.3
 ./configure
 make
@@ -32,6 +35,7 @@ cd ..
 
 wget http://downloads.us.xiph.org/releases/ices/ices-2.0.2.tar.gz
 tar zxvf ices-2.0.2.tar.gz
+rm ices-2.0.2.tar.gz
 cd ices-2.0.2
 ./configure
 make
