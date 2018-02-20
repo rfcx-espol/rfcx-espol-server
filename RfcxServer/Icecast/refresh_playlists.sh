@@ -16,7 +16,7 @@ while [ 1 -gt 0 ]; do
 	for i in 0 1 2 3
 	do
 		#Dlete all files older than 10 minutes
-		find $var_path$i$extension -mmin +10 -type f -delete
+		find $var_path$i$extension -mmin +22 -type f -delete
 		#Create playlist with remaining files in folder
 		find $var_path$i$extension -type f -size +20k > $var_path$i/playlist.txt
 		ices_command="ices /var/rfcx-espol-server/icecast-config/ices-playlist-$i.xml"
