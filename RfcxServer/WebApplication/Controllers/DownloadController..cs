@@ -35,7 +35,6 @@ namespace WebApplication
 
         public static DateTimeOffset FromString(string offsetString)
         {
-
             DateTimeOffset offset;
             if (!DateTimeOffset.TryParse(offsetString, out offset))
             {
@@ -45,7 +44,6 @@ namespace WebApplication
             return offset;
         }
 
-        //public IActionResult Index(string device)
         public IActionResult Index(string dd1)
         {
             string device = "device1";
@@ -63,9 +61,9 @@ namespace WebApplication
                 {
                     start_d = FromString(start);
                     end_d = FromString(end);
-
                 }
             }
+
             var contents = _fileProvider.GetDirectoryContents("/files/" + device + "/gzip");
             IndexModel content = new IndexModel();
             content.Files = contents;
@@ -76,10 +74,8 @@ namespace WebApplication
             if(start_d != null && end_d!= null) {
                 content.start_d = start_d;
                 content.end_d = end_d;
-
             }
-
-
+            
             return View(content);
         }
 
