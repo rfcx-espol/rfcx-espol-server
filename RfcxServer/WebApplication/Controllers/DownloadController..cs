@@ -93,10 +93,11 @@ namespace WebApplication
             //    return Content("Dates not matching.");
             //}
 
-
-
             string date = DateTime.Now.ToString("yyyyMMdd") + ".gz";
-            device = "device1";
+            device = Request.Form["device"];
+            string start = Request.Form["start"];
+            string end = Request.Form["end"];
+            DateTimeOffset start_d, end_d;
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var enc1252 = Encoding.GetEncoding(1252);
 
