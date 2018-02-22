@@ -42,7 +42,7 @@
 
 <form method="post" enctype="multipart/form-data" action="/Download/DownloadFiles">
 
-    <table class="table">
+    <table>
         <thead>
             <tr>
                 <th>FILES</th>
@@ -57,15 +57,12 @@
                     @if (Model.start != null && Model.end != null)
                     {
 
-
                         @if (Model.start_d.CompareTo(item.LastModified.Date) <= 0 && Model.end_d.CompareTo(item.LastModified.Date) >= 0)
                         {
                     <td>
                         @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name })
                     </td>
-
                         }
-
 
                     }
                     else

@@ -127,11 +127,7 @@ namespace WebApplication
             device = "device1";
 
             DirectoryInfo DI = new DirectoryInfo("files/" + device + "/gzip/");
-
-            //var milliseconds = long.Parse("1508869459001");
-            //var date = DateTimeExtensions.DateTimeFromMilliseconds(milliseconds);
-            //var localDate = date.ToLocalTime();
-
+            
             // DOWNLOADING FILE
             string fileAddress = DI.FullName + namefile;
             var net = new System.Net.WebClient();
