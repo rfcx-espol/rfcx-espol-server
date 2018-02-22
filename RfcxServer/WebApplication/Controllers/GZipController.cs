@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Net.Http.Headers;
 using System;
+using Microsoft.Extensions.Primitives;
 
 namespace WebApplication {
 
@@ -20,6 +21,16 @@ namespace WebApplication {
     }
 
     public class GZipController : Controller {
+
+        public class DeviceFile {
+            public KeyValueAccumulator formAccumulator;
+            public MemoryStream memoryStream;
+
+            public DeviceFile() {
+                formAccumulator = new KeyValueAccumulator();
+                memoryStream = new MemoryStream();
+            }
+        }
 
         private readonly IFileProvider _fileProvider;
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
@@ -44,17 +55,8 @@ namespace WebApplication {
             return mediaType.Encoding;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UploadFile() {
-            if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
-            {
-                return BadRequest($"Expected a multipart request, but got {Request.ContentType}");
-            }
-
-            // Used to accumulate all the form url encoded key value pairs in the 
-            // request.
-            var formAccumulator = new KeyValueAccumulator();
-            string targetFilePath = null;
+        public async Task<DeviceFile> HandleMultipartRequest() {
+            var deviceFile = new DeviceFile();
 
             var boundary = MultipartRequestHelper.GetBoundary(
                 MediaTypeHeaderValue.Parse(Request.ContentType),
@@ -62,8 +64,7 @@ namespace WebApplication {
             var reader = new MultipartReader(boundary, HttpContext.Request.Body);
 
             var section = await reader.ReadNextSectionAsync();
-            while (section != null)
-            {
+            while (section != null) {
                 ContentDispositionHeaderValue contentDisposition;
                 var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out contentDisposition);
 
@@ -71,11 +72,8 @@ namespace WebApplication {
                 {
                     if (MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
                     {
-                        targetFilePath = Path.GetTempFileName();
-                        using (var targetStream = System.IO.File.Create(targetFilePath))
-                        {
-                            await section.Body.CopyToAsync(targetStream);
-                        }
+                        await section.Body.CopyToAsync(deviceFile.memoryStream);
+                        deviceFile.memoryStream.Seek(0, SeekOrigin.Begin);
                     }
                     else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
                     {
@@ -100,9 +98,9 @@ namespace WebApplication {
                             {
                                 value = String.Empty;
                             }
-                            formAccumulator.Append(key.ToString(), value);
+                            deviceFile.formAccumulator.Append(key.Value, value);
 
-                            if (formAccumulator.ValueCount > _defaultFormOptions.ValueCountLimit)
+                            if (deviceFile.formAccumulator.ValueCount > _defaultFormOptions.ValueCountLimit)
                             {
                                 throw new InvalidDataException($"Form key count limit {_defaultFormOptions.ValueCountLimit} exceeded.");
                             }
@@ -114,8 +112,83 @@ namespace WebApplication {
                 // reads the headers for the next section.
                 section = await reader.ReadNextSectionAsync();
             }
+            return deviceFile;
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> UploadFile() {
+            if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
+            {
+                return BadRequest($"Expected a multipart request, but got {Request.ContentType}");
+            }
+
+            var deviceFile = await HandleMultipartRequest();
+            var formData = deviceFile.formAccumulator.GetResults();
+            StringValues filename;
+            bool ok = false;
+            ok = formData.TryGetValue("filename", out filename);
+            if (!ok) {
+                return BadRequest("Expected filename key");
+            }
+            StringValues deviceId;
+            ok = formData.TryGetValue("deviceId", out deviceId);
+            if (!ok) {
+                return BadRequest("Expected deviceId key");
+            }
+            
+            {
+                Core.DeviceDictionary.TryAdd(deviceId.ToString(), Core.DeviceDictionary.Count);
+                Core.SaveDeviceDictionaryToFile();
+            }
+
+<<<<<<< HEAD
             return Content("File receivedzzz");
+=======
+            {
+                string strDeviceId = "";
+                int id;
+                if (Core.DeviceDictionary.TryGetValue(deviceId.ToString(), out id)) {
+                    strDeviceId = id.ToString();
+                }
+                string strfilename = filename.ToString();
+                Core.MakeDeviceFolder(strDeviceId);
+                var gzipFilePath = Path.Combine(Core.DeviceGzipFolderPath(strDeviceId),
+                                                strfilename);
+
+                using (var stream = new FileStream(gzipFilePath, FileMode.Create)) {
+                    await deviceFile.memoryStream.CopyToAsync(stream);
+                    deviceFile.memoryStream.Close();
+                }
+
+                var gzipFileInfo = new FileInfo(gzipFilePath);
+                var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));
+                
+                { // Decompression Test
+                    using (var compressedStream = new FileStream(gzipFilePath, FileMode.Open)) {
+                        using (var decompressedFileStream = new FileStream(decompressedPath, FileMode.Create)) {
+                            using (var decompressionStream = new GZipStream(compressedStream, CompressionMode.Decompress)) {
+                                decompressionStream.CopyTo(decompressedFileStream);
+                            }
+                        }
+                    }
+                }
+                
+                { // Convert Decompressed File to ogg and add to playlist
+                    var process = new Process();
+                    process.StartInfo.FileName = "ffmpeg";
+                    var decompressedFileInfo = new FileInfo(decompressedPath);
+                    var filenameNoExtension = decompressedFileInfo.Name.Remove((int)(decompressedFileInfo.Name.Length - decompressedFileInfo.Extension.Length));
+                    // var milliseconds = long.Parse(filenameNoExtension);
+                    // var date = DateTimeExtensions.DateTimeFromMilliseconds(milliseconds);
+                    // var localDate = date.ToLocalTime();
+                    var oggFilename = filenameNoExtension + ".ogg";
+                    var oggFilePath = Path.Combine(Core.DeviceOggFolderPath(strDeviceId), oggFilename);
+                    process.StartInfo.Arguments = "-i " + decompressedPath + " " + oggFilePath;
+                    process.Start();
+                }
+            }
+            return Content("File received");
+>>>>>>> f291674eda34f56a4548f7871e120d709f04c4b4
         }
         /*
         [HttpPost]
