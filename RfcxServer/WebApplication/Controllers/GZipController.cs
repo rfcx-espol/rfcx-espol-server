@@ -141,9 +141,7 @@ namespace WebApplication {
                 Core.SaveDeviceDictionaryToFile();
             }
 
-<<<<<<< HEAD
-            return Content("File receivedzzz");
-=======
+
             {
                 string strDeviceId = "";
                 int id;
@@ -188,7 +186,7 @@ namespace WebApplication {
                 }
             }
             return Content("File received");
->>>>>>> f291674eda34f56a4548f7871e120d709f04c4b4
+
         }
         /*
         [HttpPost]
