@@ -23,7 +23,7 @@ namespace WebApplication
         public String end { get; set; }
         public DateTimeOffset start_d { get; set; }
         public DateTimeOffset end_d { get; set; }
-    }
+}
 
     public class DownloadController : Controller {
 
@@ -44,10 +44,19 @@ namespace WebApplication
             return offset;
         }
 
+        public string fileDate(string name)
+        {
+            int index = name.IndexOf('.');
+            string first = name.Substring(0, index);
+            var milliseconds = long.Parse(first);
+            var date = DateTimeExtensions.DateTimeFromMilliseconds(milliseconds);
+            return date.ToString();
+        }
+
         public IActionResult Index(string dd1)
         {
-            string device = "device1";
-            string selected = "device1";
+            string device = "";
+            string selected = "";
             string start = null;
             string end = null;
             DateTimeOffset start_d, end_d;
@@ -67,6 +76,7 @@ namespace WebApplication
             var contents = _fileProvider.GetDirectoryContents("/files/" + device + "/gzip");
             IndexModel content = new IndexModel();
             content.Files = contents;
+
             content.Devices = _fileProvider.GetDirectoryContents("/files/");
             content.selected = selected;
             content.start = start;
@@ -82,13 +92,6 @@ namespace WebApplication
         [HttpPost]
         public async Task<IActionResult> DownloadFiles(string device, DateTime initialDate, DateTime finalDate) {
 
-            ////Comparing dates
-            //int result = DateTime.Compare(initialDate, finalDate);
-            //if (result > 0)
-            //{
-            //    return Content("Dates not matching.");
-            //}
-
             string date = DateTime.Now.ToString("yyyyMMdd") + ".gz";
             device = Request.Form["device"];
             string start = Request.Form["start"];
@@ -99,18 +102,35 @@ namespace WebApplication
 
             DirectoryInfo DI = new DirectoryInfo("files/" + device + "/gzip");
             Ionic.Zip.ZipFile zip;
+
+            var ifp = _fileProvider.GetDirectoryContents("/files/" + device + "/gzip");
+            
             using (zip = new Ionic.Zip.ZipFile())
             {
-                // Add the file to the Zip archive's root folder.
-                // zip.AddFile(item.Name, item.DirectoryName);
-                // Save the Zip file.
-                zip.AddDirectory( DI.FullName);
-                zip.ParallelDeflateThreshold = -1;
+                foreach (var item in ifp)
+                {
+                    
+                    if (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 5) == ".flac" && item.Name.ToString().Length == 18)
+                    {
+                        zip.AddFile(item.PhysicalPath, "");
+                    }
+                }
                 zip.Save(DI.FullName + @"/" + date);
             }
+            
+                //using (zip = new Ionic.Zip.ZipFile())
+                //{
+                //    // Add the file to the Zip archive's root folder.
+                //    // zip.AddFile(item.Name, item.DirectoryName);
+                //    // Save the Zip file.
 
-            // DOWNLOADING FILE (.tg)
-            string fileAddress = DI.FullName + @"/" + date;
+                //    zip.AddDirectory(DI.FullName);
+                //    zip.ParallelDeflateThreshold = -1;
+                //    zip.Save(DI.FullName + @"/" + date);
+                //}
+
+                // DOWNLOADING FILE 
+                string fileAddress = DI.FullName + @"/" + date;
             var net = new System.Net.WebClient();
             var data = net.DownloadData(fileAddress);
             var content = new System.IO.MemoryStream(data);
@@ -124,10 +144,8 @@ namespace WebApplication
         // Download a unique file by clicking the file in the showed list.
         public ActionResult DownloadUniqueFile(string namefile, string device)
         {
-            device = "device1";
-
             DirectoryInfo DI = new DirectoryInfo("files/" + device + "/gzip/");
-            
+
             // DOWNLOADING FILE
             string fileAddress = DI.FullName + namefile;
             var net = new System.Net.WebClient();
@@ -136,6 +154,7 @@ namespace WebApplication
 
             return File(content, "APPLICATION/octet-stream", namefile);
         }
+
 
     }
 }
