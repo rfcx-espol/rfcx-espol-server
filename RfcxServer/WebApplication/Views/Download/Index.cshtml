@@ -42,41 +42,51 @@
 
 <form method="post" enctype="multipart/form-data" action="/Download/DownloadFiles">
 
-    <table>
-        <thead>
-            <tr>
-                <th>FILES</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
+    <table class="table">
 
-            @foreach (IFileInfo item in Model.Files)
-            {
-                <tr>
-                    @if (Model.start != null && Model.end != null)
-                    {
+        <tr>
+            <th>Name File</th>
+            <th>Date Created</th>
+        </tr>
 
-                        @if (Model.start_d.CompareTo(item.LastModified.Date) <= 0 && Model.end_d.CompareTo(item.LastModified.Date) >= 0)
-                        {
-                    <td>
-                        @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name })
-                    </td>
-                        }
 
-                    }
-                    else
-                    {
-                    <td>
-                        @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name })
-                    </td>
+        @foreach (var item in Model.Files)
+    {
+        
+        <tr>
+            @if (Model.start != null && Model.end != null)
+    {
 
-                    }
+        @if (Model.start_d.CompareTo(item.LastModified.Date) <= 0 && Model.end_d.CompareTo(item.LastModified.Date) >= 0 && (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 5) == ".flac") && item.Name.ToString().Length == 18)
+{
+        <td>
+            @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name }, new { device = @Model.selected.ToString() })
+        </td>
+        
+        <td>
+            @item.LastModified.AddHours(-5).ToString()
+        </td>
+}
 
-                </tr>
-            }
+}
+else
+{
+        <td>
+            @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name }, new { device = @Model.selected.ToString() })
+        </td>
 
-        </tbody>
+}
+
+        </tr>
+
+}
+
+
+
+
+
+
+
     </table>
 
     <input type="hidden" name="start" value="@if (Model.start != null) {@Model.start_d.ToString("yyyy-MM-dd"); }" />
