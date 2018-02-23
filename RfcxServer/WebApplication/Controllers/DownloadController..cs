@@ -144,9 +144,6 @@ namespace WebApplication
         // Download a unique file by clicking the file in the showed list.
         public ActionResult DownloadUniqueFile(string namefile, string device)
         {
-            device = Request.Form["device"];
-            //device = "device1";
-
             DirectoryInfo DI = new DirectoryInfo("files/" + device + "/gzip/");
 
             // DOWNLOADING FILE

@@ -60,7 +60,7 @@
         @if (Model.start_d.CompareTo(item.LastModified.Date) <= 0 && Model.end_d.CompareTo(item.LastModified.Date) >= 0 && (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 5) == ".flac") && item.Name.ToString().Length == 18)
 {
         <td>
-            @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name }, new { device = @Model.selected.ToString() })
+            @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)
         </td>
         
         <td>
@@ -72,7 +72,7 @@
 else
 {
         <td>
-            @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name }, new { device = @Model.selected.ToString() })
+            @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected }, null))
         </td>
 
 }
