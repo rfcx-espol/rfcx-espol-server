@@ -23,7 +23,9 @@ namespace WebApplication
         public String end { get; set; }
         public DateTimeOffset start_d { get; set; }
         public DateTimeOffset end_d { get; set; }
-}
+
+        public List<string> deviceFolders { get; set; }
+    }
 
     public class DownloadController : Controller {
 
@@ -78,6 +80,18 @@ namespace WebApplication
             content.Files = contents;
 
             content.Devices = _fileProvider.GetDirectoryContents("/files/");
+
+            List<string> df = new List<string>();
+            foreach (var item in content.Devices)
+            {
+                if (item.Name.ToString().Contains("device"))
+                {
+                    df.Add(item.Name.ToString());
+                }
+            }
+
+            content.deviceFolders = df;
+
             content.selected = selected;
             content.start = start;
             content.end = end;
