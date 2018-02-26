@@ -82,7 +82,7 @@ namespace WebApplication
 
             content.Devices = _fileProvider.GetDirectoryContents("/files/");
 
-            string pattern = @"^(device)[(1-9)]{1}$";
+            string pattern = @"^(device)[(1-9)]*$";
             List<string> df = new List<string>();
             foreach (var item in content.Devices)
             {
