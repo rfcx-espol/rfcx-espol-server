@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ionic.Zip;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace WebApplication
 {
@@ -81,10 +82,11 @@ namespace WebApplication
 
             content.Devices = _fileProvider.GetDirectoryContents("/files/");
 
+            string pattern = @"^(device)[(1-9)]{1}$";
             List<string> df = new List<string>();
             foreach (var item in content.Devices)
             {
-                if (item.Name.ToString().Contains("device"))
+                if (Regex.IsMatch(item.Name.ToString(), pattern, RegexOptions.IgnoreCase))
                 {
                     df.Add(item.Name.ToString());
                 }
