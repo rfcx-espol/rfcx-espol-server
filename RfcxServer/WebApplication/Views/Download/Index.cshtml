@@ -47,18 +47,18 @@
             <th>Date Created</th>
         </tr>
 
-        @foreach (var item in Model.Files)
+        @foreach (var item in Model.filesSorted)
     {
         <tr>
             @if (Model.start != null && Model.end != null)
     {
-        @if (Model.start_d.CompareTo(item.LastModified.Date) <= 0 && Model.end_d.CompareTo(item.LastModified.Date) >= 0 && (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 5) == ".flac") && item.Name.ToString().Length == 18)
+        @if (Model.start_d.CompareTo(item.LastModified.AddHours(-5).Date) <= 0 && Model.end_d.CompareTo(item.LastModified.AddHours(-5).Date) >= 0 && (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 5) == ".flac") && item.Name.ToString().Length == 18)
 {
         <td>
             @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)
         </td>
         <td>
-            @item.LastModified.AddHours(-5).ToString()
+            @item.LastModified.AddHours(-5).ToString("dd/MMM/yyyy HH:mm:ss")
         </td>
 }
 }

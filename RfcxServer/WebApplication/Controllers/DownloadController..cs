@@ -22,10 +22,11 @@ namespace WebApplication
         public String selected { get; set; }
         public String start { get; set; }
         public String end { get; set; }
-        public DateTimeOffset start_d { get; set; }
-        public DateTimeOffset end_d { get; set; }
+        public DateTime start_d { get; set; }
+        public DateTime end_d { get; set; }
 
         public List<string> deviceFolders { get; set; }
+        public IFileInfo[] filesSorted { get; set; }
     }
 
     public class DownloadController : Controller {
@@ -36,12 +37,12 @@ namespace WebApplication
             _fileProvider = fileProvider;
         }
 
-        public static DateTimeOffset FromString(string offsetString)
+        public static DateTime FromString(string offsetString)
         {
-            DateTimeOffset offset;
-            if (!DateTimeOffset.TryParse(offsetString, out offset))
+            DateTime offset;
+            if (!DateTime.TryParse(offsetString, out offset))
             {
-                offset = DateTimeOffset.Now;
+                offset = DateTime.Now;
             }
 
             return offset;
@@ -62,7 +63,7 @@ namespace WebApplication
             string selected = "";
             string start = null;
             string end = null;
-            DateTimeOffset start_d, end_d;
+            DateTime start_d, end_d;
             if (Request.Method == "POST")
             {
                 device = Request.Form["ddl"];
@@ -76,11 +77,16 @@ namespace WebApplication
                 }
             }
 
-            var contents = _fileProvider.GetDirectoryContents("/files/" + device + "/gzip");
-            IndexModel content = new IndexModel();
-            content.Files = contents;
+            start_d = FromString(start);
+            end_d = FromString(end);
 
+            IndexModel content = new IndexModel();
+            content.Files = _fileProvider.GetDirectoryContents("/files/" + device + "/gzip");
             content.Devices = _fileProvider.GetDirectoryContents("/files/");
+
+            IFileInfo[] files = _fileProvider.GetDirectoryContents("/files/" + device + "/gzip").OrderBy(p => p.LastModified).ToArray();
+
+            content.filesSorted = files;
 
             string pattern = @"^(device)[(1-9)]*$";
             List<string> df = new List<string>();
@@ -97,11 +103,13 @@ namespace WebApplication
             content.selected = selected;
             content.start = start;
             content.end = end;
-            if(start_d != null && end_d!= null) {
+            if (start_d != null && end_d != null)
+            {
                 content.start_d = start_d;
                 content.end_d = end_d;
             }
-            
+
+           
             return View(content);
         }
 
@@ -112,7 +120,6 @@ namespace WebApplication
             device = Request.Form["device"];
             string start = Request.Form["start"];
             string end = Request.Form["end"];
-            DateTimeOffset start_d, end_d;
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var enc1252 = Encoding.GetEncoding(1252);
 
@@ -134,19 +141,10 @@ namespace WebApplication
                 zip.Save(DI.FullName + @"/" + date);
             }
             
-                //using (zip = new Ionic.Zip.ZipFile())
-                //{
-                //    // Add the file to the Zip archive's root folder.
-                //    // zip.AddFile(item.Name, item.DirectoryName);
-                //    // Save the Zip file.
+               
 
-                //    zip.AddDirectory(DI.FullName);
-                //    zip.ParallelDeflateThreshold = -1;
-                //    zip.Save(DI.FullName + @"/" + date);
-                //}
-
-                // DOWNLOADING FILE 
-                string fileAddress = DI.FullName + @"/" + date;
+            // DOWNLOADING FILE 
+            string fileAddress = DI.FullName + @"/" + date;
             var net = new System.Net.WebClient();
             var data = net.DownloadData(fileAddress);
             var content = new System.IO.MemoryStream(data);
