@@ -88,7 +88,7 @@ namespace WebApplication
 
             content.filesSorted = files;
 
-            string pattern = @"^(device)[(1-9)]*$";
+            string pattern = @"^(device)";
             List<string> df = new List<string>();
             foreach (var item in content.Devices)
             {
