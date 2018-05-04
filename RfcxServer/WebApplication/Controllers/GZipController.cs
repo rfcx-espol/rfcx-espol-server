@@ -160,8 +160,9 @@ namespace WebApplication {
 
 
                 var gzipFileInfo = new FileInfo(gzipFilePath);
-                var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));
-                
+                //var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));
+                var decompressedPath = gzipFilePath;
+                /*
                 { // Decompression Test
                     using (var compressedStream = new FileStream(gzipFilePath, FileMode.Open)) {
                         using (var decompressedFileStream = new FileStream(decompressedPath, FileMode.Create)) {
@@ -170,7 +171,7 @@ namespace WebApplication {
                             }
                         }
                     }
-                }
+                }*/
                 
                 { // Convert Decompressed File to ogg and add to playlist
                     var process = new Process();

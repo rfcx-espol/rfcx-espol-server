@@ -88,7 +88,7 @@
         </form>
              
 
-        <form method="post" enctype="multipart/form-data" action="/Download/DownloadFiles"></form>
+        
           <div class="table-responsive">
             <table class="table table-bordered" id="horizontal-table">
                 <thead>
@@ -101,6 +101,7 @@
                   <th>Label &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i class="glyphicon glyphicon-search"></i></th>
                 </thead>
 
+                <form method="post" enctype="multipart/form-data" action="/Download/DownloadFiles">
                 @foreach (var item in Model.filesSorted)
                 {
                   <tr>
@@ -134,6 +135,7 @@
                         }
                   </tr>
                 }
+                
               </table>
 
             <input type="hidden" name="start" value="@if (Model.start != null) {@Model.start_d.ToString("yyyy-MM-dd"); }" />
@@ -148,3 +150,9 @@
   </div>
 </div>
 </section>
+<script>
+  $('#selectAll').change(function() {
+      var checkboxes = $(this).closest('form').find(':checkbox');
+      checkboxes.prop('checked', $(this).is(':checked'));
+  });
+</script>
