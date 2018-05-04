@@ -9,6 +9,10 @@ namespace WebApplication.Views.Download
 {
     public class DownloadModel : PageModel
     {
+        protected DownloadModel()
+        {
+        }
+
         public void OnGet()
         {
         }

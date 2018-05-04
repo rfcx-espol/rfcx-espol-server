@@ -152,11 +152,12 @@ namespace WebApplication {
                 Core.MakeDeviceFolder(strDeviceId);
                 var gzipFilePath = Path.Combine(Core.DeviceGzipFolderPath(strDeviceId),
                                                 strfilename);
-
+                
                 using (var stream = new FileStream(gzipFilePath, FileMode.Create)) {
                     await deviceFile.memoryStream.CopyToAsync(stream);
                     deviceFile.memoryStream.Close();
                 }
+
 
                 var gzipFileInfo = new FileInfo(gzipFilePath);
                 var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));

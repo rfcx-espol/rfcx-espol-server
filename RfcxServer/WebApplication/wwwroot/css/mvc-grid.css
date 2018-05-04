@@ -9,7 +9,7 @@
  */
 
 @font-face {
-    font-family: 'GridGlyphs';
+    font-family: "Open Sans", sans-serif;
     src: url('../MvcGrid/Fonts/GridGlyphs.woff') format('woff');
 }
 
@@ -54,7 +54,7 @@
 }
 
 .mvc-grid-filter {
-    font-family: 'GridGlyphs';
+    font-family: "Open Sans", sans-serif;
     padding-right: 8px;
     text-align: center;
     position: absolute;
