@@ -81,10 +81,10 @@ namespace WebApplication
             end_d = FromString(end);
 
             IndexModel content = new IndexModel();
-            content.Files = _fileProvider.GetDirectoryContents("/files/" + device + "/gzip");
+            content.Files = _fileProvider.GetDirectoryContents("/files/" + device + "/audios");
             content.Devices = _fileProvider.GetDirectoryContents("/files/");
 
-            IFileInfo[] files = _fileProvider.GetDirectoryContents("/files/" + device + "/gzip").OrderBy(p => p.LastModified).ToArray();
+            IFileInfo[] files = _fileProvider.GetDirectoryContents("/files/" + device + "/audios").OrderBy(p => p.LastModified).ToArray();
 
             content.filesSorted = files;
 
@@ -123,10 +123,10 @@ namespace WebApplication
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var enc1252 = Encoding.GetEncoding(1252);
 
-            DirectoryInfo DI = new DirectoryInfo("files/" + device + "/gzip");
+            DirectoryInfo DI = new DirectoryInfo("files/" + device + "/audios");
             Ionic.Zip.ZipFile zip;
 
-            var ifp = _fileProvider.GetDirectoryContents("/files/" + device + "/gzip");
+            var ifp = _fileProvider.GetDirectoryContents("/files/" + device + "/audios");
             
             using (zip = new Ionic.Zip.ZipFile())
             {
@@ -149,7 +149,7 @@ namespace WebApplication
             var data = net.DownloadData(fileAddress);
             var content = new System.IO.MemoryStream(data);
 
-            System.IO.File.Delete("files/" + device + "/gzip/"+ date);
+            System.IO.File.Delete("files/" + device + "/audios/"+ date);
 
             return File(content, "APPLICATION/octet-stream", date);
         }
@@ -158,7 +158,7 @@ namespace WebApplication
         // Download a unique file by clicking the file in the showed list.
         public ActionResult DownloadUniqueFile(string namefile, string device)
         {
-            DirectoryInfo DI = new DirectoryInfo("files/" + device + "/gzip/");
+            DirectoryInfo DI = new DirectoryInfo("files/" + device + "/audios/");
 
             // DOWNLOADING FILE
             string fileAddress = DI.FullName + namefile;

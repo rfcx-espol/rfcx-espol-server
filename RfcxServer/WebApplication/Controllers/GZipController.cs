@@ -150,18 +150,18 @@ namespace WebApplication {
                 }
                 string strfilename = filename.ToString();
                 Core.MakeDeviceFolder(strDeviceId);
-                var gzipFilePath = Path.Combine(Core.DeviceGzipFolderPath(strDeviceId),
+                var filePath = Path.Combine(Core.DeviceAudiosFolderPath(strDeviceId),
                                                 strfilename);
                 
-                using (var stream = new FileStream(gzipFilePath, FileMode.Create)) {
+                using (var stream = new FileStream(filePath, FileMode.Create)) {
                     await deviceFile.memoryStream.CopyToAsync(stream);
                     deviceFile.memoryStream.Close();
                 }
 
 
-                var gzipFileInfo = new FileInfo(gzipFilePath);
+                //var fileInfo = new FileInfo(filePath);
                 //var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));
-                var decompressedPath = gzipFilePath;
+                
                 /*
                 { // Decompression Test
                     using (var compressedStream = new FileStream(gzipFilePath, FileMode.Open)) {
@@ -176,14 +176,14 @@ namespace WebApplication {
                 { // Convert Decompressed File to ogg and add to playlist
                     var process = new Process();
                     process.StartInfo.FileName = "ffmpeg";
-                    var decompressedFileInfo = new FileInfo(decompressedPath);
-                    var filenameNoExtension = decompressedFileInfo.Name.Remove((int)(decompressedFileInfo.Name.Length - decompressedFileInfo.Extension.Length));
+                    var fileInfo = new FileInfo(filePath);
+                    var filenameNoExtension = fileInfo.Name.Remove((int)(fileInfo.Name.Length - fileInfo.Extension.Length));
                     // var milliseconds = long.Parse(filenameNoExtension);
                     // var date = DateTimeExtensions.DateTimeFromMilliseconds(milliseconds);
                     // var localDate = date.ToLocalTime();
                     var oggFilename = filenameNoExtension + ".ogg";
                     var oggFilePath = Path.Combine(Core.DeviceOggFolderPath(strDeviceId), oggFilename);
-                    process.StartInfo.Arguments = "-i " + decompressedPath + " " + oggFilePath;
+                    process.StartInfo.Arguments = "-i " + filePath + " " + oggFilePath;
                     process.Start();
                 }
             }
