@@ -107,7 +107,8 @@
                   <tr>
                     @if (Model.start != null && Model.end != null)
                     {
-                        @if (Model.start_d.CompareTo(item.LastModified.AddHours(-5).Date) <= 0 && Model.end_d.CompareTo(item.LastModified.AddHours(-5).Date) >= 0 && (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 5) == ".flac") && item.Name.ToString().Length == 18)
+                        @if (Model.start_d.CompareTo(item.LastModified.AddHours(-5).Date) <= 0 && Model.end_d.CompareTo(item.LastModified.AddHours(-5).Date) >= 0 && 
+                            ((item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".m4a") || (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".3gp")) && item.Name.ToString().Length == 17)
                         {
                             <td>
                                 <input type="checkbox" class="check">@Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)

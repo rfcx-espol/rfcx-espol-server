@@ -132,9 +132,7 @@ namespace WebApplication
             {
                 foreach (var item in ifp)
                 {
-                    
-                    if ((item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".m4a" && item.Name.ToString().Length == 17) ||
-                    (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".3gp" && item.Name.ToString().Length == 17))
+                    if (((item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".m4a") || (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".3gp")) && item.Name.ToString().Length == 17)
                     {
                         zip.AddFile(item.PhysicalPath, "");
                     }
