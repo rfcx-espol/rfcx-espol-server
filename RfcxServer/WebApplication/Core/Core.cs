@@ -70,8 +70,8 @@ namespace WebApplication {
             return Path.Combine(FilesFolderPath, "device" + deviceId);
         }
 
-        public static string DeviceGzipFolderPath(string deviceId) {
-            return Path.Combine(DeviceFolderPath(deviceId), "gzip");
+        public static string DeviceAudiosFolderPath(string deviceId) {
+            return Path.Combine(DeviceFolderPath(deviceId), "audios");
         }
 
         public static string DeviceOggFolderPath(string deviceId) {
@@ -82,7 +82,7 @@ namespace WebApplication {
             var deviceFolderPath = DeviceFolderPath(deviceId);
             if (!Directory.Exists(deviceFolderPath)) {
                 Directory.CreateDirectory(deviceFolderPath);
-                Directory.CreateDirectory(DeviceGzipFolderPath(deviceId));
+                Directory.CreateDirectory(DeviceAudiosFolderPath(deviceId));
                 Directory.CreateDirectory(DeviceOggFolderPath(deviceId));
             }
         }
