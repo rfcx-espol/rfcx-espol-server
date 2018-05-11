@@ -144,9 +144,11 @@
   </div>
 </div>
 </section>
-<script>
-  $('#selectAll').change(function() {
-      var checkboxes = $(this).closest('form').find(':checkbox');
-      checkboxes.prop('checked', $(this).is(':checked'));
-  });
-</script>
+@section Scripts {
+   <script type="text/javascript">
+      $('#selectAll').change(function() {
+          var checkboxes = $(this).closest('form').find(':checkbox');
+          checkboxes.prop('checked', $(this).is(':checked'));
+      });
+    </script> 
+}
