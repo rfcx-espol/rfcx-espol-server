@@ -12,6 +12,11 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using NonFactors.Mvc.Grid;
+using Microsoft.EntityFrameworkCore;
+using WebApplication.Models;
+using WebApplication.DbModels;
+using WebApplication.IRepository;
+using WebApplication.Repository;
 
 
 namespace WebApplication
@@ -26,6 +31,7 @@ namespace WebApplication
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        /** 
         public void ConfigureServices(IServiceCollection services)
         {
             Core.MakeFilesFolder();
@@ -34,7 +40,35 @@ namespace WebApplication
 
             IFileProvider physicalProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory());
             services.AddSingleton<IFileProvider>(physicalProvider);
-            
+
+            services.AddDbContext<BosqueContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BosqueDatabase")));
+         
+        }
+            public void ConfigureServices(IServiceCollection services)
+            {
+                services.AddMvc();
+                services.Configure<Settings>(
+                options =>
+                    {
+                        options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
+                        options.Database = Configuration.GetSection("MongoConnection:Database").Value;
+                    });
+            }
+        */ 
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc();
+            services.Configure<Settings>(
+            options =>
+                {
+                    options.iConfigurationRoot=Configuration;
+                });
+            services.AddTransient<IAlertaRepository, AlertaRepository>();
+            services.AddTransient<IAlertaConfiguracionRepository, AlertaConfiguracionRepository>();
+            services.AddTransient<IAudioRepository, AudioRepository>();
+            services.AddTransient<IDispositivoRepository, DispositivoRepository>();
+            services.AddTransient<IEtiquetaRepository, EtiquetaRepository>();
+            services.AddTransient<ISensorRepository, SensorRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
