@@ -53,18 +53,17 @@ namespace WebApplication.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<string> Put(string id, [FromBody] Alerta alerta)
+        public async Task<bool> Put(string id, [FromBody] Alerta alerta)
         {
-            if (string.isNullOrEmpty(id)) return "Id no válida";
+            if (string.IsNullOrEmpty(id)) return false;
             return await _alertaRepository.Update(id, alerta);
         }
 
         [HttpDelete("{id}")]
-        public async Task<string> Delete(string id)
+        public async Task<bool> Delete(string id)
         {
-            if (string.isNullOrEmpty(id)) return "Id no válida";
-            await _alertaRepository.Remove(id);
-            return "";
+            if (string.IsNullOrEmpty(id)) return false;
+            return await _alertaRepository.Remove(id);
         }
     }
 }

@@ -6,6 +6,11 @@ using WebApplication.DbModels;
 using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
+
 
 
 namespace WebApplication.Repository
@@ -74,26 +79,7 @@ namespace WebApplication.Repository
         }
     }
 
-    public async Task<bool> Update(string id, string body)
-    {
-        var filter = Builders<Sensor>.Filter.Eq(s => s.Id, id);
-        var update = Builders<Sensor>.Update
-                        .Set(s => s.Body, body)
-                        .CurrentDate(s => s.UpdatedOn);
-
-        try
-        {
-            UpdateResult actionResult
-                 = await _context.Sensors.UpdateOneAsync(filter, update);
-
-            return actionResult.IsAcknowledged
-                && actionResult.ModifiedCount > 0;
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
+    
 
     public async Task<bool> Update(string id, Sensor item)
     {
@@ -101,7 +87,7 @@ namespace WebApplication.Repository
         {
             ReplaceOneResult actionResult 
                 = await _context.Sensors
-                                .ReplaceOneAsync(n => n.Id.Equals(id)
+                                .ReplaceOneAsync(n => n.SensorId.Equals(id)
                                         , item
                                         , new UpdateOptions { IsUpsert = true });
             return actionResult.IsAcknowledged

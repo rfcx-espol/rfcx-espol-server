@@ -4,6 +4,12 @@ using Microsoft.Extensions.Options;
 using WebApplication.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
+
+
 
 
 namespace WebApplication.Repository
@@ -72,34 +78,14 @@ namespace WebApplication.Repository
         }
     }
 
-    public async Task<bool> Update(string id, string body)
-    {
-        var filter = Builders<AlertaConfiguracion>.Filter.Eq(s => s.Id, id);
-        var update = Builders<AlertaConfiguracion>.Update
-                        .Set(s => s.Body, body)
-                        .CurrentDate(s => s.UpdatedOn);
-
-        try
-        {
-            UpdateResult actionResult
-                 = await _context.AlertaConfiguracions.UpdateOneAsync(filter, update);
-
-            return actionResult.IsAcknowledged
-                && actionResult.ModifiedCount > 0;
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
-
+    
     public async Task<bool> Update(string id, AlertaConfiguracion item)
     {
         try
         {
             ReplaceOneResult actionResult 
                 = await _context.AlertaConfiguracions
-                                .ReplaceOneAsync(n => n.Id.Equals(id)
+                                .ReplaceOneAsync(n => n.AlertaConfiguracionId.Equals(id)
                                         , item
                                         , new UpdateOptions { IsUpsert = true });
             return actionResult.IsAcknowledged

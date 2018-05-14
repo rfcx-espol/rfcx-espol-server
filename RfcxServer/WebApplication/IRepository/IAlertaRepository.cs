@@ -10,7 +10,6 @@ namespace WebApplication.IRepository
         Task<IEnumerable<Alerta>> Get();
         Task<Alerta> Get(string id);
         Task Add(Alerta item);
-        Task<bool> Update(string id, string body);
         Task<bool> Update(string id, Alerta item);
         Task<bool> Remove(string id);
         Task<bool> RemoveAll();

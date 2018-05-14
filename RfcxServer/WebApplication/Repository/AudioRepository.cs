@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 
 
 
@@ -75,34 +79,13 @@ namespace WebApplication.Repository
         }
     }
 
-    public async Task<bool> Update(string id, string body)
-    {
-        var filter = Builders<Audio>.Filter.Eq(s => s.Id, id);
-        var update = Builders<Audio>.Update
-                        .Set(s => s.Body, body)
-                        .CurrentDate(s => s.UpdatedOn);
-
-        try
-        {
-            UpdateResult actionResult
-                 = await _context.Audios.UpdateOneAsync(filter, update);
-
-            return actionResult.IsAcknowledged
-                && actionResult.ModifiedCount > 0;
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
-
     public async Task<bool> Update(string id, Audio item)
     {
         try
         {
             ReplaceOneResult actionResult 
                 = await _context.Audios
-                                .ReplaceOneAsync(n => n.Id.Equals(id)
+                                .ReplaceOneAsync(n => n.AudioId.Equals(id)
                                         , item
                                         , new UpdateOptions { IsUpsert = true });
             return actionResult.IsAcknowledged

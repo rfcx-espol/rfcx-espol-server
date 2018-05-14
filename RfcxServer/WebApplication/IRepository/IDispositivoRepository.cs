@@ -10,7 +10,6 @@ namespace WebApplication.IRepository
         Task<IEnumerable<Dispositivo>> Get();
         Task<Dispositivo> Get(string id);
         Task Add(Dispositivo item);
-        Task<bool> Update(string id, string body);
         Task<bool> Update(string id, Dispositivo item);
         Task<bool> Remove(string id);
         Task<bool> RemoveAll();

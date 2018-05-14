@@ -52,18 +52,17 @@ namespace WebApplication.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<string> Put(string id, [FromBody] Etiqueta Etiqueta)
+        public async Task<bool> Put(string id, [FromBody] Etiqueta Etiqueta)
         {
-            if (string.isNullOrEmpty(id)) return "Id no válida";
+            if (string.IsNullOrEmpty(id)) return false;
             return await _EtiquetaRepository.Update(id, Etiqueta);
         }
 
         [HttpDelete("{id}")]
-        public async Task<string> Delete(string id)
+        public async Task<bool> Delete(string id)
         {
-            if (string.isNullOrEmpty(id)) return "Id no válida";
-            await _EtiquetaRepository.Remove(id);
-            return "";
+            if (string.IsNullOrEmpty(id)) return false;
+            return await _EtiquetaRepository.Remove(id);
         }
     }
 }

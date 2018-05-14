@@ -52,18 +52,18 @@ namespace WebApplication.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<string> Put(string id, [FromBody] Dispositivo Dispositivo)
+        public async Task<bool> Put(string id, [FromBody] Dispositivo Dispositivo)
         {
-            if (string.isNullOrEmpty(id)) return "Id no válida";
+            if (string.IsNullOrEmpty(id)) return false;
             return await _DispositivoRepository.Update(id, Dispositivo);
         }
 
         [HttpDelete("{id}")]
-        public async Task<string> Delete(string id)
+        public async Task<bool> Delete(string id)
         {
-            if (string.isNullOrEmpty(id)) return "Id no válida";
-            await _DispositivoRepository.Remove(id);
-            return "";
+            if (string.IsNullOrEmpty(id)) return false;
+            return await _DispositivoRepository.Remove(id);
+             
         }
     }
 }

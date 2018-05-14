@@ -10,7 +10,6 @@ namespace WebApplication.IRepository
         Task<IEnumerable<Etiqueta>> Get();
         Task<Etiqueta> Get(string id);
         Task Add(Etiqueta item);
-        Task<bool> Update(string id, string body);
         Task<bool> Update(string id, Etiqueta item);
         Task<bool> Remove(string id);
         Task<bool> RemoveAll();

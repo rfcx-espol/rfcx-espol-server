@@ -11,7 +11,6 @@ namespace WebApplication.IRepository
         Task<IEnumerable<AlertaConfiguracion>> Get();
         Task<AlertaConfiguracion> Get(string id);
         Task Add(AlertaConfiguracion item);
-        Task<bool> Update(string id, string body);
         Task<bool> Update(string id, AlertaConfiguracion item);
         Task<bool> Remove(string id);
         Task<bool> RemoveAll();
