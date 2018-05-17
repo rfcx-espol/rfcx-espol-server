@@ -17,7 +17,7 @@ namespace WebApplication.DbModels
         public ObjectContext(IOptions<Settings> settings){
             Configuration=settings.Value.iConfigurationRoot;
             settings.Value.ConnectionString=Configuration.GetSection("MongoConnection:ConnectionString").Value;
-            settings.Value.Database=Configuration.GetSection("MongoConection:Database").Value;
+            settings.Value.Database=Configuration.GetSection("MongoConnection:Database").Value;
         
             var client = new MongoClient(settings.Value.ConnectionString);
             if(client!=null){

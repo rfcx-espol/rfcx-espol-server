@@ -32,7 +32,7 @@ namespace WebApplication.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public Task<string> Get(string id)
         {
             return this.GetAudioById(id);
