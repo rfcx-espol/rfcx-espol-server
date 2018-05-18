@@ -111,7 +111,8 @@
                             </td>
                             <td>
                                 <audio controls>
-                                <source src="/var/rfcx-espol-server/files"+@Model.selected+"/audios"+@item.Name type="audio/ogg">
+                                @{string audio = }
+                                <source src=((DownloadController)this.ViewContext.Controller).getFile(@Model.selected,@item.Name) type="audio/m4a">
                                 
                                 /*@Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)
                                 */</audio>
