@@ -88,9 +88,8 @@
                   <!-- <th>#</th> -->
                   <th><button id="selectAll">Select All</button></th>
                   <th>Name File</th>
-                  <th>Play</th>
                   <th>Date Created</th>
-                  <th>Time &nbsp; &nbsp; &nbsp; </th>
+                  <th>Play</th>
                   <th>Label &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i class="glyphicon glyphicon-search"></i></th>
                 </thead>
 
@@ -110,17 +109,14 @@
                                 @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)
                             </td>
                             <td>
+                                @item.LastModified.AddHours(-5).ToString("dd/MMM/yyyy")
+                            </td>
+                            <td>
                                 <audio controls>
                                 <source src=((DownloadController)this.ViewContext.Controller).getFile(@Model.selected,@item.Name) type="audio/m4a">
                                 
                                 /*@Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)
                                 */</audio>
-                            </td>
-                            <td>
-                                @item.LastModified.AddHours(-5).ToString("dd/MMM/yyyy")
-                            </td>
-                            <td>
-                                @item.LastModified.AddHours(-5).ToString("HH:mm:ss")
                             </td>
 
                           }
