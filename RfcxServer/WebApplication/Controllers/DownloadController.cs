@@ -112,7 +112,7 @@ namespace WebApplication
            
             return View(content);
         }
-        public String getFile(Strind device, String audio){
+        public String getFile(String device, String audio){
             String file = Core.DeviceFolderPath(device)+"/"+audio;
             return file;
         }
