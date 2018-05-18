@@ -104,14 +104,14 @@
                             ((item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".m4a") || (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".3gp")) && item.Name.ToString().Length == 17)
                         {
                             <td>
-                                <input type="checkbox" class="check">/*@Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)*/
+                                <input type="checkbox" class="check">
                             </td>
                             <td>
                                 @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)
                             </td>
                             <td>
                                 <audio controls>
-                                <source src=@item.Name type="audio/ogg">
+                                <source src="/var/rfcx-espol-server/files"+@Model.selected+"/audios"+@item.Name type="audio/ogg">
                                 
                                 /*@Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)
                                 */</audio>
