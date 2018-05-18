@@ -112,6 +112,10 @@ namespace WebApplication
            
             return View(content);
         }
+        public String getFile(Strind device, String audio){
+            String file = Core.DeviceFolderPath(device)+"/"+audio;
+            return file;
+        }
 
         [HttpPost]
         public async Task<IActionResult> DownloadFiles(string device, DateTime initialDate, DateTime finalDate) {
