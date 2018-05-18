@@ -86,7 +86,7 @@
             <table class="table table-bordered" id="horizontal-table">
                 <thead>
                   <!-- <th>#</th> -->
-                  <th><button id="selectAll">Select All</button></th>
+                  <th><input type="checkbox" id="selectAll" /*onClick="seleccionarTodos()*/"></th>
                   <th>Name File</th>
                   <th>Date Created</th>
                   <th>Play</th>
@@ -146,9 +146,18 @@
 </section>
 @section Scripts {
    <script type="text/javascript">
-      $('#selectAll').change(function() {
+      /*function seleccionarTodos(){
+        var cb = $('#selectAll');
+        var cbs = $('#form2').find(".check");
+        if(cb.checked == true){
+          for()
+        } else {
+        
+        }
+      }*/
+
+      $('#selectAll').onClick(function() {
         var checkboxes = $('#form2').find(':checkbox');
-          //var checkboxes = $(this).closest('form').find(':checkbox');
         checkboxes.prop('checked', $(this).is(':checked'));
       });
     </script> 
