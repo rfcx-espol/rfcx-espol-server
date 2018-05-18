@@ -111,7 +111,6 @@
                             </td>
                             <td>
                                 <audio controls>
-                                @{string audio = }
                                 <source src=((DownloadController)this.ViewContext.Controller).getFile(@Model.selected,@item.Name) type="audio/m4a">
                                 
                                 /*@Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)
