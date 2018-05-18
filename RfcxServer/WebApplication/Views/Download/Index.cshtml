@@ -156,7 +156,7 @@
         }
       }*/
 
-      $('#selectAll').onClick(function() {
+      $('#selectAll').change(function() {
         var checkboxes = $('#form2').find(':checkbox');
         checkboxes.prop('checked', $(this).is(':checked'));
       });
