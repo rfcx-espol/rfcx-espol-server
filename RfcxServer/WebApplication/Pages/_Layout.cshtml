@@ -8,19 +8,16 @@
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
-        <link rel="stylesheet" href="~/css/style.css" />
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    </environment>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/css/style.css" />
     </environment>
 </head>
 <body>
-
-  <header id="mu-header">  
     <nav class="navbar navbar-default mu-main-navbar" role="navigation">  
       <div class="container">
         <div class="navbar-header">
@@ -32,46 +29,33 @@
             <span class="icon-bar"></span>
           </button>
 
-          <!-- LOGO -->       
-
           <!--  Text based logo  -->
           <a class="navbar-text" id="home-pag"><strong>Bosque Protector</strong></a> 
-
-          <!--  Image based logo  -->
-          <!-- <a class="navbar-brand" href="index.html"><img src="assets/img/logo.png" alt="Logo img"></a>  -->
-         
-
         </div>
+
         <div id="navbar" class="navbar-collapse collapse">
           <ul id="top-menu" class="nav navbar-nav navbar-right mu-main-nav">
-            <li><a href=Download>Sound Files Downloader</a></li>
-            <li><a>Alarms</a></li>                       
-            <li><a>Settings</a></li>                       
-            <li><a class="material-icons" style="font-size:36px">add_alert</a>
+            <li>@Html.ActionLink("Sound Files Downloader", "Index", "Download")</li>
+            <li>@Html.ActionLink("Alarm", "Index", "Alarm")</li>
+            <li>@Html.ActionLink("Setting", "Index", "Setting")</li>
+            <li>@Html.ActionLink("Device Register", "Index", "DeviceRegister")</li>
+            <!-- <li><a>Alarm</a></li                        
+            <li><a>Settings</a></li> 
+            <li><a>Settings</a></li>  -->                        
+            <li><a class="material-icons" style="font-size:36px">add_alert</a></li>
           </ul>                            
         </div><!--/.nav-collapse -->       
-      </div> 
-    
-    <!--
-      <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-          <li>@Html.ActionLink("Sound Files Downloader", "Index", "Download")</li>
-        </ul>
-      </div>
-    -->
-      </div>
+      </div><!--/.container -->       
     </nav> 
-  </header>
-  <!-- End header section -->
 
 
-
-   @RenderBody()
-
-    <footer id="mu-footer">
-    <p>&copy; 2018 - Bosque Protector</p>
-    </footer>
-    
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; 2018 - Bosque Protector</p>
+        </footer>
+    </div>
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
