@@ -4,6 +4,107 @@
     ViewData["Title"] = "Home page";
 }
 
+<style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        width: 100%;
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #firstHeading{
+        margin: 2px;
+        padding-bottom: 5px;
+        border-bottom: 1px green solid;
+        text-align: center;
+      }
+      p{
+        margin: 2px;
+      }
+      h4{
+        margin-top: 10px;
+        margin-bottom: 5px;
+      }
+</style>
+<div id="map"></div>
+
+@section ScriptsIndex {
+    <script>
+      function initMap() {
+        var bosque = {lat: -2.145283, lng: -79.960159};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 18,
+          center: bosque
+        });
+        map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+        var locations = [
+          {lat: -2.145310, lng: -79.961383},
+          {lat: -2.146765, lng: -79.960452},
+          {lat: -2.145423, lng: -79.958839}
+        ]
+
+        setInterval(function(){
+          $.getJSON('~/json/sensores.json', function(result){
+            $.each(result, function(i, field){
+              let j=0;
+              for(let device of field){
+                  var nombreDispositivo = device.nombreDispositivo;
+                  var sensoresList = device.sensores;
+                  var contentString = '<div id="content">'+
+                      '<div id="siteNotice">'+
+                      '</div>'+
+                      '<h3 id="firstHeading" class="firstHeading">'+nombreDispositivo+'</h3>'+
+                      '<div id="bodyContent">';
+                  for(let sensor of sensoresList){
+                    var nombreSensor=sensor.nombre;
+                    var muestras = sensor.muestras;
+                    contentString = contentString + '<h4>'+ nombreSensor + '</h4>';
+                    for(let muestra of muestras){
+                      var tipo = muestra.tipo;
+                      var funcion = muestra.funcion;
+                      var valor = muestra.valor;
+                      contentString = contentString + '<p>'+tipo+' '+funcion+': '+valor+'</p>';
+                    }
+                  }
+                  contentString = contentString +'</div>'+
+                                  '</div>';
+
+                  var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                  });
+
+                  var marker = new google.maps.Marker({
+                    position: locations[j],
+                    map: map
+                  });
+                  infowindow.open(map,marker);
+                  /*google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
+                    return function() {
+                       infowindow.open(map,marker);
+                    };
+                  })(marker,contentString,infowindow));*/
+                  /*google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
+                    return function() {
+                       infowindow.close(map,marker);
+                    };
+                  })(marker,contentString,infowindow)); */
+                j++;
+                }              
+            });
+          });
+        }, 3000); 
+      }
+      
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXwpsfDP00RgZGAlNum0MVhHdP0X0IP0&callback=initMap">
+    </script>
+}
 @*<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
     <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
