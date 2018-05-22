@@ -12,11 +12,11 @@
         height: 100%;
       }
       /* Optional: Makes the sample page fill the window. */
-      html, body {
+      /*html, body {
         height: 100%;
         margin: 0;
         padding: 0;
-      }
+      }*/
       #firstHeading{
         margin: 2px;
         padding-bottom: 5px;
@@ -49,7 +49,7 @@
         ]
 
         setInterval(function(){
-          $.getJSON('~/json/sensores.json', function(result){
+          $.getJSON('json/sensores.json', function(result){
             $.each(result, function(i, field){
               let j=0;
               for(let device of field){
@@ -105,6 +105,11 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXwpsfDP00RgZGAlNum0MVhHdP0X0IP0&callback=initMap">
     </script>
 }
+
+
+
+
+
 @*<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
     <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
