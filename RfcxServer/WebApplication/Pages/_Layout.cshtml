@@ -6,10 +6,9 @@
     <title>@ViewBag.Title - Movie App</title>
     <link rel="stylesheet" href="~/css/site.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    @RenderSection("Style", required: false)
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <!--link rel="stylesheet" href="~/css/site.css" /-->
-        <!--link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"-->
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"

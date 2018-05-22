@@ -6,34 +6,10 @@
 @{
     ViewData["Title"] = "Home page";
 }
+@section Style{
+  <link rel="stylesheet" href="~/css/index.css" />
+}
 
-<style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        width: 100%;
-        height: 100%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      /*html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }*/
-      #firstHeading{
-        margin: 2px;
-        padding-bottom: 5px;
-        border-bottom: 1px green solid;
-        text-align: center;
-      }
-      p{
-        margin: 2px;
-      }
-      h4{
-        margin-top: 10px;
-        margin-bottom: 5px;
-      }
-</style>
 <div id="map"></div>
 
 @section ScriptsIndex {
