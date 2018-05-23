@@ -55,9 +55,11 @@
                     content: contentString
                   });
 
+                  var image = 'https://www.google.com/mapfiles/arrow.png';
                   var marker = new google.maps.Marker({
                     position: locations[j],
-                    map: map
+                    map: map,
+                    icon: image
                   });
                   //infowindow.open(map,marker);
                   google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
