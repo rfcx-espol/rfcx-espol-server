@@ -17,7 +17,7 @@
       function initMap() {
         var bosque = {lat: -2.145283, lng: -79.960159};
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 18,
+          zoom: 17,
           center: bosque
         });
         map.setMapTypeId(google.maps.MapTypeId.HYBRID);
@@ -34,9 +34,7 @@
               for(let device of field){
                   var nombreDispositivo = device.nombreDispositivo;
                   var sensoresList = device.sensores;
-                  var contentString = '<div id="content">'+
-                      '<div id="siteNotice">'+
-                      '</div>'+
+                  var contentString = '<div id="contentInfo">'+
                       '<h3 id="firstHeading" class="firstHeading">'+nombreDispositivo+'</h3>'+
                       '<div id="bodyContent">';
                   for(let sensor of sensoresList){
@@ -61,12 +59,12 @@
                     position: locations[j],
                     map: map
                   });
-                  infowindow.open(map,marker);
-                  /*google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
+                  //infowindow.open(map,marker);
+                  google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
                     return function() {
                        infowindow.open(map,marker);
                     };
-                  })(marker,contentString,infowindow));*/
+                  })(marker,contentString,infowindow));
                   /*google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
                     return function() {
                        infowindow.close(map,marker);
