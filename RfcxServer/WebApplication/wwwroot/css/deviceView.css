@@ -9,7 +9,9 @@ body {font-family: "Lato", sans-serif;}
     width: 20%;
     height: 400px;
 }
-
+.tabcontent{
+  background-color: white;
+}
 /* Style the buttons inside the tab */
 .tab button {
     display: block;

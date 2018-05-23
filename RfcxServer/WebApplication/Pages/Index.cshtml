@@ -55,7 +55,11 @@
                     content: contentString
                   });
 
-                  var image = 'https://www.google.com/mapfiles/arrow.png';
+                  var imageURL = 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png';
+                  var image = {
+                    url: imageURL,
+                    scaledSize: new google.maps.Size(30, 30)
+                  };
                   var marker = new google.maps.Marker({
                     position: locations[j],
                     map: map,
@@ -67,11 +71,6 @@
                        infowindow.open(map,marker);
                     };
                   })(marker,contentString,infowindow));
-                  /*google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
-                    return function() {
-                       infowindow.close(map,marker);
-                    };
-                  })(marker,contentString,infowindow)); */
                 j++;
                 }              
             });
