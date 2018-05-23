@@ -35,7 +35,7 @@
                   var nomDispositivo = device.nombreDispositivo;
                   var sensoresList = device.sensores;
                   var contentString = '<div id="contentInfo">'+
-                      '<h3 id="firstHeading" class="firstHeading">'+ <%= @Html.ActionLink(nomDispositivo, "Index", "DeviceView") %>+'</h3>'+
+                      '<h3 id="firstHeading" class="firstHeading"> Html.ActionLink("device1", "Index", "DeviceView")</h3>'+
                       '<div id="bodyContent">';
                   for(let sensor of sensoresList){
                     var nombreSensor=sensor.nombre;
