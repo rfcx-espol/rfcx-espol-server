@@ -40,7 +40,7 @@
                   for(let sensor of sensoresList){
                     var nombreSensor=sensor.nombre;
                     var muestras = sensor.muestras;
-                    contentString = contentString + '< id="sensor" h5>'+ nombreSensor + '</h5>';
+                    contentString = contentString + '<h5 id="sensor">'+ nombreSensor + '</h5>';
                     for(let muestra of muestras){
                       var tipo = muestra.tipo;
                       var funcion = muestra.funcion;
