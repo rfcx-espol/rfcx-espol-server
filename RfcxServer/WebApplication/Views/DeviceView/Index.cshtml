@@ -1,0 +1,34 @@
+@using Microsoft.Extensions.FileProviders
+@model WebApplication.IndexModel
+
+@{
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "DeviceView";
+}
+
+<link rel="stylesheet" type="text/css" href="~/css/deviceView.css">
+<link type="text/css" rel="stylesheet" href="//pubnub.github.io/eon/v/eon/1.0.0/eon.css"/>
+<script type="text/javascript" src="//pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
+<div class="tab">
+      <button class="tablinks" onclick="openDevice(event, 'temp_amb')" id="defaultOpen">Temperatura - Ambiente</button>
+      <button class="tablinks" onclick="openDevice(event, 'temp_disp')">Temperatura - Dispositivo</button>
+      <button class="tablinks" onclick="openDevice(event, 'humedad')">Humedad</button>
+    </div>
+
+    <div id="temp_amb" class="tabcontent">
+      <h3>Sensor: Temperatura - Ambiente</h3>
+      <div id="temp_amb_chart"></div>
+    </div>
+
+    <div id="temp_disp" class="tabcontent">
+      <h3>Sensor: Temperatura - Dispositivo</h3>
+      <div id="temp_disp_chart"></div>
+    </div>
+
+    <div id="humedad" class="tabcontent">
+      <h3>Sensor: Humedad</h3>
+      <div id="humedad_chart"></div>
+    </div>
