@@ -16,6 +16,7 @@
             "cwd": "${workspaceFolder}/RfcxServer/WebApplication",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",
+            "console": "externalTerminal",
             
             "launchBrowser": {
                 "enabled": true,

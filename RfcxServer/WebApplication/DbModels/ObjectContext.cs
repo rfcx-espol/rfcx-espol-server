@@ -73,6 +73,21 @@ namespace WebApplication.DbModels
             }
         }
 
+        public IMongoCollection<Data> Datas
+        {
+            get
+            {
+                return _database.GetCollection<Data>("Data");
+            }
+        }
+        public IMongoCollection<InfoSensores> InfoSensoress
+        {
+            get
+            {
+                return _database.GetCollection<InfoSensores>("InfoSensores");
+            }
+        }
+
 
     } 
 }

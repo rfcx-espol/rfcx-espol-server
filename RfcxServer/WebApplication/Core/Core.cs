@@ -42,8 +42,8 @@ namespace WebApplication {
         public static string FilesFolderName { get {return "files";} }
 
 
-        public static string GzipFolderPath { get {
-            return Path.Combine(Directory.GetCurrentDirectory(), FilesFolderName, "gzip");
+        public static string AudiosFolderPath { get {
+            return Path.Combine(Directory.GetCurrentDirectory(), FilesFolderName, "audios");
         }}
 
         public static string OggFolderPath { get {
@@ -57,8 +57,8 @@ namespace WebApplication {
         public static void MakeFilesFolder() {
             if (!Directory.Exists(FilesFolderPath)) {
                 Directory.CreateDirectory(FilesFolderPath);
-                if (!Directory.Exists(GzipFolderPath)) {
-                    Directory.CreateDirectory(GzipFolderPath);
+                if (!Directory.Exists(AudiosFolderPath)) {
+                    Directory.CreateDirectory(AudiosFolderPath);
                 }
                 if (!Directory.Exists(OggFolderPath)) {
                     Directory.CreateDirectory(OggFolderPath);
@@ -70,8 +70,8 @@ namespace WebApplication {
             return Path.Combine(FilesFolderPath, "device" + deviceId);
         }
 
-        public static string DeviceGzipFolderPath(string deviceId) {
-            return Path.Combine(DeviceFolderPath(deviceId), "gzip");
+        public static string DeviceAudiosFolderPath(string deviceId) {
+            return Path.Combine(DeviceFolderPath(deviceId), "audios");
         }
 
         public static string DeviceOggFolderPath(string deviceId) {
@@ -82,7 +82,7 @@ namespace WebApplication {
             var deviceFolderPath = DeviceFolderPath(deviceId);
             if (!Directory.Exists(deviceFolderPath)) {
                 Directory.CreateDirectory(deviceFolderPath);
-                Directory.CreateDirectory(DeviceGzipFolderPath(deviceId));
+                Directory.CreateDirectory(DeviceAudiosFolderPath(deviceId));
                 Directory.CreateDirectory(DeviceOggFolderPath(deviceId));
             }
         }

@@ -81,6 +81,10 @@ namespace WebApplication
             services.AddTransient<IDispositivoRepository, DispositivoRepository>();
             services.AddTransient<IEtiquetaRepository, EtiquetaRepository>();
             services.AddTransient<ISensorRepository, SensorRepository>();
+            services.AddTransient<IDataRepository, DataRepository>();
+            services.AddTransient<IInfoSensoresRepository, InfoSensoresRepository>();
+
+
         }
 
         

@@ -35,80 +35,80 @@ namespace WebApplication.Repository
             }
         }
 
-    public async Task<Audio> Get(string id)
-    {
-        var filter = Builders<Audio>.Filter.Eq("AudioId", id);
+        public async Task<Audio> Get(string id)
+        {
+            var filter = Builders<Audio>.Filter.Eq("AudioId", id);
 
-        try
-        {
-            return await _context.Audios.Find(filter).FirstOrDefaultAsync();
+            try
+            {
+                return await _context.Audios.Find(filter).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
 
-    public async Task Add(Audio item)
-    {
-        try
+        public async Task Add(Audio item)
         {
-            await _context.Audios.InsertOneAsync(item);
+            try
+            {
+                await _context.Audios.InsertOneAsync(item);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
 
-    public async Task<bool> Remove(string id)
-    {
-        try
+        public async Task<bool> Remove(string id)
         {
-            DeleteResult actionResult = await _context.Audios.DeleteOneAsync(
-                    Builders<Audio>.Filter.Eq("AudioId", id));
+            try
+            {
+                DeleteResult actionResult = await _context.Audios.DeleteOneAsync(
+                        Builders<Audio>.Filter.Eq("AudioId", id));
 
-            return actionResult.IsAcknowledged 
-                && actionResult.DeletedCount > 0;
+                return actionResult.IsAcknowledged 
+                    && actionResult.DeletedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
 
-    public async Task<bool> Update(string id, Audio item)
-    {
-        try
+        public async Task<bool> Update(string id, Audio item)
         {
-            ReplaceOneResult actionResult 
-                = await _context.Audios
-                                .ReplaceOneAsync(n => n.AudioId.Equals(id)
-                                        , item
-                                        , new UpdateOptions { IsUpsert = true });
-            return actionResult.IsAcknowledged
-                && actionResult.ModifiedCount > 0;
+            try
+            {
+                ReplaceOneResult actionResult 
+                    = await _context.Audios
+                                    .ReplaceOneAsync(n => n.AudioId.Equals(id)
+                                            , item
+                                            , new UpdateOptions { IsUpsert = true });
+                return actionResult.IsAcknowledged
+                    && actionResult.ModifiedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
 
-    public async Task<bool> RemoveAll()
-    {
-        try
+        public async Task<bool> RemoveAll()
         {
-            DeleteResult actionResult 
-                = await _context.Audios.DeleteManyAsync(new BsonDocument());
+            try
+            {
+                DeleteResult actionResult 
+                    = await _context.Audios.DeleteManyAsync(new BsonDocument());
 
-            return actionResult.IsAcknowledged
-                && actionResult.DeletedCount > 0;
+                return actionResult.IsAcknowledged
+                    && actionResult.DeletedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
     }
 }
