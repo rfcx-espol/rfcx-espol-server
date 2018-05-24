@@ -118,12 +118,13 @@ namespace WebApplication
         }
 
         [HttpPost]
-        public async Task<IActionResult> DownloadFiles(string device, DateTime initialDate, DateTime finalDate) {
-
-            string date = DateTime.Now.ToString("yyyyMMdd") + ".gz";
+        public ActionResult DownloadFiles(string device, string lista) {
+            string date = DateTime.Now.ToString("dd-MM-yyyy") + ".gz";
             device = Request.Form["device"];
-            string start = Request.Form["start"];
-            string end = Request.Form["end"];
+            lista = Request.Form["lista"];
+            string[] archivos_desc = lista.Split(",");
+            Console.Write("DEVICE: "+device);
+            Console.Write("LISTA: "+lista);
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var enc1252 = Encoding.GetEncoding(1252);
 
@@ -136,7 +137,9 @@ namespace WebApplication
             {
                 foreach (var item in ifp)
                 {
-                    if (((item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".m4a") || (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".3gp")) && item.Name.ToString().Length == 17)
+                    if (((item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".m4a") || 
+                    (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".3gp")) && 
+                    item.Name.ToString().Length == 17 && archivos_desc.Any(s => s.Contains(item.Name.ToString())))
                     {
                         zip.AddFile(item.PhysicalPath, "");
                     }
@@ -144,8 +147,6 @@ namespace WebApplication
                 zip.Save(DI.FullName + @"/" + date);
             }
             
-               
-
             // DOWNLOADING FILE 
             string fileAddress = DI.FullName + @"/" + date;
             var net = new System.Net.WebClient();

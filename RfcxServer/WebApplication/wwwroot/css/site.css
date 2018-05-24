@@ -67,7 +67,7 @@ a:focus {
 }
 
 /* Button's design */
-#out {
+.out {
   font-size: 16px;
   margin-left: 0.6%;
   overflow: visible;
@@ -230,7 +230,7 @@ footer {
   width: 73%;
 }
 
-#out {
+.out {
   font-size: 16px;
   margin-left: 0.6%;
   overflow: visible;
