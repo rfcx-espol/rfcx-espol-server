@@ -12,6 +12,13 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using NonFactors.Mvc.Grid;
+using Microsoft.EntityFrameworkCore;
+using WebApplication.Models;
+using WebApplication.DbModels;
+using WebApplication.IRepository;
+using WebApplication.Repository;
+using Serilog;
+using Microsoft.Extensions.Logging;
 
 
 namespace WebApplication
@@ -20,10 +27,10 @@ namespace WebApplication
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = (IConfigurationRoot) configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -34,11 +41,24 @@ namespace WebApplication
 
             IFileProvider physicalProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory());
             services.AddSingleton<IFileProvider>(physicalProvider);
+            services.Configure<Settings>(
+            options =>
+                {
+                    options.iConfigurationRoot=Configuration;
+                });
+            services.AddTransient<IAlertaRepository, AlertaRepository>();
+            services.AddTransient<IAlertaConfiguracionRepository, AlertaConfiguracionRepository>();
+            services.AddTransient<IAudioRepository, AudioRepository>();
+            services.AddTransient<IDispositivoRepository, DispositivoRepository>();
+            services.AddTransient<IEtiquetaRepository, EtiquetaRepository>();
+            services.AddTransient<ISensorRepository, SensorRepository>();
+            services.AddTransient<IDataRepository, DataRepository>();
+            services.AddTransient<IInfoSensoresRepository, InfoSensoresRepository>();
             
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -66,6 +86,7 @@ namespace WebApplication
             //     await context.Response.WriteAsync("Rfcx Server is running");
             // });
             app.UseMvcWithDefaultRoute();
+            loggerFactory.AddSerilog();
         }
     }
 }

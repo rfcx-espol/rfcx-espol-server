@@ -12,6 +12,14 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Net.Http.Headers;
 using System;
 using Microsoft.Extensions.Primitives;
+using WebApplication.Models;
+using WebApplication.Controllers;
+using WebApplication.Repository;
+using WebApplication.IRepository;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WebApplication {
 
@@ -21,6 +29,7 @@ namespace WebApplication {
     }
 
     public class GZipController : Controller {
+        private readonly IAudioRepository _AudioRepository;
 
         public class DeviceFile {
             public KeyValueAccumulator formAccumulator;
@@ -34,8 +43,9 @@ namespace WebApplication {
 
         private readonly IFileProvider _fileProvider;
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
-        public GZipController(IFileProvider fileProvider) {
+        public GZipController(IFileProvider fileProvider, IAudioRepository AudioRepository) {
             _fileProvider = fileProvider;
+             _AudioRepository=AudioRepository;
         }
 
         public IActionResult Index() {
@@ -135,6 +145,37 @@ namespace WebApplication {
             if (!ok) {
                 return BadRequest("Expected deviceId key");
             }
+
+            StringValues fechaLlegada;
+            ok = formData.TryGetValue("FechaLlegada", out fechaLlegada);
+            if (!ok) {
+                return BadRequest("Expected FechaLlegada key");
+            }
+            StringValues fechaGrabacion;
+            ok = formData.TryGetValue("FechaGrabacion", out fechaGrabacion);
+            if (!ok) {
+                return BadRequest("Expected FechaGrabacion key");
+            }
+            StringValues duracion;
+            ok = formData.TryGetValue("Duracion", out duracion);
+            if (!ok) {
+                return BadRequest("Expected Duracion key");
+            }
+
+            StringValues formato;
+            ok = formData.TryGetValue("Formato", out formato);
+            if (!ok) {
+                return BadRequest("Expected Formato key");
+            }
+
+            StringValues bitRate1;
+            ok = formData.TryGetValue("BitRate", out bitRate1);
+            if (!ok) {
+                return BadRequest("Expected BitRate key");
+            }
+
+            int bitRate=Int32.Parse(bitRate1);
+            
             
             {
                 Core.DeviceDictionary.TryAdd(deviceId.ToString(), Core.DeviceDictionary.Count);
@@ -157,6 +198,15 @@ namespace WebApplication {
                     await deviceFile.memoryStream.CopyToAsync(stream);
                     deviceFile.memoryStream.Close();
                 }
+
+                var audio =new Audio();
+                audio.FechaLlegada=fechaLlegada;
+                audio.FechaGrabacion=fechaGrabacion;
+                audio.Duracion=duracion;
+                audio.Formato=formato;
+                audio.BitRate=bitRate;
+                Task result;
+                result=_AudioRepository.Add(audio);
 
 
                 //var fileInfo = new FileInfo(filePath);
