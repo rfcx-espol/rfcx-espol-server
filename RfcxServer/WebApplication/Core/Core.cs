@@ -69,6 +69,10 @@ namespace WebApplication {
         public static string DeviceFolderPath(string deviceId) {
             return Path.Combine(FilesFolderPath, "device" + deviceId);
         }
+        //Agregué esto
+        public static string DeviceFolder(string device) {
+            return Path.Combine(FilesFolderPath, device);
+        }
 
         public static string DeviceAudiosFolderPath(string deviceId) {
             return Path.Combine(DeviceFolderPath(deviceId), "audios");

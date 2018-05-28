@@ -13,13 +13,9 @@
 <!-- Favicon -->
 <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
 
-<!-- Font awesome -->
-<link href="assets/css/font-awesome.css" rel="stylesheet">
-
 <link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet"> 
 
-<!-- Slick slider -->
-<link rel="stylesheet" type="text/css" href="wwwroot/lib/bootstrap/slick.css">    
+
 
 <!-- Main style sheet -->
 <link href="~/css/site.css" rel="stylesheet">    
@@ -32,14 +28,11 @@
 <link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>   
 <!-- Open Sans for title -->
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-
+<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
 
 
 <!-- Start About us -->
 <section id="mu-about-us">
-<!--
-<img src="@Url.Content("~/images/plants.jpg")" alt="imgf"/> 
--->
   
 <div class="container">
   <div class="row">
@@ -64,7 +57,7 @@
                     Text = item.ToString(),
                     Selected = item == Model.selected
 
-                }), new { onchange = "this.form.submit();" })
+                }))
                 </td>    
               </tr>
 
@@ -83,7 +76,7 @@
             </table>
 
             <br />
-            <button type="submit" id="out">Search</button><br /><br /><br />
+            <button type="submit" class="out">Search</button><br /><br /><br />
           </div> 
         </form>
              
@@ -93,45 +86,40 @@
             <table class="table table-bordered" id="horizontal-table">
                 <thead>
                   <!-- <th>#</th> -->
-                  <th><button id="selectAll">Select All</button></th>
+                  <th><input type="checkbox" id="selectAll"></th>
                   <th>Name File</th>
-                  <th>Play</th>
                   <th>Date Created</th>
-                  <th>Time &nbsp; &nbsp; &nbsp; </th>
+                  <th>Play</th>
                   <th>Label &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i class="glyphicon glyphicon-search"></i></th>
                 </thead>
 
-                <form method="post" enctype="multipart/form-data" action="/Download/DownloadFiles">
+                <form method="POST" id="form2" enctype="multipart/form-data" action="/Download/DownloadFiles">
                 @foreach (var item in Model.filesSorted)
                 {
                   <tr>
                     @if (Model.start != null && Model.end != null)
                     {
-                        @if (Model.start_d.CompareTo(item.LastModified.AddHours(-5).Date) <= 0 && Model.end_d.CompareTo(item.LastModified.AddHours(-5).Date) >= 0 && (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 5) == ".flac") && item.Name.ToString().Length == 18)
+                        @if (Model.start_d.CompareTo(item.LastModified.AddHours(-5).Date) <= 0 && Model.end_d.CompareTo(item.LastModified.AddHours(-5).Date) >= 0 && 
+                            ((item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".m4a") || (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".3gp")) && item.Name.ToString().Length == 17)
                         {
                             <td>
-                                <input type="checkbox" class="check">@Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)
+                                <input type="checkbox" class="check" value="@item.Name">
                             </td>
                             <td>
-                                @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)
-                            </td>
-                            <td>
-                                @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)
+                                @item.Name
                             </td>
                             <td>
                                 @item.LastModified.AddHours(-5).ToString("dd/MMM/yyyy")
                             </td>
                             <td>
-                                @item.LastModified.AddHours(-5).ToString("HH:mm:ss")
+                                <audio controls>
+                                <source src=((DownloadController)this.ViewContext.Controller).getFile(@Model.selected,@item.Name) type="audio/m4a">
+                                
+                                /*@Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected },null)
+                                */</audio>
                             </td>
 
                           }
-                        }
-                        else
-                        {
-                          <td>
-                            @Html.ActionLink(@item.Name, "DownloadUniqueFile", "Download", new { namefile = @item.Name, device = @Model.selected }, null))
-                          </td>
                         }
                   </tr>
                 }
@@ -141,8 +129,9 @@
             <input type="hidden" name="start" value="@if (Model.start != null) {@Model.start_d.ToString("yyyy-MM-dd"); }" />
             <input type="hidden" name="end" value="@if (Model.end != null) {@Model.end_d.ToString("yyyy-MM-dd"); }" />
             <input id="ddt" name="device" type="hidden" value="@Model.selected" />
+            <input type="hidden" id="lista" name="lista" value="" />
             <br />
-            <button type="submit" id="out">Download</button><br /><br /><br /> 
+            <button id="dl" type="button" class="out">Download</button><br /><br /><br /> 
           </div>        
         </form>                                        
       </div>
@@ -150,9 +139,39 @@
   </div>
 </div>
 </section>
-<script>
-  $('#selectAll').change(function() {
-      var checkboxes = $(this).closest('form').find(':checkbox');
-      checkboxes.prop('checked', $(this).is(':checked'));
-  });
-</script>
+@section Scripts {
+   <script type="text/javascript">
+      $(document).ready(function(){
+        $("#selectAll").change(function(){
+    	    var cbs = $("input.check");
+    	    if($("#selectAll").is(":checked")){
+        	  cbs.each(function(){
+              $(this).prop("checked", true);
+            });
+          } else {
+        	  cbs.each(function(){
+              $(this).prop("checked", false);
+            });
+          }
+        });
+
+        $("#dl").click(function(){
+    	    var cbs = $("input.check");
+          var lista_check = "";
+          cbs.each(function(){
+            if($(this).is(":checked")){
+              lista_check = lista_check + $(this).val() + ",";
+            }
+          });
+          lista_check = lista_check.substring(0, lista_check.length - 1);
+          $("#lista").attr("value", lista_check);
+          if(lista_check.length != 0){
+            $("#form2").submit();        
+          } else {
+            alert("No ha seleccionado ningún archivo");
+          }
+        });
+        
+      });
+    </script> 
+}

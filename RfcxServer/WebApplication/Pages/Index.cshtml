@@ -1,8 +1,92 @@
 ﻿@page
 @model IndexModel
 @{
+    Layout = "_Layout.cshtml";
+}
+@{
     ViewData["Title"] = "Home page";
 }
+@section Style{
+  <link rel="stylesheet" href="~/css/index.css" />
+}
+
+<div id="map"></div>
+
+@section ScriptsIndex {
+    <script>
+      function initMap() {
+        var bosque = {lat: -2.145283, lng: -79.960159};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 18,
+          center: bosque
+        });
+        map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+        var locations = [
+          {lat: -2.145310, lng: -79.961383},
+          {lat: -2.146765, lng: -79.960452},
+          {lat: -2.145423, lng: -79.958839}
+        ]
+
+        setInterval(function(){
+          $.getJSON('json/sensores.json', function(result){
+            $.each(result, function(i, field){
+              let j=0;
+              for(let device of field){
+                  var nomDispositivo = device.nombreDispositivo;
+                  var sensoresList = device.sensores;
+                  var contentString = '<div id="contentInfo">'+
+                      '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("algo", "Index", "DeviceView")</h3>'+
+                      '<div id="bodyContent">';
+                  for(let sensor of sensoresList){
+                    var nombreSensor=sensor.nombre;
+                    var muestras = sensor.muestras;
+                    contentString = contentString + '<h5 id="sensor">'+ nombreSensor + '</h5>';
+                    for(let muestra of muestras){
+                      var tipo = muestra.tipo;
+                      var funcion = muestra.funcion;
+                      var valor = muestra.valor;
+                      contentString = contentString + '<p>'+tipo+' '+funcion+': '+valor+'</p>';
+                    }
+                  }
+                  contentString = contentString +'</div>'+
+                                  '</div>';
+                  contentString = contentString.replace("algo", nomDispositivo);
+                  var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                  });
+
+                  var imageURL = 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png';
+                  var image = {
+                    url: imageURL,
+                    scaledSize: new google.maps.Size(30, 30)
+                  };
+                  var marker = new google.maps.Marker({
+                    position: locations[j],
+                    map: map,
+                    icon: image
+                  });
+                  //infowindow.open(map,marker);
+                  google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
+                    return function() {
+                       infowindow.open(map,marker);
+                    };
+                  })(marker,contentString,infowindow));
+                j++;
+                }              
+            });
+          });
+        }, 3000); 
+      }
+      
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXwpsfDP00RgZGAlNum0MVhHdP0X0IP0&callback=initMap">
+    </script>
+}
+
+
+
+
 
 @*<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
     <ol class="carousel-indicators">

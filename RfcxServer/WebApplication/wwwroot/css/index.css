@@ -1,0 +1,26 @@
+#map {
+  width: 100%;
+  height: 510px;
+}
+      /* Optional: Makes the sample page fill the window. */
+      /*html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }*/
+#firstHeading{
+  font-size: 1.33em;
+  margin: 2px;
+  padding-bottom: 5px;
+  border-bottom: 1px green solid;
+  text-align: center;
+  color: green;
+}
+p{
+  margin: 2px;
+}
+#sensor{
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-style: italic;
+}
