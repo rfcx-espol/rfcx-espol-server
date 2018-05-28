@@ -37,17 +37,23 @@
                   var contentString = '<div id="contentInfo">'+
                       '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("algo", "Index", "DeviceView")</h3>'+
                       '<div id="bodyContent">';
-                  for(let sensor of sensoresList){
-                    var nombreSensor=sensor.nombre;
-                    var muestras = sensor.muestras;
-                    contentString = contentString + '<h5 id="sensor">'+ nombreSensor + '</h5>';
-                    for(let muestra of muestras){
-                      var tipo = muestra.tipo;
-                      var funcion = muestra.funcion;
-                      var valor = muestra.valor;
-                      contentString = contentString + '<p>'+tipo+' '+funcion+': '+valor+'</p>';
+                    for(let sensor of sensoresList){
+                        var nombreSensor = sensor.nombre;
+                        var muestras = sensor.muestras;
+                        for(let muestra of muestras){
+                            var tipo = muestra.tipo;
+                            var funcion = muestra.funcion;
+                            var valor = muestra.valor;
+                            if(tipo=="humedad"){
+                                contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: '+valor+'</p>';
+                            }
+                            else if(tipo=="temperatura" && funcion=="ambiente"){
+                                contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: '+valor+'</p>';
+                            }else{
+                                contentString = contentString + '<p><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Telf.: '+valor+'</p>';
+                            }
+                        }
                     }
-                  }
                   contentString = contentString +'</div>'+
                                   '</div>';
                   contentString = contentString.replace("algo", nomDispositivo);
@@ -55,7 +61,7 @@
                     content: contentString
                   });
 
-                  var imageURL = 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png';
+                  var imageURL = 'http://maps.google.com/mapfiles/kml/paddle/orange-circle.png';
                   var image = {
                     url: imageURL,
                     scaledSize: new google.maps.Size(30, 30)
