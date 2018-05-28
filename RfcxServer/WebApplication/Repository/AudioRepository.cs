@@ -35,9 +35,22 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<Audio> Get(string id)
+        public async Task<IEnumerable<Audio>> GetByDispositivo(int DispositivoId)
         {
-            var filter = Builders<Audio>.Filter.Eq("AudioId", id);
+            try
+            {
+                var filter =Builders<Audio>.Filter.Eq("DispositivoId", DispositivoId);
+                return await _context.Audios.Find(filter).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        
+        public async Task<Audio> Get(int DispositivoId, int AudioId)
+        {
+            var filter = Builders<Audio>.Filter.Eq("Id", AudioId) & Builders<Audio>.Filter.Eq("DispositivoId", DispositivoId);
 
             try
             {
@@ -53,6 +66,7 @@ namespace WebApplication.Repository
         {
             try
             {
+                item.Id=_context.Audios.Find(_ => true).ToList().Count+1;
                 await _context.Audios.InsertOneAsync(item);
             }
             catch (Exception ex)
@@ -61,12 +75,12 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<bool> Remove(string id)
+        public async Task<bool> Remove(int DispositivoId, int AudioId)
         {
             try
             {
                 DeleteResult actionResult = await _context.Audios.DeleteOneAsync(
-                        Builders<Audio>.Filter.Eq("AudioId", id));
+                        Builders<Audio>.Filter.Eq("AudioId", AudioId));
 
                 return actionResult.IsAcknowledged 
                     && actionResult.DeletedCount > 0;
@@ -77,13 +91,13 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<bool> Update(string id, Audio item)
+        public async Task<bool> Update(int DispositivoId, int AudioId, Audio item)
         {
             try
             {
                 ReplaceOneResult actionResult 
                     = await _context.Audios
-                                    .ReplaceOneAsync(n => n.AudioId.Equals(id)
+                                    .ReplaceOneAsync(n => n.AudioId.Equals(AudioId)
                                             , item
                                             , new UpdateOptions { IsUpsert = true });
                 return actionResult.IsAcknowledged

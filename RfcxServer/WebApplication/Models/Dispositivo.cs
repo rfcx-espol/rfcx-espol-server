@@ -9,6 +9,7 @@ namespace WebApplication.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string DispositivoId { get; set; }
+        public int Id { get; set; }
         public string Latitud { get; set; }
         public string Longitud { get; set; }
         public string VersionAndroid { get; set; }

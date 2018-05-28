@@ -8,7 +8,7 @@ using System;
 
 namespace WebApplication.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("")]
     public class SensorController
     {
         
@@ -20,6 +20,7 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
+        [Route("api/[controller]")]
         public Task<string> Get()
         {
             return this.GetSensor();
@@ -33,6 +34,7 @@ namespace WebApplication.Controllers
 
 
         [HttpGet]
+        [Route("api/[controller]/{id}")]
         public Task<string> Get(string id)
         {
             return this.GetSensorById(id);
@@ -44,21 +46,65 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Sensor);
         }
 
+        [HttpGet]
+        [Route("api/[controller]/{id:int}")]
+        public Task<string> Get(int id)
+        {
+            return this.GetSensorById(id);
+        }
+
+        public async Task<string> GetSensorById(int id)
+        {
+            var Sensor= await _SensorRepository.Get(id) ?? new Sensor();
+            return JsonConvert.SerializeObject(Sensor);
+        }
+
+        [HttpGet]
+        [Route("api/Dispositivo/{DispositivoId:int}/[controller]")]
+        public Task<string> GetSensorsByDispositivo([FromRoute]int DispositivoId)
+        {
+            return this.GetSensorByDispositivo(DispositivoId);
+        }
+
+        public async Task<string> GetSensorByDispositivo(int DispositivoId)
+        {
+            var Sensors= await _SensorRepository.GetByDispositivo(DispositivoId);
+            return JsonConvert.SerializeObject(Sensors);
+        }
+
+
+        [HttpGet]
+        [Route("api/Dispositivo/{DispositivoId:int}/[controller]/{SensorId:int}")]
+        public Task<string> Get([FromRoute]int DispositivoId, [FromRoute]int SensorId)
+        {
+            return this.GetSensorById(DispositivoId,SensorId);
+        }
+
+        public async Task<string> GetSensorById(int DispositivoId, int SensorId)
+        {
+            var Sensor= await _SensorRepository.Get(DispositivoId, SensorId) ?? new Sensor();
+            return JsonConvert.SerializeObject(Sensor);
+        }
+
+
         [HttpPost]
+        [Route("api/[controller]")]
         public async Task<string> Post([FromBody] Sensor Sensor)
         {
             await _SensorRepository.Add(Sensor);
             return "";
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
+        [Route("api/[controller]/{id}")]
         public async Task<bool> Put(string id, [FromBody] Sensor Sensor)
         {
             if (string.IsNullOrEmpty(id)) return false;
             return await _SensorRepository.Update(id, Sensor);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("api/[controller]/{id}")]
         public async Task<bool> Delete(string id)
         {
             if (string.IsNullOrEmpty(id)) return false;

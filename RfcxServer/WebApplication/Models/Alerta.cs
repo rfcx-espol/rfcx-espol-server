@@ -9,6 +9,7 @@ namespace WebApplication.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string AlertaId { get; set; }
         public string AudioId { get; set; }
+        public int Id { get; set; }
         public bool Clasificado { get; set; }
         public string Algoritmo { get; set; }
         public string Tipo { get; set; }

@@ -8,6 +8,8 @@ namespace WebApplication.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string SensorId { get; set; }
+        public int Id { get; set; }
+        public int DispositivoId { get; set; }
         public string Nombre { get; set; }
         public string Funcion { get; set; }
     }

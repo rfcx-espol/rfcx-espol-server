@@ -52,6 +52,7 @@ namespace WebApplication.Repository
     {
         try
         {
+            item.Id=_context.Alertas.Find(_ => true).ToList().Count+1;
             await _context.Alertas.InsertOneAsync(item);
         }
         catch (Exception ex)

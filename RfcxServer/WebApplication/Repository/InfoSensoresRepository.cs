@@ -52,6 +52,7 @@ namespace WebApplication.Repository
     {
         try
         {
+            item.Id=_context.InfoSensoress.Find(_ => true).ToList().Count+1;
             await _context.InfoSensoress.InsertOneAsync(item);
         }
         catch (Exception ex)

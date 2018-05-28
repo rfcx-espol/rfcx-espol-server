@@ -48,10 +48,53 @@ namespace WebApplication.Repository
         }
     }
 
+    public async Task<Data> Get(int id)
+    {
+        var filter = Builders<Data>.Filter.Eq("Id", id);
+
+        try
+        {
+            return await _context.Datas.Find(filter).FirstOrDefaultAsync();
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+    public async Task<IEnumerable<Data>> GetByDispositivoSensor(int DispositivoId, int SensorId)
+    {
+        try
+        {
+            var filter =Builders<Data>.Filter.Eq("DispositivoId", DispositivoId) & Builders<Data>.Filter.Eq("SensorId", SensorId);
+            return await _context.Datas.Find(filter).ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+    public async Task<Data> Get(int DispositivoId, int SensorId, int DataId)
+    {
+        var filter = Builders<Data>.Filter.Eq("Id", DataId) & Builders<Data>.Filter.Eq("DispositivoId", DispositivoId) & Builders<Data>.Filter.Eq("SensorId", SensorId);
+
+        try
+        {
+            return await _context.Datas.Find(filter).FirstOrDefaultAsync();
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+
     public async Task Add(Data item)
     {
         try
         {
+            item.Id=_context.Datas.Find(_ => true).ToList().Count+1;
             await _context.Datas.InsertOneAsync(item);
         }
         catch (Exception ex)

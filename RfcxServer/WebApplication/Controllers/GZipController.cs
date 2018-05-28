@@ -200,6 +200,7 @@ namespace WebApplication {
                 //var gzipFileInfo = new FileInfo(gzipFilePath);
                 Console.WriteLine();
                 var audio =new Audio();
+                audio.DispositivoId=Int32.Parse(deviceId);
                 audio.FechaLlegada=fechaLlegada;
                 audio.FechaGrabacion=fechaGrabacion;
                 audio.Duracion=duracion;

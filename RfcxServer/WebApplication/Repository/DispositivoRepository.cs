@@ -53,6 +53,7 @@ namespace WebApplication.Repository
     {
         try
         {
+            item.Id=(int) _context.Dispositivos.Find(_ => true).ToList().Count+1;
             await _context.Dispositivos.InsertOneAsync(item);
         }
         catch (Exception ex)

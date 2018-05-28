@@ -9,7 +9,7 @@ using System;
 
 namespace WebApplication.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("")]
     public class DataController
     {
         
@@ -21,6 +21,7 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
+        [Route("api/[controller]")]
         public Task<string> Get()
         {
             return this.GetData();
@@ -33,7 +34,8 @@ namespace WebApplication.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("api/[controller]/{id}")]
         public Task<string> Get(string id)
         {
             return this.GetDataById(id);
@@ -45,21 +47,66 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Data);
         }
 
+
+        [HttpGet]
+        [Route("api/[controller]/{id:int}")]
+        public Task<string> Get(int id)
+        {
+            return this.GetDataById(id);
+        }
+
+        public async Task<string> GetDataById(int id)
+        {
+            var Data= await _DataRepository.Get(id) ?? new Data();
+            return JsonConvert.SerializeObject(Data);
+        }
+
+        [HttpGet]
+        [Route("api/Dispositivo/{DispositivoId:int}/Sensor/{SensorId:int}/[controller]")]
+        public Task<string> GetDatasByDispositivoSensor([FromRoute]int DispositivoId,[FromRoute] int SensorId)
+        {
+            return this.GetDataByDispositivoSensor(DispositivoId, SensorId);
+        }
+
+        public async Task<string> GetDataByDispositivoSensor(int DispositivoId, int SensorId)
+        {
+            var Datas= await _DataRepository.GetByDispositivoSensor(DispositivoId, SensorId);
+            return JsonConvert.SerializeObject(Datas);
+        }
+
+
+
+        [HttpGet]
+        [Route("api/Dispositivo/{DispositivoId:int}/Sensor/{SensorId:int}/[controller]/{DataId:int}")]
+        public Task<string> Get([FromRoute]int DispositivoId, [FromRoute]int SensorId, [FromRoute]int DataId)
+        {
+            return this.GetDataById(DispositivoId, SensorId, DataId);
+        }
+
+        public async Task<string> GetDataById(int DispositivoId, int SensorId, int DataId)
+        {
+            var Data= await _DataRepository.Get(DispositivoId, SensorId, DataId) ?? new Data();
+            return JsonConvert.SerializeObject(Data);
+        }
+        
         [HttpPost]
+        [Route("api/[controller]")]
         public async Task<string> Post([FromBody] Data Data)
         {
             await _DataRepository.Add(Data);
             return "";
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
+        [Route("api/[controller]/{id}")]
         public async Task<bool> Put(string id, [FromBody] Data Data)
         {
             if (string.IsNullOrEmpty(id)) return false;
             return await _DataRepository.Update(id, Data);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("api/[controller]/{id}")]
         public async Task<bool> Delete(string id)
         {
             if (string.IsNullOrEmpty(id)) return false;

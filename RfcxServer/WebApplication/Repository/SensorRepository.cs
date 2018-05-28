@@ -49,10 +49,52 @@ namespace WebApplication.Repository
         }
     }
 
+    public async Task<Sensor> Get(int id)
+    {
+        var filter = Builders<Sensor>.Filter.Eq("Id", id);
+
+        try
+        {
+            return await _context.Sensors.Find(filter).FirstOrDefaultAsync();
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+    public async Task<IEnumerable<Sensor>> GetByDispositivo(int DispositivoId)
+    {
+        try
+        {
+            var filter =Builders<Sensor>.Filter.Eq("DispositivoId", DispositivoId);
+            return await _context.Sensors.Find(filter).ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+    public async Task<Sensor> Get(int DispositivoId, int SensorId)
+    {
+        var filter = Builders<Sensor>.Filter.Eq("Id", SensorId) & Builders<Sensor>.Filter.Eq("DispositivoId", DispositivoId);
+
+        try
+        {
+            return await _context.Sensors.Find(filter).FirstOrDefaultAsync();
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
     public async Task Add(Sensor item)
     {
         try
         {
+            item.Id=_context.Sensors.Find(_ => true).ToList().Count+1;
             await _context.Sensors.InsertOneAsync(item);
         }
         catch (Exception ex)
