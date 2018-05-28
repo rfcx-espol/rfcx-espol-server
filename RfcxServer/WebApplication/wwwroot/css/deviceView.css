@@ -46,3 +46,11 @@ body {font-family: "Lato", sans-serif;}
     border-left: none;
     height: 400px;
 }
+#temp_disp_chart, #temp_amb_chart{
+    max-height: 160px;
+    max-width: 350px;
+    margin-left: 20%;
+    margin-right: 20%;
+    position: relative;
+    display: flex;
+}
