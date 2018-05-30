@@ -42,12 +42,11 @@
           <ul id="top-menu" class="nav navbar-nav navbar-right mu-main-nav">
             <li>@Html.ActionLink("DESCARGAS", "Index", "Download")</li>
             <li>@Html.ActionLink("ALARMAS", "Index", "Alarm")</li>
-            <li>@Html.ActionLink("CONFIGURACIONES", "Index", "Setting")</li>
             <li>@Html.ActionLink("DISPOSITIVOS", "Index", "DeviceRegister")</li>
             <!-- <li><a>Alarm</a></li                        
             <li><a>Settings</a></li> 
             <li><a>Settings</a></li>  -->                        
-            <li><a class="material-icons" style="font-size:30px">add_alert</a></li>
+            <li><a class="material-icons" style="font-size:30px" href="@Url.Action("Index", "Alarm")">add_alert</a></li>
           </ul>                            
         </div><!--/.nav-collapse -->       
       </div><!--/.container -->       
