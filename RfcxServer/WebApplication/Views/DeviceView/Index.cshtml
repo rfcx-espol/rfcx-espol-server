@@ -1,6 +1,5 @@
 @using Microsoft.Extensions.FileProviders
 @model WebApplication.IndexModel
-
 @{
     Layout = "~/Pages/_Layout.cshtml";
 }
@@ -8,30 +7,55 @@
 @{
     ViewBag.Title = "DeviceView";
 }
-
+@section Home{
+  <a id="home-pag" href='@Url.Action("Index","")'><i class="fa fa-home w3-xxlarge navbar-text"></i></a>
+}
 <link rel="stylesheet" type="text/css" href="~/css/deviceView.css">
 <link type="text/css" rel="stylesheet" href="//pubnub.github.io/eon/v/eon/1.0.0/eon.css"/>
 <script type="text/javascript" src="//pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
+
+<h3 style="text-align: center;">Dispositivo @ViewData["deviceName"].ToString()</h3>
 <div class="tab">
-      <button class="tablinks" onclick="openDevice(event, 'temp_amb')" id="defaultOpen">Temperatura - Ambiente</button>
-      <button class="tablinks" onclick="openDevice(event, 'temp_disp')">Temperatura - Dispositivo</button>
-      <button class="tablinks" onclick="openDevice(event, 'humedad')">Humedad</button>
+      <button class="tablinks" onclick="openDevice(event, 'monitor')" id="defaultOpen"><i class="material-icons">&#xe30c;</i>  Monitor</button>
+      <button class="tablinks" onclick="openDevice(event, 'temp_amb')"><i class="fa fa-thermometer" style="font-size:30px;"></i>  Temperatura - Ambiente</button>
+      <button class="tablinks" onclick="openDevice(event, 'temp_disp')"><i class="fa fa-thermometer" style="font-size:30px;"></i>  Temperatura - Dispositivo</button>
+      <button class="tablinks" onclick="openDevice(event, 'humedad')"><i class="fa fa-tint" style="font-size:30px;";></i>  Humedad</button>
+</div>
+    <div id="monitor" class="tabcontent">
+      <!--h3>Monitor</h3-->
+      <div class="col-sm-12 col-md-6 col-lg-6 sensores_monitor">
+        <h4 class="titulo_sensor">Sensor: Temperatura - Ambiente</h4>
+        <div id="temp_amb_chart"></div>
+      </div>
+
+      <div class="col-sm-12 col-md-6 col-lg-6 sensores_monitor">
+        <h4 class="titulo_sensor">Sensor: Temperatura - Dispositivo</h4>
+        <div id="temp_disp_chart"></div>
+      </div>
+
+      <div class="col-sm-12 col-md-6 col-lg-6 sensores_monitor">
+        <h4 class="titulo_sensor">Sensor: Humedad - Ambiente</h4>
+        <div id="humedad_chart"></div>
+      </div>
     </div>
+
+    <!--SENSORES INDIVIDUALES -->
 
     <div id="temp_amb" class="tabcontent">
       <h3>Sensor: Temperatura - Ambiente</h3>
-      <div id="temp_amb_chart"></div>
+      <!--div id="temp_amb_chart"></div-->
     </div>
-
+    
     <div id="temp_disp" class="tabcontent">
       <h3>Sensor: Temperatura - Dispositivo</h3>
-      <div id="temp_disp_chart"></div>
+      <!--div id="temp_disp_chart"></div-->
     </div>
 
     <div id="humedad" class="tabcontent">
-      <h3>Sensor: Humedad</h3>
-      <div id="humedad_chart" style="overflow: hidden;"></div>
+      <h3>Sensor: Humedad - Ambiente</h3>
+      <!--div id="humedad_chart" style="overflow: hidden;"></div-->
     </div>
+
 @section Scripts {
     <script>
     function openDevice(evt, cityName) {
