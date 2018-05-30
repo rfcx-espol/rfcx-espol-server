@@ -1,0 +1,90 @@
+﻿
+@using Microsoft.Extensions.FileProviders
+@model WebApplication.IndexModel
+
+@{
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "Setting";
+}
+@section Home{
+  <a id="home-pag" href='@Url.Action("Index","")'><i class="fa fa-home w3-xxlarge navbar-text"></i></a>
+}
+<!-- Favicon -->
+<link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+
+<!-- Font awesome -->
+<link href="assets/css/font-awesome.css" rel="stylesheet">
+
+<link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet"> 
+
+<!-- Slick slider -->
+<link rel="stylesheet" type="text/css" href="wwwroot/lib/bootstrap/slick.css">    
+
+<!-- Main style sheet -->
+<link href="~/css/site.css" rel="stylesheet">    
+
+<!-- Google Fonts -->
+
+<!-- Prata for body  -->
+<link href='https://fonts.googleapis.com/css?family=Prata' rel='stylesheet' type='text/css'>
+<!-- Tangerine for small title -->
+<link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>   
+<!-- Open Sans for title -->
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+
+
+<!-- Start About us -->
+<section id="mu-about-us">
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="mu-about-us-area">
+
+        <div class="mu-title">
+          <br />
+          <h2>Settings</h2>
+        </div>
+
+
+        <form method="post" enctype="#mu-about-ustipart/form-data" action="">
+          <div class="form-group">
+            <table class="table table-bordered" id="vertical-table">
+              
+              <tr><th><label for="ddl">Date </label></th> 
+                <td> <input></input> </td>              
+              </tr>
+
+              <tr><th><label>Time </label></th>
+                <td> <input></input> </td>
+              </tr>
+          
+              <tr><th><label>Name </label></th>
+                <td> <input></input> </td>
+              </tr>  
+          
+              <tr><th><label>email </label></th>
+                <td> <input></input> </td>              
+              </tr>  
+
+              <tr><th><label>Phone</label></th>
+                <td> <input></input> </td>
+              </tr>  
+
+            </table>
+
+        
+            <br />
+            <button type="submit" id="out">Save</button><br /><br /><br /> 
+          </div>        
+        </form>                                        
+      </div>
+    </div>      
+  </div>
+</div>
+</section>
+

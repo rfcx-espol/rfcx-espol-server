@@ -1,0 +1,27 @@
+#map {
+  width: 100%;
+  height: 490px;
+}
+
+#firstHeading{
+  font-size: 1.33em;
+  margin: 2px;
+  padding-bottom: 5px;
+  /*border-bottom: 1px #e09913 solid;*/
+  text-align: center;
+}
+#firstHeading a{
+  color: #007f42 !important;
+  text-decoration: none !important;
+}
+#firstHeading a:hover{
+  color: #e09913 !important;
+}
+p{
+  margin: 2px;
+}
+#sensor{
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-style: italic;
+}
