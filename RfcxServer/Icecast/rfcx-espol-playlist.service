@@ -1,0 +1,13 @@
+[Unit]
+ Description=Rfcx Espol Playlist Manager
+
+ [Service]
+ WorkingDirectory=/var/rfcx-espol-server/
+ ExecStart=/bin/bash /var/rfcx-espol-server/refresh_playlists.sh
+ Restart=always
+ RestartSec=10
+ SyslogIdentifier=rfcx-espol-playlist
+ User=ICE_USER
+
+ [Install]
+ WantedBy=multi-user.target

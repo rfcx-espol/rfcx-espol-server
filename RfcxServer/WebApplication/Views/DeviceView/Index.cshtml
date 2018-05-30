@@ -1,0 +1,162 @@
+@using Microsoft.Extensions.FileProviders
+@model WebApplication.IndexModel
+
+@{
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "DeviceView";
+}
+
+<link rel="stylesheet" type="text/css" href="~/css/deviceView.css">
+<link type="text/css" rel="stylesheet" href="//pubnub.github.io/eon/v/eon/1.0.0/eon.css"/>
+<script type="text/javascript" src="//pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
+<div class="tab">
+      <button class="tablinks" onclick="openDevice(event, 'temp_amb')" id="defaultOpen">Temperatura - Ambiente</button>
+      <button class="tablinks" onclick="openDevice(event, 'temp_disp')">Temperatura - Dispositivo</button>
+      <button class="tablinks" onclick="openDevice(event, 'humedad')">Humedad</button>
+    </div>
+
+    <div id="temp_amb" class="tabcontent">
+      <h3>Sensor: Temperatura - Ambiente</h3>
+      <div id="temp_amb_chart"></div>
+    </div>
+
+    <div id="temp_disp" class="tabcontent">
+      <h3>Sensor: Temperatura - Dispositivo</h3>
+      <div id="temp_disp_chart"></div>
+    </div>
+
+    <div id="humedad" class="tabcontent">
+      <h3>Sensor: Humedad</h3>
+      <div id="humedad_chart" style="overflow: hidden;"></div>
+    </div>
+@section Scripts {
+    <script>
+    function openDevice(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+    </script>
+    <script>
+      //Dashboard de Temperatura ambiente
+      var pubnub = new PubNub({
+      publishKey: 'demo',
+      subscribeKey: 'demo'
+      });
+      eon.chart({
+        pubnub: pubnub,
+        channels: ['eon-gauge'],
+        generate: {
+          bindto: '#temp_amb_chart',
+          data: {
+            type: 'gauge',
+          },
+          gauge: {
+            min: 0,
+            max: 100
+          },
+          color: {
+            pattern: ['#FF0000', '#F6C600', '#60B044'],
+            threshold: {
+            values: [30, 60, 90]
+            }
+          }
+        }
+      });
+
+      setInterval(function(){
+        pubnub.publish({
+          channel: 'eon-gauge',
+          message: {
+            eon: {
+              'data': Math.floor(Math.random() * (40-25+1)) + 25,
+            }
+          }
+        })
+
+      }, 1000);
+
+      //Dashboard de Temperatura dispositivo
+      var pubnubTempDisp = new PubNub({
+      publishKey: 'demo',
+      subscribeKey: 'demo'
+      });
+      eon.chart({
+        pubnub: pubnubTempDisp,
+        channels: ['eon-gauge'],
+        generate: {
+          bindto: '#temp_disp_chart',
+          data: {
+            type: 'gauge',
+          },
+          gauge: {
+            min: 0,
+            max: 100
+          },
+          color: {
+            pattern: ['#FF0000', '#F6C600', '#60B044'],
+            threshold: {
+            values: [30, 60, 90]
+            }
+          }
+        }
+      });
+
+      setInterval(function(){
+
+        pubnubTempDisp.publish({
+          channel: 'eon-gauge',
+          message: {
+            eon: {
+              'data': Math.floor(Math.random() * (40-25+1)) + 25,
+            }
+          }
+        })
+
+      }, 1000);
+
+      var pubnubHumedad = new PubNub({
+        publishKey: 'demo',
+        subscribeKey: 'demo'
+      });
+      eon.chart({
+        channels: ['eon-spline'],
+        history: true,
+        flow: true,
+        pubnub: pubnubHumedad,
+        generate: {
+          bindto: '#humedad_chart',
+          data: {
+            labels: false
+          }
+        }
+      });
+      setInterval(function(){
+
+        pubnubHumedad.publish({
+          channel: 'eon-spline',
+          message: {
+            eon: {
+              'Humedad': Math.floor(Math.random() * 99),
+            }
+          }
+        });
+
+      }, 1000);
+
+      </script>
+ }
