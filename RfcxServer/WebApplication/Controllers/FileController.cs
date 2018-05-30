@@ -23,12 +23,16 @@ using System.Threading.Tasks;
 
 namespace WebApplication {
 
+    /* 
     public class Thing {
         public string fileName;
         public string deviceId;
     }
-    public class GZipController : Controller {
+    */
+    [Route("[controller]")]
+    public class FileController : Controller {
         private readonly IAudioRepository _AudioRepository;
+        private readonly IDispositivoRepository _DispositivoRepository;
 
         public class DeviceFile {
             public KeyValueAccumulator formAccumulator;
@@ -42,9 +46,10 @@ namespace WebApplication {
 
         private readonly IFileProvider _fileProvider;
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
-        public GZipController(IFileProvider fileProvider, IAudioRepository AudioRepository) {
+        public FileController(IFileProvider fileProvider, IAudioRepository AudioRepository, IDispositivoRepository DispositivoRepository) {
             _fileProvider = fileProvider;
              _AudioRepository=AudioRepository;
+             _DispositivoRepository=DispositivoRepository;
         }
 
         public IActionResult Index() {
@@ -125,6 +130,7 @@ namespace WebApplication {
         }
 
         [HttpPost]
+        [Route("UploadFile")]
         public async Task<IActionResult> UploadFile() {
             if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
             {
@@ -144,8 +150,7 @@ namespace WebApplication {
             if (!ok) {
                 return BadRequest("Expected deviceId key");
             }
-
-            /* 
+            /*
             StringValues fechaLlegada;
             ok = formData.TryGetValue("FechaLlegada", out fechaLlegada);
             if (!ok) {
@@ -176,29 +181,47 @@ namespace WebApplication {
             }
 
             int bitRate=Int32.Parse(bitRate1);
-            
-            
+
+            /*
             {
                 Core.DeviceDictionary.TryAdd(deviceId.ToString(), Core.DeviceDictionary.Count);
                 Core.SaveDeviceDictionaryToFile();
             }
-
+            */
 
             {
                 string strDeviceId = "";
                 int id;
+                /*
                 if (Core.DeviceDictionary.TryGetValue(deviceId.ToString(), out id)) {
                     strDeviceId = id.ToString();
                 }
-                string strfilename = filename.ToString();
-                Core.MakeDeviceFolder(strDeviceId);
-                var filePath = Path.Combine(Core.DeviceAudiosFolderPath(strDeviceId),
-                                                strfilename);
+                */
+                Task<Dispositivo> DispositivoResult=_DispositivoRepository.Get(deviceId.ToString());
+                id=DispositivoResult.Result.Id;
+                strDeviceId=id.ToString();
+                string name=DispositivoResult.Result.Nombre;
                 
-            
+                string strfilename = filename.ToString();
+                var filePath="";
+                if(name==null){
+                    Core.MakeDeviceFolder(strDeviceId);
+                    filePath = Path.Combine(Core.DeviceAudiosFolderPath(strDeviceId),
+                                                strfilename);
+                    Console.Write(filePath);
+
+                }else{
+                    name=name.Replace(" ","");
+                    Core.MakeDeviceFolderName(name);
+                    filePath = Path.Combine(Core.DeviceAudiosFolderPathName(name),
+                                                strfilename);
+                    Console.Write(filePath);
+                
+                }              
 
                 var audio =new Audio();
                 //audio.FechaLlegada=fechaLlegada;
+                audio.DispositivoId=id;
                 audio.FechaGrabacion=fechaGrabacion;
                 audio.Duracion=duracion;
                 audio.Formato=formato;

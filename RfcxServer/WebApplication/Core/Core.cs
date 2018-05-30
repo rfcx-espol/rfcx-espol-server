@@ -67,7 +67,13 @@ namespace WebApplication {
         }
 
         public static string DeviceFolderPath(string deviceId) {
+
             return Path.Combine(FilesFolderPath, "device" + deviceId);
+        }
+
+        public static string DeviceFolderPathName(string name) {
+
+            return Path.Combine(FilesFolderPath, name);
         }
         //Agregué esto
         public static string DeviceFolder(string device) {
@@ -78,8 +84,18 @@ namespace WebApplication {
             return Path.Combine(DeviceFolderPath(deviceId), "audios");
         }
 
+
         public static string DeviceOggFolderPath(string deviceId) {
             return Path.Combine(DeviceFolderPath(deviceId), "ogg");
+        }
+
+
+        public static string DeviceAudiosFolderPathName(string name) {
+            return Path.Combine(DeviceFolderPathName(name), "audios");
+        }
+
+        public static string DeviceOggFolderPathName(string name) {
+            return Path.Combine(DeviceFolderPathName(name), "ogg");
         }
 
         public static void MakeDeviceFolder(string deviceId) {
@@ -88,6 +104,15 @@ namespace WebApplication {
                 Directory.CreateDirectory(deviceFolderPath);
                 Directory.CreateDirectory(DeviceAudiosFolderPath(deviceId));
                 Directory.CreateDirectory(DeviceOggFolderPath(deviceId));
+            }
+        }
+
+        public static void MakeDeviceFolderName(string name){
+            string name1=Path.Combine(FilesFolderPath,name);
+            if(!Directory.Exists(name1)){
+                Directory.CreateDirectory(name1);
+                Directory.CreateDirectory(DeviceAudiosFolderPathName(name1));
+                Directory.CreateDirectory(DeviceOggFolderPathName(name1));
             }
         }
         
