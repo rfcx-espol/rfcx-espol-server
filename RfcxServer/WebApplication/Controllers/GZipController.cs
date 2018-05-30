@@ -194,10 +194,7 @@ namespace WebApplication {
                 var filePath = Path.Combine(Core.DeviceAudiosFolderPath(strDeviceId),
                                                 strfilename);
                 
-                using (var stream = new FileStream(filePath, FileMode.Create)) {
-                    await deviceFile.memoryStream.CopyToAsync(stream);
-                    deviceFile.memoryStream.Close();
-                }
+            
 
                 var audio =new Audio();
                 audio.FechaLlegada=fechaLlegada;
@@ -207,6 +204,11 @@ namespace WebApplication {
                 audio.BitRate=bitRate;
                 Task result;
                 result=_AudioRepository.Add(audio);
+
+                using (var stream = new FileStream(filePath, FileMode.Create)) {
+                    await deviceFile.memoryStream.CopyToAsync(stream);
+                    deviceFile.memoryStream.Close();
+                }
 
 
                 //var fileInfo = new FileInfo(filePath);

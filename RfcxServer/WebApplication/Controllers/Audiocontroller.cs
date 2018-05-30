@@ -8,7 +8,7 @@ using System;
 
 namespace WebApplication.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("")]
     public class AudioController
     {
         
@@ -20,6 +20,7 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
+        [Route("api/[controller]")]
         public Task<string> Get()
         {
             return this.GetAudio();
@@ -31,8 +32,8 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Audios);
         }
 
-
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("api/[controller]/{id}")]
         public Task<string> Get(string id)
         {
             return this.GetAudioById(id);
@@ -44,25 +45,87 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Audio);
         }
 
+        [HttpGet]
+        [Route("api/[controller]/{id:int}")]
+        public Task<string> Get(int id)
+        {
+            return this.GetAudioById(id);
+        }
+
+        public async Task<string> GetAudioById(int id)
+        {
+            var Audio= await _AudioRepository.Get(id) ?? new Audio();
+            return JsonConvert.SerializeObject(Audio);
+        }
+        /*
+        [HttpGet("{id}")]
+        public Task<string> Get(int id)
+        {
+            return this.GetAudioById(id);
+        }
+
+        public async Task<string> GetAudioById(int id)
+        {
+            var Audio= await _AudioRepository.Get(id) ?? new Audio();
+            return JsonConvert.SerializeObject(Audio);
+        }
+        */
+
+        [HttpGet]
+        [Route("api/Dispositivo/{DispositivoId:int}/[controller]")]
+        public Task<string> GetAudiosByDispositivo([FromRoute]int DispositivoId)
+        {
+            return this.GetAudioByDispositivo(DispositivoId);
+        }
+
+        public async Task<string> GetAudioByDispositivo(int DispositivoId)
+        {
+            var Audios= await _AudioRepository.GetByDispositivo(DispositivoId);
+            return JsonConvert.SerializeObject(Audios);
+        }
+
+
+        //[HttpGet("{id}")]
+        [HttpGet]
+        [Route("api/Dispositivo/{DispositivoId:int}/[controller]/{AudioId:int}")]
+        //[Route("")]
+        public Task<string> Get([FromRoute]int DispositivoId, [FromRoute]int AudioId)
+        {
+            return this.GetAudioById(DispositivoId, AudioId);
+        }
+
+        public async Task<string> GetAudioById(int DispositivoId, int AudioId)
+        {
+            var Audio= await _AudioRepository.Get(DispositivoId, AudioId) ?? new Audio();
+            return JsonConvert.SerializeObject(Audio);
+        }
+        /* 
         [HttpPost]
+        [Route("api/[controller]")]
         public async Task<string> Post([FromBody] Audio Audio)
         {
             await _AudioRepository.Add(Audio);
             return "";
         }
+        */
 
-        [HttpPut("{id}")]
-        public async Task<bool> Put(string id, [FromBody] Audio Audio)
+
+        //[HttpPut("{id}")]
+        [HttpPut]
+        [Route("api/Dispositivo/{DispositivoId:int}/[controller]/{AudioId:int}")]
+        public async Task<bool> Put([FromRoute]int DispositivoId, [FromRoute]int AudioId, [FromBody] Audio Audio)
         {
-            if (string.IsNullOrEmpty(id)) return false;
-            return await _AudioRepository.Update(id, Audio);
+            if (AudioId==0) return false;
+            return await _AudioRepository.Update(DispositivoId, AudioId, Audio);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<bool> Delete(string id)
+        //[HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("api/Dispositivo/{DispositivoId:int}/[controller]/{AudioId:int}")]
+        public async Task<bool> Delete([FromRoute]int DispositivoId, [FromRoute]int AudioId)
         {
-            if (string.IsNullOrEmpty(id)) return false;
-            return await _AudioRepository.Remove(id);
+            if (AudioId==0) return false;
+            return await _AudioRepository.Remove(DispositivoId, AudioId);
         }
     }
 }

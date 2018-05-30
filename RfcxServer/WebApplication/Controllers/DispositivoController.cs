@@ -44,9 +44,23 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Dispositivo);
         }
 
+        [HttpGet("{id:int}")]
+        public Task<string> Get(int id)
+        {
+            return this.GetDispositivoById(id);
+        }
+
+        public async Task<string> GetDispositivoById(int id)
+        {
+            var Dispositivo= await _DispositivoRepository.Get(id) ?? new Dispositivo();
+            return JsonConvert.SerializeObject(Dispositivo);
+        }
+
         [HttpPost]
         public async Task<string> Post([FromBody] Dispositivo Dispositivo)
         {
+            var nombre=Dispositivo.Nombre;
+            
             await _DispositivoRepository.Add(Dispositivo);
             return "";
         }
