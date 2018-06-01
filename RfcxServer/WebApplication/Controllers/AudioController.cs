@@ -26,12 +26,13 @@ namespace WebApplication.Controllers
             return this.GetAudio();
         }
 
-        public async Task<string> GetAudio()
+        private async Task<string> GetAudio()
         {
             var Audios= await _AudioRepository.Get();
             return JsonConvert.SerializeObject(Audios);
         }
 
+        /*
         [HttpGet]
         [Route("api/[controller]/{id}")]
         public Task<string> Get(string id)
@@ -44,15 +45,16 @@ namespace WebApplication.Controllers
             var Audio= await _AudioRepository.Get(id) ?? new Audio();
             return JsonConvert.SerializeObject(Audio);
         }
+        */
 
         [HttpGet]
         [Route("api/[controller]/{id:int}")]
         public Task<string> Get(int id)
         {
-            return this.GetAudioById(id);
+            return this.GetAudioByIdInt(id);
         }
 
-        public async Task<string> GetAudioById(int id)
+        private async Task<string> GetAudioByIdInt(int id)
         {
             var Audio= await _AudioRepository.Get(id) ?? new Audio();
             return JsonConvert.SerializeObject(Audio);
@@ -78,7 +80,7 @@ namespace WebApplication.Controllers
             return this.GetAudioByDispositivo(DispositivoId);
         }
 
-        public async Task<string> GetAudioByDispositivo(int DispositivoId)
+        private async Task<string> GetAudioByDispositivo(int DispositivoId)
         {
             var Audios= await _AudioRepository.GetByDispositivo(DispositivoId);
             return JsonConvert.SerializeObject(Audios);
@@ -94,7 +96,7 @@ namespace WebApplication.Controllers
             return this.GetAudioById(DispositivoId, AudioId);
         }
 
-        public async Task<string> GetAudioById(int DispositivoId, int AudioId)
+        private async Task<string> GetAudioById(int DispositivoId, int AudioId)
         {
             var Audio= await _AudioRepository.Get(DispositivoId, AudioId) ?? new Audio();
             return JsonConvert.SerializeObject(Audio);

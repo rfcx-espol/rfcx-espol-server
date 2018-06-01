@@ -26,34 +26,34 @@ namespace WebApplication.Controllers
             return this.GetSensor();
         }
 
-        public async Task<string> GetSensor()
+        private async Task<string> GetSensor()
         {
             var Sensors= await _SensorRepository.Get();
             return JsonConvert.SerializeObject(Sensors);
         }
 
-
+        /* */
         [HttpGet]
         [Route("api/[controller]/{id}")]
         public Task<string> Get(string id)
         {
-            return this.GetSensorById(id);
+            return this.IdString(id);
         }
 
-        public async Task<string> GetSensorById(string id)
+        private async Task<string> IdString(string id)
         {
             var Sensor= await _SensorRepository.Get(id) ?? new Sensor();
             return JsonConvert.SerializeObject(Sensor);
         }
-
+        
         [HttpGet]
         [Route("api/[controller]/{id:int}")]
         public Task<string> Get(int id)
         {
-            return this.GetSensorById(id);
+            return this.IntId(id);
         }
 
-        public async Task<string> GetSensorById(int id)
+        private async Task<string> IntId(int id)
         {
             var Sensor= await _SensorRepository.Get(id) ?? new Sensor();
             return JsonConvert.SerializeObject(Sensor);
@@ -66,7 +66,7 @@ namespace WebApplication.Controllers
             return this.GetSensorByDispositivo(DispositivoId);
         }
 
-        public async Task<string> GetSensorByDispositivo(int DispositivoId)
+        private async Task<string> GetSensorByDispositivo(int DispositivoId)
         {
             var Sensors= await _SensorRepository.GetByDispositivo(DispositivoId);
             return JsonConvert.SerializeObject(Sensors);
@@ -80,7 +80,7 @@ namespace WebApplication.Controllers
             return this.GetSensorById(DispositivoId,SensorId);
         }
 
-        public async Task<string> GetSensorById(int DispositivoId, int SensorId)
+        private async Task<string> GetSensorById(int DispositivoId, int SensorId)
         {
             var Sensor= await _SensorRepository.Get(DispositivoId, SensorId) ?? new Sensor();
             return JsonConvert.SerializeObject(Sensor);

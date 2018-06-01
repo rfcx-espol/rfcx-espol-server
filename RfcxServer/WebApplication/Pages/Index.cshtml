@@ -4,7 +4,7 @@
     Layout = "_Layout.cshtml";
 }
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Bosque Protector";
 }
 @section Style{
   <link rel="stylesheet" href="~/css/index.css" />
@@ -14,6 +14,101 @@
 
 @section ScriptsIndex {
     <script>
+      /*function initMap() {
+        var bosque = {lat: -2.145283, lng: -79.960159};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 18,
+          center: bosque
+        });
+        map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+        var locations = [
+          {lat: -2.145310, lng: -79.961383},
+          {lat: -2.146765, lng: -79.960452},
+          {lat: -2.145423, lng: -79.958839}
+        ]
+        let devicesMap={};
+        let deviceInfoMap = {};
+        setInterval(function(){  
+          $.get('api/Sensor', function(result){
+            var sensorDic=JSON.parse(result);
+            //console.log(sensorDic);
+            for(let sensor of sensorDic){
+              var idDevice = sensor["DispositivoId"];
+              $.get('api/dispositivo/'+parseInt(idDevice), function(deviceInfo){
+                var deviceDic=JSON.parse(deviceInfo);
+                let deviceId = parseInt(deviceDic['Id']);
+                if(devicesMap[deviceId]==null){
+                  
+                  deviceInfoMap['nombre']=deviceDic['Nombre'];
+                  deviceInfoMap['latitud']=deviceDic['Latitud'];
+                  deviceInfoMap['longitud']=deviceDic['Longitud'];
+                  let sensoresList=[sensor];
+                  deviceInfoMap['sensores']=sensoresList;
+                  devicesMap[deviceId]=deviceInfoMap;
+                }else{
+                  devicesMap[deviceId]['sensores'].push(sensor);
+                }
+              });
+            }
+
+            for(var key in devicesMap) {
+              var value = devicesMap[key];
+              var nomDispositivo = value['nombre'];
+              var latitud = value['latitud'];
+              var longitud = value['longitud'];
+              var sensoresLista = value['sensores'];
+
+              var contentString = '<div id="contentInfo">'+
+                    '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("titulo", "Index", "DeviceView", new { deviceName = "deviceNameValue" })</h3>'+
+                    '<div id="bodyContent">';
+
+              for(var sensorD in sensoresLista){
+                var tipoSensor = sensorD['Tipo'];
+                var ubicacionSensor = sensorD['Ubicacion'];
+
+                if(tipoSensor=="humedad"){
+                  contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: '+'valor'+'</p>';
+                }
+                else if(tipoSensor=="Temperatura" && ubicacionSensor=="Ambiente"){
+                  contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: '+'valor'+'</p>';
+                }else{
+                  contentString = contentString + '<p><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Telf.: '+'valor'+'</p>';
+                }
+              }
+              contentString = contentString +'</div>'+
+                                '</div>';
+              contentString = contentString.replace("titulo", nomDispositivo);
+              contentString = contentString.replace("deviceNameValue", nomDispositivo);
+              var infowindow = new google.maps.InfoWindow({
+                content: contentString
+              });
+
+              var imageURL = 'http://maps.google.com/mapfiles/kml/paddle/orange-circle.png';
+              var image = {
+                url: imageURL,
+                scaledSize: new google.maps.Size(30, 30)
+              };
+              var coordenadas = new google.maps.LatLng(parseFloat(latitud),parseFloat(longitud));
+              console.log("latitud: " + coordenadas.lat());
+              console.log("longitud: " + coordenadas.lng());
+              var marker = new google.maps.Marker({
+                position: coordenadas,
+                map: map,
+                icon: image
+              });
+              
+              //infowindow.open(map,marker);
+              google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
+                return function() {
+                    infowindow.open(map,marker);
+                };
+              })(marker,contentString,infowindow));
+            }
+            devicesMap={};
+            devicesInfoMap={};
+          });
+        }, 5000); 
+      }*/
       function initMap() {
         var bosque = {lat: -2.145283, lng: -79.960159};
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -84,7 +179,6 @@
           });
         }, 3000); 
       }
-      
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXwpsfDP00RgZGAlNum0MVhHdP0X0IP0&callback=initMap">

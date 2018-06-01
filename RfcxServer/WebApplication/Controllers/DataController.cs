@@ -28,13 +28,13 @@ namespace WebApplication.Controllers
             return this.GetData();
         }
 
-        public async Task<string> GetData()
+        private async Task<string> GetData()
         {
             var Datas= await _DataRepository.Get();
             return JsonConvert.SerializeObject(Datas);
         }
 
-
+        /*
         [HttpGet]
         [Route("api/[controller]/{id}")]
         public Task<string> Get(string id)
@@ -48,15 +48,15 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Data);
         }
 
-
+        */
         [HttpGet]
         [Route("api/[controller]/{id:int}")]
         public Task<string> Get(int id)
         {
-            return this.GetDataById(id);
+            return this.GetDataByIdInt(id);
         }
 
-        public async Task<string> GetDataById(int id)
+        private async Task<string> GetDataByIdInt(int id)
         {
             var Data= await _DataRepository.Get(id) ?? new Data();
             return JsonConvert.SerializeObject(Data);
@@ -69,7 +69,7 @@ namespace WebApplication.Controllers
             return this.GetDataByDispositivo(DispositivoId);
         }
 
-        public async Task<string> GetDataByDispositivo(int DispositivoId)
+        private async Task<string> GetDataByDispositivo(int DispositivoId)
         {
             var Datass= await _DataRepository.GetByDispositivo(DispositivoId);
             return JsonConvert.SerializeObject(Datass);
@@ -82,7 +82,7 @@ namespace WebApplication.Controllers
             return this.GetDataByDispositivoSensor(DispositivoId, SensorId);
         }
 
-        public async Task<string> GetDataByDispositivoSensor(int DispositivoId, int SensorId)
+        private async Task<string> GetDataByDispositivoSensor(int DispositivoId, int SensorId)
         {
             var Datas= await _DataRepository.GetByDispositivoSensor(DispositivoId, SensorId);
             return JsonConvert.SerializeObject(Datas);
@@ -97,7 +97,7 @@ namespace WebApplication.Controllers
             return this.GetDataById(DispositivoId, SensorId, DataId);
         }
 
-        public async Task<string> GetDataById(int DispositivoId, int SensorId, int DataId)
+        private async Task<string> GetDataById(int DispositivoId, int SensorId, int DataId)
         {
             var Data= await _DataRepository.Get(DispositivoId, SensorId, DataId) ?? new Data();
             return JsonConvert.SerializeObject(Data);
