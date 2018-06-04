@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Net.Http.Headers;
 using System;
-using Microsoft.Extensions.Primitives;
 using WebApplication.Models;
 using WebApplication.Controllers;
 using WebApplication.Repository;
@@ -19,7 +18,7 @@ using WebApplication.IRepository;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Primitives;
 
 namespace WebApplication {
 

@@ -9,22 +9,23 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.MongoDB" Version="1.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.0.2" />
     <PackageReference Include="microsoft.aspnetcore.staticfiles" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Primitives" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="2.1.0" />
     <PackageReference Include="nonfactors.grid.mvc6" Version="2.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
     <PackageReference Include="System.Security.Permissions" Version="4.4.1" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.4.0" />
-    <PackageReference Include="windowsbase" Version="4.6.1055" />
+    <PackageReference Include="WindowsBase" Version="4.6.1055" />
     <PackageReference Include="System.Composition" Version="1.0.31" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.1.0" PrivateAssets="All" />
+    <!--PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.1.0" PrivateAssets="All" /-->
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.3.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.3.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /-->
+    <!--DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" /-->
   </ItemGroup>
   <ItemGroup>
     <Reference Include="WindowsBase">
