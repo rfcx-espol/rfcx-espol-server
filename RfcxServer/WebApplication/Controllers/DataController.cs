@@ -105,11 +105,12 @@ namespace WebApplication.Controllers
         
         [HttpPost]
         [Route("api/[controller]")]
-        public async Task<string> Post([FromBody] List<Data> DataList)
+        public async Task<string> Post([FromBody] Arrays Array)
         {
-            
-            for (var i = 0; i < DataList.Count; i++) {
-                _DataRepository.Add(DataList[i]);
+            Console.WriteLine(Array.Data);
+            List<Data> data=Array.Data;
+            for (var i = 0; i <data.Count; i++) {
+                _DataRepository.Add(data[i]);
             }
             /* 
              await _DataRepository.Add(Data);
