@@ -3,6 +3,7 @@ using WebApplication.IRepository;
 using System.Threading.Tasks;
 using WebApplication.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
 using System;
 
 
@@ -79,5 +80,14 @@ namespace WebApplication.Controllers
             return await _DispositivoRepository.Remove(id);
              
         }
+
+
+        [HttpPatch("{id}")]
+        public async Task<bool> PatchVersionAndroid(int id, [FromBody]  Arrays versionAndroid)
+        {
+            if (id==0) return false;
+            return await _DispositivoRepository.UpdateAndroidVersion(id, versionAndroid.AndroidVersion);
+        }
+
     }
 }

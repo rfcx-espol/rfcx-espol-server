@@ -127,5 +127,29 @@ namespace WebApplication.Repository
             throw ex;
         }
     }
+
+        public Task<bool> UpdateAndroidVersion(int id, string androidV)
+        {
+            var filter = Builders<Dispositivo>.Filter.Eq("Id", id);
+            Dispositivo disp=_context.Dispositivos.Find(filter).FirstOrDefaultAsync().Result;
+            disp.VersionAndroid=androidV;
+            return Update(disp.DispositivoId, disp);
+
+        }
+
+        public Task<bool> UpdateServicesVersion(int id, string servicesV)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateName(int id, string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdatePosition(int id, string latitud, string longitud)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
