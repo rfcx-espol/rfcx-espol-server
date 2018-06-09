@@ -52,7 +52,6 @@
         setInterval(function(){  
           $.get('api/Sensor', function(result){
             var sensorDic=JSON.parse(result);
-            //console.log(sensorDic);
             for(let sensor of sensorDic){
               var idDevice = sensor["DispositivoId"];
               $.get('api/dispositivo/'+parseInt(idDevice), function(deviceInfo){
@@ -71,7 +70,7 @@
                 }
               });
             }
-
+            let j = 0;
             for(var key in devicesMap) {
               var value = devicesMap[key];
               var nomDispositivo = value['nombre'];
@@ -88,12 +87,12 @@
                 var ubicacionSensor = sensorD['Ubicacion'];
 
                 if(tipoSensor=="humedad"){
-                  contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: '+'valor'+'</p>';
+                  contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: '+'valor'+'%</p>';
                 }
                 else if(tipoSensor=="Temperatura" && ubicacionSensor=="Ambiente"){
-                  contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: '+'valor'+'</p>';
+                  contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: '+'valor'+'°C</p>';
                 }else{
-                  contentString = contentString + '<p><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Telf.: '+'valor'+'</p>';
+                  contentString = contentString + '<p><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Telf.: '+'valor'+'°C</p>';
                 }
               }
               contentString = contentString +'</div>'+
@@ -110,14 +109,16 @@
                 scaledSize: new google.maps.Size(30, 30)
               };
               var coordenadas = new google.maps.LatLng(parseFloat(latitud),parseFloat(longitud));
-              console.log("latitud: " + coordenadas.lat());
-              console.log("longitud: " + coordenadas.lng());
+              console.log("LATITUD: "+coordenadas.lat());
+              console.log("LONGITUD: "+coordenadas.lng());
+              lati=parseFloat(latitud);
+              long=parseFloat(longitud);
               var marker = new google.maps.Marker({
                 position: coordenadas,
                 map: map,
                 icon: image
               });
-              
+              j++;
               //infowindow.open(map,marker);
               google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
                 return function() {
@@ -157,7 +158,7 @@
         var locations = [
           {lat: -2.1525717, lng: -79.9628617},
           {lat: -2.1524433, lng: -79.9638317},
-          {lat: -2.1526917, lng: -79.9642533},
+          {lat: -2.1526917, lng: -79.9642533}
           {lat: -2.1530517, lng: -79.9838467},
           {lat: -2.15437, lng: -79.963035},
           {lat: -2.1546933, lng: -79.962985},
@@ -182,12 +183,12 @@
                             var funcion = muestra.funcion;
                             var valor = muestra.valor;
                             if(tipo=="humedad"){
-                                contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: '+valor+'</p>';
+                                contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: '+valor+'%</p>';
                             }
                             else if(tipo=="temperatura" && funcion=="ambiente"){
-                                contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: '+valor+'</p>';
+                                contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: '+valor+'°C</p>';
                             }else{
-                                contentString = contentString + '<p><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Telf.: '+valor+'</p>';
+                                contentString = contentString + '<p><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Telf.: '+valor+'°C</p>';
                             }
                         }
                     }
