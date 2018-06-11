@@ -5,12 +5,12 @@ using WebApplication.Models;
 
 namespace WebApplication.IRepository
 {
-    public interface IAlertaRepository
+    public interface IAlertRepository
     {
-        Task<IEnumerable<Alerta>> Get();
-        Task<Alerta> Get(string id);
-        Task Add(Alerta item);
-        Task<bool> Update(string id, Alerta item);
+        Task<IEnumerable<Alert>> Get();
+        Task<Alert> Get(string id);
+        Task Add(Alert item);
+        Task<bool> Update(string id, Alert item);
         Task<bool> Remove(string id);
         Task<bool> RemoveAll();
     }

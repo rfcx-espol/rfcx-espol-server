@@ -5,12 +5,12 @@ using WebApplication.Models;
 
 namespace WebApplication.IRepository
 {
-    public interface IEtiquetaRepository
+    public interface ILabelRepository
     {
-        Task<IEnumerable<Etiqueta>> Get();
-        Task<Etiqueta> Get(string id);
-        Task Add(Etiqueta item);
-        Task<bool> Update(string id, Etiqueta item);
+        Task<IEnumerable<Label>> Get();
+        Task<Label> Get(string id);
+        Task Add(Label item);
+        Task<bool> Update(string id, Label item);
         Task<bool> Remove(string id);
         Task<bool> RemoveAll();
     }

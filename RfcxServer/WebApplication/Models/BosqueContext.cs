@@ -8,12 +8,12 @@ namespace WebApplication.Models
         public BosqueContext(DbContextOptions<BosqueContext> options) : base(options)
         {}
         
-        public DbSet<Alerta> Alertas { get; set; }
-        public DbSet<AlertaConfiguracion> AlertasConfiguracion { get; set; }
+        public DbSet<Alert> Alerts { get; set; }
+        public DbSet<AlertsConfiguration> AlertsConfiguration { get; set; }
         public DbSet<Audio> Audios { get; set; }
-        public DbSet<Dispositivo> Dispositivos { get; set; } 
-        public DbSet<Sensor> Sensores { get; set; }
-        public DbSet<Etiqueta> Etiquetas { get; set; }
+        public DbSet<Device> Devices { get; set; } 
+        public DbSet<Sensor> Sensors { get; set; }
+        public DbSet<Label> Label { get; set; }
 
 
         /** 

@@ -3,15 +3,15 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace WebApplication.Models
 {
-    public class Etiqueta
+    public class Label
         {
             [BsonId]
             [BsonRepresentation(BsonType.ObjectId)] 
-            public string EtiquetaId { get; set; }
+            public string LabelId { get; set; }
             public string AudioId {get; set; }
             public int Id { get; set; }
-            public string TiempoInicio { get; set; }
-            public string TiempoFin { get; set; }
-            public string Descripcion { get; set; }
+            public string StartTime { get; set; }
+            public string EndTime { get; set; }
+            public string Description { get; set; }
         }
 }

@@ -13,21 +13,21 @@ using MongoDB.Driver;
 
 namespace WebApplication.Repository
 {
-    public class DispositivoRepository : IDispositivoRepository
+    public class DeviceRepository : IDeviceRepository
     {
         private readonly ObjectContext _context =null; 
 
-        public DispositivoRepository(IOptions<Settings> settings)
+        public DeviceRepository(IOptions<Settings> settings)
         {
             _context = new ObjectContext(settings);
         } 
 
 
-        public async Task<IEnumerable<Dispositivo>> Get()
+        public async Task<IEnumerable<Device>> Get()
         {
             try
             {
-                return await _context.Dispositivos.Find(_ => true).ToListAsync();
+                return await _context.Devices.Find(_ => true).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -35,13 +35,13 @@ namespace WebApplication.Repository
             }
         }
 
-    public async Task<Dispositivo> Get(string id)
+    public async Task<Device> Get(string id)
     {
-        var filter = Builders<Dispositivo>.Filter.Eq("DispositivoId", id);
+        var filter = Builders<Device>.Filter.Eq("DeviceId", id);
 
         try
         {
-            return await _context.Dispositivos.Find(filter).FirstOrDefaultAsync();
+            return await _context.Devices.Find(filter).FirstOrDefaultAsync();
         }
         catch (Exception ex)
         {
@@ -49,13 +49,13 @@ namespace WebApplication.Repository
         }
     }
 
-    public async Task<Dispositivo> Get(int id)
+    public async Task<Device> Get(int id)
     {
-        var filter = Builders<Dispositivo>.Filter.Eq("Id", id);
+        var filter = Builders<Device>.Filter.Eq("Id", id);
 
         try
         {
-            return await _context.Dispositivos.Find(filter).FirstOrDefaultAsync();
+            return await _context.Devices.Find(filter).FirstOrDefaultAsync();
         }
         catch (Exception ex)
         {
@@ -63,12 +63,12 @@ namespace WebApplication.Repository
         }
     }
 
-    public async Task Add(Dispositivo item)
+    public async Task Add(Device item)
     {
         try
         {
-            item.Id=(int) _context.Dispositivos.Find(_ => true).ToList().Count+1;
-            await _context.Dispositivos.InsertOneAsync(item);
+            item.Id=(int) _context.Devices.Find(_ => true).ToList().Count+1;
+            await _context.Devices.InsertOneAsync(item);
         }
         catch (Exception ex)
         {
@@ -80,8 +80,8 @@ namespace WebApplication.Repository
     {
         try
         {
-            DeleteResult actionResult = await _context.Dispositivos.DeleteOneAsync(
-                    Builders<Dispositivo>.Filter.Eq("DispositivoId", id));
+            DeleteResult actionResult = await _context.Devices.DeleteOneAsync(
+                    Builders<Device>.Filter.Eq("DeviceId", id));
 
             return actionResult.IsAcknowledged 
                 && actionResult.DeletedCount > 0;
@@ -94,13 +94,13 @@ namespace WebApplication.Repository
 
     
 
-    public async Task<bool> Update(string id, Dispositivo item)
+    public async Task<bool> Update(string id, Device item)
     {
         try
         {
             ReplaceOneResult actionResult 
-                = await _context.Dispositivos
-                                .ReplaceOneAsync(n => n.DispositivoId.Equals(id)
+                = await _context.Devices
+                                .ReplaceOneAsync(n => n.DeviceId.Equals(id)
                                         , item
                                         , new UpdateOptions { IsUpsert = true });
             return actionResult.IsAcknowledged
@@ -117,7 +117,7 @@ namespace WebApplication.Repository
         try
         {
             DeleteResult actionResult 
-                = await _context.Dispositivos.DeleteManyAsync(new BsonDocument());
+                = await _context.Devices.DeleteManyAsync(new BsonDocument());
 
             return actionResult.IsAcknowledged
                 && actionResult.DeletedCount > 0;
@@ -130,26 +130,38 @@ namespace WebApplication.Repository
 
         public Task<bool> UpdateAndroidVersion(int id, string androidV)
         {
-            var filter = Builders<Dispositivo>.Filter.Eq("Id", id);
-            Dispositivo disp=_context.Dispositivos.Find(filter).FirstOrDefaultAsync().Result;
-            disp.VersionAndroid=androidV;
-            return Update(disp.DispositivoId, disp);
+            Device disp=getDevice(id);
+            disp.AndroidVersion=androidV;
+            return Update(disp.DeviceId, disp);
 
         }
 
         public Task<bool> UpdateServicesVersion(int id, string servicesV)
         {
-            throw new NotImplementedException();
+            Device disp=getDevice(id);
+            disp.ServicesVersion=servicesV;
+            return Update(disp.DeviceId, disp);
         }
 
         public Task<bool> UpdateName(int id, string name)
         {
-            throw new NotImplementedException();
+            Device disp=getDevice(id);
+            disp.Name=name;
+            return Update(disp.DeviceId, disp);
         }
 
         public Task<bool> UpdatePosition(int id, string latitud, string longitud)
         {
-            throw new NotImplementedException();
+            Device disp=getDevice(id);
+            disp.Latitude=latitud;
+            disp.Longitude=longitud;
+            return Update(disp.DeviceId, disp);        
+        }
+
+        public Device getDevice(int id){
+            var filter = Builders<Device>.Filter.Eq("Id", id);
+            Device disp=_context.Devices.Find(filter).FirstOrDefaultAsync().Result;
+            return disp;
         }
     }
 }

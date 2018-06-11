@@ -11,13 +11,12 @@ namespace WebApplication.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string AudioId { get; set; }
         public int Id { get; set; }
-        public int DispositivoId { get; set; }
-        public string FechaLlegada { get; set; }
-        public string FechaGrabacion { get; set; }
-        public string Duracion { get; set; }
-        public string Formato { get; set; }
+        public int DeviceId { get; set; }
+        public string RecordingDate { get; set; }
+        public string Duration { get; set; }
+        public string Format { get; set; }
         public int BitRate { get; set; }
-        public List<Etiqueta> EtiquetasList { get; set; }
+        public List<Label> LabelList { get; set; }
     }
     
 }
