@@ -31,7 +31,7 @@ namespace WebApplication {
     [Route("[controller]")]
     public class FileController : Controller {
         private readonly IAudioRepository _AudioRepository;
-        private readonly IDispositivoRepository _DispositivoRepository;
+        private readonly IDeviceRepository _DeviceRepository;
 
         public class DeviceFile {
             public KeyValueAccumulator formAccumulator;
@@ -45,10 +45,10 @@ namespace WebApplication {
 
         private readonly IFileProvider _fileProvider;
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
-        public FileController(IFileProvider fileProvider, IAudioRepository AudioRepository, IDispositivoRepository DispositivoRepository) {
+        public FileController(IFileProvider fileProvider, IAudioRepository AudioRepository, IDeviceRepository DeviceRepository) {
             _fileProvider = fileProvider;
              _AudioRepository=AudioRepository;
-             _DispositivoRepository=DispositivoRepository;
+             _DeviceRepository=DeviceRepository;
         }
 
         public IActionResult Index() {
@@ -156,21 +156,21 @@ namespace WebApplication {
                 return BadRequest("Expected FechaLlegada key");
             }
             */
-            StringValues fechaGrabacion;
-            ok = formData.TryGetValue("FechaGrabacion", out fechaGrabacion);
+            StringValues recordingDate;
+            ok = formData.TryGetValue("RecordingDate", out recordingDate);
             if (!ok) {
-                return BadRequest("Expected FechaGrabacion key");
+                return BadRequest("Expected RecordingDate key");
             }
-            StringValues duracion;
-            ok = formData.TryGetValue("Duracion", out duracion);
+            StringValues duration;
+            ok = formData.TryGetValue("Duration", out duration);
             if (!ok) {
-                return BadRequest("Expected Duracion key");
+                return BadRequest("Expected Duration key");
             }
 
-            StringValues formato;
-            ok = formData.TryGetValue("Formato", out formato);
+            StringValues format;
+            ok = formData.TryGetValue("Format", out format);
             if (!ok) {
-                return BadRequest("Expected Formato key");
+                return BadRequest("Expected Format key");
             }
 
             StringValues bitRate1;
@@ -196,10 +196,10 @@ namespace WebApplication {
                     strDeviceId = id.ToString();
                 }
                 */
-                Task<Dispositivo> DispositivoResult=_DispositivoRepository.Get(deviceId.ToString());
-                id=DispositivoResult.Result.Id;
+                Task<Device> DeviceResult=_DeviceRepository.Get(deviceId.ToString());
+                id=DeviceResult.Result.Id;
                 strDeviceId=id.ToString();
-                string name=DispositivoResult.Result.Nombre;
+                string name=DeviceResult.Result.Name;
                 
                 string strfilename = filename.ToString();
                 var filePath="";
@@ -220,10 +220,10 @@ namespace WebApplication {
 
                 var audio =new Audio();
                 //audio.FechaLlegada=fechaLlegada;
-                audio.DispositivoId=id;
-                audio.FechaGrabacion=fechaGrabacion;
-                audio.Duracion=duracion;
-                audio.Formato=formato;
+                audio.DeviceId=id;
+                audio.RecordingDate=recordingDate;
+                audio.Duration=duration;
+                audio.Format=format;
                 audio.BitRate=bitRate;
                 Task result;
                 result=_AudioRepository.Add(audio);

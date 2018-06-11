@@ -44,11 +44,11 @@ namespace WebApplication
                 {
                     options.iConfigurationRoot=Configuration;
                 });
-            services.AddTransient<IAlertaRepository, AlertaRepository>();
-            services.AddTransient<IAlertaConfiguracionRepository, AlertaConfiguracionRepository>();
+            services.AddTransient<IAlertRepository, AlertRepository>();
+            services.AddTransient<IAlertsConfigurationRepository, AlertsConfigurationRepository>();
             services.AddTransient<IAudioRepository, AudioRepository>();
-            services.AddTransient<IDispositivoRepository, DispositivoRepository>();
-            services.AddTransient<IEtiquetaRepository, EtiquetaRepository>();
+            services.AddTransient<IDeviceRepository, DeviceRepository>();
+            services.AddTransient<ILabelRepository, LabelRepository>();
             services.AddTransient<ISensorRepository, SensorRepository>();
             services.AddTransient<IDataRepository, DataRepository>();
             services.AddTransient<IInfoSensoresRepository, InfoSensoresRepository>();

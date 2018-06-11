@@ -25,19 +25,19 @@ namespace WebApplication.DbModels
             }
         }
 
-        public IMongoCollection<Alerta> Alertas
+        public IMongoCollection<Alert> Alerts
         {
             get
             {
-                return _database.GetCollection<Alerta>("Alerta");
+                return _database.GetCollection<Alert>("Alert");
             }
         }
 
-        public IMongoCollection<AlertaConfiguracion> AlertaConfiguracions
+        public IMongoCollection<AlertsConfiguration> AlertsConfigurations
         {
             get
             {
-                return _database.GetCollection<AlertaConfiguracion>("AlertaConfiguracion");
+                return _database.GetCollection<AlertsConfiguration>("AlertsConfiguration");
             }
         }
 
@@ -49,19 +49,19 @@ namespace WebApplication.DbModels
             }
         }
 
-        public IMongoCollection<Dispositivo> Dispositivos
+        public IMongoCollection<Device> Devices
         {
             get
             {
-                return _database.GetCollection<Dispositivo>("Dispositivo");
+                return _database.GetCollection<Device>("Device");
             }
         }
 
-        public IMongoCollection<Etiqueta> Etiquetas
+        public IMongoCollection<Label> Labels
         {
             get
             {
-                return _database.GetCollection<Etiqueta>("Etiqueta");
+                return _database.GetCollection<Label>("Label");
             }
         }
 

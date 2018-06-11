@@ -5,13 +5,13 @@ using WebApplication.Models;
 
 namespace WebApplication.IRepository
 {
-    public interface IDispositivoRepository
+    public interface IDeviceRepository
     {
-        Task<IEnumerable<Dispositivo>> Get();
-        Task<Dispositivo> Get(string id);
-        Task<Dispositivo> Get(int id);
-        Task Add(Dispositivo item);
-        Task<bool> Update(string id, Dispositivo item);
+        Task<IEnumerable<Device>> Get();
+        Task<Device> Get(string id);
+        Task<Device> Get(int id);
+        Task Add(Device item);
+        Task<bool> Update(string id, Device item);
         Task<bool> UpdateAndroidVersion(int id, string androidV);
         Task<bool> UpdateServicesVersion(int id, string servicesV);
         Task<bool> UpdateName(int id, string name);

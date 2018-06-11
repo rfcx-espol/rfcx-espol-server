@@ -13,20 +13,20 @@ using MongoDB.Driver;
 
 namespace WebApplication.Repository
 {
-    public class EtiquetaRepository : IEtiquetaRepository
+    public class LabelRepository : ILabelRepository
     {
         private readonly ObjectContext _context =null; 
 
-        public EtiquetaRepository(IOptions<Settings> settings)
+        public LabelRepository(IOptions<Settings> settings)
         {
             _context = new ObjectContext(settings);
         } 
 
-        public async Task<IEnumerable<Etiqueta>> Get()
+        public async Task<IEnumerable<Label>> Get()
         {
             try
             {
-                return await _context.Etiquetas.Find(_ => true).ToListAsync();
+                return await _context.Labels.Find(_ => true).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -34,13 +34,13 @@ namespace WebApplication.Repository
             }
         }
 
-    public async Task<Etiqueta> Get(string id)
+    public async Task<Label> Get(string id)
     {
-        var filter = Builders<Etiqueta>.Filter.Eq("EtiquetaId", id);
+        var filter = Builders<Label>.Filter.Eq("LabelId", id);
 
         try
         {
-            return await _context.Etiquetas.Find(filter).FirstOrDefaultAsync();
+            return await _context.Labels.Find(filter).FirstOrDefaultAsync();
         }
         catch (Exception ex)
         {
@@ -48,12 +48,12 @@ namespace WebApplication.Repository
         }
     }
 
-    public async Task Add(Etiqueta item)
+    public async Task Add(Label item)
     {
         try
         {
-            item.Id=_context.Etiquetas.Find(_ => true).ToList().Count+1;
-            await _context.Etiquetas.InsertOneAsync(item);
+            item.Id=_context.Labels.Find(_ => true).ToList().Count+1;
+            await _context.Labels.InsertOneAsync(item);
         }
         catch (Exception ex)
         {
@@ -65,8 +65,8 @@ namespace WebApplication.Repository
     {
         try
         {
-            DeleteResult actionResult = await _context.Etiquetas.DeleteOneAsync(
-                    Builders<Etiqueta>.Filter.Eq("EtiquetaId", id));
+            DeleteResult actionResult = await _context.Labels.DeleteOneAsync(
+                    Builders<Label>.Filter.Eq("LabelId", id));
 
             return actionResult.IsAcknowledged 
                 && actionResult.DeletedCount > 0;
@@ -79,13 +79,13 @@ namespace WebApplication.Repository
 
     
 
-    public async Task<bool> Update(string id, Etiqueta item)
+    public async Task<bool> Update(string id, Label item)
     {
         try
         {
             ReplaceOneResult actionResult 
-                = await _context.Etiquetas
-                                .ReplaceOneAsync(n => n.EtiquetaId.Equals(id)
+                = await _context.Labels
+                                .ReplaceOneAsync(n => n.LabelId.Equals(id)
                                         , item
                                         , new UpdateOptions { IsUpsert = true });
             return actionResult.IsAcknowledged
@@ -102,7 +102,7 @@ namespace WebApplication.Repository
         try
         {
             DeleteResult actionResult 
-                = await _context.Etiquetas.DeleteManyAsync(new BsonDocument());
+                = await _context.Labels.DeleteManyAsync(new BsonDocument());
 
             return actionResult.IsAcknowledged
                 && actionResult.DeletedCount > 0;
