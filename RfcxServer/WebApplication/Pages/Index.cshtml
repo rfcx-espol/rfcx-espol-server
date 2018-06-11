@@ -14,7 +14,7 @@
 
 @section ScriptsIndex {
     <script>
-      function initMap() {
+      /*function initMap() {
         var bosque = {lat: -2.15437, lng: -79.963035};
         var estilos =[
             {
@@ -130,8 +130,8 @@
             devicesInfoMap={};
           });
         }, 5000); 
-      }
-      /*function initMap() {
+      }*/
+      function initMap() {
         var bosque = {lat: -2.15437, lng: -79.963035};
         var estilos =[
             {
@@ -151,14 +151,14 @@
         ];
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 17,
-          center: bosque
+          center: bosque,
           styles: estilos
         });
         map.setMapTypeId(google.maps.MapTypeId.HYBRID);
         var locations = [
           {lat: -2.1525717, lng: -79.9628617},
           {lat: -2.1524433, lng: -79.9638317},
-          {lat: -2.1526917, lng: -79.9642533}
+          {lat: -2.1526917, lng: -79.9642533},
           {lat: -2.1530517, lng: -79.9838467},
           {lat: -2.15437, lng: -79.963035},
           {lat: -2.1546933, lng: -79.962985},
@@ -221,7 +221,7 @@
             });
           });
         }, 3000); 
-      }*/
+      }
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXwpsfDP00RgZGAlNum0MVhHdP0X0IP0&callback=initMap">
