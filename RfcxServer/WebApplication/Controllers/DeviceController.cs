@@ -82,28 +82,28 @@ namespace WebApplication.Controllers
         }
 
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id}/AndroidV")]
         public async Task<bool> PatchVersionAndroid(int id, [FromBody]  Arrays json)
         {
             if (id==0) return false;
             return await _DeviceRepository.UpdateAndroidVersion(id, json.AndroidVersion);
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id}/ServicesV")]
         public async Task<bool> PatchVersionVersionServices(int id, [FromBody]  Arrays json)
         {
             if (id==0) return false;
             return await _DeviceRepository.UpdateServicesVersion(id, json.ServicesVersion);
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id}/Name")]
         public async Task<bool> PatchName(int id, [FromBody]  Arrays json)
         {
             if (id==0) return false;
             return await _DeviceRepository.UpdateName(id, json.Name);
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id}/Coordinates")]
         public async Task<bool> PatchPosition(int id, [FromBody]  Arrays json)
         {
             if (id==0) return false;
