@@ -128,40 +128,42 @@ namespace WebApplication.Repository
         }
     }
 
-        public Task<bool> UpdateAndroidVersion(int id, string androidV)
-        {
-            Device disp=getDevice(id);
-            disp.AndroidVersion=androidV;
-            return Update(disp.DeviceId, disp);
+    public Task<bool> UpdateAndroidVersion(int id, string androidV)
+    {
+        Device disp=getDevice(id);
+        disp.AndroidVersion=androidV;
+        return Update(disp.DeviceId, disp);
 
-        }
-
-        public Task<bool> UpdateServicesVersion(int id, string servicesV)
-        {
-            Device disp=getDevice(id);
-            disp.ServicesVersion=servicesV;
-            return Update(disp.DeviceId, disp);
-        }
-
-        public Task<bool> UpdateName(int id, string name)
-        {
-            Device disp=getDevice(id);
-            disp.Name=name;
-            return Update(disp.DeviceId, disp);
-        }
-
-        public Task<bool> UpdatePosition(int id, string latitud, string longitud)
-        {
-            Device disp=getDevice(id);
-            disp.Latitude=latitud;
-            disp.Longitude=longitud;
-            return Update(disp.DeviceId, disp);        
-        }
-
-        public Device getDevice(int id){
-            var filter = Builders<Device>.Filter.Eq("Id", id);
-            Device disp=_context.Devices.Find(filter).FirstOrDefaultAsync().Result;
-            return disp;
-        }
     }
+
+    public Task<bool> UpdateServicesVersion(int id, string servicesV)
+    {
+        Device disp=getDevice(id);
+        disp.ServicesVersion=servicesV;
+        return Update(disp.DeviceId, disp);
+    }
+
+    public Task<bool> UpdateName(int id, string name)
+    {
+        Device disp=getDevice(id);
+        disp.Name=name;
+        return Update(disp.DeviceId, disp);
+    }
+
+    public Task<bool> UpdatePosition(int id, string latitud, string longitud)
+    {
+        Device disp=getDevice(id);
+        disp.Latitude=latitud;
+        disp.Longitude=longitud;
+        return Update(disp.DeviceId, disp);        
+    }
+
+    public Device getDevice(int id){
+        var filter = Builders<Device>.Filter.Eq("Id", id);
+        Device disp=_context.Devices.Find(filter).FirstOrDefaultAsync().Result;
+        return disp;
+    }
+
+
+}
 }
