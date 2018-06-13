@@ -17,26 +17,41 @@
 
 <div class="tab">
       <button class="tablinks" name="monitor" onclick="openDevice(event, 'monitor')" id="defaultOpen"><i class="material-icons">&#xe30c;</i>  Monitor</button>
-      <button class="tablinks" name="temp_amb" onclick="openDevice(event, 'temp_amb')"><i class="fa fa-thermometer" style="font-size:30px;"></i>  Temperatura - Ambiente</button>
-      <button class="tablinks" name="temp_disp" onclick="openDevice(event, 'temp_disp')"><i class="fa fa-thermometer" style="font-size:30px;"></i>  Temperatura - Dispositivo</button>
-      <button class="tablinks" name="humedad" onclick="openDevice(event, 'humedad')"><i class="fa fa-tint" style="font-size:30px;";></i>  Humedad</button>
+      <button class="tablinks" name="temp_amb" onclick="openDevice(event, 'temp_amb')" onfocus="displayEachChart()"><i class="fa fa-thermometer" style="font-size:30px;"></i>  Temperatura - Ambiente</button>
+      <button class="tablinks" name="temp_disp" onclick="openDevice(event, 'temp_disp')" onfocus="displayEachChart()"><i class="fa fa-thermometer" style="font-size:30px;"></i>  Temperatura - Dispositivo</button>
+      <button class="tablinks" name="humedad" onclick="openDevice(event, 'humedad')" onfocus="displayEachChart()"><i class="fa fa-tint" style="font-size:30px;";></i>  Humedad</button>
 </div> 
-    <div id="monitor" class="tabcontent">
+    <div id="monitor" class="tabcontent" onload="display(this)">
       <h3 style="text-align: center;">Dispositivo @ViewData["deviceName"].ToString()</h3>
       <!--h3>Monitor</h3-->
       <div class="col-sm-12 col-md-6 col-lg-6 sensores_monitor">
         <h4 class="titulo_sensor">Sensor: Temperatura - Ambiente</h4>
-        <!--div id="temp_amb_chart"></div-->
+        <div id="chartMonitorAmb" style="height: 320px"></div>
+        <div id="boxInfoValues">
+          <p class="boxLetters initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minMonHum"></p>
+          <p class="boxLetters middle" ><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id="maxMonHum"></p>
+          <p class="boxLetters last"><i class="fa  iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id="avgMonHum"></p>
+        </div>
       </div>
 
       <div class="col-sm-12 col-md-6 col-lg-6 sensores_monitor">
         <h4 class="titulo_sensor">Sensor: Temperatura - Dispositivo</h4>
-        <!--div id="temp_disp_chart"></div-->
+        <div id="chartMonitorDisp" style="height: 320px"></div>
+        <div id="boxInfoValues">
+          <p class="boxLetters initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minMonDisp"></p>
+          <p class="boxLetters middle" ><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id="maxMonDisp"></p>
+          <p class="boxLetters last"><i class="fa  iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id="avgMonDisp"></p>
+        </div>
       </div>
 
       <div class="col-sm-12 col-md-6 col-lg-6 sensores_monitor">
         <h4 class="titulo_sensor">Sensor: Humedad - Ambiente</h4>
-        <!--div id="humedad_chart"></div-->
+        <div id="chartMonitorHum" style="height: 320px"></div>
+        <div id="boxInfoValues">
+          <p class="boxLetters initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minMonAmb"></p>
+          <p class="boxLetters middle" ><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id="maxMonAmb"></p>
+          <p class="boxLetters last"><i class="fa  iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id="avgMonAmb"></p>
+        </div>
       </div>
     </div>
 
@@ -91,8 +106,8 @@
   <script src="js/canvasjs.min.js"></script>
   <!--script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script-->
 
-  <script type="text/javascript" src="js/tempDispResumen.js"></script>
-  
+  <script type="text/javascript" src="js/chartResumen.js"></script>
+  <script type="text/javascript" src="js/monitor.js"></script> 
 
 
     <script>

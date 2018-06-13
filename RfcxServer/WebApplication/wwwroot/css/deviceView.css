@@ -130,8 +130,11 @@ div#submenu a:hover {
     border-top: 1px solid #ccc;
 }
 
+.initialMon{
+    margin-left: 20%;
+}
 .initial{
-    margin-left: 34%;
+    margin-left: 35%;
 }
 .initial, .middle, .last{
     margin-right: 7px;

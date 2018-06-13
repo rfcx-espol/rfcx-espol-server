@@ -1,56 +1,12 @@
 dataTempDisp = [];
 dataTempAmb = [];
 dataHumedad = [];
-/*
-google.charts.load('current', {'packages':['annotatedtimeline']});
-google.charts.setOnLoadCallback(drawChart);
-function drawChart() {
-    var data = new google.visualization.DataTable();
-    data.addColumn('date', 'Date');
-    data.addColumn('number', 'Temperatura');
-    data.addRows(dataPoints);
-    var options = {
-        width: 1043
-    };
-    var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-    chart.draw(data, options);
-}*/
-/*
-google.charts.load('visualization', '1.0', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
 
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable(dataPoints);
+window.onload = displayMonitor();
 
-        var options = {
-          title: 'Company Performance',
-          curveType: 'function',
-          legend: { position: 'bottom' }
-        };
-
-        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-
-        chart.draw(data, options);
-      }
-    */
-/*
-function addData(data) {
-    for (var i = 0; i < data.length; i++) {
-        var time = parseInt(data[i].Timestamp)
-        dataPoints.push([
-            new Date(time),
-            parseInt(data[i].Value)
-    ]);
-}
-    //drawChart();
-}
-$.getJSON('json/archivo.json', addData);*/
-
-//ORIGINAL
-
-window.onload = function() {
+function displayMonitor() {
     
-    var chartTempDisp = new CanvasJS.Chart("chartContainer2", {
+    var chartMonTempDisp = new CanvasJS.Chart("chartMonitorAmb", {
         animationEnabled: true,
         zoomEnabled: true,
         height: 320, 
@@ -65,7 +21,7 @@ window.onload = function() {
         }]
     });
 
-    var chartHumedad = new CanvasJS.Chart("chartContainer3", {
+    var chartMonHumedad = new CanvasJS.Chart("chartMonitorDisp", {
         animationEnabled: true,
         zoomEnabled: true,
         height: 320, 
@@ -80,7 +36,7 @@ window.onload = function() {
         }]
     });
 
-    var chartTempAmb = new CanvasJS.Chart("chartContainer1", {
+    var chartMonTempAmb = new CanvasJS.Chart("chartMonitorHum", {
         animationEnabled: true,
         zoomEnabled: true,
         height: 320, 
@@ -105,7 +61,9 @@ window.onload = function() {
         var minAmb= 50000;
         var maxAmb=0;
         var avgAmb=0;
+        console.log("here");
         for (var i = 0; i < data.length; i++) {
+            console.log(data[i].Type);
             if(data[i].Type=="Temperature" && data[i].Location=="Dispositivo"){
                 var time = parseInt(data[i].Timestamp);
                 var value = parseInt(data[i].Value);
@@ -149,30 +107,32 @@ window.onload = function() {
             }
         }
 
-        var lengthAmb = chartTempAmb.options.data[0].dataPoints.length;
-        var lengthDisp = chartTempDisp.options.data[0].dataPoints.length;
-        var lengthHum = chartHumedad.options.data[0].dataPoints.length;
+        var lengthAmb = chartMonTempAmb.options.data[0].dataPoints.length;
+        var lengthDisp = chartMonTempDisp.options.data[0].dataPoints.length;
+        var lengthHum = chartMonHumedad.options.data[0].dataPoints.length;
         
-        chartTempDisp.render();
-        chartHumedad.render();
-        chartTempAmb.render();
+        chartMonTempDisp.render();
+        chartMonHumedad.render();
+        chartMonTempAmb.render();
         
-        document.getElementById("minValueDisp").innerHTML = "   "+minDisp;
-        document.getElementById("maxValueDisp").innerHTML = " "+maxDisp;
+        document.getElementById("minMonDisp").innerHTML = "   "+minDisp;
+        document.getElementById("maxMonDisp").innerHTML = " "+maxDisp;
 
-        document.getElementById("minValueAmb").innerHTML = "   "+minAmb;
-        document.getElementById("maxValueAmb").innerHTML = " "+maxAmb;
+        document.getElementById("minMonAmb").innerHTML = "   "+minAmb;
+        document.getElementById("maxMonAmb").innerHTML = " "+maxAmb;
 
-        document.getElementById("minValueHum").innerHTML = "   "+minHumedad;
-        document.getElementById("maxValueHum").innerHTML = " "+maxHumedad;
+        document.getElementById("minMonHum").innerHTML = "   "+minHumedad;
+        document.getElementById("maxMonHum").innerHTML = " "+maxHumedad;
 
-        document.getElementById("avgValueDisp").innerHTML = "   "+(avgDisp/lengthDisp).toFixed(2);;
+        document.getElementById("avgMonDisp").innerHTML = "   "+(avgDisp/lengthDisp).toFixed(2);;
        
-        document.getElementById("avgValueAmb").innerHTML = "   "+(avgAmb/lengthAmb).toFixed(2);
+        document.getElementById("avgMonAmb").innerHTML = "   "+(avgAmb/lengthAmb).toFixed(2);
         
-        document.getElementById("avgValueHum").innerHTML = " "+(avgHumedad/lengthHum).toFixed(2);
-
-        
+        document.getElementById("avgMonHum").innerHTML = " "+(avgHumedad/lengthHum).toFixed(2);        
     }
-    $.getJSON('json/archivo.json', addData);
+    $.getJSON('json/monitorData.json', addData);
+
+    setInterval(displayMonitor, 300000000);
+
+    //displayEachChart();
 }
