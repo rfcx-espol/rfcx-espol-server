@@ -14,24 +14,182 @@
 
 @section ScriptsIndex {
     <script>
+    $(window).on('load',function(){
+    devices = [];
+    
+    function getDataDisp(data){
+      var dataDic = JSON.parse(data);
+      for(device of dataDic){
+        var latitud = parseFloat(device['Latitud']);
+        var longitud = parseFloat(device['Longitud']);
+        var idDevice=parseInt(device['Id']);
+        var nameDevice=device['Nombre'];
+        console.log(nameDevice);
+        devices.push({idDevice: nameDevice,"lat": latitud, "long": longitud});
+        console.log("here",devices);
+        $.get('api/Dispositivo/'+idDevice+'/Sensor/', getDataSensor);
+        
+      }
+    }
+    function getDataSensor(data){
+      var dataDic = JSON.parse(data);
+      for(sensor of dataDic){
+        var typeSensor = sensor['Tipo'];
+        var locationSensor = sensor['Ubicacion'];
+        var nameDevice = devices[sensor['DispositivoId']];
+        console.log(nameDevice);
+        var contentString = '<div id="contentInfo">'+
+                    '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("titulo", "Index", "DeviceView", new { deviceName = "deviceNameValue" })</h3>'+
+                    '<div id="bodyContent">';
+                  
+        if(typeSensor=="humedad"){
+          contentString = contentString + '<p style="font-size: 14px; float: left;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: </p><p id="valueHum" style="font-size: 14px;">valor</p>';
+        }
+        else if(typeSensor=="Temperatura" && locationSensor=="Ambiente"){
+          contentString = contentString + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: </p><p id="valueTempAmb" style="font-size: 14px;">valor</p>';
+        }else{
+          contentString = contentString + '<p><i class="fa fa-thermometer" style="float: left;font-size:20px; color: #ff7800;"></i> Disp.: <p id="valueTempDisp" style="font-size: 14px;">valor</p>';
+        }
+        contentString = contentString +'</div>'+
+                                '</div>';
+        contentString = contentString.replace("titulo", nameDevice);
+        
+        contentString = contentString.replace("deviceNameValue", nameDevice);
+      }
+    }
+    $.get('api/Dispositivo', getDataDisp);
+    
+    function initMap() {
+          /*var bosque = {lat: -2.15437, lng: -79.963035};
+          var estilos =[
+              {
+                  featureType: "poi",
+                  elementType: "labels",
+                  stylers: [
+                        { visibility: "off" }
+                  ]
+              },
+              {
+                  featureType: "transit",
+                  elementType: "labels",
+                  stylers: [
+                        { visibility: "off" }
+                  ]
+              }
+          ];
+          var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 17,
+            center: bosque,
+            styles: estilos
+          });
+          map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+          
+          
+          coordenadas = [];
+          contents = [];
+          $.get('api/Dispositivo', function(result){
+            var deviceDic=JSON.parse(result);
+            j=0;
+            for(device of deviceDic){
+              var latitud = parseFloat(device['Latitud']);
+              var longitud = parseFloat(device['Longitud']);
+              var idDevice=parseInt(device['Id']);
+              var nameDevice=device['Nombre'];
+              coordenadas.push({lat: latitud, lng: longitud});
+              $.get('api/Dispositivo/'+idDevice+'/Sensor/', function(sensors){
+                var sensorDic=JSON.parse(sensors);
+                for(sensor of sensorDic){
+                  var typeSensor = sensorDic['Tipo'];
+                  var locationSensor = sensorDic['Ubicacion'];
+
+                  var contentString = '<div id="contentInfo">'+
+                    '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("titulo", "Index", "DeviceView", new { deviceName = "deviceNameValue" })</h3>'+
+                    '<div id="bodyContent">';
+                  
+                  if(typeSensor=="humedad"){
+                    contentString = contentString + '<p style="font-size: 14px; float: left;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: </p><p id="valueHum" style="font-size: 14px;">valor</p>';
+                  }
+                  else if(typeSensor=="Temperatura" && locationSensor=="Ambiente"){
+                    contentString = contentString + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: </p><p id="valueTempAmb" style="font-size: 14px;">valor</p>';
+                  }else{
+                    contentString = contentString + '<p><i class="fa fa-thermometer" style="float: left;font-size:20px; color: #ff7800;"></i> Disp.: <p id="valueTempDisp" style="font-size: 14px;">valor</p>';
+                  }
+                }
+                
+                contentString = contentString +'</div>'+
+                                '</div>';
+                contentString = contentString.replace("titulo", nameDevice);
+                console.log(nameDevice);
+                contentString = contentString.replace("deviceNameValue", nameDevice);
+                
+                var infowindow = new google.maps.InfoWindow({
+                  content: contentString
+                });
+                console.log("HERE",contentString);
+                var imageURL = 'http://maps.google.com/mapfiles/kml/paddle/orange-circle.png';
+                var image = {
+                  url: imageURL,
+                  scaledSize: new google.maps.Size(30, 30)
+                };
+                var marker = new google.maps.Marker({
+                  position: coordenadas[j],
+                  map: map,
+                  icon: image
+                });
+                //infowindow.open(map,marker);
+                google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
+                  return function() {
+                      infowindow.open(map,marker);
+                  };
+                })(marker,contentString,infowindow));
+                j++;
+              });
+              
+            }
+          });*/
+
+      }
+    
+    });
+        
       /*function initMap() {
-        var bosque = {lat: -2.145283, lng: -79.960159};
+        var bosque = {lat: -2.15437, lng: -79.963035};
+        var estilos =[
+            {
+                featureType: "poi",
+                elementType: "labels",
+                stylers: [
+                      { visibility: "off" }
+                ]
+            },
+            {
+                featureType: "transit",
+                elementType: "labels",
+                stylers: [
+                      { visibility: "off" }
+                ]
+            }
+        ];
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 18,
-          center: bosque
+          zoom: 17,
+          center: bosque,
+          styles: estilos
         });
         map.setMapTypeId(google.maps.MapTypeId.HYBRID);
         var locations = [
-          {lat: -2.145310, lng: -79.961383},
-          {lat: -2.146765, lng: -79.960452},
-          {lat: -2.145423, lng: -79.958839}
+          {lat: -2.1525717, lng: -79.9628617},
+          {lat: -2.1524433, lng: -79.9638317},
+          {lat: -2.1526917, lng: -79.9642533},
+          {lat: -2.1530517, lng: -79.9838467},
+          {lat: -2.15437, lng: -79.963035},
+          {lat: -2.1546933, lng: -79.962985},
+          {lat: -2.1553117, lng: -79.9624633}
         ]
         let devicesMap={};
         let deviceInfoMap = {};
         setInterval(function(){  
           $.get('api/Sensor', function(result){
             var sensorDic=JSON.parse(result);
-            //console.log(sensorDic);
             for(let sensor of sensorDic){
               var idDevice = sensor["DispositivoId"];
               $.get('api/dispositivo/'+parseInt(idDevice), function(deviceInfo){
@@ -50,7 +208,7 @@
                 }
               });
             }
-
+            let j = 0;
             for(var key in devicesMap) {
               var value = devicesMap[key];
               var nomDispositivo = value['nombre'];
@@ -67,12 +225,12 @@
                 var ubicacionSensor = sensorD['Ubicacion'];
 
                 if(tipoSensor=="humedad"){
-                  contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: '+'valor'+'</p>';
+                  contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: '+'valor'+'%</p>';
                 }
                 else if(tipoSensor=="Temperatura" && ubicacionSensor=="Ambiente"){
-                  contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: '+'valor'+'</p>';
+                  contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: '+'valor'+'°C</p>';
                 }else{
-                  contentString = contentString + '<p><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Telf.: '+'valor'+'</p>';
+                  contentString = contentString + '<p><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Telf.: '+'valor'+'°C</p>';
                 }
               }
               contentString = contentString +'</div>'+
@@ -89,14 +247,16 @@
                 scaledSize: new google.maps.Size(30, 30)
               };
               var coordenadas = new google.maps.LatLng(parseFloat(latitud),parseFloat(longitud));
-              console.log("latitud: " + coordenadas.lat());
-              console.log("longitud: " + coordenadas.lng());
+              console.log("LATITUD: "+coordenadas.lat());
+              console.log("LONGITUD: "+coordenadas.lng());
+              lati=parseFloat(latitud);
+              long=parseFloat(longitud);
               var marker = new google.maps.Marker({
                 position: coordenadas,
                 map: map,
                 icon: image
               });
-              
+              j++;
               //infowindow.open(map,marker);
               google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
                 return function() {
@@ -109,18 +269,35 @@
           });
         }, 5000); 
       }*/
-      function initMap() {
-        var bosque = {lat: -2.145283, lng: -79.960159};
+      /*function initMap() {
+        var bosque = {lat: -2.15437, lng: -79.963035};
+        var estilos =[
+            {
+                featureType: "poi",
+                elementType: "labels",
+                stylers: [
+                      { visibility: "off" }
+                ]
+            },
+            {
+                featureType: "transit",
+                elementType: "labels",
+                stylers: [
+                      { visibility: "off" }
+                ]
+            }
+        ];
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 18,
-          center: bosque
+          zoom: 17,
+          center: bosque,
+          styles: estilos
         });
         map.setMapTypeId(google.maps.MapTypeId.HYBRID);
         var locations = [
           {lat: -2.1525717, lng: -79.9628617},
           {lat: -2.1524433, lng: -79.9638317},
           {lat: -2.1526917, lng: -79.9642533},
-          {lat: -2.1530517, lng: -79.9638467},
+          {lat: -2.1530517, lng: -79.9838467},
           {lat: -2.15437, lng: -79.963035},
           {lat: -2.1546933, lng: -79.962985},
           {lat: -2.1553117, lng: -79.9624633}
@@ -144,12 +321,12 @@
                             var funcion = muestra.funcion;
                             var valor = muestra.valor;
                             if(tipo=="humedad"){
-                                contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: '+valor+'</p>';
+                                contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: '+valor+'%</p>';
                             }
                             else if(tipo=="temperatura" && funcion=="ambiente"){
-                                contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: '+valor+'</p>';
+                                contentString = contentString + '<p style="font-size: 14px;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: '+valor+'°C</p>';
                             }else{
-                                contentString = contentString + '<p><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Telf.: '+valor+'</p>';
+                                contentString = contentString + '<p><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Telf.: '+valor+'°C</p>';
                             }
                         }
                     }
@@ -182,9 +359,9 @@
             });
           });
         }, 3000); 
-      }
+      }*/
     </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXwpsfDP00RgZGAlNum0MVhHdP0X0IP0&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXwpsfDP00RgZGAlNum0MVhHdP0X0IP0">
     </script>
 }
