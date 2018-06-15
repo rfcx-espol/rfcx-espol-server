@@ -151,21 +151,22 @@ namespace WebApplication {
                 return BadRequest("Expected FechaLlegada key");
             }
             */
-            StringValues fechaGrabacion;
-            ok = formData.TryGetValue("FechaGrabacion", out fechaGrabacion);
+            StringValues recordingDate;
+            ok = formData.TryGetValue("RecordingDate", out recordingDate);
             if (!ok) {
-                return BadRequest("Expected FechaGrabacion key");
+                return BadRequest("Expected RecordingDate key");
             }
-            StringValues duracion;
-            ok = formData.TryGetValue("Duracion", out duracion);
+            
+            StringValues duration;
+            ok = formData.TryGetValue("Duration", out duration);
             if (!ok) {
-                return BadRequest("Expected Duracion key");
+                return BadRequest("Expected Duration key");
             }
 
-            StringValues formato;
-            ok = formData.TryGetValue("Formato", out formato);
+            StringValues format;
+            ok = formData.TryGetValue("Format", out format);
             if (!ok) {
-                return BadRequest("Expected Formato key");
+                return BadRequest("Expected Format key");
             }
 
             StringValues bitRate1;
@@ -198,9 +199,9 @@ namespace WebApplication {
 
                 var audio =new Audio();
                 //audio.FechaLlegada=fechaLlegada;
-                audio.FechaGrabacion=fechaGrabacion;
-                audio.Duracion=duracion;
-                audio.Formato=formato;
+                audio.RecordingDate=recordingDate;
+                audio.Duration=duration;
+                audio.Format=format;
                 audio.BitRate=bitRate;
                 Task result;
                 result=_AudioRepository.Add(audio);
@@ -247,14 +248,11 @@ namespace WebApplication {
         public async Task<IActionResult> UploadFile(IFormFile file) {
             if (file == null || file.Length == 0)
                 return Content("File not selected");
-
             var gzipFilePath = Path.Combine(Core.GzipFolderPath,
                                             file.FileName);
-
             using (var stream = new FileStream(gzipFilePath, FileMode.Create)) {
                 await file.CopyToAsync(stream);
             }
-
             var gzipFileInfo = new FileInfo(gzipFilePath);
             var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));
             
@@ -281,7 +279,6 @@ namespace WebApplication {
                 process.StartInfo.Arguments = "-i " + decompressedPath + " " + oggFilePath;
                 process.Start();
             }
-
             return Content("File received");
         }*/
     }

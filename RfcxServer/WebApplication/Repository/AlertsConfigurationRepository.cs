@@ -10,23 +10,25 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 
 
+
+
 namespace WebApplication.Repository
 {
-    public class AlertaRepository : IAlertaRepository
+    public class AlertsConfigurationRepository : IAlertsConfigurationRepository
     {
         private readonly ObjectContext _context =null; 
 
-        public AlertaRepository(IOptions<Settings> settings)
+        public AlertsConfigurationRepository(IOptions<Settings> settings)
         {
             _context = new ObjectContext(settings);
         } 
 
 
-        public async Task<IEnumerable<Alerta>> Get()
+        public async Task<IEnumerable<AlertsConfiguration>> Get()
         {
             try
             {
-                return await _context.Alertas.Find(_ => true).ToListAsync();
+                return await _context.AlertsConfigurations.Find(_ => true).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -34,13 +36,13 @@ namespace WebApplication.Repository
             }
         }
 
-    public async Task<Alerta> Get(string id)
+    public async Task<AlertsConfiguration> Get(string id)
     {
-        var filter = Builders<Alerta>.Filter.Eq("AlertaId", id);
+        var filter = Builders<AlertsConfiguration>.Filter.Eq("AlertsConfigurationId", id);
 
         try
         {
-            return await _context.Alertas.Find(filter).FirstOrDefaultAsync();
+            return await _context.AlertsConfigurations.Find(filter).FirstOrDefaultAsync();
         }
         catch (Exception ex)
         {
@@ -48,12 +50,12 @@ namespace WebApplication.Repository
         }
     }
 
-    public async Task Add(Alerta item)
+    public async Task Add(AlertsConfiguration item)
     {
         try
         {
-            item.Id=_context.Alertas.Find(_ => true).ToList().Count+1;
-            await _context.Alertas.InsertOneAsync(item);
+            item.Id=_context.AlertsConfigurations.Find(_ => true).ToList().Count+1;
+            await _context.AlertsConfigurations.InsertOneAsync(item);
         }
         catch (Exception ex)
         {
@@ -65,8 +67,8 @@ namespace WebApplication.Repository
     {
         try
         {
-            DeleteResult actionResult = await _context.Alertas.DeleteOneAsync(
-                    Builders<Alerta>.Filter.Eq("AlertaId", id));
+            DeleteResult actionResult = await _context.AlertsConfigurations.DeleteOneAsync(
+                    Builders<AlertsConfiguration>.Filter.Eq("AlertsConfigurationId", id));
 
             return actionResult.IsAcknowledged 
                 && actionResult.DeletedCount > 0;
@@ -78,13 +80,13 @@ namespace WebApplication.Repository
     }
 
     
-    public async Task<bool> Update(string id, Alerta item)
+    public async Task<bool> Update(string id, AlertsConfiguration item)
     {
         try
         {
             ReplaceOneResult actionResult 
-                = await _context.Alertas
-                                .ReplaceOneAsync(n => n.AlertaId.Equals(id)
+                = await _context.AlertsConfigurations
+                                .ReplaceOneAsync(n => n.AlertsConfigurationId.Equals(id)
                                         , item
                                         , new UpdateOptions { IsUpsert = true });
             return actionResult.IsAcknowledged
@@ -101,7 +103,7 @@ namespace WebApplication.Repository
         try
         {
             DeleteResult actionResult 
-                = await _context.Alertas.DeleteManyAsync(new BsonDocument());
+                = await _context.AlertsConfigurations.DeleteManyAsync(new BsonDocument());
 
             return actionResult.IsAcknowledged
                 && actionResult.DeletedCount > 0;

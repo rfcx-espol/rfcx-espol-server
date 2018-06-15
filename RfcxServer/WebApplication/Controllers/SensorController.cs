@@ -60,29 +60,29 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        [Route("api/Dispositivo/{DispositivoId:int}/[controller]")]
-        public Task<string> GetSensorsByDispositivo([FromRoute]int DispositivoId)
+        [Route("api/Device/{DeviceId:int}/[controller]")]
+        public Task<string> GetSensorsByDevice([FromRoute]int DeviceId)
         {
-            return this.GetSensorByDispositivo(DispositivoId);
+            return this.GetSensorByDevice(DeviceId);
         }
 
-        private async Task<string> GetSensorByDispositivo(int DispositivoId)
+        private async Task<string> GetSensorByDevice(int DeviceId)
         {
-            var Sensors= await _SensorRepository.GetByDispositivo(DispositivoId);
+            var Sensors= await _SensorRepository.GetByDevice(DeviceId);
             return JsonConvert.SerializeObject(Sensors);
         }
 
 
         [HttpGet]
-        [Route("api/Dispositivo/{DispositivoId:int}/[controller]/{SensorId:int}")]
-        public Task<string> Get([FromRoute]int DispositivoId, [FromRoute]int SensorId)
+        [Route("api/Device/{DeviceId:int}/[controller]/{SensorId:int}")]
+        public Task<string> Get([FromRoute]int DeviceId, [FromRoute]int SensorId)
         {
-            return this.GetSensorById(DispositivoId,SensorId);
+            return this.GetSensorById(DeviceId,SensorId);
         }
 
-        private async Task<string> GetSensorById(int DispositivoId, int SensorId)
+        private async Task<string> GetSensorById(int DeviceId, int SensorId)
         {
-            var Sensor= await _SensorRepository.Get(DispositivoId, SensorId) ?? new Sensor();
+            var Sensor= await _SensorRepository.Get(DeviceId, SensorId) ?? new Sensor();
             return JsonConvert.SerializeObject(Sensor);
         }
 

@@ -13,31 +13,71 @@
 <div id="map"></div>
 
 @section ScriptsIndex {
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
     $(window).on('load',function(){
-    devices = [];
     
+    devices=[];
+    sensores = [];
     function getDataDisp(data){
       var dataDic = JSON.parse(data);
       for(device of dataDic){
-        var latitud = parseFloat(device['Latitud']);
-        var longitud = parseFloat(device['Longitud']);
-        var idDevice=parseInt(device['Id']);
-        var nameDevice=device['Nombre'];
-        console.log(nameDevice);
-        devices.push({idDevice: nameDevice,"lat": latitud, "long": longitud});
-        console.log("here",devices);
-        $.get('api/Dispositivo/'+idDevice+'/Sensor/', getDataSensor);
+        var latitud = parseFloat(device['Latitude']);
+        var longitud = parseFloat(device['Longitude']);
+        var idDevice=device['Id'];
+        var nameDevice=device['Name'];
+        devicesDic = {};
+        devicesDic["id"] = idDevice;
+        devicesDic[idDevice] = nameDevice;
+        devicesDic["lat"]=latitud;
+        devicesDic["long"]=longitud;
+        devices.push(devicesDic);
         
       }
+      console.log(devices);
+      getDataSensor();
     }
-    function getDataSensor(data){
-      var dataDic = JSON.parse(data);
+    function getDataSensor(){
+      for(device of devices){
+        var deviceId = device['id']; 
+        $.get('api/Device/'+parseInt(deviceId)+'/Sensor/', function(data){
+          var dataDic = JSON.parse(data);
+          for(sensor of dataDic){
+            var idDevice = sensor['DeviceId'];
+            var typeSensor = sensor['Type'];
+            var locationSensor = sensor['Location'];
+            var nameDevice = devices[idDevice-1][idDevice];
+            var contentString = '<div id="contentInfo">'+
+                    '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("titulo", "Index", "DeviceView", new { deviceName = "deviceNameValue" })</h3>'+
+                    '<div id="bodyContent">';
+                  
+            if(typeSensor=="humedad"){
+              contentString = contentString + '<p style="font-size: 14px; float: left;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: </p><p id="valueHum" style="font-size: 14px;">valor</p>';
+            }
+            else if(typeSensor=="Temperatura" && locationSensor=="Ambiente"){
+              contentString = contentString + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: </p><p id="valueTempAmb" style="font-size: 14px;">valor</p>';
+            }else{
+              contentString = contentString + '<p><i class="fa fa-thermometer" style="float: left;font-size:20px; color: #ff7800;"></i> Disp.: <p id="valueTempDisp" style="font-size: 14px;">valor</p>';
+            }
+            contentString = contentString +'</div>'+
+                                    '</div>';
+            contentString = contentString.replace("titulo", nameDevice);
+            
+            contentString = contentString.replace("deviceNameValue", nameDevice);
+
+            sensores.push({"content": contentString});
+            console.log(sensores);
+          }
+        });
+        console.log(sensores);
+      }
+      /*var dataDic = JSON.parse(data);
+      console.log(dataDic);
       for(sensor of dataDic){
-        var typeSensor = sensor['Tipo'];
-        var locationSensor = sensor['Ubicacion'];
-        var nameDevice = devices[sensor['DispositivoId']];
-        console.log(nameDevice);
+        var typeSensor = sensor['Type'];
+        var locationSensor = sensor['Location'];
+        var nameDevice = devices[sensor['DeviceId']];
+        console.log("Data sensor",nameDevice);
         var contentString = '<div id="contentInfo">'+
                     '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("titulo", "Index", "DeviceView", new { deviceName = "deviceNameValue" })</h3>'+
                     '<div id="bodyContent">';
@@ -55,9 +95,10 @@
         contentString = contentString.replace("titulo", nameDevice);
         
         contentString = contentString.replace("deviceNameValue", nameDevice);
-      }
+      }*/
     }
-    $.get('api/Dispositivo', getDataDisp);
+    $.get('api/Device', getDataDisp);
+    
     
     function initMap() {
           /*var bosque = {lat: -2.15437, lng: -79.963035};
