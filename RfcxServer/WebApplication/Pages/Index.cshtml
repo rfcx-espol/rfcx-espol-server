@@ -14,53 +14,69 @@
 
 @section ScriptsIndex {
     <script>
+    setInterval(function(){
+      console.log("aquí recibiremos los datos cada 5 minutos");
+    }, 50000);
     $(window).on('load',function(){
-    devices = [];
-    
+    devices=[];//{"id":1,"content":<>,"lat": -2.3,"long": -64.3}
+
     function getDataDisp(data){
       var dataDic = JSON.parse(data);
       for(device of dataDic){
-        var latitud = parseFloat(device['Latitud']);
-        var longitud = parseFloat(device['Longitud']);
-        var idDevice=parseInt(device['Id']);
-        var nameDevice=device['Nombre'];
-        console.log(nameDevice);
-        devices.push({idDevice: nameDevice,"lat": latitud, "long": longitud});
-        console.log("here",devices);
-        $.get('api/Dispositivo/'+idDevice+'/Sensor/', getDataSensor);
-        
-      }
-    }
-    function getDataSensor(data){
-      var dataDic = JSON.parse(data);
-      for(sensor of dataDic){
-        var typeSensor = sensor['Tipo'];
-        var locationSensor = sensor['Ubicacion'];
-        var nameDevice = devices[sensor['DispositivoId']];
-        console.log(nameDevice);
+        var latitud = parseFloat(device['Latitude']);
+        var longitud = parseFloat(device['Longitude']);
+        var idDevice=device['Id'];
+        var nameDevice=device['Name'];
+
         var contentString = '<div id="contentInfo">'+
                     '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("titulo", "Index", "DeviceView", new { deviceName = "deviceNameValue" })</h3>'+
-                    '<div id="bodyContent">';
-                  
-        if(typeSensor=="humedad"){
-          contentString = contentString + '<p style="font-size: 14px; float: left;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: </p><p id="valueHum" style="font-size: 14px;">valor</p>';
-        }
-        else if(typeSensor=="Temperatura" && locationSensor=="Ambiente"){
-          contentString = contentString + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: </p><p id="valueTempAmb" style="font-size: 14px;">valor</p>';
-        }else{
-          contentString = contentString + '<p><i class="fa fa-thermometer" style="float: left;font-size:20px; color: #ff7800;"></i> Disp.: <p id="valueTempDisp" style="font-size: 14px;">valor</p>';
-        }
-        contentString = contentString +'</div>'+
-                                '</div>';
+                    '<div id="bodyContent" style="width: 85px;">';
         contentString = contentString.replace("titulo", nameDevice);
-        
         contentString = contentString.replace("deviceNameValue", nameDevice);
+
+        devicesDic = {};
+        devicesDic["id"] = idDevice;
+        devicesDic["content"] = contentString;
+        devicesDic["lat"]=latitud;
+        devicesDic["long"]=longitud;
+        devices.push(devicesDic);
+        
       }
+      getDataSensor();
     }
-    $.get('api/Dispositivo', getDataDisp);
+    function getDataSensor(){
+      for(device of devices){
+        var deviceId = device['id']; 
+        $.get('api/Device/'+parseInt(deviceId)+'/Sensor/', function(data){
+          var dataDic = JSON.parse(data);
+          for(sensor of dataDic){
+            var idDevice = sensor['DeviceId'];
+            var typeSensor = sensor['Type'];
+            var locationSensor = sensor['Location'];
+            var contentS = devices[idDevice-1]["content"];
+            if(typeSensor=="Humedad"){
+              devices[idDevice-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb" ></i> Amb.: </p><p id="valueHum" style="font-size: 14px; line-height: 2;"> 30 °C</p>';
+            }
+            else if(typeSensor=="Temperatura" && locationSensor=="Ambiente"){
+              devices[idDevice-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: </p><p id="valueTempAmb" style="font-size: 14px; line-height: 2;"> 35 °C</p>';
+            }else{
+              devices[idDevice-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Disp.: </p><p id="valueTempDisp" style="font-size: 14px; line-height: 2;"> 40 H</p>';
+            }
+            devices[idDevice-1]["content"] = devices[idDevice-1]["content"] +'</div>'+
+                                    '</div>';
+            
+          }
+          initMap();
+        });
+        
+      }
+
+      
+    }
+    
     
     function initMap() {
-          /*var bosque = {lat: -2.15437, lng: -79.963035};
+          var bosque = {lat: -2.15437, lng: -79.963035};
           var estilos =[
               {
                   featureType: "poi",
@@ -84,72 +100,40 @@
           });
           map.setMapTypeId(google.maps.MapTypeId.HYBRID);
           
+          for(device of devices){
+            var coordenadas = {lat: parseFloat(device['lat']), lng: parseFloat(device['long'])};
+            var contentString = device["content"];
+            var infowindow = new google.maps.InfoWindow({
+            content: contentString
+            });
+            var imageURL = 'http://maps.google.com/mapfiles/kml/paddle/orange-circle.png';
+            var image = {
+              url: imageURL,
+              scaledSize: new google.maps.Size(30, 30)
+            };
+            var marker = new google.maps.Marker({
+              position: coordenadas,
+              map: map,
+              icon: image
+            });
+            //infowindow.open(map,marker);
+            var currentInfoWindow = null;
+            google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
+              return function() {
+                  if (currentInfoWindow != null) { 
+                    currentInfoWindow.close(); 
+                  }
+                  infowindow.open(map, marker); 
+                  currentInfoWindow = infowindow;
+              };
+            })(marker,contentString,infowindow));
+            
+          }
           
-          coordenadas = [];
-          contents = [];
-          $.get('api/Dispositivo', function(result){
-            var deviceDic=JSON.parse(result);
-            j=0;
-            for(device of deviceDic){
-              var latitud = parseFloat(device['Latitud']);
-              var longitud = parseFloat(device['Longitud']);
-              var idDevice=parseInt(device['Id']);
-              var nameDevice=device['Nombre'];
-              coordenadas.push({lat: latitud, lng: longitud});
-              $.get('api/Dispositivo/'+idDevice+'/Sensor/', function(sensors){
-                var sensorDic=JSON.parse(sensors);
-                for(sensor of sensorDic){
-                  var typeSensor = sensorDic['Tipo'];
-                  var locationSensor = sensorDic['Ubicacion'];
-
-                  var contentString = '<div id="contentInfo">'+
-                    '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("titulo", "Index", "DeviceView", new { deviceName = "deviceNameValue" })</h3>'+
-                    '<div id="bodyContent">';
-                  
-                  if(typeSensor=="humedad"){
-                    contentString = contentString + '<p style="font-size: 14px; float: left;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb";></i> Amb.: </p><p id="valueHum" style="font-size: 14px;">valor</p>';
-                  }
-                  else if(typeSensor=="Temperatura" && locationSensor=="Ambiente"){
-                    contentString = contentString + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: </p><p id="valueTempAmb" style="font-size: 14px;">valor</p>';
-                  }else{
-                    contentString = contentString + '<p><i class="fa fa-thermometer" style="float: left;font-size:20px; color: #ff7800;"></i> Disp.: <p id="valueTempDisp" style="font-size: 14px;">valor</p>';
-                  }
-                }
-                
-                contentString = contentString +'</div>'+
-                                '</div>';
-                contentString = contentString.replace("titulo", nameDevice);
-                console.log(nameDevice);
-                contentString = contentString.replace("deviceNameValue", nameDevice);
-                
-                var infowindow = new google.maps.InfoWindow({
-                  content: contentString
-                });
-                console.log("HERE",contentString);
-                var imageURL = 'http://maps.google.com/mapfiles/kml/paddle/orange-circle.png';
-                var image = {
-                  url: imageURL,
-                  scaledSize: new google.maps.Size(30, 30)
-                };
-                var marker = new google.maps.Marker({
-                  position: coordenadas[j],
-                  map: map,
-                  icon: image
-                });
-                //infowindow.open(map,marker);
-                google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
-                  return function() {
-                      infowindow.open(map,marker);
-                  };
-                })(marker,contentString,infowindow));
-                j++;
-              });
-              
-            }
-          });*/
-
-      }
+            
+    }
     
+    $.get('api/Device', getDataDisp);
     });
         
       /*function initMap() {
@@ -269,11 +253,7 @@
           });
         }, 5000); 
       }*/
-<<<<<<< HEAD
-      function initMap() {
-=======
       /*function initMap() {
->>>>>>> Changes in map
         var bosque = {lat: -2.15437, lng: -79.963035};
         var estilos =[
             {
@@ -364,6 +344,8 @@
           });
         }, 3000); 
       }*/
+=======
+>>>>>>> Map corrections to create station boxes from database
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXwpsfDP00RgZGAlNum0MVhHdP0X0IP0">
