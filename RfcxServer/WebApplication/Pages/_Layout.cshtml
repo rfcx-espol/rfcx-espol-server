@@ -35,21 +35,17 @@
             <span class="icon-bar"></span>
           </button>
         @RenderSection("Home", required: false)
-          <!--a id="home-pag" href='@Url.Action("Index","")'><i class="fa fa-home w3-xxlarge navbar-text"></i></a-->
         </div>
         
         <div id="navbar" class="navbar-collapse collapse">
           <ul id="top-menu" class="nav navbar-nav navbar-right mu-main-nav">
-            <li>@Html.ActionLink("DESCARGAS", "Index", "Download")</li>
+            <li>@Html.ActionLink("ESTACIONES", "Index", "DeviceRegister")</li>
             <li>@Html.ActionLink("ALARMAS", "Index", "Alarm")</li>
-            <li>@Html.ActionLink("DISPOSITIVOS", "Index", "DeviceRegister")</li>
-            <!-- <li><a>Alarm</a></li                        
-            <li><a>Settings</a></li> 
-            <li><a>Settings</a></li>  -->                        
+            <li>@Html.ActionLink("AUDIOS", "Index", "Download")</li>                   
             <li><a class="material-icons" style="font-size:30px" href="@Url.Action("Index", "Alarm")">add_alert</a></li>
           </ul>                            
-        </div><!--/.nav-collapse -->       
-      </div><!--/.container -->       
+        </div>
+      </div>
     </nav> 
 
 
