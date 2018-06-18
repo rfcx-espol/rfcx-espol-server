@@ -1,5 +1,4 @@
-﻿
-@using Microsoft.Extensions.FileProviders
+﻿@using Microsoft.Extensions.FileProviders
 @model WebApplication.IndexModel
 
 @{
@@ -9,91 +8,156 @@
 @{
     ViewBag.Title = "DeviceRegister";
 }
-
 @section Home{
-            <a id="home-pag" class="navbar-brand" href='@Url.Action("Index","")'>
-                <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span>
-            </a>
+  <a id="home-pag" href='@Url.Action("Index","")'><i class="fa fa-home w3-xxlarge navbar-text"></i></a>
 }
-<link type="text/css" rel="stylesheet" href="~/css/estaciones.css" />
+<link rel='stylesheet' type='text/css' href='~/css/estaciones.css'>
+
+<link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+<link href="assets/css/font-awesome.css" rel="stylesheet">
+<link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet"> 
+<link rel="stylesheet" type="text/css" href="wwwroot/lib/bootstrap/slick.css">    
+<link href="~/css/site.css" rel="stylesheet">    
+<link href='https://fonts.googleapis.com/css?family=Prata' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>   
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+
+
+<!-- id="mu-about-us">
 
 <div class="container">
-    <div class="row">
-        <!--div class="col-md-12">
-            <div class="mu-about-us-area">
-                <div class="mu-title">
-                <br />
-                <h2>Device Register</h2>
-                </div>
-                <form method="post" enctype="#mu-about-ustipart/form-data" action="">
-                <div class="form-group">
-                    <table class="table table-bordered" id="vertical-table">
-                    
-                    <tr><th><label for="ddl">Device ID </label></th> 
-                        <td> <input></input> </td>
-                    </tr>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="mu-about-us-area">
 
-                    <tr><th><label>Latitude </label></th>
-                        <td> <input></input> </td>
-                    </tr>
-                
-                    <tr><th><label>Length </label></th>
-                        <td> <input></input> </td>
-                    </tr>  
-                
-                    <tr><th><label>Android Version </label></th>
-                        <td> <input></input> </td>
-                    </tr>  
+        <div class="mu-title">
+          <br />
+          <h2>Device Register</h2>
+        </div>
 
-                    <tr><th><label>Service Version </label></th>
-                        <td> <input></input> </td>
-                    </tr>  
 
-                    </table>
+        <form method="post" enctype="#mu-about-ustipart/form-data" action="">
+          <div class="form-group">
+            <table class="table table-bordered" id="vertical-table">
+              
+              <tr><th><label for="ddl">Device ID </label></th> 
+                <td> <input></input> </td>
+              </tr>
 
-                    <br />
-                    <button type="submit" id="out">Save</button><br />
-                </div>        
-                </form>         
+              <tr><th><label>Latitude </label></th>
+                <td> <input></input> </td>
+              </tr>
+          
+              <tr><th><label>Length </label></th>
+                <td> <input></input> </td>
+              </tr>  
+          
+              <tr><th><label>Android Version </label></th>
+                <td> <input></input> </td>
+              </tr>  
 
-                <div class="mu-title">
-                <br />
-                <h2>Sensor </h2>
-                </div>
+              <tr><th><label>Service Version </label></th>
+                <td> <input></input> </td>
+              </tr>  
 
-                <form method="post" enctype="#mu-about-ustipart/form-data" action="">
-                <div class="form-group">
-                    <table class="table table-bordered" id="vertical-table">
-                    
-                    <tr><th><label for="ddl">Sensor ID </label></th> 
-                        <td> <input></input> </td>
-                    </tr>
+            </table>
 
-                    <tr><th><label>Name ID</label></th>
-                        <td> <input></input> </td>
-                    </tr>
-                
-                    <tr><th><label>Function </label></th>
-                        <td> <input></input> </td>
-                    </tr>
+        
+            <br />
+            <button type="submit" id="out">Save</button><br />
+          </div>        
+        </form>        
 
-                    </table>
+        <div class="mu-title">
+          <br />
+          <h2>Sensor </h2>
+        </div>
 
-                    <button id="out">Add Sensor </button><br /><br /><br /> 
-                
-                    <br />
-                    <button type="submit" id="out">Save</button><br /><br /><br /> 
-                </div>        
-                </form>             
-            </div>
-        </div-->
-        <div class="col-md-3">
-            <div class="estacion">
-                <div class="titulo-estacion">
-                    <h4>Estación 1</h4>
-                    <a><i class="fas fa-edit"></i></a>
-                </div>
-            </div>
-        </div>      
-    </div>
+        <form method="post" enctype="#mu-about-ustipart/form-data" action="">
+          <div class="form-group">
+            <table class="table table-bordered" id="vertical-table">
+              
+              <tr><th><label for="ddl">Sensor ID </label></th> 
+                <td> <input></input> </td>
+              </tr>
+
+              <tr><th><label>Name ID</label></th>
+                <td> <input></input> </td>
+              </tr>
+          
+              <tr><th><label>Function </label></th>
+                <td> <input></input> </td>
+              </tr>  
+
+            </table>
+
+            <button id="out">Add Sensor </button><br /><br /><br /> 
+        
+            <br />
+            <button type="submit" id="out">Save</button><br /><br /><br /> 
+          </div>        
+        </form>         
+                   
+      </div>
+    </div>      
+  </div>
+</div>
+</section-->
+
+<div class="row equal">
+	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
+		<div class="titulo">
+			<h4>ESTACION 1</h4>
+		</div>
+		<div class="cuerpo">
+			<p>Temperatura ambiente</p>
+			<p>Temperatura dispositivo</p>
+		</div>
+	</div>
+	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
+		<div class="titulo">
+			<h4>ESTACION 1</h4>
+		</div>
+		<div class="cuerpo">
+			<p>Temperatura ambiente</p>
+			<p>Temperatura dispositivo</p>
+			<p>Temperatura ambiente</p>
+		</div>
+	</div>
+	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
+		<div class="titulo">
+			<h4>ESTACION 1</h4>
+		</div>
+		<div class="cuerpo">
+			<p>Temperatura ambiente</p>
+		</div>
+	</div>
+	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
+		<div class="titulo">
+			<h4>ESTACION 1</h4>
+		</div>
+		<div class="cuerpo">
+			<p>Temperatura dispositivo</p>
+		</div>
+	</div>
+	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
+		<div class="titulo">
+			<h4>ESTACION 1</h4>
+		</div>
+		<div class="cuerpo">
+			<p>Temperatura ambiente</p>
+			<p>Temperatura dispositivo</p>
+		</div>
+	</div>
+	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
+		<div class="titulo">
+			<h4>ESTACION 1</h4>
+		</div>
+		<div class="cuerpo">
+			<p>Temperatura ambiente</p>
+			<p>Temperatura dispositivo</p>
+			<p>Temperatura ambiente</p>
+		</div>
+	</div>
 </div>
