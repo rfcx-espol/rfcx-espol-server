@@ -248,14 +248,11 @@ namespace WebApplication {
         public async Task<IActionResult> UploadFile(IFormFile file) {
             if (file == null || file.Length == 0)
                 return Content("File not selected");
-
             var gzipFilePath = Path.Combine(Core.GzipFolderPath,
                                             file.FileName);
-
             using (var stream = new FileStream(gzipFilePath, FileMode.Create)) {
                 await file.CopyToAsync(stream);
             }
-
             var gzipFileInfo = new FileInfo(gzipFilePath);
             var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));
             
@@ -282,7 +279,6 @@ namespace WebApplication {
                 process.StartInfo.Arguments = "-i " + decompressedPath + " " + oggFilePath;
                 process.Start();
             }
-
             return Content("File received");
         }*/
     }
