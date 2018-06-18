@@ -1,5 +1,5 @@
 .container.body-content {
-    padding: 20px;
+    padding: 20px !important;
 }
 .titulo {
     background-color: #397f43;
