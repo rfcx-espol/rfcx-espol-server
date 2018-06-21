@@ -5,8 +5,11 @@ dataHumedad = [];
 window.onload = displayMonitor();
 
 function displayMonitor() {
-    
-    var chartMonTempDisp = new CanvasJS.Chart("chartMonitorAmb", {
+    var idDevice = parseInt(document.getElementById("deviceId").innerHTML);
+    console.log(idDevice);
+    var idSensor = parseInt(document.getElementById("sensorTempAmbId").innerHTML);
+    console.log(idSensor);
+    var chartMonTempDisp = new CanvasJS.Chart("chartMonitorDisp", {
         animationEnabled: true,
         zoomEnabled: true,
         height: 320, 
@@ -17,11 +20,12 @@ function displayMonitor() {
         },
         data: [{
             type: "line",
+            lineColor:"#424084",
             dataPoints: dataTempDisp
         }]
     });
 
-    var chartMonHumedad = new CanvasJS.Chart("chartMonitorDisp", {
+    var chartMonHumedad = new CanvasJS.Chart("chartMonitorHum", {
         animationEnabled: true,
         zoomEnabled: true,
         height: 320, 
@@ -32,11 +36,12 @@ function displayMonitor() {
         },
         data: [{
             type: "line",
+            lineColor: "LightSeaGreen",
             dataPoints: dataHumedad
         }]
     });
 
-    var chartMonTempAmb = new CanvasJS.Chart("chartMonitorHum", {
+    var chartMonTempAmb = new CanvasJS.Chart("chartMonitorAmb", {
         animationEnabled: true,
         zoomEnabled: true,
         height: 320, 
@@ -47,6 +52,7 @@ function displayMonitor() {
         },
         data: [{
             type: "line",
+            lineColor: "orange",
             dataPoints: dataTempAmb
         }]
     });
@@ -61,9 +67,7 @@ function displayMonitor() {
         var minAmb= 50000;
         var maxAmb=0;
         var avgAmb=0;
-        console.log("here");
         for (var i = 0; i < data.length; i++) {
-            console.log(data[i].Type);
             if(data[i].Type=="Temperature" && data[i].Location=="Dispositivo"){
                 var time = parseInt(data[i].Timestamp);
                 var value = parseInt(data[i].Value);
@@ -75,7 +79,8 @@ function displayMonitor() {
                 }
                 dataTempDisp.push({
                     x: new Date(time),
-                    y: value
+                    y: value,
+                    color: "#424084"
                 });
             }
             else if(data[i].Type=="Humedad"){
@@ -89,7 +94,8 @@ function displayMonitor() {
                 }
                 dataHumedad.push({
                     x: new Date(time),
-                    y: value
+                    y: value,
+                    color: "LightSeaGreen"
                 });
             }else{
                 var time = parseInt(data[i].Timestamp);
@@ -102,11 +108,12 @@ function displayMonitor() {
                 }
                 dataTempAmb.push({
                     x: new Date(time),
-                    y: value
+                    y: value,
+                    color: "orange"
                 });
             }
         }
-
+        
         var lengthAmb = chartMonTempAmb.options.data[0].dataPoints.length;
         var lengthDisp = chartMonTempDisp.options.data[0].dataPoints.length;
         var lengthHum = chartMonHumedad.options.data[0].dataPoints.length;
@@ -130,6 +137,8 @@ function displayMonitor() {
         
         document.getElementById("avgMonHum").innerHTML = " "+(avgHumedad/lengthHum).toFixed(2);        
     }
+
+    //$.get('api/Device/2/Sensor/2/Data/1528900018/1528900263', addData);
     $.getJSON('json/monitorData.json', addData);
 
     setInterval(displayMonitor, 300000000);

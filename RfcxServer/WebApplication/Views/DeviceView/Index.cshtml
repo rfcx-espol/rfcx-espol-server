@@ -22,30 +22,34 @@
       <button class="tablinks" name="humedad" onclick="openDevice(event, 'humedad')" onfocus="displayEachChart()"><i class="fa fa-tint" style="font-size:30px;";></i>  Humedad</button>
 </div> 
     <div id="monitor" class="tabcontent" onload="display(this)">
-      <h3 style="text-align: center;">Dispositivo @ViewData["deviceName"].ToString()</h3>
+      <h3 style="text-align: center; color: #e4b836; font-weight: bold;">@ViewData["deviceName"].ToString()</h3>
+      <p id="deviceId" style="display:none">@ViewData["deviceId"].ToString()</p>
       <!--h3>Monitor</h3-->
-      <div class="col-sm-12 col-md-6 col-lg-6 sensores_monitor">
-        <h4 class="titulo_sensor">Sensor: Temperatura - Ambiente</h4>
+      <div class="col-sm-12 col-md-12 col-lg-12 sensores_monitor">
+        <h4 class="titulo_sensor">Temperatura - Ambiente</h4>
+        <p id="sensorTempAmbId" style="display:none">@ViewData["sensorId"].ToString()</p>
         <div id="chartMonitorAmb" style="height: 320px"></div>
         <div id="boxInfoValues">
           <p class="boxLetters initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minMonHum"></p>
           <p class="boxLetters middle" ><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id="maxMonHum"></p>
           <p class="boxLetters last"><i class="fa  iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id="avgMonHum"></p>
         </div>
+        <hr>
       </div>
-
-      <div class="col-sm-12 col-md-6 col-lg-6 sensores_monitor">
-        <h4 class="titulo_sensor">Sensor: Temperatura - Dispositivo</h4>
+      
+      <div class="col-sm-12 col-md-12 col-lg-12 sensores_monitor">
+        <h4 class="titulo_sensor">Temperatura - Dispositivo</h4>
         <div id="chartMonitorDisp" style="height: 320px"></div>
         <div id="boxInfoValues">
           <p class="boxLetters initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minMonDisp"></p>
           <p class="boxLetters middle" ><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id="maxMonDisp"></p>
           <p class="boxLetters last"><i class="fa  iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id="avgMonDisp"></p>
         </div>
+        <hr>
       </div>
 
-      <div class="col-sm-12 col-md-6 col-lg-6 sensores_monitor">
-        <h4 class="titulo_sensor">Sensor: Humedad - Ambiente</h4>
+      <div class="col-sm-12 col-md-12 col-lg-12 sensores_monitor">
+        <h4 class="titulo_sensor">Humedad - Ambiente</h4>
         <div id="chartMonitorHum" style="height: 320px"></div>
         <div id="boxInfoValues">
           <p class="boxLetters initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minMonAmb"></p>
@@ -57,9 +61,8 @@
 
     <!--SENSORES INDIVIDUALES -->
 
-    <div id="temp_amb" class="tabcontent activo">
-      <h3 style="text-align: center;" class="main-title">@ViewData["deviceName"].ToString()</h3>
-      <h4 class="chart-title">Sensor: Temperatura - Ambiente</h4>
+    <div id="temp_amb" class="col-sm-12 col-md-12 col-lg-12 tabcontent activo">
+      <h4 class="chart-title">@ViewData["deviceName"].ToString()/Temperatura - Ambiente</h4>
       <div class="col-md-12" style="background-color: #fff;">
         <div id="chartContainer1" style="height: 320px"></div>
         <div id="boxInfoValues">
@@ -68,13 +71,10 @@
           <p class="boxLetters last"><i class="fa iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id="avgValueAmb"></p>
         </div>
       </div>
-      <!--div id='chart_div' style='width: 700px; height: 240px;'></div-->
-      
     </div>
     
-    <div id="temp_disp" class="tabcontent">
-      <h3 style="text-align: center;" class="main-title">@ViewData["deviceName"].ToString()</h3>
-      <h4 class="chart-title">Sensor: Temperatura - Dispositivo</h4>
+    <div id="temp_disp" class="col-sm-12 col-md-12 col-lg-12 tabcontent">
+      <h4 class="chart-title">@ViewData["deviceName"].ToString()/Temperatura - Dispositivo</h4>
       <div class="col-md-12" style="background-color: #fff;">
         <div id="chartContainer2" style="width: 100%; height: 320px"></div>
         <div id="boxInfoValues">
@@ -85,9 +85,8 @@
       </div>	
     </div>
       <!--div id="temp_disp_chart"></div-->
-      <div id="humedad" class="tabcontent">
-      <h3 style="text-align: center;" class="main-title">@ViewData["deviceName"].ToString()</h3>
-      <h4 class="chart-title">Sensor: Humedad - Ambiente</h4>
+      <div id="humedad" class="col-sm-12 col-md-12 col-lg-12 tabcontent">
+      <h4 class="chart-title">@ViewData["deviceName"].ToString()/Humedad - Ambiente</h4>
       <div class="col-md-12" style="background-color: #fff;">
         <div id="chartContainer3" style="width: 100%; height: 320px"></div>
         <div id="boxInfoValues">

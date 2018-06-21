@@ -15,6 +15,7 @@ function displayEachChart() {
         },
         data: [{
             type: "line",
+            lineColor: "#424084",
             dataPoints: dataTempDispInd
         }]
     });
@@ -30,6 +31,7 @@ function displayEachChart() {
         },
         data: [{
             type: "line",
+            lineColor: "LightSeaGreen",
             dataPoints: dataHumedadInd
         }]
     });
@@ -45,6 +47,7 @@ function displayEachChart() {
         },
         data: [{
             type: "line",
+            lineColor: "orange",
             dataPoints: dataTempAmbInd
         }]
     });
@@ -71,7 +74,8 @@ function displayEachChart() {
                 }
                 dataTempDispInd.push({
                     x: new Date(time),
-                    y: value
+                    y: value,
+                    color: "#424084"
                 });
             }
             else if(data[i].Type=="Humedad"){
@@ -85,7 +89,8 @@ function displayEachChart() {
                 }
                 dataHumedadInd.push({
                     x: new Date(time),
-                    y: value
+                    y: value,
+                    color: "LightSeaGreen"
                 });
             }else{
                 var time = parseInt(data[i].Timestamp);
@@ -98,7 +103,8 @@ function displayEachChart() {
                 }
                 dataTempAmbInd.push({
                     x: new Date(time),
-                    y: value
+                    y: value,
+                    color: "orange"
                 });
             }
         }

@@ -52,10 +52,11 @@
         var nameDevice=device['Name'];
 
         var contentString = '<div id="contentInfo">'+
-                    '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("titulo", "Index", "DeviceView", new { deviceName = "deviceNameValue" })</h3>'+
+                    '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("titulo", "Index", "DeviceView", new { deviceName = "deviceNameValue", deviceId = "deviceIdVal", sensorId="sensorIdVal" })</h3>'+
                     '<div id="bodyContent" style="width: 85px;">';
         contentString = contentString.replace("titulo", nameDevice);
         contentString = contentString.replace("deviceNameValue", nameDevice);
+        contentString = contentString.replace("deviceIdVal", idDevice);
 
         devicesDic = {};
         devicesDic["id"] = idDevice;
@@ -94,6 +95,7 @@
                                     '</div>';
             
             devices[idDevice-1]["sensorsId"].push(id);
+            devices[idDevice-1]["content"] = devices[idDevice-1]["content"].replace("sensorIdVal", id);
           }
           initMap();
         });

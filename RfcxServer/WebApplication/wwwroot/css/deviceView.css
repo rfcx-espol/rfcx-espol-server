@@ -18,6 +18,11 @@ body {font-family: "Lato", sans-serif;}
     stroke: steelblue;
     stroke-width: 2px;
   }
+hr{
+    margin-bottom: 0px;
+    margin-top: 40px;
+    border-color: #908585;
+  }
 /* Style the buttons inside the tab */
 .tab button {
     display: block;
@@ -131,12 +136,9 @@ div#submenu a:hover {
 }
 
 .initialMon{
-    margin-left: 20%;
-}
-.initial{
     margin-left: 35%;
 }
-.initial, .middle, .last{
+.initialMon, .middle, .last{
     margin-right: 7px;
 }
 .initialValue, .middleValue{
@@ -144,18 +146,18 @@ div#submenu a:hover {
 }
 
 @media (max-width: 1199px) {
-    .initial{
-        margin-left: 28%;
+    .initialMon{
+        margin-left: 30%;
     }
 }
 @media (max-width: 991px) {
-    .initial{
-        margin-left: 26%;
+    .initialMon{
+        margin-left: 23%;
     }
 }
 @media (max-width: 767px) {
-    .initial{
-        margin-left: 19%;
+    .initialMon{
+        margin-left: 23%;
     }
     .main-title{
         font-size: 21px;
@@ -166,8 +168,8 @@ div#submenu a:hover {
 }
 
 @media (max-width: 640px) {
-    .initial{
-        margin-left: 13%;
+    .initialMon{
+        margin-left: 20%;
     }
     
     .main-title{
@@ -183,7 +185,7 @@ div#submenu a:hover {
 }
 
 @media (max-width: 480px) {
-    .initial{
+    .initialMon{
         margin-left: 9%;
     }
     .boxLetters {
@@ -200,7 +202,7 @@ div#submenu a:hover {
   }
 
 @media (max-width: 360px) {
-    .initial{
+    .initialMon{
         margin-left: 12%;
     }
     .last{
