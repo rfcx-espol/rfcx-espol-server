@@ -4,14 +4,12 @@
 @{
     Layout = "~/Pages/_Layout.cshtml";
 }
-
 @{
     ViewBag.Title = "DeviceRegister";
 }
 @section Home{
   <a id="home-pag" href='@Url.Action("Index","")'><i class="fa fa-home w3-xxlarge navbar-text"></i></a>
 }
-<link rel='stylesheet' type='text/css' href='~/css/estaciones.css'>
 
 <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
 <!-- <link href="assets/css/font-awesome.css" rel="stylesheet"> -->
@@ -23,7 +21,7 @@
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-<link rel='stylesheet' type='text/css' href='~/css/estaciones.css'>
+<link rel='stylesheet' type='text/css' href='~/css/stations.css'>
 
 
 <!-- id="mu-about-us">
@@ -113,8 +111,7 @@
 			<h4>ESTACION 1</h4>
 		</div>
 		<div class="cuerpo">
-			<p>Temperatura ambiente</p>
-			<p>Temperatura dispositivo</p>
+			<p>ALGO</p>
 		</div>
 	</div>
 	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
@@ -159,6 +156,8 @@
 		<div class="cuerpo">
 			<p>Temperatura ambiente</p>
 			<p>Temperatura dispositivo</p>
+			<p>Temperatura ambiente</p>
+			<p>Temperatura ambiente</p>
 			<p>Temperatura ambiente</p>
 		</div>
 	</div>
@@ -252,6 +251,7 @@
   </div>
 </div>
 
+@section Scripts {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script>
   $(document).ready(function() {
@@ -261,7 +261,8 @@
             $(this).parent('td').parent('tr').remove();
         });
                 
-
     });
   });
 </script>  
+<script src="~/js/stations.js"></script>
+}
