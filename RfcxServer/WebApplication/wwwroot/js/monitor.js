@@ -1,14 +1,32 @@
+sensorsInf = {};
+sensorsList = [];
 dataTempDisp = [];
 dataTempAmb = [];
 dataHumedad = [];
 
-window.onload = displayMonitor();
-
-function displayMonitor() {
+window.onload = getData();
+//get sensors from one device
+function getData(){
     var idDevice = parseInt(document.getElementById("deviceId").innerHTML);
-    console.log(idDevice);
-    var idSensor = parseInt(document.getElementById("sensorTempAmbId").innerHTML);
-    console.log(idSensor);
+    $.get('api/Device/'+parseInt(idDevice)+'/Sensor/',getSensors);
+}
+//keep data on sensorsList
+function getSensors(data){
+    var sensors = JSON.parse(data);
+    for( sensor of sensors){
+        sensorsInf['id']=sensor['Id'];
+        sensorsInf['deviceId']=sensor['DeviceId'];
+        sensorsInf['type']=sensor['Type'];
+        sensorsInf['location']=sensor['Location'];
+        sensorsList.push(sensorsInf);
+    }
+    displayMonitor();
+}
+
+//Obtener los datos de un sensor en un timepo
+//$.get('api/Device/DeviceId/Sensor/SensorId/Data/StartTimestamp/EndTimestamp')
+function displayMonitor() {
+    console.log(sensorsList);
     var chartMonTempDisp = new CanvasJS.Chart("chartMonitorDisp", {
         animationEnabled: true,
         zoomEnabled: true,
@@ -145,3 +163,20 @@ function displayMonitor() {
 
     //displayEachChart();
 }
+
+function openDevice(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();

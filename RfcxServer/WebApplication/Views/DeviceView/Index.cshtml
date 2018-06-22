@@ -27,7 +27,6 @@
       <!--h3>Monitor</h3-->
       <div class="col-sm-12 col-md-12 col-lg-12 sensores_monitor">
         <h4 class="titulo_sensor">Temperatura - Ambiente</h4>
-        <p id="sensorTempAmbId" style="display:none">@ViewData["sensorId"].ToString()</p>
         <div id="chartMonitorAmb" style="height: 320px"></div>
         <div id="boxInfoValues">
           <p class="boxLetters initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minMonHum"></p>
@@ -107,25 +106,5 @@
 
   <script type="text/javascript" src="js/chartResumen.js"></script>
   <script type="text/javascript" src="js/monitor.js"></script> 
-
-
-    <script>
-    function openDevice(evt, cityName) {
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-        }
-        tablinks = document.getElementsByClassName("tablinks");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
-        document.getElementById(cityName).style.display = "block";
-        evt.currentTarget.className += " active";
-    }
-
-    // Get the element with id="defaultOpen" and click on it
-    document.getElementById("defaultOpen").click();
-    </script>
   
  }
