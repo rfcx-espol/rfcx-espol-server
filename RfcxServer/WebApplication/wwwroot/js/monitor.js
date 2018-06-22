@@ -30,9 +30,9 @@ function displayMonitor() {
         var idSensor = sensors['id'];
 
         var currentTime = new Date();
-        var current = currentTime.getTime();
+        var current = currentTime.getTime()/1000;
         var lastTwoHours = currentTime.setHours(currentTime.getHours() - 2);
-        $.getJSON('api/Device/'+idDevice+'/Sensor/'+idSensor+'/Data/'+lastTwoHours+'/'+current, addData);       
+        $.getJSON('api/Device/'+idDevice+'/Sensor/'+idSensor+'/Data/'+lastTwoHours/1000+'/'+current, addData);       
     }
 
 }
