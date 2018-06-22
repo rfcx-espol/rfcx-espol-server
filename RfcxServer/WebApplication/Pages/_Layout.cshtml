@@ -47,13 +47,9 @@
       </div>
     </nav> 
 
-
     <div class="container body-content">
         @RenderBody()
     </div>
-    <footer>
-        <p style="margin: 0">2018 - Bosque Protector</p>
-    </footer>
    <environment include="Development">
         <script src="~/js/jquery-3.3.1.min.js" type="text/javascript"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
@@ -72,5 +68,8 @@
 
     @RenderSection("Scripts", required: false)
     @RenderSection("ScriptsIndex", required: false)
+    <footer>
+        <p style="margin: 0">2018 - Bosque Protector</p>
+    </footer>
 </body>
 </html>

@@ -20,158 +20,18 @@
 <link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>   
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
 <link rel='stylesheet' type='text/css' href='~/css/stations.css'>
 
-
-<!-- id="mu-about-us">
-
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="mu-about-us-area">
-
-        <div class="mu-title">
-          <br />
-          <h2>Device Register</h2>
-        </div>
-
-
-        <form method="post" enctype="#mu-about-ustipart/form-data" action="">
-          <div class="form-group">
-            <table class="table table-bordered" id="vertical-table">
-              
-              <tr><th><label for="ddl">Device ID </label></th> 
-                <td> <input></input> </td>
-              </tr>
-
-              <tr><th><label>Latitude </label></th>
-                <td> <input></input> </td>
-              </tr>
-          
-              <tr><th><label>Length </label></th>
-                <td> <input></input> </td>
-              </tr>  
-          
-              <tr><th><label>Android Version </label></th>
-                <td> <input></input> </td>
-              </tr>  
-
-              <tr><th><label>Service Version </label></th>
-                <td> <input></input> </td>
-              </tr>  
-
-            </table>
-
-        
-            <br />
-            <button type="submit" id="out">Save</button><br />
-          </div>        
-        </form>        
-
-        <div class="mu-title">
-          <br />
-          <h2>Sensor </h2>
-        </div>
-
-        <form method="post" enctype="#mu-about-ustipart/form-data" action="">
-          <div class="form-group">
-            <table class="table table-bordered" id="vertical-table">
-              
-              <tr><th><label for="ddl">Sensor ID </label></th> 
-                <td> <input></input> </td>
-              </tr>
-
-              <tr><th><label>Name ID</label></th>
-                <td> <input></input> </td>
-              </tr>
-          
-              <tr><th><label>Function </label></th>
-                <td> <input></input> </td>
-              </tr>  
-
-            </table>
-
-            <button id="out">Add Sensor </button><br /><br /><br /> 
-        
-            <br />
-            <button type="submit" id="out">Save</button><br /><br /><br /> 
-          </div>        
-        </form>         
-                   
-      </div>
-    </div>      
-  </div>
-</div>
-</section-->
-
 <div class="row equal">
-	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
-		<div class="titulo">
-			<h4>ESTACION 1</h4>
-		</div>
-		<div class="cuerpo">
-			<p>ALGO</p>
-		</div>
-	</div>
-	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
-		<div class="titulo">
-			<h4>ESTACION 1</h4>
-		</div>
-		<div class="cuerpo">
-			<p>Temperatura ambiente</p>
-			<p>Temperatura dispositivo</p>
-			<p>Temperatura ambiente</p>
+ 	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 plus-device">
+		<div class="cuerpo-nuevo">
+			<a data-toggle="modal" href="#myModal" class="material-icons" id="plus-icon">
+				add_circle_outline
+			</a>
+			<!--button class="material-icons" id="plus-icon" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">add_circle_outline</button-->
 		</div>
 	</div>
-	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
-		<div class="titulo">
-			<h4>ESTACION 1</h4>
-		</div>
-		<div class="cuerpo">
-			<p>Temperatura ambiente</p>
-		</div>
-	</div>
-	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
-		<div class="titulo">
-			<h4>ESTACION 1</h4>
-		</div>
-		<div class="cuerpo">
-			<p>Temperatura dispositivo</p>
-		</div>
-	</div>
-	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
-		<div class="titulo">
-			<h4>ESTACION 1</h4>
-		</div>
-		<div class="cuerpo">
-			<p>Temperatura ambiente</p>
-			<p>Temperatura dispositivo</p>
-		</div>
-	</div>
-	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
-		<div class="titulo">
-			<h4>ESTACION 1</h4>
-		</div>
-		<div class="cuerpo">
-			<p>Temperatura ambiente</p>
-			<p>Temperatura dispositivo</p>
-			<p>Temperatura ambiente</p>
-			<p>Temperatura ambiente</p>
-			<p>Temperatura ambiente</p>
-		</div>
-	</div>
- 	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
-		<div class="titulo">
-			<h4>Nueva Estación</h4>
-		</div>
-		<div class="cuerpo">
-			<button class="material-icons" id="plus-icon" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">add_circle_outline</button>
-		</div>
-	</div>
-
 </div>
-
 
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -220,9 +80,6 @@
   </div>
 </div>
 
-
-<!-- Sensor  -->
-
 <!-- Modal -->
 <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
@@ -252,17 +109,5 @@
 </div>
 
 @section Scripts {
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script>
-  $(document).ready(function() {
-    $("#masfilas").click(function(){
-        $("#myt").append('<tr><td><input type="text" name="parametros[]"/></td><td> <input type="text" name="unidad[]"/></td><td> <input type="text" name="especificacion[]"/></td><td> <a href="#" class="delete"><i class="material-icons">delete_forever</i></a></td></tr>');
-        $('.delete').off().click(function(e) {
-            $(this).parent('td').parent('tr').remove();
-        });
-                
-    });
-  });
-</script>  
-<script src="~/js/stations.js"></script>
+	<script src="~/js/stations.js"></script>
 }
