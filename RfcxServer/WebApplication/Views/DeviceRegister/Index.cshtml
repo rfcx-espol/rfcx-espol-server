@@ -14,13 +14,14 @@
 <link rel='stylesheet' type='text/css' href='~/css/estaciones.css'>
 
 <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
-<link href="assets/css/font-awesome.css" rel="stylesheet">
+<!-- <link href="assets/css/font-awesome.css" rel="stylesheet"> -->
 <link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet"> 
-<link rel="stylesheet" type="text/css" href="wwwroot/lib/bootstrap/slick.css">    
+<!-- <link rel="stylesheet" type="text/css" href="wwwroot/lib/bootstrap/slick.css"> -->   
 <link href="~/css/site.css" rel="stylesheet">    
 <link href='https://fonts.googleapis.com/css?family=Prata' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>   
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 <link rel='stylesheet' type='text/css' href='~/css/estaciones.css'>
 
@@ -161,4 +162,106 @@
 			<p>Temperatura ambiente</p>
 		</div>
 	</div>
+ 	<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6">
+		<div class="titulo">
+			<h4>Nueva Estación</h4>
+		</div>
+		<div class="cuerpo">
+			<button class="material-icons" id="plus-icon" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">add_circle_outline</button>
+		</div>
+	</div>
+
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Registro de Estación</h4>
+      </div>
+      
+      <div class="modal-body">
+        <form method="post" enctype="#mu-about-ustipart/form-data" action="">
+          <div class="form-group">
+            <table class="table">
+              
+              <tr><th><label for="ddl">Nombre: </label></th> 
+                <td> <input></input> </td>
+              </tr>
+
+              <tr><th><label>Identificador: </label></th>
+                <td> <input></input> </td>
+              </tr>
+          
+              <tr><th><label>Latitud: </label></th>
+                <td> <input></input> </td>
+              </tr>  
+          
+              <tr><th><label>Versión de Android: </label></th>
+                <td> <input></input> </td>
+              </tr>  
+
+            </table>
+
+        
+            <br />
+            <!-- <button type="submit" class="out">Registro de dispositivo </button><br /> -->
+          </div>        
+        </form>         
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal2" id="out">Registrar sensor</button><br />
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Sensor  -->
+
+<!-- Modal -->
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Registro de Sensor</h4>
+      </div>
+      <div class="modal-body" class="container1">
+
+        <button class="material-icons" class ="plus-icon" id="masfilas" class="add_form_field">add_circle_outline</button>
+        
+        <table id="myt" class="table-responsive">
+          <tr>
+            <th>Tipo &nbsp;&nbsp;</th>
+            <th>Unidad &nbsp;&nbsp;</th> 
+            <th>Ubicación</th>
+          </tr>
+        </table>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" id="out">Guardar</button><br />
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $("#masfilas").click(function(){
+        $("#myt").append('<tr><td><input type="text" name="parametros[]"/></td><td> <input type="text" name="unidad[]"/></td><td> <input type="text" name="especificacion[]"/></td><td> <a href="#" class="delete"><i class="material-icons">delete_forever</i></a></td></tr>');
+        $('.delete').off().click(function(e) {
+            $(this).parent('td').parent('tr').remove();
+        });
+                
+
+    });
+  });
+</script>  
