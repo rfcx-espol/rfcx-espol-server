@@ -1,10 +1,9 @@
-sensorsInf = {};
 sensorsList = [];
-dataTempDisp = [];
-dataTempAmb = [];
-dataHumedad = [];
+dataL=[];
 
 window.onload = getData();
+
+setInterval(displayMonitor, 300000);
 //get sensors from one device
 function getData(){
     var idDevice = parseInt(document.getElementById("deviceId").innerHTML);
@@ -14,156 +13,128 @@ function getData(){
 function getSensors(data){
     var sensors = JSON.parse(data);
     for( sensor of sensors){
-        sensorsInf['id']=sensor['Id'];
-        sensorsInf['deviceId']=sensor['DeviceId'];
+        var sensorsInf = {};
+        sensorsInf['id']=parseInt(sensor['Id']);
+        sensorsInf['deviceId']=parseInt(sensor['DeviceId']);
         sensorsInf['type']=sensor['Type'];
         sensorsInf['location']=sensor['Location'];
         sensorsList.push(sensorsInf);
     }
     displayMonitor();
 }
-
-//Obtener los datos de un sensor en un timepo
-//$.get('api/Device/DeviceId/Sensor/SensorId/Data/StartTimestamp/EndTimestamp')
+//Display the monitor
 function displayMonitor() {
-    console.log(sensorsList);
-    var chartMonTempDisp = new CanvasJS.Chart("chartMonitorDisp", {
-        animationEnabled: true,
-        zoomEnabled: true,
-        height: 320, 
-        theme: "light2",
-        axisY: {
-            title: "Temperatura °C",
-            titleFontSize: 18
-        },
-        data: [{
-            type: "line",
-            lineColor:"#424084",
-            dataPoints: dataTempDisp
-        }]
-    });
+    for (sensors of sensorsList){
+        //Collect data
+        var idDevice = sensors['deviceId'];
+        var idSensor = sensors['id'];
 
-    var chartMonHumedad = new CanvasJS.Chart("chartMonitorHum", {
-        animationEnabled: true,
-        zoomEnabled: true,
-        height: 320, 
-        theme: "light2",
-        axisY: {
-            title: "humedad H",
-            titleFontSize: 18
-        },
-        data: [{
-            type: "line",
-            lineColor: "LightSeaGreen",
-            dataPoints: dataHumedad
-        }]
-    });
-
-    var chartMonTempAmb = new CanvasJS.Chart("chartMonitorAmb", {
-        animationEnabled: true,
-        zoomEnabled: true,
-        height: 320, 
-        theme: "light2",
-        axisY: {
-            title: "Temperatura °C",
-            titleFontSize: 18
-        },
-        data: [{
-            type: "line",
-            lineColor: "orange",
-            dataPoints: dataTempAmb
-        }]
-    });
-    
-    function addData(data) {
-        var minDisp= 50000;
-        var maxDisp=0;
-        var avgDisp=0;
-        var minHumedad= 50000;
-        var maxHumedad=0;
-        var avgHumedad=0;
-        var minAmb= 50000;
-        var maxAmb=0;
-        var avgAmb=0;
-        for (var i = 0; i < data.length; i++) {
-            if(data[i].Type=="Temperature" && data[i].Location=="Dispositivo"){
-                var time = parseInt(data[i].Timestamp);
-                var value = parseInt(data[i].Value);
-                avgDisp = avgDisp + value;
-                if(value<minDisp){
-                    minDisp = value;
-                }if(value>maxDisp){
-                    maxDisp = value;
-                }
-                dataTempDisp.push({
-                    x: new Date(time),
-                    y: value,
-                    color: "#424084"
-                });
-            }
-            else if(data[i].Type=="Humedad"){
-                var time = parseInt(data[i].Timestamp);
-                var value = parseInt(data[i].Value);
-                avgHumedad = avgHumedad + value;
-                if(value<minHumedad){
-                    minHumedad = value;
-                }if(value>maxHumedad){
-                    maxHumedad = value;
-                }
-                dataHumedad.push({
-                    x: new Date(time),
-                    y: value,
-                    color: "LightSeaGreen"
-                });
-            }else{
-                var time = parseInt(data[i].Timestamp);
-                var value = parseInt(data[i].Value);
-                avgAmb = avgAmb + value;
-                if(value<minAmb){
-                    minAmb = value;
-                }if(value>maxAmb){
-                    maxAmb = value;
-                }
-                dataTempAmb.push({
-                    x: new Date(time),
-                    y: value,
-                    color: "orange"
-                });
-            }
-        }
-        
-        var lengthAmb = chartMonTempAmb.options.data[0].dataPoints.length;
-        var lengthDisp = chartMonTempDisp.options.data[0].dataPoints.length;
-        var lengthHum = chartMonHumedad.options.data[0].dataPoints.length;
-        
-        chartMonTempDisp.render();
-        chartMonHumedad.render();
-        chartMonTempAmb.render();
-        
-        document.getElementById("minMonDisp").innerHTML = "   "+minDisp;
-        document.getElementById("maxMonDisp").innerHTML = " "+maxDisp;
-
-        document.getElementById("minMonAmb").innerHTML = "   "+minAmb;
-        document.getElementById("maxMonAmb").innerHTML = " "+maxAmb;
-
-        document.getElementById("minMonHum").innerHTML = "   "+minHumedad;
-        document.getElementById("maxMonHum").innerHTML = " "+maxHumedad;
-
-        document.getElementById("avgMonDisp").innerHTML = "   "+(avgDisp/lengthDisp).toFixed(2);;
-       
-        document.getElementById("avgMonAmb").innerHTML = "   "+(avgAmb/lengthAmb).toFixed(2);
-        
-        document.getElementById("avgMonHum").innerHTML = " "+(avgHumedad/lengthHum).toFixed(2);        
+        var currentTime = new Date();
+        var current = currentTime.getTime();
+        var lastTwoHours = currentTime.setHours(currentTime.getHours() - 2);
+        $.getJSON('api/Device/'+idDevice+'/Sensor/'+idSensor+'/Data/'+lastTwoHours+'/'+current, addData);       
     }
 
-    //$.get('api/Device/2/Sensor/2/Data/1528900018/1528900263', addData);
-    $.getJSON('json/monitorData.json', addData);
-
-    setInterval(displayMonitor, 300000000);
-
-    //displayEachChart();
+}
+//Add data to list dataL
+function addData(data) {
+    var minValue = 50000;
+    var maxValue = 0;
+    var sumValue = 0;
+    for(var i = 0; i<data.length; i++){
+        var location = data[i].Location;
+        var type = data[i].Type;
+        var value = parseInt(data[i].Value);
+        var timestamp = parseInt(data[i].Timestamp);
+        var colorP = "#424084"
+        if(type == "Temperatura" && location =="Dispositivo"){
+            var colorP = "#424084"
+        }else if(type == "Temperatura" && location =="Ambiente"){
+            var colorP = "orange"
+        }else if(type == "Humedad" && location =="Ambiente"){
+            var colorP = "LightSeaGreen"
+        }
+        sumValue = sumValue + value;
+        if(value<minValue){
+            minValue = value;
+        }if(value>maxValue){
+            maxValue = value;
+        }
+        dataL.push({
+            x: new Date(timestamp),
+            y: value,
+            color: colorP
+        });
+    }
+    var lengthChart = dataL.length;
+    var avgValue=(sumValue/lengthChart).toFixed(2);
+    createBoxes(type,location, minValue, maxValue, avgValue);
+    
 }
 
+//Create divs to display charts
+function createBoxes(type, location, minValue, maxValue, avgValue){
+    if(type=="Humedad"){
+        var idMin = "minMonHum";
+        var idMax = "maxMonHum";
+        var idAvg = "avgMonHum";
+        var divIdChart = "chartMonitorHum"
+    }else if(location == "Dispositivo"){
+        var idMin = "minMonDis";
+        var idMax = "maxMonDisp";
+        var idAvg = "avgMonDisp";
+        var divIdChart = "chartMonitorDisp"
+    }else{
+        var idMin = "minMonAmb";
+        var idMax = "maxMonAmb";
+        var idAvg = "avgMonAmb";
+        var divIdChart = "chartMonitorAmb"
+    }
+    var div = "<div class='col-sm-12 col-md-12 col-lg-12 sensores_monitor'>"+
+                "<h4 class='titulo_sensor'>"+type+" - "+location+"</h4>"+
+                "<div id='"+divIdChart+"' style='height: 320px'></div>"+
+                "<div id='boxInfoValues'>"+
+                "<p class='boxLetters initialMon'><i class='material-icons iconsMinMax'>&#xe15d;</i> Min </p><p class='boxLetters initialValue'  id="+idMin+">"+minValue+"</p>"+
+                "<p class='boxLetters middle' ><i class='material-icons iconsMinMax'>&#xe148;</i> Max </p><p class='boxLetters middleValue' id="+idMax+">"+maxValue+"</p>"+
+                "<p class='boxLetters last'><i class='fa  iconsAvg'>&#xf10c;</i> Avg</p><p class='boxLetters lastValue' id="+idAvg+">"+avgValue+"</p>"+
+                "</div>"+
+                "<hr>"+
+            "</div>"
+    $("#monitor").append(div);
+    displayChart(divIdChart);
+}
+
+//Display individual chart
+function displayChart(divId){
+    if(divId=="chartMonitorAmb"){
+        color = "orange";
+        titleVertical = "Temperatura °C";
+    }else if(divId=="chartMonitorHum"){
+        color = "LightSeaGreen";
+        titleVertical = "Humedad %";
+    }else if(divId=="chartMonitorDisp"){
+        color = "#424084";
+        titleVertical = "Temperatura °C";
+    }
+    var chartMon = new CanvasJS.Chart(divId, {
+        animationEnabled: true,
+        zoomEnabled: true,
+        height: 320, 
+        theme: "light2",
+        axisY: {
+            title: titleVertical,
+            titleFontSize: 18
+        },
+        data: [{
+            type: "line",
+            lineColor: color,
+            dataPoints: dataL
+        }]
+    });
+    chartMon.render();
+    dataL=[]
+}
+//Open tab selected
 function openDevice(evt, cityName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");

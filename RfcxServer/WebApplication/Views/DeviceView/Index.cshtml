@@ -24,38 +24,6 @@
     <div id="monitor" class="tabcontent" onload="display(this)">
       <h3 style="text-align: center; color: #e4b836; font-weight: bold;">@ViewData["deviceName"].ToString()</h3>
       <p id="deviceId" style="display:none">@ViewData["deviceId"].ToString()</p>
-      <!--h3>Monitor</h3-->
-      <div class="col-sm-12 col-md-12 col-lg-12 sensores_monitor">
-        <h4 class="titulo_sensor">Temperatura - Ambiente</h4>
-        <div id="chartMonitorAmb" style="height: 320px"></div>
-        <div id="boxInfoValues">
-          <p class="boxLetters initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minMonHum"></p>
-          <p class="boxLetters middle" ><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id="maxMonHum"></p>
-          <p class="boxLetters last"><i class="fa  iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id="avgMonHum"></p>
-        </div>
-        <hr>
-      </div>
-      
-      <div class="col-sm-12 col-md-12 col-lg-12 sensores_monitor">
-        <h4 class="titulo_sensor">Temperatura - Dispositivo</h4>
-        <div id="chartMonitorDisp" style="height: 320px"></div>
-        <div id="boxInfoValues">
-          <p class="boxLetters initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minMonDisp"></p>
-          <p class="boxLetters middle" ><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id="maxMonDisp"></p>
-          <p class="boxLetters last"><i class="fa  iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id="avgMonDisp"></p>
-        </div>
-        <hr>
-      </div>
-
-      <div class="col-sm-12 col-md-12 col-lg-12 sensores_monitor">
-        <h4 class="titulo_sensor">Humedad - Ambiente</h4>
-        <div id="chartMonitorHum" style="height: 320px"></div>
-        <div id="boxInfoValues">
-          <p class="boxLetters initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minMonAmb"></p>
-          <p class="boxLetters middle" ><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id="maxMonAmb"></p>
-          <p class="boxLetters last"><i class="fa  iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id="avgMonAmb"></p>
-        </div>
-      </div>
     </div>
 
     <!--SENSORES INDIVIDUALES -->
