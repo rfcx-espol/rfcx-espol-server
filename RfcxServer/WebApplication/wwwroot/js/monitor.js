@@ -47,9 +47,9 @@ function addData(data) {
         var value = parseInt(data[i].Value);
         var timestamp = parseInt(data[i].Timestamp);
         var colorP = "#424084"
-        if(type == "Temperatura" && location =="Dispositivo"){
+        if(type == "Temperature" && location =="Device"){
             var colorP = "#424084"
-        }else if(type == "Temperatura" && location =="Ambiente"){
+        }else if(type == "Temperature" && location =="Ambiente"){
             var colorP = "orange"
         }else if(type == "Humedad" && location =="Ambiente"){
             var colorP = "LightSeaGreen"
@@ -79,7 +79,7 @@ function createBoxes(type, location, minValue, maxValue, avgValue){
         var idMax = "maxMonHum";
         var idAvg = "avgMonHum";
         var divIdChart = "chartMonitorHum"
-    }else if(location == "Dispositivo"){
+    }else if(location == "Device"){
         var idMin = "minMonDis";
         var idMax = "maxMonDisp";
         var idAvg = "avgMonDisp";
