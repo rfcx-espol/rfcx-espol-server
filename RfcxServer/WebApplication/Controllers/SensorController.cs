@@ -86,7 +86,7 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Sensor);
         }
 
-
+        /*
         [HttpPost]
         [Route("api/[controller]")]
         public async Task<string> Post([FromBody] Sensor Sensor)
@@ -94,6 +94,7 @@ namespace WebApplication.Controllers
             await _SensorRepository.Add(Sensor);
             return "";
         }
+        */
 
         [HttpPut]
         [Route("api/[controller]/{id}")]
