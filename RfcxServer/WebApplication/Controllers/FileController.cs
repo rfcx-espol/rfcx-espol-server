@@ -144,10 +144,11 @@ namespace WebApplication {
             if (!ok) {
                 return BadRequest("Expected filename key");
             }
-            StringValues deviceId;
-            ok = formData.TryGetValue("deviceId", out deviceId);
+            //Cuando se envian los audios se enviaen APIKey con ese obtener el id y guradar en la base
+            StringValues APIKey;
+            ok = formData.TryGetValue("APIKey", out APIKey);
             if (!ok) {
-                return BadRequest("Expected deviceId key");
+                return BadRequest("Expected APIKey key");
             }
             /*
             StringValues fechaLlegada;
@@ -175,11 +176,10 @@ namespace WebApplication {
 
             StringValues bitRate1;
             ok = formData.TryGetValue("BitRate", out bitRate1);
-            if (!ok) {
-                return BadRequest("Expected BitRate key");
+            int bitRate=0;
+            if(ok){
+                bitRate=Int32.Parse(bitRate1);
             }
-
-            int bitRate=Int32.Parse(bitRate1);
 
             /*
             {
@@ -196,71 +196,84 @@ namespace WebApplication {
                     strDeviceId = id.ToString();
                 }
                 */
-                Task<Device> DeviceResult=_DeviceRepository.Get(deviceId.ToString());
-                id=DeviceResult.Result.Id;
-                strDeviceId=id.ToString();
-                string name=DeviceResult.Result.Name;
+                var DeviceResult=_DeviceRepository.Get(APIKey.ToString());
+                var deviceCount=_DeviceRepository.GetDeviceCount(APIKey);
                 
-                string strfilename = filename.ToString();
-                var filePath="";
-                if(name==null){
-                    Core.MakeDeviceFolder(strDeviceId);
-                    filePath = Path.Combine(Core.DeviceAudiosFolderPath(strDeviceId),
-                                                strfilename);
-                    Console.Write(filePath);
+                if(deviceCount!=0){
+                    id=DeviceResult.Result.Id;
+                    strDeviceId=id.ToString(); //id 1 2 3
+                    //string name=DeviceResult.Result.Name; //name folder with device name
+                    
+                    string strfilename = filename.ToString();
+                    var filePath="";
+                    if(strDeviceId!=null){
+                        Core.MakeDeviceFolder(strDeviceId);
+                        filePath = Path.Combine(Core.DeviceAudiosFolderPath(strDeviceId),
+                                                    strfilename);
+                        Console.Write(filePath);
+                    }
+                    //Folder name by device Name
+                    /* 
+                    else{
+                        name=name.Replace(" ","");
+                        Core.MakeDeviceFolderName(name);
+                        filePath = Path.Combine(Core.DeviceAudiosFolderPathName(name),
+                                                    strfilename);
+                        Console.Write(filePath);
+                    
+                    } 
+                    */             
 
-                }else{
-                    name=name.Replace(" ","");
-                    Core.MakeDeviceFolderName(name);
-                    filePath = Path.Combine(Core.DeviceAudiosFolderPathName(name),
-                                                strfilename);
-                    Console.Write(filePath);
-                
-                }              
+                    var audio =new Audio();
+                    //audio.FechaLlegada=fechaLlegada;
+                    audio.DeviceId=id;
+                    audio.RecordingDate=recordingDate;
+                    audio.Duration=duration;
+                    audio.Format=format;
+                    audio.BitRate=bitRate;
+                    Task result;
+                    result=_AudioRepository.Add(audio);
 
-                var audio =new Audio();
-                //audio.FechaLlegada=fechaLlegada;
-                audio.DeviceId=id;
-                audio.RecordingDate=recordingDate;
-                audio.Duration=duration;
-                audio.Format=format;
-                audio.BitRate=bitRate;
-                Task result;
-                result=_AudioRepository.Add(audio);
-
-                using (var stream = new FileStream(filePath, FileMode.Create)) {
-                    await deviceFile.memoryStream.CopyToAsync(stream);
-                    deviceFile.memoryStream.Close();
-                }
+                    using (var stream = new FileStream(filePath, FileMode.Create)) {
+                        await deviceFile.memoryStream.CopyToAsync(stream);
+                        deviceFile.memoryStream.Close();
+                    }
 
 
-                //var fileInfo = new FileInfo(filePath);
-                //var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));
-                
-                /*
-                { // Decompression Test
-                    using (var compressedStream = new FileStream(gzipFilePath, FileMode.Open)) {
-                        using (var decompressedFileStream = new FileStream(decompressedPath, FileMode.Create)) {
-                            using (var decompressionStream = new GZipStream(compressedStream, CompressionMode.Decompress)) {
-                                decompressionStream.CopyTo(decompressedFileStream);
+                    //var fileInfo = new FileInfo(filePath);
+                    //var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));
+                    
+                    /*
+                    { // Decompression Test
+                        using (var compressedStream = new FileStream(gzipFilePath, FileMode.Open)) {
+                            using (var decompressedFileStream = new FileStream(decompressedPath, FileMode.Create)) {
+                                using (var decompressionStream = new GZipStream(compressedStream, CompressionMode.Decompress)) {
+                                    decompressionStream.CopyTo(decompressedFileStream);
+                                }
                             }
                         }
+                    }*/
+                    
+                    { // Convert Decompressed File to ogg and add to playlist
+                        var process = new Process();
+                        process.StartInfo.FileName = "ffmpeg";
+                        var fileInfo = new FileInfo(filePath);
+                        var filenameNoExtension = fileInfo.Name.Remove((int)(fileInfo.Name.Length - fileInfo.Extension.Length));
+                        // var milliseconds = long.Parse(filenameNoExtension);
+                        // var date = DateTimeExtensions.DateTimeFromMilliseconds(milliseconds);
+                        // var localDate = date.ToLocalTime();
+                        var oggFilename = filenameNoExtension + ".ogg";
+                        var oggFilePath = Path.Combine(Core.DeviceOggFolderPath(strDeviceId), oggFilename);
+                        process.StartInfo.Arguments = "-i " + filePath + " " + oggFilePath;
+                        process.Start();
                     }
-                }*/
-                
-                { // Convert Decompressed File to ogg and add to playlist
-                    var process = new Process();
-                    process.StartInfo.FileName = "ffmpeg";
-                    var fileInfo = new FileInfo(filePath);
-                    var filenameNoExtension = fileInfo.Name.Remove((int)(fileInfo.Name.Length - fileInfo.Extension.Length));
-                    // var milliseconds = long.Parse(filenameNoExtension);
-                    // var date = DateTimeExtensions.DateTimeFromMilliseconds(milliseconds);
-                    // var localDate = date.ToLocalTime();
-                    var oggFilename = filenameNoExtension + ".ogg";
-                    var oggFilePath = Path.Combine(Core.DeviceOggFolderPath(strDeviceId), oggFilename);
-                    process.StartInfo.Arguments = "-i " + filePath + " " + oggFilePath;
-                    process.Start();
+
                 }
+                else{
+                    return Content("Invalid KEY");
+                }
+                
+                
             }
             return Content("File received");
 

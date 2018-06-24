@@ -15,10 +15,12 @@ namespace WebApplication.Controllers
     {
         
         private readonly IDataRepository _DataRepository;
+        private readonly ISensorRepository _SensorRepository;
 
-        public DataController(IDataRepository DataRepository)
+        public DataController(IDataRepository DataRepository,  ISensorRepository SensorRepository)
         {
             _DataRepository=DataRepository;
+            _SensorRepository=SensorRepository;
         }
 
         [HttpGet]
@@ -115,9 +117,9 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        [Route("api/Device/{DeviceId:int}/Sensor/{SensorId:int}/[controller]/{StartTimestamp:long}/{EndTimestamp:long}")]
+        [Route("api/Device/{DeviceId:int}/Sensor/{SensorId:int}/DataTimestamp")]
         public Task<string> GetDatasByDeviceSensorTimestamp([FromRoute]int DeviceId,[FromRoute] int SensorId, 
-        [FromRoute] long StartTimestamp, [FromRoute] long EndTimestamp)
+        [FromQuery] long StartTimestamp, [FromQuery] long EndTimestamp)
         {
             return this.GetDataByDeviceSensorTimeStamp(DeviceId, SensorId, StartTimestamp, EndTimestamp);
         }
@@ -149,6 +151,19 @@ namespace WebApplication.Controllers
         {
             List<Data> data=Array.Data;
             for (var i = 0; i <data.Count; i++) {
+                var sensorId=data[i].SensorId;
+                var deviceId=data[i].DeviceId;
+                Sensor Sensor= _SensorRepository.getSensor(sensorId);
+                if(Sensor==null){
+                    var type=data[i].Type;
+                    var location=data[i].Location;
+                    var newSensor=new Sensor();
+                    newSensor.Id=sensorId;
+                    newSensor.Type=type;
+                    newSensor.Location=location;
+                    newSensor.DeviceId=deviceId;
+                    _SensorRepository.Add(newSensor);
+                }
                 _DataRepository.Add(data[i]);
             }
             /* 

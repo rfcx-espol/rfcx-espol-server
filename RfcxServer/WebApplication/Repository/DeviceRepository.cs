@@ -35,9 +35,9 @@ namespace WebApplication.Repository
             }
         }
 
-    public async Task<Device> Get(string id)
+    public async Task<Device> Get(string apiKey)
     {
-        var filter = Builders<Device>.Filter.Eq("DeviceId", id);
+        var filter = Builders<Device>.Filter.Eq("APIKey", apiKey);
 
         try
         {
@@ -47,6 +47,13 @@ namespace WebApplication.Repository
         {
             throw ex;
         }
+    }
+
+
+    public int GetDeviceCount(string apiKey){
+        var filter = Builders<Device>.Filter.Eq("APIKey", apiKey);
+        int count = _context.Devices.Find(filter).ToList().Count;
+        return count;
     }
 
     public async Task<Device> Get(int id)

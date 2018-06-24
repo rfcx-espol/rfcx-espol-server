@@ -1,2 +1,2 @@
 export APP_DIR=/var/rfcx-espol-server
-export ICE_USER=estudiante
+export ICE_USER=haragon

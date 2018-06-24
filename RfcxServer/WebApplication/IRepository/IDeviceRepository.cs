@@ -10,6 +10,7 @@ namespace WebApplication.IRepository
         Task<IEnumerable<Device>> Get();
         Task<Device> Get(string id);
         Task<Device> Get(int id);
+        int GetDeviceCount(string apiKey);
         Task Add(Device item);
         Task<bool> Update(string id, Device item);
         Task<bool> UpdateAndroidVersion(int id, string androidV);

@@ -33,15 +33,15 @@ namespace WebApplication.Controllers
         }
 
 
-        [HttpGet("{id}")]
-        public Task<string> Get(string id)
+        [HttpGet("{apiKey}")]
+        public Task<string> Get(string apiKey)
         {
-            return this.GetDeviceById(id);
+            return this.GetDeviceById(apiKey);
         }
 
-        public async Task<string> GetDeviceById(string id)
+        public async Task<string> GetDeviceById(string apiKey)
         {
-            var Device= await _DeviceRepository.Get(id) ?? new Device();
+            var Device= await _DeviceRepository.Get(apiKey) ?? new Device();
             return JsonConvert.SerializeObject(Device);
         }
 
