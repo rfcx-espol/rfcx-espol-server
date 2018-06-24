@@ -60,8 +60,9 @@ function addData(data) {
         }if(value>maxValue){
             maxValue = value;
         }
+        console.log("here "+new Date(timestamp*1000));
         dataL.push({
-            x: new Date(timestamp),
+            x: new Date(timestamp*1000),
             y: value,
             color: colorP
         });
@@ -90,7 +91,9 @@ function createBoxes(type, location, minValue, maxValue, avgValue){
         var idAvg = "avgMonAmb";
         var divIdChart = "chartMonitorAmb"
     }
-    var div = "<div class='col-sm-12 col-md-12 col-lg-12 sensores_monitor'>"+
+    //Si ya existe no vuelve a crear el div
+    if(document.getElementById(divIdChart)==null){
+        var div = "<div class='col-sm-12 col-md-12 col-lg-12 sensores_monitor'>"+
                 "<h4 class='titulo_sensor'>"+type+" - "+location+"</h4>"+
                 "<div id='"+divIdChart+"' style='height: 320px'></div>"+
                 "<div id='boxInfoValues'>"+
@@ -100,7 +103,9 @@ function createBoxes(type, location, minValue, maxValue, avgValue){
                 "</div>"+
                 "<hr>"+
             "</div>"
-    $("#monitor").append(div);
+        $("#monitor").append(div);
+    }
+    
     displayChart(divIdChart);
 }
 
@@ -121,6 +126,9 @@ function displayChart(divId){
         zoomEnabled: true,
         height: 320, 
         theme: "light2",
+        axisX:{      
+            valueFormatString: "hh:mm TT" 
+        },
         axisY: {
             title: titleVertical,
             titleFontSize: 18
