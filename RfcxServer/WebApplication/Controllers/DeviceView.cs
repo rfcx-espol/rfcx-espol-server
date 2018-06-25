@@ -4,10 +4,10 @@ using System.Text.Encodings.Web;
 
 namespace WebApplication {
 
-    public class DeviceViewController : Controller {
-        public IActionResult Index(string deviceName, int deviceId) {
-            ViewData["deviceName"] =deviceName;
-            ViewData["deviceId"]= deviceId;           
+    public class StationViewController : Controller {
+        public IActionResult Index(string stationName, int stationId) {
+            ViewData["stationName"] =stationName;
+            ViewData["stationId"]= stationId;           
             return View();
         }
     }

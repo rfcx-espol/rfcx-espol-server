@@ -24,16 +24,16 @@ namespace WebApplication {
 
     public class Thing {
         public string fileName;
-        public string deviceId;
+        public string stationId;
     }
     public class GZipController : Controller {
         private readonly IAudioRepository _AudioRepository;
 
-        public class DeviceFile {
+        public class StationFile {
             public KeyValueAccumulator formAccumulator;
             public MemoryStream memoryStream;
 
-            public DeviceFile() {
+            public StationFile() {
                 formAccumulator = new KeyValueAccumulator();
                 memoryStream = new MemoryStream();
             }
@@ -63,8 +63,8 @@ namespace WebApplication {
             return mediaType.Encoding;
         }
 
-        public async Task<DeviceFile> HandleMultipartRequest() {
-            var deviceFile = new DeviceFile();
+        public async Task<StationFile> HandleMultipartRequest() {
+            var stationFile = new StationFile();
 
             var boundary = MultipartRequestHelper.GetBoundary(
                 MediaTypeHeaderValue.Parse(Request.ContentType),
@@ -80,8 +80,8 @@ namespace WebApplication {
                 {
                     if (MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
                     {
-                        await section.Body.CopyToAsync(deviceFile.memoryStream);
-                        deviceFile.memoryStream.Seek(0, SeekOrigin.Begin);
+                        await section.Body.CopyToAsync(stationFile.memoryStream);
+                        stationFile.memoryStream.Seek(0, SeekOrigin.Begin);
                     }
                     else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
                     {
@@ -106,9 +106,9 @@ namespace WebApplication {
                             {
                                 value = String.Empty;
                             }
-                            deviceFile.formAccumulator.Append(key.Value, value);
+                            stationFile.formAccumulator.Append(key.Value, value);
 
-                            if (deviceFile.formAccumulator.ValueCount > _defaultFormOptions.ValueCountLimit)
+                            if (stationFile.formAccumulator.ValueCount > _defaultFormOptions.ValueCountLimit)
                             {
                                 throw new InvalidDataException($"Form key count limit {_defaultFormOptions.ValueCountLimit} exceeded.");
                             }
@@ -120,7 +120,7 @@ namespace WebApplication {
                 // reads the headers for the next section.
                 section = await reader.ReadNextSectionAsync();
             }
-            return deviceFile;
+            return stationFile;
         }
 
         [HttpPost]
@@ -130,18 +130,18 @@ namespace WebApplication {
                 return BadRequest($"Expected a multipart request, but got {Request.ContentType}");
             }
 
-            var deviceFile = await HandleMultipartRequest();
-            var formData = deviceFile.formAccumulator.GetResults();
+            var stationFile = await HandleMultipartRequest();
+            var formData = stationFile.formAccumulator.GetResults();
             StringValues filename;
             bool ok = false;
             ok = formData.TryGetValue("filename", out filename);
             if (!ok) {
                 return BadRequest("Expected filename key");
             }
-            StringValues deviceId;
-            ok = formData.TryGetValue("deviceId", out deviceId);
+            StringValues stationId;
+            ok = formData.TryGetValue("stationId", out stationId);
             if (!ok) {
-                return BadRequest("Expected deviceId key");
+                return BadRequest("Expected stationId key");
             }
 
             /* 
@@ -179,20 +179,20 @@ namespace WebApplication {
             
             
             {
-                Core.DeviceDictionary.TryAdd(deviceId.ToString(), Core.DeviceDictionary.Count);
-                Core.SaveDeviceDictionaryToFile();
+                Core.StationDictionary.TryAdd(stationId.ToString(), Core.StationDictionary.Count);
+                Core.SaveStationDictionaryToFile();
             }
 
 
             {
-                string strDeviceId = "";
+                string strStationId = "";
                 int id;
-                if (Core.DeviceDictionary.TryGetValue(deviceId.ToString(), out id)) {
-                    strDeviceId = id.ToString();
+                if (Core.StationDictionary.TryGetValue(stationId.ToString(), out id)) {
+                    strStationId = id.ToString();
                 }
                 string strfilename = filename.ToString();
-                Core.MakeDeviceFolder(strDeviceId);
-                var filePath = Path.Combine(Core.DeviceAudiosFolderPath(strDeviceId),
+                Core.MakeStationFolder(strStationId);
+                var filePath = Path.Combine(Core.StationAudiosFolderPath(strStationId),
                                                 strfilename);
                 
             
@@ -207,8 +207,8 @@ namespace WebApplication {
                 result=_AudioRepository.Add(audio);
 
                 using (var stream = new FileStream(filePath, FileMode.Create)) {
-                    await deviceFile.memoryStream.CopyToAsync(stream);
-                    deviceFile.memoryStream.Close();
+                    await stationFile.memoryStream.CopyToAsync(stream);
+                    stationFile.memoryStream.Close();
                 }
 
 
@@ -235,7 +235,7 @@ namespace WebApplication {
                     // var date = DateTimeExtensions.DateTimeFromMilliseconds(milliseconds);
                     // var localDate = date.ToLocalTime();
                     var oggFilename = filenameNoExtension + ".ogg";
-                    var oggFilePath = Path.Combine(Core.DeviceOggFolderPath(strDeviceId), oggFilename);
+                    var oggFilePath = Path.Combine(Core.StationOggFolderPath(strStationId), oggFilename);
                     process.StartInfo.Arguments = "-i " + filePath + " " + oggFilePath;
                     process.Start();
                 }

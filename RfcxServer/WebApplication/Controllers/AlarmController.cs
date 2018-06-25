@@ -45,15 +45,15 @@ namespace WebApplication
 
         public IActionResult Index(string dd1)
         {
-            string device = "";
+            string station = "";
             string selected = "";
             string start = null;
             string end = null;
             DateTime start_d, end_d;
             if (Request.Method == "POST")
             {
-                device = Request.Form["ddl"];
-                selected = device;
+                station = Request.Form["ddl"];
+                selected = station;
                 start = Request.Form["start"];
                 end = Request.Form["end"];
                 if(start.Length >0 && end.Length > 0)
@@ -67,16 +67,16 @@ namespace WebApplication
             end_d = FromString(end);
 
             IndexModel content = new IndexModel();
-            content.Files = _fileProvider.GetDirectoryContents("/files/" + device + "/audios");
-            content.Devices = _fileProvider.GetDirectoryContents("/files/");
+            content.Files = _fileProvider.GetDirectoryContents("/files/" + station + "/audios");
+            content.Stations = _fileProvider.GetDirectoryContents("/files/");
 
-            IFileInfo[] files = _fileProvider.GetDirectoryContents("/files/" + device + "/audios").OrderBy(p => p.LastModified).ToArray();
+            IFileInfo[] files = _fileProvider.GetDirectoryContents("/files/" + station + "/audios").OrderBy(p => p.LastModified).ToArray();
 
             content.filesSorted = files;
 
-            string pattern = @"^(device)[(0-9)]";
+            string pattern = @"^(station)[(0-9)]";
             List<string> df = new List<string>();
-            foreach (var item in content.Devices)
+            foreach (var item in content.Stations)
             {
                 if (Regex.IsMatch(item.Name.ToString(), pattern, RegexOptions.IgnoreCase))
                 {
@@ -84,7 +84,7 @@ namespace WebApplication
                 }
             }
 
-            content.deviceFolders = df;
+            content.stationFolders = df;
 
             content.selected = selected;
             content.start = start;
@@ -100,19 +100,19 @@ namespace WebApplication
         }
 
     [HttpPost]
-    public async Task<IActionResult> DownloadFiles(string device, DateTime initialDate, DateTime finalDate) {
+    public async Task<IActionResult> DownloadFiles(string station, DateTime initialDate, DateTime finalDate) {
 
         string date = DateTime.Now.ToString("yyyyMMdd") + ".gz";
-        device = Request.Form["device"];
+        station = Request.Form["station"];
         string start = Request.Form["start"];
         string end = Request.Form["end"];
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         var enc1252 = Encoding.GetEncoding(1252);
 
-        DirectoryInfo DI = new DirectoryInfo("files/" + device + "/audios");
+        DirectoryInfo DI = new DirectoryInfo("files/" + station + "/audios");
         Ionic.Zip.ZipFile zip;
 
-        var ifp = _fileProvider.GetDirectoryContents("/files/" + device + "/audios");
+        var ifp = _fileProvider.GetDirectoryContents("/files/" + station + "/audios");
         
         using (zip = new Ionic.Zip.ZipFile())
         {
@@ -136,16 +136,16 @@ namespace WebApplication
         var data = net.DownloadData(fileAddress);
         var content = new System.IO.MemoryStream(data);
 
-        System.IO.File.Delete("files/" + device + "/audios/"+ date);
+        System.IO.File.Delete("files/" + station + "/audios/"+ date);
 
         return File(content, "APPLICATION/octet-stream", date);
     }
 
 
     // Download a unique file by clicking the file in the showed list.
-    public ActionResult DownloadUniqueFile(string namefile, string device)
+    public ActionResult DownloadUniqueFile(string namefile, string station)
     {
-        DirectoryInfo DI = new DirectoryInfo("files/" + device + "/audios/");
+        DirectoryInfo DI = new DirectoryInfo("files/" + station + "/audios/");
 
         // DOWNLOADING FILE
         string fileAddress = DI.FullName + namefile;

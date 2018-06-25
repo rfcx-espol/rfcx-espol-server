@@ -10,14 +10,14 @@ namespace WebApplication.IRepository
         Task<IEnumerable<Data>> Get();
         Task<Data> Get(string id);
         Task<Data> Get(int id);
-        Task<Data> Get(int DeviceId, int SensorId, int DataId);
+        Task<Data> Get(int StationId, int SensorId, int DataId);
         Task<IEnumerable<Data>> GetLasts();
-        Task<IEnumerable<Data>> GetByDevice(int DeviceId);
-        Task<Data> GetLastByDevice(int DeviceId);
+        Task<IEnumerable<Data>> GetByStation(int StationId);
+        Task<Data> GetLastByStation(int StationId);
 
-        Task<IEnumerable<Data>> GetByDeviceSensor(int DeviceId, int SensorId);
-        Task<Data> GetLastByDeviceSensor(int DeviceId, int SensorId);
-        Task<IEnumerable<Data>> GetByDeviceSensorTimestamp(int DeviceId, int SensorId, long StartTimestamp, long EndTimestamp);
+        Task<IEnumerable<Data>> GetByStationSensor(int StationId, int SensorId);
+        Task<Data> GetLastByStationSensor(int StationId, int SensorId);
+        Task<IEnumerable<Data>> GetByStationSensorTimestamp(int StationId, int SensorId, long StartTimestamp, long EndTimestamp);
         Task Add(Data item);
         Task<bool> Update(string id, Data item);
         Task<bool> Remove(string id);

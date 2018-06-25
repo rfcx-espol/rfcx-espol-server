@@ -6,35 +6,35 @@ namespace WebApplication {
     public static class Core {
 
 
-        public static Dictionary<string, int> DeviceDictionary;
+        public static Dictionary<string, int> StationDictionary;
 
         static Core() {
-             DeviceDictionary = new Dictionary<string, int>();
+             StationDictionary = new Dictionary<string, int>();
         }
 
-        public static string DeviceDictionaryPath { get {
-            return Path.Combine(Directory.GetCurrentDirectory(), FilesFolderName, "device_dictionary");
+        public static string StationDictionaryPath { get {
+            return Path.Combine(Directory.GetCurrentDirectory(), FilesFolderName, "station_dictionary");
         }}
 
-        public static void InitDeviceDictionaryFromFile() {
-            if (File.Exists(DeviceDictionaryPath)) {
+        public static void InitStationDictionaryFromFile() {
+            if (File.Exists(StationDictionaryPath)) {
                 var serializer = new JsonSerializer();
-                using (var str = new StreamReader(DeviceDictionaryPath)) {
+                using (var str = new StreamReader(StationDictionaryPath)) {
                     using (var jsonReader = new JsonTextReader(str)) {
                         var dic = serializer.Deserialize(jsonReader);
                         if (dic != null) {
-                            DeviceDictionary = (Dictionary<string, int>)dic;
+                            StationDictionary = (Dictionary<string, int>)dic;
                         }
                     }
                 }
             }
         }
 
-        public static void SaveDeviceDictionaryToFile() {
+        public static void SaveStationDictionaryToFile() {
             var serializer = new JsonSerializer();
-                using (var str = new StreamWriter(DeviceDictionaryPath)) {
+                using (var str = new StreamWriter(StationDictionaryPath)) {
                     using (var jsonWriter = new JsonTextWriter(str)) {
-                        serializer.Serialize(jsonWriter, DeviceDictionary);
+                        serializer.Serialize(jsonWriter, StationDictionary);
                     }
                 }
         }
@@ -66,53 +66,53 @@ namespace WebApplication {
             }
         }
 
-        public static string DeviceFolderPath(string deviceId) {
+        public static string StationFolderPath(string stationId) {
 
-            return Path.Combine(FilesFolderPath, "device" + deviceId);
+            return Path.Combine(FilesFolderPath, "station" + stationId);
         }
 
-        public static string DeviceFolderPathName(string name) {
+        public static string StationFolderPathName(string name) {
 
             return Path.Combine(FilesFolderPath, name);
         }
         //Agregué esto
-        public static string DeviceFolder(string device) {
-            return Path.Combine(FilesFolderPath, device);
+        public static string StationFolder(string station) {
+            return Path.Combine(FilesFolderPath, station);
         }
 
-        public static string DeviceAudiosFolderPath(string deviceId) {
-            return Path.Combine(DeviceFolderPath(deviceId), "audios");
-        }
-
-
-        public static string DeviceOggFolderPath(string deviceId) {
-            return Path.Combine(DeviceFolderPath(deviceId), "ogg");
+        public static string StationAudiosFolderPath(string stationId) {
+            return Path.Combine(StationFolderPath(stationId), "audios");
         }
 
 
-        public static string DeviceAudiosFolderPathName(string name) {
-            return Path.Combine(DeviceFolderPathName(name), "audios");
+        public static string StationOggFolderPath(string stationId) {
+            return Path.Combine(StationFolderPath(stationId), "ogg");
         }
 
-        public static string DeviceOggFolderPathName(string name) {
-            return Path.Combine(DeviceFolderPathName(name), "ogg");
+
+        public static string StationAudiosFolderPathName(string name) {
+            return Path.Combine(StationFolderPathName(name), "audios");
         }
 
-        public static void MakeDeviceFolder(string deviceId) {
-            var deviceFolderPath = DeviceFolderPath(deviceId);
-            if (!Directory.Exists(deviceFolderPath)) {
-                Directory.CreateDirectory(deviceFolderPath);
-                Directory.CreateDirectory(DeviceAudiosFolderPath(deviceId));
-                Directory.CreateDirectory(DeviceOggFolderPath(deviceId));
+        public static string StationOggFolderPathName(string name) {
+            return Path.Combine(StationFolderPathName(name), "ogg");
+        }
+
+        public static void MakeStationFolder(string stationId) {
+            var stationFolderPath = StationFolderPath(stationId);
+            if (!Directory.Exists(stationFolderPath)) {
+                Directory.CreateDirectory(stationFolderPath);
+                Directory.CreateDirectory(StationAudiosFolderPath(stationId));
+                Directory.CreateDirectory(StationOggFolderPath(stationId));
             }
         }
 
-        public static void MakeDeviceFolderName(string name){
+        public static void MakeStationFolderName(string name){
             string name1=Path.Combine(FilesFolderPath,name);
             if(!Directory.Exists(name1)){
                 Directory.CreateDirectory(name1);
-                Directory.CreateDirectory(DeviceAudiosFolderPathName(name1));
-                Directory.CreateDirectory(DeviceOggFolderPathName(name1));
+                Directory.CreateDirectory(StationAudiosFolderPathName(name1));
+                Directory.CreateDirectory(StationOggFolderPathName(name1));
             }
         }
         

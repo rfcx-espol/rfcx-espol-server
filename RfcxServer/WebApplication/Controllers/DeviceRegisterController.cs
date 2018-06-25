@@ -6,14 +6,14 @@ using Newtonsoft.Json.Linq;
 
 namespace WebApplication {
 
-    public class DeviceRegisterController : Controller {
+    public class StationRegisterController : Controller {
         public IActionResult Index() {
             var client = new HttpClient();
-            var response = client.GetAsync("http://127.0.0.1:5000/api/Device").Result;
-            var devices = response.Content.ReadAsStringAsync().Result;
-            //ViewData["devices"] = JSON.parse(devices);
-            ViewData["devices"] = JArray.Parse(devices.ToString());
-            //ViewData["devices"] = JsonConvert.SerializeObject(devices);
+            var response = client.GetAsync("http://127.0.0.1:5000/api/Station").Result;
+            var stations = response.Content.ReadAsStringAsync().Result;
+            //ViewData["stations"] = JSON.parse(stations);
+            ViewData["stations"] = JArray.Parse(stations.ToString());
+            //ViewData["stations"] = JsonConvert.SerializeObject(stations);
             return View();
         }
     }

@@ -10,74 +10,74 @@ using System;
 namespace WebApplication.Controllers
 {
     [Route("api/[controller]")]
-    public class DeviceController
+    public class StationController
     {
         
-        private readonly IDeviceRepository _DeviceRepository;
+        private readonly IStationRepository _StationRepository;
 
-        public DeviceController(IDeviceRepository DeviceRepository)
+        public StationController(IStationRepository StationRepository)
         {
-            _DeviceRepository=DeviceRepository;
+            _StationRepository=StationRepository;
         }
 
         [HttpGet]
         public Task<string> Get()
         {
-            return this.GetDevice();
+            return this.GetStation();
         }
 
-        public async Task<string> GetDevice()
+        public async Task<string> GetStation()
         {
-            var Devices= await _DeviceRepository.Get();
-            return JsonConvert.SerializeObject(Devices);
+            var Stations= await _StationRepository.Get();
+            return JsonConvert.SerializeObject(Stations);
         }
 
 
         [HttpGet("{apiKey}")]
         public Task<string> Get(string apiKey)
         {
-            return this.GetDeviceById(apiKey);
+            return this.GetStationById(apiKey);
         }
 
-        public async Task<string> GetDeviceById(string apiKey)
+        public async Task<string> GetStationById(string apiKey)
         {
-            var Device= await _DeviceRepository.Get(apiKey) ?? new Device();
-            return JsonConvert.SerializeObject(Device);
+            var Station= await _StationRepository.Get(apiKey) ?? new Station();
+            return JsonConvert.SerializeObject(Station);
         }
 
         [HttpGet("{id:int}")]
         public Task<string> Get(int id)
         {
-            return this.GetDeviceById(id);
+            return this.GetStationById(id);
         }
 
-        public async Task<string> GetDeviceById(int id)
+        public async Task<string> GetStationById(int id)
         {
-            var Device= await _DeviceRepository.Get(id) ?? new Device();
-            return JsonConvert.SerializeObject(Device);
+            var Station= await _StationRepository.Get(id) ?? new Station();
+            return JsonConvert.SerializeObject(Station);
         }
 
         [HttpPost]
-        public async Task<string> Post([FromBody] Device Device)
+        public async Task<string> Post([FromBody] Station Station)
         {
-            var nombre=Device.Name;
+            var nombre=Station.Name;
             
-            await _DeviceRepository.Add(Device);
+            await _StationRepository.Add(Station);
             return "";
         }
 
         [HttpPut("{id}")]
-        public async Task<bool> Put(string id, [FromBody] Device Device)
+        public async Task<bool> Put(string id, [FromBody] Station Station)
         {
             if (string.IsNullOrEmpty(id)) return false;
-            return await _DeviceRepository.Update(id, Device);
+            return await _StationRepository.Update(id, Station);
         }
 
         [HttpDelete("{id}")]
         public async Task<bool> Delete(string id)
         {
             if (string.IsNullOrEmpty(id)) return false;
-            return await _DeviceRepository.Remove(id);
+            return await _StationRepository.Remove(id);
              
         }
 
@@ -86,28 +86,28 @@ namespace WebApplication.Controllers
         public async Task<bool> PatchVersionAndroid(int id, [FromBody]  Arrays json)
         {
             if (id==0) return false;
-            return await _DeviceRepository.UpdateAndroidVersion(id, json.AndroidVersion);
+            return await _StationRepository.UpdateAndroidVersion(id, json.AndroidVersion);
         }
 
         [HttpPatch("{id}/ServicesV")]
         public async Task<bool> PatchVersionVersionServices(int id, [FromBody]  Arrays json)
         {
             if (id==0) return false;
-            return await _DeviceRepository.UpdateServicesVersion(id, json.ServicesVersion);
+            return await _StationRepository.UpdateServicesVersion(id, json.ServicesVersion);
         }
 
         [HttpPatch("{id}/Name")]
         public async Task<bool> PatchName(int id, [FromBody]  Arrays json)
         {
             if (id==0) return false;
-            return await _DeviceRepository.UpdateName(id, json.Name);
+            return await _StationRepository.UpdateName(id, json.Name);
         }
 
         [HttpPatch("{id}/Coordinates")]
         public async Task<bool> PatchPosition(int id, [FromBody]  Arrays json)
         {
             if (id==0) return false;
-            return await _DeviceRepository.UpdatePosition(id, json.Latitude, json.Longitude);
+            return await _StationRepository.UpdatePosition(id, json.Latitude, json.Longitude);
         }
 
     }

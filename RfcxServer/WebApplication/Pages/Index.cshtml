@@ -17,37 +17,37 @@
   <script src="js/map.js"></script>
   <script>
     $(window).on('load',function(){
-    devices=[];//{"id":1,"sensorsId":[],"content":<>,"lat": -2.3,"long": -64.3}
+    stations=[];//{"id":1,"sensorsId":[],"content":<>,"lat": -2.3,"long": -64.3}
 
     function getDataDisp(data){
       var dataDic = JSON.parse(data);
-      for(device of dataDic){
-        var latitud = parseFloat(device['Latitude']);
-        var longitud = parseFloat(device['Longitude']);
-        var idDevice=device['Id'];
-        var nameDevice=device['Name'];
+      for(station of dataDic){
+        var latitud = parseFloat(station['Latitude']);
+        var longitud = parseFloat(station['Longitude']);
+        var idStation=station['Id'];
+        var nameStation=station['Name'];
 
         var contentString = '<div id="contentInfo">'+
-                    '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("titulo", "Index", "DeviceView", new { deviceName = "deviceNameValue", deviceId = "deviceIdVal" })</h3>'+
+                    '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("titulo", "Index", "StationView", new { stationName = "stationNameValue", stationId = "stationIdVal" })</h3>'+
                     '<div id="bodyContent" style="width: 85px;">';
-        contentString = contentString.replace("titulo", nameDevice);
-        contentString = contentString.replace("deviceNameValue", nameDevice);
-        contentString = contentString.replace("deviceIdVal", idDevice);
+        contentString = contentString.replace("titulo", nameStation);
+        contentString = contentString.replace("stationNameValue", nameStation);
+        contentString = contentString.replace("stationIdVal", idStation);
 
-        devicesDic = {};
-        devicesDic["id"] = idDevice;
-        devicesDic["content"] = contentString;
-        devicesDic["lat"]=latitud;
-        devicesDic["long"]=longitud;
-        devicesDic["sensorsId"] = [];
-        devices.push(devicesDic);
+        stationsDic = {};
+        stationsDic["id"] = idStation;
+        stationsDic["content"] = contentString;
+        stationsDic["lat"]=latitud;
+        stationsDic["long"]=longitud;
+        stationsDic["sensorsId"] = [];
+        stations.push(stationsDic);
         
       }
       getDataSensor();
     }
     
     
-    $.get('api/Device', getDataDisp);
+    $.get('api/Station', getDataDisp);
     });
     </script>
     <script async defer

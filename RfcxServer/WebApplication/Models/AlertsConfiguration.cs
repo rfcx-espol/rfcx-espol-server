@@ -7,10 +7,10 @@ namespace WebApplication.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        //If SensorId!=null then var1=deviceId var2=sensorid  get device/var1/sensor/var2/lastdata, else var1=deviceId
+        //If SensorId!=null then var1=stationId var2=sensorid  get station/var1/sensor/var2/lastdata, else var1=stationId
         public string AlertsConfigurationId { get; set; }
         public int Id { get; set; }
-        public int DeviceId { get; set; }
+        public int StationId { get; set; }
         public int SensorId { get; set; }
         public string Action { get; set; }
         public string NotificationType { get; set; }

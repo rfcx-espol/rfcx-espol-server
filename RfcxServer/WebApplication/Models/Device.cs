@@ -4,11 +4,11 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace WebApplication.Models
 {
 
-    public class Device
+    public class Station
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string DeviceId { get; set; }
+        public string StationId { get; set; }
         public int Id { get; set; }
         public string APIKey { get; set; }
         public string Name { get; set; }

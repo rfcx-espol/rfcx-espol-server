@@ -49,11 +49,11 @@ namespace WebApplication.DbModels
             }
         }
 
-        public IMongoCollection<Device> Devices
+        public IMongoCollection<Station> Stations
         {
             get
             {
-                return _database.GetCollection<Device>("Device");
+                return _database.GetCollection<Station>("Station");
             }
         }
 

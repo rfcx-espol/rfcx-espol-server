@@ -5,31 +5,31 @@
 }
 
 @{
-    ViewBag.Title = "DeviceView";
+    ViewBag.Title = "StationView";
 }
 @section Home{
   <a id="home-pag" href='@Url.Action("Index","")'><i class="fa fa-home w3-xxlarge navbar-text"></i></a>
 }
-<link rel="stylesheet" type="text/css" href="~/css/deviceView.css">
+<link rel="stylesheet" type="text/css" href="~/css/stationView.css">
 <link type="text/css" rel="stylesheet" href="//pubnub.github.io/eon/v/eon/1.0.0/eon.css"/>
 <script type="text/javascript" src="//pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
 
 
 <div class="tab">
-      <button class="tablinks" name="monitor" onclick="openDevice(event, 'monitor')" id="defaultOpen"><i class="material-icons">&#xe30c;</i>  Monitor</button>
-      <button class="tablinks" name="temp_amb" onclick="openDevice(event, 'temp_amb')" onfocus="displayEachChart()"><i class="fa fa-thermometer" style="font-size:30px;"></i>  Temperatura - Ambiente</button>
-      <button class="tablinks" name="temp_disp" onclick="openDevice(event, 'temp_disp')" onfocus="displayEachChart()"><i class="fa fa-thermometer" style="font-size:30px;"></i>  Temperatura - Dispositivo</button>
-      <button class="tablinks" name="humedad" onclick="openDevice(event, 'humedad')" onfocus="displayEachChart()"><i class="fa fa-tint" style="font-size:30px;";></i>  Humedad</button>
+      <button class="tablinks" name="monitor" onclick="openStation(event, 'monitor')" id="defaultOpen"><i class="material-icons">&#xe30c;</i>  Monitor</button>
+      <button class="tablinks" name="temp_amb" onclick="openStation(event, 'temp_amb')" onfocus="displayEachChart()"><i class="fa fa-thermometer" style="font-size:30px;"></i>  Temperatura - Ambiente</button>
+      <button class="tablinks" name="temp_disp" onclick="openStation(event, 'temp_disp')" onfocus="displayEachChart()"><i class="fa fa-thermometer" style="font-size:30px;"></i>  Temperatura - Dispositivo</button>
+      <button class="tablinks" name="humedad" onclick="openStation(event, 'humedad')" onfocus="displayEachChart()"><i class="fa fa-tint" style="font-size:30px;";></i>  Humedad</button>
 </div> 
     <div id="monitor" class="tabcontent" onload="display(this)">
-      <h3 style="text-align: center; color: #e4b836; font-weight: bold;">@ViewData["deviceName"].ToString()</h3>
-      <p id="deviceId" style="display:none">@ViewData["deviceId"].ToString()</p>
+      <h3 style="text-align: center; color: #e4b836; font-weight: bold;">@ViewData["stationName"].ToString()</h3>
+      <p id="stationId" style="display:none">@ViewData["stationId"].ToString()</p>
     </div>
 
     <!--SENSORES INDIVIDUALES -->
 
     <div id="temp_amb" class="col-sm-12 col-md-12 col-lg-12 tabcontent activo">
-      <h4 class="chart-title">@ViewData["deviceName"].ToString()/Temperatura - Ambiente</h4>
+      <h4 class="chart-title">@ViewData["stationName"].ToString()/Temperatura - Ambiente</h4>
       <div class="col-md-12" style="background-color: #fff;">
         <div id="chartContainer1" style="height: 320px"></div>
         <div id="boxInfoValues">
@@ -41,7 +41,7 @@
     </div>
     
     <div id="temp_disp" class="col-sm-12 col-md-12 col-lg-12 tabcontent">
-      <h4 class="chart-title">@ViewData["deviceName"].ToString()/Temperatura - Dispositivo</h4>
+      <h4 class="chart-title">@ViewData["stationName"].ToString()/Temperatura - Dispositivo</h4>
       <div class="col-md-12" style="background-color: #fff;">
         <div id="chartContainer2" style="width: 100%; height: 320px"></div>
         <div id="boxInfoValues">
@@ -53,7 +53,7 @@
     </div>
       <!--div id="temp_disp_chart"></div-->
       <div id="humedad" class="col-sm-12 col-md-12 col-lg-12 tabcontent">
-      <h4 class="chart-title">@ViewData["deviceName"].ToString()/Humedad - Ambiente</h4>
+      <h4 class="chart-title">@ViewData["stationName"].ToString()/Humedad - Ambiente</h4>
       <div class="col-md-12" style="background-color: #fff;">
         <div id="chartContainer3" style="width: 100%; height: 320px"></div>
         <div id="boxInfoValues">

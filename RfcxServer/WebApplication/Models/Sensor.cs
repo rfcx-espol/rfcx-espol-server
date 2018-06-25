@@ -9,7 +9,7 @@ namespace WebApplication.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string SensorId { get; set; }
         public int Id { get; set; }
-        public int DeviceId { get; set; }
+        public int StationId { get; set; }
         public string Type { get; set; }
         public string Location { get; set; }
     }

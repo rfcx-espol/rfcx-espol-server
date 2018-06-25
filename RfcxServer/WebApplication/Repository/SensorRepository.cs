@@ -63,11 +63,11 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<IEnumerable<Sensor>> GetByDevice(int DeviceId)
+        public async Task<IEnumerable<Sensor>> GetByStation(int StationId)
         {
             try
             {
-                var filter =Builders<Sensor>.Filter.Eq("DeviceId", DeviceId);
+                var filter =Builders<Sensor>.Filter.Eq("StationId", StationId);
                 return await _context.Sensors.Find(filter).ToListAsync();
             }
             catch (Exception ex)
@@ -76,9 +76,9 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<Sensor> Get(int DeviceId, int SensorId)
+        public async Task<Sensor> Get(int StationId, int SensorId)
         {
-            var filter = Builders<Sensor>.Filter.Eq("Id", SensorId) & Builders<Sensor>.Filter.Eq("DeviceId", DeviceId);
+            var filter = Builders<Sensor>.Filter.Eq("Id", SensorId) & Builders<Sensor>.Filter.Eq("StationId", StationId);
 
             try
             {

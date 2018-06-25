@@ -25,19 +25,19 @@ namespace WebApplication {
     /* 
     public class Thing {
         public string fileName;
-        public string deviceId;
+        public string stationId;
     }
     */
     [Route("[controller]")]
     public class FileController : Controller {
         private readonly IAudioRepository _AudioRepository;
-        private readonly IDeviceRepository _DeviceRepository;
+        private readonly IStationRepository _StationRepository;
 
-        public class DeviceFile {
+        public class StationFile {
             public KeyValueAccumulator formAccumulator;
             public MemoryStream memoryStream;
 
-            public DeviceFile() {
+            public StationFile() {
                 formAccumulator = new KeyValueAccumulator();
                 memoryStream = new MemoryStream();
             }
@@ -45,10 +45,10 @@ namespace WebApplication {
 
         private readonly IFileProvider _fileProvider;
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
-        public FileController(IFileProvider fileProvider, IAudioRepository AudioRepository, IDeviceRepository DeviceRepository) {
+        public FileController(IFileProvider fileProvider, IAudioRepository AudioRepository, IStationRepository StationRepository) {
             _fileProvider = fileProvider;
              _AudioRepository=AudioRepository;
-             _DeviceRepository=DeviceRepository;
+             _StationRepository=StationRepository;
         }
 
         public IActionResult Index() {
@@ -68,8 +68,8 @@ namespace WebApplication {
             return mediaType.Encoding;
         }
 
-        public async Task<DeviceFile> HandleMultipartRequest() {
-            var deviceFile = new DeviceFile();
+        public async Task<StationFile> HandleMultipartRequest() {
+            var stationFile = new StationFile();
 
             var boundary = MultipartRequestHelper.GetBoundary(
                 MediaTypeHeaderValue.Parse(Request.ContentType),
@@ -85,8 +85,8 @@ namespace WebApplication {
                 {
                     if (MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
                     {
-                        await section.Body.CopyToAsync(deviceFile.memoryStream);
-                        deviceFile.memoryStream.Seek(0, SeekOrigin.Begin);
+                        await section.Body.CopyToAsync(stationFile.memoryStream);
+                        stationFile.memoryStream.Seek(0, SeekOrigin.Begin);
                     }
                     else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
                     {
@@ -111,9 +111,9 @@ namespace WebApplication {
                             {
                                 value = String.Empty;
                             }
-                            deviceFile.formAccumulator.Append(key.Value, value);
+                            stationFile.formAccumulator.Append(key.Value, value);
 
-                            if (deviceFile.formAccumulator.ValueCount > _defaultFormOptions.ValueCountLimit)
+                            if (stationFile.formAccumulator.ValueCount > _defaultFormOptions.ValueCountLimit)
                             {
                                 throw new InvalidDataException($"Form key count limit {_defaultFormOptions.ValueCountLimit} exceeded.");
                             }
@@ -125,7 +125,7 @@ namespace WebApplication {
                 // reads the headers for the next section.
                 section = await reader.ReadNextSectionAsync();
             }
-            return deviceFile;
+            return stationFile;
         }
 
         [HttpPost]
@@ -136,8 +136,8 @@ namespace WebApplication {
                 return BadRequest($"Expected a multipart request, but got {Request.ContentType}");
             }
 
-            var deviceFile = await HandleMultipartRequest();
-            var formData = deviceFile.formAccumulator.GetResults();
+            var stationFile = await HandleMultipartRequest();
+            var formData = stationFile.formAccumulator.GetResults();
             StringValues filename;
             bool ok = false;
             ok = formData.TryGetValue("filename", out filename);
@@ -183,41 +183,41 @@ namespace WebApplication {
 
             /*
             {
-                Core.DeviceDictionary.TryAdd(deviceId.ToString(), Core.DeviceDictionary.Count);
-                Core.SaveDeviceDictionaryToFile();
+                Core.StationDictionary.TryAdd(stationId.ToString(), Core.StationDictionary.Count);
+                Core.SaveStationDictionaryToFile();
             }
             */
 
             {
-                string strDeviceId = "";
+                string strStationId = "";
                 int id;
                 /*
-                if (Core.DeviceDictionary.TryGetValue(deviceId.ToString(), out id)) {
-                    strDeviceId = id.ToString();
+                if (Core.StationDictionary.TryGetValue(stationId.ToString(), out id)) {
+                    strStationId = id.ToString();
                 }
                 */
-                var DeviceResult=_DeviceRepository.Get(APIKey.ToString());
-                var deviceCount=_DeviceRepository.GetDeviceCount(APIKey);
+                var StationResult=_StationRepository.Get(APIKey.ToString());
+                var stationCount=_StationRepository.GetStationCount(APIKey);
                 
-                if(deviceCount!=0){
-                    id=DeviceResult.Result.Id;
-                    strDeviceId=id.ToString(); //id 1 2 3
-                    //string name=DeviceResult.Result.Name; //name folder with device name
+                if(stationCount!=0){
+                    id=StationResult.Result.Id;
+                    strStationId=id.ToString(); //id 1 2 3
+                    //string name=StationResult.Result.Name; //name folder with station name
                     
                     string strfilename = filename.ToString();
                     var filePath="";
-                    if(strDeviceId!=null){
-                        Core.MakeDeviceFolder(strDeviceId);
-                        filePath = Path.Combine(Core.DeviceAudiosFolderPath(strDeviceId),
+                    if(strStationId!=null){
+                        Core.MakeStationFolder(strStationId);
+                        filePath = Path.Combine(Core.StationAudiosFolderPath(strStationId),
                                                     strfilename);
                         Console.Write(filePath);
                     }
-                    //Folder name by device Name
+                    //Folder name by station Name
                     /* 
                     else{
                         name=name.Replace(" ","");
-                        Core.MakeDeviceFolderName(name);
-                        filePath = Path.Combine(Core.DeviceAudiosFolderPathName(name),
+                        Core.MakeStationFolderName(name);
+                        filePath = Path.Combine(Core.StationAudiosFolderPathName(name),
                                                     strfilename);
                         Console.Write(filePath);
                     
@@ -226,7 +226,7 @@ namespace WebApplication {
 
                     var audio =new Audio();
                     //audio.FechaLlegada=fechaLlegada;
-                    audio.DeviceId=id;
+                    audio.StationId=id;
                     audio.RecordingDate=recordingDate;
                     audio.Duration=duration;
                     audio.Format=format;
@@ -235,8 +235,8 @@ namespace WebApplication {
                     result=_AudioRepository.Add(audio);
 
                     using (var stream = new FileStream(filePath, FileMode.Create)) {
-                        await deviceFile.memoryStream.CopyToAsync(stream);
-                        deviceFile.memoryStream.Close();
+                        await stationFile.memoryStream.CopyToAsync(stream);
+                        stationFile.memoryStream.Close();
                     }
 
 
@@ -263,7 +263,7 @@ namespace WebApplication {
                         // var date = DateTimeExtensions.DateTimeFromMilliseconds(milliseconds);
                         // var localDate = date.ToLocalTime();
                         var oggFilename = filenameNoExtension + ".ogg";
-                        var oggFilePath = Path.Combine(Core.DeviceOggFolderPath(strDeviceId), oggFilename);
+                        var oggFilePath = Path.Combine(Core.StationOggFolderPath(strStationId), oggFilename);
                         process.StartInfo.Arguments = "-i " + filePath + " " + oggFilePath;
                         process.Start();
                     }

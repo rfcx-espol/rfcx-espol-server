@@ -47,7 +47,7 @@ namespace WebApplication
             services.AddTransient<IAlertRepository, AlertRepository>();
             services.AddTransient<IAlertsConfigurationRepository, AlertsConfigurationRepository>();
             services.AddTransient<IAudioRepository, AudioRepository>();
-            services.AddTransient<IDeviceRepository, DeviceRepository>();
+            services.AddTransient<IStationRepository, StationRepository>();
             services.AddTransient<ILabelRepository, LabelRepository>();
             services.AddTransient<ISensorRepository, SensorRepository>();
             services.AddTransient<IDataRepository, DataRepository>();
