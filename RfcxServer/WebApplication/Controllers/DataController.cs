@@ -117,6 +117,19 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
+        [Route("api/Device/{DeviceId:int}/[controller]/lastData")]
+        public Task<string> GetLastDataByDevice([FromRoute]int DeviceId)
+        {
+            return this.GetLastsDataByDevice(DeviceId);
+        }
+
+        private async Task<string> GetLastsDataByDevice(int DeviceId)
+        {
+            var Datas= await _DataRepository.GetLastByDevice(DeviceId);
+            return JsonConvert.SerializeObject(Datas);
+        }
+
+        [HttpGet]
         [Route("api/Device/{DeviceId:int}/Sensor/{SensorId:int}/DataTimestamp")]
         public Task<string> GetDatasByDeviceSensorTimestamp([FromRoute]int DeviceId,[FromRoute] int SensorId, 
         [FromQuery] long StartTimestamp, [FromQuery] long EndTimestamp)

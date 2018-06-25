@@ -26,7 +26,7 @@ namespace WebApplication.Controllers
             return this.GetAlert();
         }
 
-        public async Task<string> GetAlert()
+        private async Task<string> GetAlert()
         {
             var Alerts= await _AlertRepository.Get();
             return JsonConvert.SerializeObject(Alerts);
@@ -39,7 +39,7 @@ namespace WebApplication.Controllers
             return this.GetAlertById(id);
         }
 
-        public async Task<string> GetAlertById(string id)
+        private async Task<string> GetAlertById(string id)
         {
             var Alert= await _AlertRepository.Get(id) ?? new Alert();
             return JsonConvert.SerializeObject(Alert);

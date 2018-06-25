@@ -164,6 +164,29 @@ namespace WebApplication.Repository
             }
         }
 
+        public async Task<Data> GetLastByDevice(int DeviceId)
+        {
+            
+            try
+            {
+                int id=0;
+                var filter =Builders<Data>.Filter.Eq("DeviceId", DeviceId);
+                List<Data> data=_context.Datas.Find(filter).ToList();
+                if(data.Count>0){
+                    var dataId=data.Count-1;
+                    id=data[dataId].Id;
+                }
+                
+                var filter2=Builders<Data>.Filter.Eq("Id", id);
+                return await _context.Datas.Find(filter2).FirstOrDefaultAsync();
+            
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<Data> Get(int DeviceId, int SensorId, int DataId)
         {
             var filter = Builders<Data>.Filter.Eq("Id", DataId) & Builders<Data>.Filter.Eq("DeviceId", DeviceId) & Builders<Data>.Filter.Eq("SensorId", SensorId);
