@@ -20,26 +20,32 @@ namespace WebApplication.Controllers
             _StationRepository=StationRepository;
         }
 
-        [HttpGet]
-        public Task<string> Get()
+        [HttpGet("{apiKey?}")]
+        public Task<string> Get([FromQuery] string apiKey)
         {
-            return this.GetStation();
+            if(apiKey==null){
+                return this.GetStation();
+            }else{
+                return this.GetStationByApiKey(apiKey);
+            }
+            
         }
 
-        public async Task<string> GetStation()
+        private async Task<string> GetStation()
         {
             var Stations= await _StationRepository.Get();
             return JsonConvert.SerializeObject(Stations);
         }
 
-
+        /*
         [HttpGet("{apiKey}")]
-        public Task<string> Get(string apiKey)
+        public Task<string> Get()
         {
-            return this.GetStationById(apiKey);
+            return this.GetStationByApiKey(apiKey);
         }
+        */
 
-        public async Task<string> GetStationById(string apiKey)
+        private async Task<string> GetStationByApiKey(string apiKey)
         {
             var Station= await _StationRepository.Get(apiKey) ?? new Station();
             return JsonConvert.SerializeObject(Station);
@@ -51,7 +57,7 @@ namespace WebApplication.Controllers
             return this.GetStationById(id);
         }
 
-        public async Task<string> GetStationById(int id)
+        private async Task<string> GetStationById(int id)
         {
             var Station= await _StationRepository.Get(id) ?? new Station();
             return JsonConvert.SerializeObject(Station);
@@ -65,16 +71,18 @@ namespace WebApplication.Controllers
             await _StationRepository.Add(Station);
             return "";
         }
-
+        
+        /*
         [HttpPut("{id}")]
         public async Task<bool> Put(string id, [FromBody] Station Station)
         {
             if (string.IsNullOrEmpty(id)) return false;
             return await _StationRepository.Update(id, Station);
         }
+        */
 
         [HttpDelete("{id}")]
-        public async Task<bool> Delete(string id)
+        public async Task<bool> Delete([FromRoute] string id)
         {
             if (string.IsNullOrEmpty(id)) return false;
             return await _StationRepository.Remove(id);
