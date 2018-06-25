@@ -3,7 +3,7 @@ $(window).on('load',function(){
     $.get('api/Device/', getDevicesList);
     
     $("#masfilas").click(function(){
-        $("#myt").append('<tr><td><input type="text" name="parametros[]"/></td><td> <input type="text" name="unidad[]"/></td><td> <input type="text" name="especificacion[]"/></td><td> <a href="#" class="delete"><i class="material-icons">delete_forever</i></a></td></tr>');
+        $("#myt").append('<tr><td><input type="text" name="parametros[]"/></td><td> <input type="text" name="unidad[]"/></td><td> <a href="#" class="delete"><i class="material-icons">delete_forever</i></a></td></tr>');
         $('.delete').off().click(function(e) {
             $(this).parent('td').parent('tr').remove();
         });      
