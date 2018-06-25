@@ -140,45 +140,19 @@ namespace WebApplication {
             var formData = stationFile.formAccumulator.GetResults();
             StringValues filename;
             bool ok = false;
-            ok = formData.TryGetValue("filename", out filename);
-            if (!ok) {
-                return BadRequest("Expected filename key");
-            }
-            //Cuando se envian los audios se enviaen APIKey con ese obtener el id y guradar en la base
+            //Cuando se envian los audios se envia el APIKey con ese obtener el id y guardar en la base
+            //APIKey para autenticar
             StringValues APIKey;
+            StringValues Id;
+
             ok = formData.TryGetValue("APIKey", out APIKey);
             if (!ok) {
                 return BadRequest("Expected APIKey key");
             }
-            /*
-            StringValues fechaLlegada;
-            ok = formData.TryGetValue("FechaLlegada", out fechaLlegada);
-            if (!ok) {
-                return BadRequest("Expected FechaLlegada key");
-            }
-            */
-            StringValues recordingDate;
-            ok = formData.TryGetValue("RecordingDate", out recordingDate);
-            if (!ok) {
-                return BadRequest("Expected RecordingDate key");
-            }
-            StringValues duration;
-            ok = formData.TryGetValue("Duration", out duration);
-            if (!ok) {
-                return BadRequest("Expected Duration key");
-            }
 
-            StringValues format;
-            ok = formData.TryGetValue("Format", out format);
+            ok = formData.TryGetValue("Id", out Id);
             if (!ok) {
-                return BadRequest("Expected Format key");
-            }
-
-            StringValues bitRate1;
-            ok = formData.TryGetValue("BitRate", out bitRate1);
-            int bitRate=0;
-            if(ok){
-                bitRate=Int32.Parse(bitRate1);
+                return BadRequest("Expected ID key");
             }
 
             /*
@@ -187,6 +161,7 @@ namespace WebApplication {
                 Core.SaveStationDictionaryToFile();
             }
             */
+            
 
             {
                 string strStationId = "";
@@ -203,6 +178,49 @@ namespace WebApplication {
                     id=StationResult.Result.Id;
                     strStationId=id.ToString(); //id 1 2 3
                     //string name=StationResult.Result.Name; //name folder with station name
+                    
+                    //Authentication
+                    if(strStationId!=Id){
+                        return BadRequest("Authentication Failed");
+                    }
+
+                    //other parameters
+                    ok = formData.TryGetValue("filename", out filename);
+                    if (!ok) {
+                        return BadRequest("Expected filename key");
+                    }
+                    
+                    /*
+                    StringValues fechaLlegada;
+                    ok = formData.TryGetValue("FechaLlegada", out fechaLlegada);
+                    if (!ok) {
+                        return BadRequest("Expected FechaLlegada key");
+                    }
+                    */
+                    StringValues recordingDate;
+                    ok = formData.TryGetValue("RecordingDate", out recordingDate);
+                    if (!ok) {
+                        return BadRequest("Expected RecordingDate key");
+                    }
+                    StringValues duration;
+                    ok = formData.TryGetValue("Duration", out duration);
+                    if (!ok) {
+                        return BadRequest("Expected Duration key");
+                    }
+
+                    StringValues format;
+                    ok = formData.TryGetValue("Format", out format);
+                    if (!ok) {
+                        return BadRequest("Expected Format key");
+                    }
+
+                    StringValues bitRate1;
+                    ok = formData.TryGetValue("BitRate", out bitRate1);
+                    int bitRate=0;
+                    if(ok){
+                        bitRate=Int32.Parse(bitRate1);
+                    }
+
                     
                     string strfilename = filename.ToString();
                     var filePath="";
@@ -270,7 +288,7 @@ namespace WebApplication {
 
                 }
                 else{
-                    return Content("Invalid KEY");
+                    return Content("Invalid APIKEY");
                 }
                 
                 

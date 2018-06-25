@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using WebApplication.Models;
+
 
 namespace WebApplication {
     public static class Core {
@@ -13,7 +15,7 @@ namespace WebApplication {
         }
 
         public static string StationDictionaryPath { get {
-            return Path.Combine(Directory.GetCurrentDirectory(), FilesFolderName, "station_dictionary");
+            return Path.Combine(getServerDirectory() , FilesFolderName, "station_dictionary");
         }}
 
         public static void InitStationDictionaryFromFile() {
@@ -43,15 +45,15 @@ namespace WebApplication {
 
 
         public static string AudiosFolderPath { get {
-            return Path.Combine(Directory.GetCurrentDirectory(), FilesFolderName, "audios");
+            return Path.Combine(getServerDirectory() , FilesFolderName, "audios");
         }}
 
         public static string OggFolderPath { get {
-            return Path.Combine(Directory.GetCurrentDirectory(), FilesFolderName, "ogg");
+            return Path.Combine(getServerDirectory() , FilesFolderName, "ogg");
         }}
 
         public static string FilesFolderPath { get { 
-            return Path.Combine(Directory.GetCurrentDirectory(), FilesFolderName);
+            return Path.Combine(getServerDirectory() , FilesFolderName);
         }}
 
         public static void MakeFilesFolder() {
@@ -114,6 +116,9 @@ namespace WebApplication {
                 Directory.CreateDirectory(StationAudiosFolderPathName(name1));
                 Directory.CreateDirectory(StationOggFolderPathName(name1));
             }
+        }
+        public static string getServerDirectory(){
+            return Constants.serverDirecrtory;
         }
         
     }
