@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace WebApplication.Views.DeviceRegister
+namespace WebApplication.Views.StationRegister
 {
     public class IndexModel : PageModel
     {

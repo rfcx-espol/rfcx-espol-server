@@ -51,9 +51,9 @@
           <div class="form-group">
             <table class="table table-bordered" id="vertical-table">
               
-              <tr><th><label for="ddl">Device </label></th> 
+              <tr><th><label for="ddl">Station </label></th> 
                 <td>    
-                @Html.DropDownList("ddl", Model.deviceFolders.Select(item => new SelectListItem
+                @Html.DropDownList("ddl", Model.stationFolders.Select(item => new SelectListItem
                 {
                     Value = item.ToString(),
                     Text = item.ToString(),
@@ -128,7 +128,7 @@
 
             <input type="hidden" name="start" value="@if (Model.start != null) {@Model.start_d.ToString("yyyy-MM-dd"); }" />
             <input type="hidden" name="end" value="@if (Model.end != null) {@Model.end_d.ToString("yyyy-MM-dd"); }" />
-            <input id="ddt" name="device" type="hidden" value="@Model.selected" />
+            <input id="ddt" name="station" type="hidden" value="@Model.selected" />
             <input type="hidden" id="lista" name="lista" value="" />
             <br />
             <button id="dl" type="button" class="out">Download</button><br /><br /><br /> 

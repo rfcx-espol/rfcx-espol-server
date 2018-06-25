@@ -62,11 +62,11 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<IEnumerable<Data>> GetByDevice(int DeviceId)
+        public async Task<IEnumerable<Data>> GetByStation(int StationId)
         {
             try
             {
-                var filter =Builders<Data>.Filter.Eq("DeviceId", DeviceId);
+                var filter =Builders<Data>.Filter.Eq("StationId", StationId);
                 return await _context.Datas.Find(filter).ToListAsync();
             }
             catch (Exception ex)
@@ -82,14 +82,14 @@ namespace WebApplication.Repository
                 List<int> dataIdList=new List<int>();
                 List<Data> data;
                 List<Sensor> sensor;
-                var deviceCount= _context.Devices.Find(_=>true).ToList().Count;
+                var stationCount= _context.Stations.Find(_=>true).ToList().Count;
                 var sensorCount=0;
-                for (int i=1;i<=deviceCount;i++){
-                    var filter=Builders<Sensor>.Filter.Eq("DeviceId",i);
+                for (int i=1;i<=stationCount;i++){
+                    var filter=Builders<Sensor>.Filter.Eq("StationId",i);
                     sensor=_context.Sensors.Find(filter).ToList();
                     sensorCount=sensor.Count;
                     for(int j=0;j<sensorCount;j++){
-                        var filter1 =Builders<Data>.Filter.Eq("DeviceId", i) & Builders<Data>.Filter.Eq("SensorId", sensor[j].Id);
+                        var filter1 =Builders<Data>.Filter.Eq("StationId", i) & Builders<Data>.Filter.Eq("SensorId", sensor[j].Id);
                         data=_context.Datas.Find(filter1).ToList();
                         if(data.Count>0){
                             var dataId=data.Count-1;
@@ -108,11 +108,11 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<IEnumerable<Data>> GetByDeviceSensor(int DeviceId, int SensorId)
+        public async Task<IEnumerable<Data>> GetByStationSensor(int StationId, int SensorId)
         {
             try
             {
-                var filter =Builders<Data>.Filter.Eq("DeviceId", DeviceId) & Builders<Data>.Filter.Eq("SensorId", SensorId);
+                var filter =Builders<Data>.Filter.Eq("StationId", StationId) & Builders<Data>.Filter.Eq("SensorId", SensorId);
                 return await _context.Datas.Find(filter).ToListAsync();
             }
             catch (Exception ex)
@@ -121,11 +121,11 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<IEnumerable<Data>> GetByDeviceSensorTimestamp(int DeviceId, int SensorId, long StartTimestamp, long EndTimestamp)
+        public async Task<IEnumerable<Data>> GetByStationSensorTimestamp(int StationId, int SensorId, long StartTimestamp, long EndTimestamp)
         {
             try{
                 
-                var filter =Builders<Data>.Filter.Eq("DeviceId", DeviceId) & 
+                var filter =Builders<Data>.Filter.Eq("StationId", StationId) & 
                 Builders<Data>.Filter.Eq("SensorId", SensorId) & 
                 Builders<Data>.Filter.Gte("Timestamp", StartTimestamp) &
                 Builders<Data>.Filter.Lte("Timestamp", EndTimestamp);
@@ -141,13 +141,13 @@ namespace WebApplication.Repository
             
         }
 
-        public async Task<Data> GetLastByDeviceSensor(int DeviceId, int SensorId)
+        public async Task<Data> GetLastByStationSensor(int StationId, int SensorId)
         {
             
             try
             {
                 int id=0;
-                var filter =Builders<Data>.Filter.Eq("DeviceId", DeviceId) & Builders<Data>.Filter.Eq("SensorId", SensorId);
+                var filter =Builders<Data>.Filter.Eq("StationId", StationId) & Builders<Data>.Filter.Eq("SensorId", SensorId);
                 List<Data> data=_context.Datas.Find(filter).ToList();
                 if(data.Count>0){
                     var dataId=data.Count-1;
@@ -164,9 +164,32 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<Data> Get(int DeviceId, int SensorId, int DataId)
+        public async Task<Data> GetLastByStation(int StationId)
         {
-            var filter = Builders<Data>.Filter.Eq("Id", DataId) & Builders<Data>.Filter.Eq("DeviceId", DeviceId) & Builders<Data>.Filter.Eq("SensorId", SensorId);
+            
+            try
+            {
+                int id=0;
+                var filter =Builders<Data>.Filter.Eq("StationId", StationId);
+                List<Data> data=_context.Datas.Find(filter).ToList();
+                if(data.Count>0){
+                    var dataId=data.Count-1;
+                    id=data[dataId].Id;
+                }
+                
+                var filter2=Builders<Data>.Filter.Eq("Id", id);
+                return await _context.Datas.Find(filter2).FirstOrDefaultAsync();
+            
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<Data> Get(int StationId, int SensorId, int DataId)
+        {
+            var filter = Builders<Data>.Filter.Eq("Id", DataId) & Builders<Data>.Filter.Eq("StationId", StationId) & Builders<Data>.Filter.Eq("SensorId", SensorId);
 
             try
             {

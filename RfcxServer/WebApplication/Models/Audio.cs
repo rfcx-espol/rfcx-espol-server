@@ -11,7 +11,7 @@ namespace WebApplication.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string AudioId { get; set; }
         public int Id { get; set; }
-        public int DeviceId { get; set; }
+        public int StationId { get; set; }
         public string RecordingDate { get; set; }
         public string Duration { get; set; }
         public string Format { get; set; }

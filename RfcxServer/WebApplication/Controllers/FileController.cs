@@ -25,19 +25,19 @@ namespace WebApplication {
     /* 
     public class Thing {
         public string fileName;
-        public string deviceId;
+        public string stationId;
     }
     */
     [Route("[controller]")]
     public class FileController : Controller {
         private readonly IAudioRepository _AudioRepository;
-        private readonly IDeviceRepository _DeviceRepository;
+        private readonly IStationRepository _StationRepository;
 
-        public class DeviceFile {
+        public class StationFile {
             public KeyValueAccumulator formAccumulator;
             public MemoryStream memoryStream;
 
-            public DeviceFile() {
+            public StationFile() {
                 formAccumulator = new KeyValueAccumulator();
                 memoryStream = new MemoryStream();
             }
@@ -45,10 +45,10 @@ namespace WebApplication {
 
         private readonly IFileProvider _fileProvider;
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
-        public FileController(IFileProvider fileProvider, IAudioRepository AudioRepository, IDeviceRepository DeviceRepository) {
+        public FileController(IFileProvider fileProvider, IAudioRepository AudioRepository, IStationRepository StationRepository) {
             _fileProvider = fileProvider;
              _AudioRepository=AudioRepository;
-             _DeviceRepository=DeviceRepository;
+             _StationRepository=StationRepository;
         }
 
         public IActionResult Index() {
@@ -68,8 +68,8 @@ namespace WebApplication {
             return mediaType.Encoding;
         }
 
-        public async Task<DeviceFile> HandleMultipartRequest() {
-            var deviceFile = new DeviceFile();
+        public async Task<StationFile> HandleMultipartRequest() {
+            var stationFile = new StationFile();
 
             var boundary = MultipartRequestHelper.GetBoundary(
                 MediaTypeHeaderValue.Parse(Request.ContentType),
@@ -85,8 +85,8 @@ namespace WebApplication {
                 {
                     if (MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
                     {
-                        await section.Body.CopyToAsync(deviceFile.memoryStream);
-                        deviceFile.memoryStream.Seek(0, SeekOrigin.Begin);
+                        await section.Body.CopyToAsync(stationFile.memoryStream);
+                        stationFile.memoryStream.Seek(0, SeekOrigin.Begin);
                     }
                     else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
                     {
@@ -111,9 +111,9 @@ namespace WebApplication {
                             {
                                 value = String.Empty;
                             }
-                            deviceFile.formAccumulator.Append(key.Value, value);
+                            stationFile.formAccumulator.Append(key.Value, value);
 
-                            if (deviceFile.formAccumulator.ValueCount > _defaultFormOptions.ValueCountLimit)
+                            if (stationFile.formAccumulator.ValueCount > _defaultFormOptions.ValueCountLimit)
                             {
                                 throw new InvalidDataException($"Form key count limit {_defaultFormOptions.ValueCountLimit} exceeded.");
                             }
@@ -125,7 +125,7 @@ namespace WebApplication {
                 // reads the headers for the next section.
                 section = await reader.ReadNextSectionAsync();
             }
-            return deviceFile;
+            return stationFile;
         }
 
         [HttpPost]
@@ -136,131 +136,162 @@ namespace WebApplication {
                 return BadRequest($"Expected a multipart request, but got {Request.ContentType}");
             }
 
-            var deviceFile = await HandleMultipartRequest();
-            var formData = deviceFile.formAccumulator.GetResults();
+            var stationFile = await HandleMultipartRequest();
+            var formData = stationFile.formAccumulator.GetResults();
             StringValues filename;
             bool ok = false;
-            ok = formData.TryGetValue("filename", out filename);
+            //Cuando se envian los audios se envia el APIKey con ese obtener el id y guardar en la base
+            //APIKey para autenticar
+            StringValues APIKey;
+            StringValues Id;
+
+            ok = formData.TryGetValue("APIKey", out APIKey);
             if (!ok) {
-                return BadRequest("Expected filename key");
-            }
-            StringValues deviceId;
-            ok = formData.TryGetValue("deviceId", out deviceId);
-            if (!ok) {
-                return BadRequest("Expected deviceId key");
-            }
-            /*
-            StringValues fechaLlegada;
-            ok = formData.TryGetValue("FechaLlegada", out fechaLlegada);
-            if (!ok) {
-                return BadRequest("Expected FechaLlegada key");
-            }
-            */
-            StringValues recordingDate;
-            ok = formData.TryGetValue("RecordingDate", out recordingDate);
-            if (!ok) {
-                return BadRequest("Expected RecordingDate key");
-            }
-            StringValues duration;
-            ok = formData.TryGetValue("Duration", out duration);
-            if (!ok) {
-                return BadRequest("Expected Duration key");
+                return BadRequest("Expected APIKey key");
             }
 
-            StringValues format;
-            ok = formData.TryGetValue("Format", out format);
+            ok = formData.TryGetValue("Id", out Id);
             if (!ok) {
-                return BadRequest("Expected Format key");
+                return BadRequest("Expected ID key");
             }
-
-            StringValues bitRate1;
-            ok = formData.TryGetValue("BitRate", out bitRate1);
-            if (!ok) {
-                return BadRequest("Expected BitRate key");
-            }
-
-            int bitRate=Int32.Parse(bitRate1);
 
             /*
             {
-                Core.DeviceDictionary.TryAdd(deviceId.ToString(), Core.DeviceDictionary.Count);
-                Core.SaveDeviceDictionaryToFile();
+                Core.StationDictionary.TryAdd(stationId.ToString(), Core.StationDictionary.Count);
+                Core.SaveStationDictionaryToFile();
             }
             */
+            
 
             {
-                string strDeviceId = "";
+                string strStationId = "";
                 int id;
                 /*
-                if (Core.DeviceDictionary.TryGetValue(deviceId.ToString(), out id)) {
-                    strDeviceId = id.ToString();
+                if (Core.StationDictionary.TryGetValue(stationId.ToString(), out id)) {
+                    strStationId = id.ToString();
                 }
                 */
-                Task<Device> DeviceResult=_DeviceRepository.Get(deviceId.ToString());
-                id=DeviceResult.Result.Id;
-                strDeviceId=id.ToString();
-                string name=DeviceResult.Result.Name;
+                var StationResult=_StationRepository.Get(APIKey.ToString());
+                var stationCount=_StationRepository.GetStationCount(APIKey);
                 
-                string strfilename = filename.ToString();
-                var filePath="";
-                if(name==null){
-                    Core.MakeDeviceFolder(strDeviceId);
-                    filePath = Path.Combine(Core.DeviceAudiosFolderPath(strDeviceId),
-                                                strfilename);
-                    Console.Write(filePath);
+                if(stationCount!=0){
+                    id=StationResult.Result.Id;
+                    strStationId=id.ToString(); //id 1 2 3
+                    //string name=StationResult.Result.Name; //name folder with station name
+                    
+                    //Authentication
+                    if(strStationId!=Id){
+                        return BadRequest("Authentication Failed");
+                    }
 
-                }else{
-                    name=name.Replace(" ","");
-                    Core.MakeDeviceFolderName(name);
-                    filePath = Path.Combine(Core.DeviceAudiosFolderPathName(name),
-                                                strfilename);
-                    Console.Write(filePath);
-                
-                }              
+                    //other parameters
+                    ok = formData.TryGetValue("filename", out filename);
+                    if (!ok) {
+                        return BadRequest("Expected filename key");
+                    }
+                    
+                    /*
+                    StringValues fechaLlegada;
+                    ok = formData.TryGetValue("FechaLlegada", out fechaLlegada);
+                    if (!ok) {
+                        return BadRequest("Expected FechaLlegada key");
+                    }
+                    */
+                    StringValues recordingDate;
+                    ok = formData.TryGetValue("RecordingDate", out recordingDate);
+                    if (!ok) {
+                        return BadRequest("Expected RecordingDate key");
+                    }
+                    StringValues duration;
+                    ok = formData.TryGetValue("Duration", out duration);
+                    if (!ok) {
+                        return BadRequest("Expected Duration key");
+                    }
 
-                var audio =new Audio();
-                //audio.FechaLlegada=fechaLlegada;
-                audio.DeviceId=id;
-                audio.RecordingDate=recordingDate;
-                audio.Duration=duration;
-                audio.Format=format;
-                audio.BitRate=bitRate;
-                Task result;
-                result=_AudioRepository.Add(audio);
+                    StringValues format;
+                    ok = formData.TryGetValue("Format", out format);
+                    if (!ok) {
+                        return BadRequest("Expected Format key");
+                    }
 
-                using (var stream = new FileStream(filePath, FileMode.Create)) {
-                    await deviceFile.memoryStream.CopyToAsync(stream);
-                    deviceFile.memoryStream.Close();
-                }
+                    StringValues bitRate1;
+                    ok = formData.TryGetValue("BitRate", out bitRate1);
+                    int bitRate=0;
+                    if(ok){
+                        bitRate=Int32.Parse(bitRate1);
+                    }
+
+                    
+                    string strfilename = filename.ToString();
+                    var filePath="";
+                    if(strStationId!=null){
+                        Core.MakeStationFolder(strStationId);
+                        filePath = Path.Combine(Core.StationAudiosFolderPath(strStationId),
+                                                    strfilename);
+                        Console.Write(filePath);
+                    }
+                    //Folder name by station Name
+                    /* 
+                    else{
+                        name=name.Replace(" ","");
+                        Core.MakeStationFolderName(name);
+                        filePath = Path.Combine(Core.StationAudiosFolderPathName(name),
+                                                    strfilename);
+                        Console.Write(filePath);
+                    
+                    } 
+                    */             
+
+                    var audio =new Audio();
+                    //audio.FechaLlegada=fechaLlegada;
+                    audio.StationId=id;
+                    audio.RecordingDate=recordingDate;
+                    audio.Duration=duration;
+                    audio.Format=format;
+                    audio.BitRate=bitRate;
+                    Task result;
+                    result=_AudioRepository.Add(audio);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create)) {
+                        await stationFile.memoryStream.CopyToAsync(stream);
+                        stationFile.memoryStream.Close();
+                    }
 
 
-                //var fileInfo = new FileInfo(filePath);
-                //var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));
-                
-                /*
-                { // Decompression Test
-                    using (var compressedStream = new FileStream(gzipFilePath, FileMode.Open)) {
-                        using (var decompressedFileStream = new FileStream(decompressedPath, FileMode.Create)) {
-                            using (var decompressionStream = new GZipStream(compressedStream, CompressionMode.Decompress)) {
-                                decompressionStream.CopyTo(decompressedFileStream);
+                    //var fileInfo = new FileInfo(filePath);
+                    //var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));
+                    
+                    /*
+                    { // Decompression Test
+                        using (var compressedStream = new FileStream(gzipFilePath, FileMode.Open)) {
+                            using (var decompressedFileStream = new FileStream(decompressedPath, FileMode.Create)) {
+                                using (var decompressionStream = new GZipStream(compressedStream, CompressionMode.Decompress)) {
+                                    decompressionStream.CopyTo(decompressedFileStream);
+                                }
                             }
                         }
+                    }*/
+                    
+                    { // Convert Decompressed File to ogg and add to playlist
+                        var process = new Process();
+                        process.StartInfo.FileName = "ffmpeg";
+                        var fileInfo = new FileInfo(filePath);
+                        var filenameNoExtension = fileInfo.Name.Remove((int)(fileInfo.Name.Length - fileInfo.Extension.Length));
+                        // var milliseconds = long.Parse(filenameNoExtension);
+                        // var date = DateTimeExtensions.DateTimeFromMilliseconds(milliseconds);
+                        // var localDate = date.ToLocalTime();
+                        var oggFilename = filenameNoExtension + ".ogg";
+                        var oggFilePath = Path.Combine(Core.StationOggFolderPath(strStationId), oggFilename);
+                        process.StartInfo.Arguments = "-i " + filePath + " " + oggFilePath;
+                        process.Start();
                     }
-                }*/
-                
-                { // Convert Decompressed File to ogg and add to playlist
-                    var process = new Process();
-                    process.StartInfo.FileName = "ffmpeg";
-                    var fileInfo = new FileInfo(filePath);
-                    var filenameNoExtension = fileInfo.Name.Remove((int)(fileInfo.Name.Length - fileInfo.Extension.Length));
-                    // var milliseconds = long.Parse(filenameNoExtension);
-                    // var date = DateTimeExtensions.DateTimeFromMilliseconds(milliseconds);
-                    // var localDate = date.ToLocalTime();
-                    var oggFilename = filenameNoExtension + ".ogg";
-                    var oggFilePath = Path.Combine(Core.DeviceOggFolderPath(strDeviceId), oggFilename);
-                    process.StartInfo.Arguments = "-i " + filePath + " " + oggFilePath;
-                    process.Start();
+
                 }
+                else{
+                    return Content("Invalid APIKEY");
+                }
+                
+                
             }
             return Content("File received");
 

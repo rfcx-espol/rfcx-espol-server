@@ -13,21 +13,21 @@ using MongoDB.Driver;
 
 namespace WebApplication.Repository
 {
-    public class DeviceRepository : IDeviceRepository
+    public class StationRepository : IStationRepository
     {
         private readonly ObjectContext _context =null; 
 
-        public DeviceRepository(IOptions<Settings> settings)
+        public StationRepository(IOptions<Settings> settings)
         {
             _context = new ObjectContext(settings);
         } 
 
 
-        public async Task<IEnumerable<Device>> Get()
+        public async Task<IEnumerable<Station>> Get()
         {
             try
             {
-                return await _context.Devices.Find(_ => true).ToListAsync();
+                return await _context.Stations.Find(_ => true).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -35,13 +35,13 @@ namespace WebApplication.Repository
             }
         }
 
-    public async Task<Device> Get(string id)
+    public async Task<Station> Get(string apiKey)
     {
-        var filter = Builders<Device>.Filter.Eq("DeviceId", id);
+        var filter = Builders<Station>.Filter.Eq("APIKey", apiKey);
 
         try
         {
-            return await _context.Devices.Find(filter).FirstOrDefaultAsync();
+            return await _context.Stations.Find(filter).FirstOrDefaultAsync();
         }
         catch (Exception ex)
         {
@@ -49,13 +49,20 @@ namespace WebApplication.Repository
         }
     }
 
-    public async Task<Device> Get(int id)
+
+    public int GetStationCount(string apiKey){
+        var filter = Builders<Station>.Filter.Eq("APIKey", apiKey);
+        int count = _context.Stations.Find(filter).ToList().Count;
+        return count;
+    }
+
+    public async Task<Station> Get(int id)
     {
-        var filter = Builders<Device>.Filter.Eq("Id", id);
+        var filter = Builders<Station>.Filter.Eq("Id", id);
 
         try
         {
-            return await _context.Devices.Find(filter).FirstOrDefaultAsync();
+            return await _context.Stations.Find(filter).FirstOrDefaultAsync();
         }
         catch (Exception ex)
         {
@@ -63,12 +70,12 @@ namespace WebApplication.Repository
         }
     }
 
-    public async Task Add(Device item)
+    public async Task Add(Station item)
     {
         try
         {
-            item.Id=(int) _context.Devices.Find(_ => true).ToList().Count+1;
-            await _context.Devices.InsertOneAsync(item);
+            item.Id=(int) _context.Stations.Find(_ => true).ToList().Count+1;
+            await _context.Stations.InsertOneAsync(item);
         }
         catch (Exception ex)
         {
@@ -80,8 +87,8 @@ namespace WebApplication.Repository
     {
         try
         {
-            DeleteResult actionResult = await _context.Devices.DeleteOneAsync(
-                    Builders<Device>.Filter.Eq("DeviceId", id));
+            DeleteResult actionResult = await _context.Stations.DeleteOneAsync(
+                    Builders<Station>.Filter.Eq("StationId", id));
 
             return actionResult.IsAcknowledged 
                 && actionResult.DeletedCount > 0;
@@ -94,13 +101,13 @@ namespace WebApplication.Repository
 
     
 
-    public async Task<bool> Update(string id, Device item)
+    public async Task<bool> Update(string id, Station item)
     {
         try
         {
             ReplaceOneResult actionResult 
-                = await _context.Devices
-                                .ReplaceOneAsync(n => n.DeviceId.Equals(id)
+                = await _context.Stations
+                                .ReplaceOneAsync(n => n.StationId.Equals(id)
                                         , item
                                         , new UpdateOptions { IsUpsert = true });
             return actionResult.IsAcknowledged
@@ -117,7 +124,7 @@ namespace WebApplication.Repository
         try
         {
             DeleteResult actionResult 
-                = await _context.Devices.DeleteManyAsync(new BsonDocument());
+                = await _context.Stations.DeleteManyAsync(new BsonDocument());
 
             return actionResult.IsAcknowledged
                 && actionResult.DeletedCount > 0;
@@ -130,37 +137,37 @@ namespace WebApplication.Repository
 
     public Task<bool> UpdateAndroidVersion(int id, string androidV)
     {
-        Device disp=getDevice(id);
+        Station disp=getStation(id);
         disp.AndroidVersion=androidV;
-        return Update(disp.DeviceId, disp);
+        return Update(disp.StationId, disp);
 
     }
 
     public Task<bool> UpdateServicesVersion(int id, string servicesV)
     {
-        Device disp=getDevice(id);
+        Station disp=getStation(id);
         disp.ServicesVersion=servicesV;
-        return Update(disp.DeviceId, disp);
+        return Update(disp.StationId, disp);
     }
 
     public Task<bool> UpdateName(int id, string name)
     {
-        Device disp=getDevice(id);
+        Station disp=getStation(id);
         disp.Name=name;
-        return Update(disp.DeviceId, disp);
+        return Update(disp.StationId, disp);
     }
 
     public Task<bool> UpdatePosition(int id, string latitud, string longitud)
     {
-        Device disp=getDevice(id);
+        Station disp=getStation(id);
         disp.Latitude=latitud;
         disp.Longitude=longitud;
-        return Update(disp.DeviceId, disp);        
+        return Update(disp.StationId, disp);        
     }
 
-    public Device getDevice(int id){
-        var filter = Builders<Device>.Filter.Eq("Id", id);
-        Device disp=_context.Devices.Find(filter).FirstOrDefaultAsync().Result;
+    public Station getStation(int id){
+        var filter = Builders<Station>.Filter.Eq("Id", id);
+        Station disp=_context.Stations.Find(filter).FirstOrDefaultAsync().Result;
         return disp;
     }
 

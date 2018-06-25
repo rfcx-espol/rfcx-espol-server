@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=station-width, initial-scale=1.0" />
     <meta http-equiv="cache-control" content="no-store" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/css/site.css" />
@@ -38,7 +38,7 @@
         
         <div id="navbar" class="navbar-collapse collapse">
           <ul id="top-menu" class="nav navbar-nav navbar-right mu-main-nav">
-            <li>@Html.ActionLink("ESTACIONES", "Index", "DeviceRegister")</li>
+            <li>@Html.ActionLink("ESTACIONES", "Index", "StationRegister")</li>
             <li>@Html.ActionLink("ALARMAS", "Index", "Alarm")</li>
             <li>@Html.ActionLink("AUDIOS", "Index", "Download")</li>                   
             <li><a class="material-icons" style="font-size:30px" href="@Url.Action("Index", "Alarm")">add_alert</a></li>

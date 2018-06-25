@@ -27,20 +27,20 @@ namespace WebApplication.Controllers
             return this.GetAlertsConfiguration();
         }
 
-        public async Task<string> GetAlertsConfiguration()
+        private async Task<string> GetAlertsConfiguration()
         {
             var AlertsConfigurations= await _AlertsConfigurationRepository.Get();
             return JsonConvert.SerializeObject(AlertsConfigurations);
         }
 
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public Task<string> Get(string id)
         {
             return this.GetAlertsConfigurationById(id);
         }
 
-        public async Task<string> GetAlertsConfigurationById(string id)
+        private async Task<string> GetAlertsConfigurationById(string id)
         {
             var AlertsConfiguration= await _AlertsConfigurationRepository.Get(id) ?? new AlertsConfiguration();
             return JsonConvert.SerializeObject(AlertsConfiguration);

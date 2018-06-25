@@ -8,7 +8,7 @@ namespace WebApplication.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string DataId { get; set; }
-        public int DeviceId { get; set; }
+        public int StationId { get; set; }
         public int SensorId { get; set; }
         public int Id { get; set; }
         public long Timestamp { get; set; }

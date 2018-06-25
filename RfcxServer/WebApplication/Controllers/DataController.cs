@@ -15,10 +15,12 @@ namespace WebApplication.Controllers
     {
         
         private readonly IDataRepository _DataRepository;
+        private readonly ISensorRepository _SensorRepository;
 
-        public DataController(IDataRepository DataRepository)
+        public DataController(IDataRepository DataRepository,  ISensorRepository SensorRepository)
         {
             _DataRepository=DataRepository;
+            _SensorRepository=SensorRepository;
         }
 
         [HttpGet]
@@ -76,70 +78,83 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        [Route("api/Device/{DeviceId:int}/[controller]")]
-        public Task<string> GetDatasByDevice([FromRoute]int DeviceId)
+        [Route("api/Station/{StationId:int}/[controller]")]
+        public Task<string> GetDatasByStation([FromRoute]int StationId)
         {
-            return this.GetDataByDevice(DeviceId);
+            return this.GetDataByStation(StationId);
         }
 
-        private async Task<string> GetDataByDevice(int DeviceId)
+        private async Task<string> GetDataByStation(int StationId)
         {
-            var Datass= await _DataRepository.GetByDevice(DeviceId);
+            var Datass= await _DataRepository.GetByStation(StationId);
             return JsonConvert.SerializeObject(Datass);
         }
 
         [HttpGet]
-        [Route("api/Device/{DeviceId:int}/Sensor/{SensorId:int}/[controller]")]
-        public Task<string> GetDatasByDeviceSensor([FromRoute]int DeviceId,[FromRoute] int SensorId)
+        [Route("api/Station/{StationId:int}/Sensor/{SensorId:int}/[controller]")]
+        public Task<string> GetDatasByStationSensor([FromRoute]int StationId,[FromRoute] int SensorId)
         {
-            return this.GetDataByDeviceSensor(DeviceId, SensorId);
+            return this.GetDataByStationSensor(StationId, SensorId);
         }
 
-        private async Task<string> GetDataByDeviceSensor(int DeviceId, int SensorId)
+        private async Task<string> GetDataByStationSensor(int StationId, int SensorId)
         {
-            var Datas= await _DataRepository.GetByDeviceSensor(DeviceId, SensorId);
+            var Datas= await _DataRepository.GetByStationSensor(StationId, SensorId);
             return JsonConvert.SerializeObject(Datas);
         }
 
         [HttpGet]
-        [Route("api/Device/{DeviceId:int}/Sensor/{SensorId:int}/[controller]/lastData")]
-        public Task<string> GetLastDataByDeviceSensor([FromRoute]int DeviceId,[FromRoute] int SensorId)
+        [Route("api/Station/{StationId:int}/Sensor/{SensorId:int}/[controller]/lastData")]
+        public Task<string> GetLastDataByStationSensor([FromRoute]int StationId,[FromRoute] int SensorId)
         {
-            return this.GetLastsDataByDeviceSensor(DeviceId, SensorId);
+            return this.GetLastsDataByStationSensor(StationId, SensorId);
         }
 
-        private async Task<string> GetLastsDataByDeviceSensor(int DeviceId, int SensorId)
+        private async Task<string> GetLastsDataByStationSensor(int StationId, int SensorId)
         {
-            var Datas= await _DataRepository.GetLastByDeviceSensor(DeviceId, SensorId);
+            var Datas= await _DataRepository.GetLastByStationSensor(StationId, SensorId);
             return JsonConvert.SerializeObject(Datas);
         }
 
         [HttpGet]
-        [Route("api/Device/{DeviceId:int}/Sensor/{SensorId:int}/[controller]/{StartTimestamp:long}/{EndTimestamp:long}")]
-        public Task<string> GetDatasByDeviceSensorTimestamp([FromRoute]int DeviceId,[FromRoute] int SensorId, 
-        [FromRoute] long StartTimestamp, [FromRoute] long EndTimestamp)
+        [Route("api/Station/{StationId:int}/[controller]/lastData")]
+        public Task<string> GetLastDataByStation([FromRoute]int StationId)
         {
-            return this.GetDataByDeviceSensorTimeStamp(DeviceId, SensorId, StartTimestamp, EndTimestamp);
+            return this.GetLastsDataByStation(StationId);
         }
 
-        private async Task<string> GetDataByDeviceSensorTimeStamp(int DeviceId, int SensorId, long StartTimestamp, long EndTimeStamp)
+        private async Task<string> GetLastsDataByStation(int StationId)
         {
-            var Datas= await _DataRepository.GetByDeviceSensorTimestamp(DeviceId, SensorId, StartTimestamp, EndTimeStamp);
+            var Datas= await _DataRepository.GetLastByStation(StationId);
+            return JsonConvert.SerializeObject(Datas);
+        }
+
+        [HttpGet]
+        [Route("api/Station/{StationId:int}/Sensor/{SensorId:int}/DataTimestamp")]
+        public Task<string> GetDatasByStationSensorTimestamp([FromRoute]int StationId,[FromRoute] int SensorId, 
+        [FromQuery] long StartTimestamp, [FromQuery] long EndTimestamp)
+        {
+            return this.GetDataByStationSensorTimeStamp(StationId, SensorId, StartTimestamp, EndTimestamp);
+        }
+
+        private async Task<string> GetDataByStationSensorTimeStamp(int StationId, int SensorId, long StartTimestamp, long EndTimeStamp)
+        {
+            var Datas= await _DataRepository.GetByStationSensorTimestamp(StationId, SensorId, StartTimestamp, EndTimeStamp);
             return JsonConvert.SerializeObject(Datas);
         }
 
 
 
         [HttpGet]
-        [Route("api/Device/{DeviceId:int}/Sensor/{SensorId:int}/[controller]/{DataId:int}")]
-        public Task<string> Get([FromRoute]int DeviceId, [FromRoute]int SensorId, [FromRoute]int DataId)
+        [Route("api/Station/{StationId:int}/Sensor/{SensorId:int}/[controller]/{DataId:int}")]
+        public Task<string> Get([FromRoute]int StationId, [FromRoute]int SensorId, [FromRoute]int DataId)
         {
-            return this.GetDataById(DeviceId, SensorId, DataId);
+            return this.GetDataById(StationId, SensorId, DataId);
         }
 
-        private async Task<string> GetDataById(int DeviceId, int SensorId, int DataId)
+        private async Task<string> GetDataById(int StationId, int SensorId, int DataId)
         {
-            var Data= await _DataRepository.Get(DeviceId, SensorId, DataId) ?? new Data();
+            var Data= await _DataRepository.Get(StationId, SensorId, DataId) ?? new Data();
             return JsonConvert.SerializeObject(Data);
         }
         
@@ -149,6 +164,19 @@ namespace WebApplication.Controllers
         {
             List<Data> data=Array.Data;
             for (var i = 0; i <data.Count; i++) {
+                var sensorId=data[i].SensorId;
+                var stationId=data[i].StationId;
+                Sensor Sensor= _SensorRepository.getSensor(sensorId);
+                if(Sensor==null){
+                    var type=data[i].Type;
+                    var location=data[i].Location;
+                    var newSensor=new Sensor();
+                    newSensor.Id=sensorId;
+                    newSensor.Type=type;
+                    newSensor.Location=location;
+                    newSensor.StationId=stationId;
+                    _SensorRepository.Add(newSensor);
+                }
                 _DataRepository.Add(data[i]);
             }
             /* 

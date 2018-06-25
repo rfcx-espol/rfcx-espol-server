@@ -10,15 +10,15 @@ namespace WebApplication.Views.Download
 {
     public class IndexModel : PageModel
     {
-        private List<String> devices;
+        private List<String> stations;
 
         public void OnGet()
         {
-            devices = new List<String>();
+            stations = new List<String>();
             DirectoryInfo DI = new DirectoryInfo("files");
             foreach(var item in DI.GetFiles())
             {
-                devices.Add(item.Name);
+                stations.Add(item.Name);
             }
 
         }
