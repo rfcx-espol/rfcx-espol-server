@@ -1,3 +1,5 @@
+setInterval(displayLastData, 300000);
+
 function displayLastData(){
     for(device of devices){
         for(sensor of device['sensorsId']){
@@ -35,8 +37,8 @@ function getDataSensor(){
             devices[idDevice-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb" ></i> Amb.: </p><p class="valueHum" id="humedadId" style="font-size: 14px; line-height: 2;"> 30 H</p>';
             devices[idDevice-1]["content"] = devices[idDevice-1]["content"].replace("humedadId", id);
           }
-          else if(typeSensor=="Temperatura" && locationSensor=="Ambiente"){
-            devices[idDevice-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: </p><p class="valueTempAmb" id="tempAmbId" style="font-size: 14px; line-height: 2;"> 35 °C</p>';
+          else if(typeSensor=="Temperature" && locationSensor=="Ambiente"){
+            devices[idDevice-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #424084;"></i> Amb.: </p><p class="valueTempAmb" id="tempAmbId" style="font-size: 14px; line-height: 2;"> 35 °C</p>';
             devices[idDevice-1]["content"] = devices[idDevice-1]["content"].replace("tempAmbId", id);
           }else{
             devices[idDevice-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Disp.: </p><p class="valueTempDisp" id="tempDispId" style="font-size: 14px; line-height: 2;"> 40 °C</p>';
@@ -50,14 +52,11 @@ function getDataSensor(){
         initMap();
       });
       
-    }
-
-    
+    }    
   }
   
-  
   function initMap() {
-        var bosque = {lat: -2.15437, lng: -79.963035};
+        var bosque = {lat: -2.152062, lng: -79.963488};
         var estilos =[
             {
                 featureType: "poi",
