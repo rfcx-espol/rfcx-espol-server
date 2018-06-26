@@ -1,7 +1,9 @@
+setInterval(displayLastData, 300000);
+
 function displayLastData(){
-    for(device of devices){
-        for(sensor of device['sensorsId']){
-          $.get('api/Device/'+device['id']+'/Sensor/'+sensor+'/Data/lastData', function(data){
+    for(station of stations){
+        for(sensor of station['sensorsId']){
+          $.get('api/Station/'+station['id']+'/Sensor/'+sensor+'/Data/lastData', function(data){
             var lastData = JSON.parse(data)
             if(lastData!=null){
               var p = document.getElementById(lastData['SensorId']);
@@ -21,43 +23,40 @@ function displayLastData(){
     }
 }
 function getDataSensor(){
-    for(device of devices){
-      var deviceId = device['id']; 
-      $.get('api/Device/'+parseInt(deviceId)+'/Sensor/', function(data){
+    for(station of stations){
+      var stationId = station['id']; 
+      $.get('api/Station/'+parseInt(stationId)+'/Sensor/', function(data){
         var dataDic = JSON.parse(data);
         for(sensor of dataDic){
           var id = sensor['Id'];
-          var idDevice = sensor['DeviceId'];
+          var idStation = sensor['StationId'];
           var typeSensor = sensor['Type'];
           var locationSensor = sensor['Location'];
-          var contentS = devices[idDevice-1]["content"];
+          var contentS = stations[idStation-1]["content"];
           if(typeSensor=="Humedad"){
-            devices[idDevice-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb" ></i> Amb.: </p><p class="valueHum" id="humedadId" style="font-size: 14px; line-height: 2;"> 30 H</p>';
-            devices[idDevice-1]["content"] = devices[idDevice-1]["content"].replace("humedadId", id);
+            stations[idStation-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb" ></i> Amb.: </p><p class="valueHum" id="humedadId" style="font-size: 14px; line-height: 2;"> 30 H</p>';
+            stations[idStation-1]["content"] = stations[idStation-1]["content"].replace("humedadId", id);
           }
-          else if(typeSensor=="Temperatura" && locationSensor=="Ambiente"){
-            devices[idDevice-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Amb.: </p><p class="valueTempAmb" id="tempAmbId" style="font-size: 14px; line-height: 2;"> 35 °C</p>';
-            devices[idDevice-1]["content"] = devices[idDevice-1]["content"].replace("tempAmbId", id);
+          else if(typeSensor=="Temperature" && locationSensor=="Ambiente"){
+            stations[idStation-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #424084;"></i> Amb.: </p><p class="valueTempAmb" id="tempAmbId" style="font-size: 14px; line-height: 2;"> 35 °C</p>';
+            stations[idStation-1]["content"] = stations[idStation-1]["content"].replace("tempAmbId", id);
           }else{
-            devices[idDevice-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Disp.: </p><p class="valueTempDisp" id="tempDispId" style="font-size: 14px; line-height: 2;"> 40 °C</p>';
-            devices[idDevice-1]["content"] = devices[idDevice-1]["content"].replace("tempDispId", id);
+            stations[idStation-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Disp.: </p><p class="valueTempDisp" id="tempDispId" style="font-size: 14px; line-height: 2;"> 40 °C</p>';
+            stations[idStation-1]["content"] = stations[idStation-1]["content"].replace("tempDispId", id);
           }
-          devices[idDevice-1]["content"] = devices[idDevice-1]["content"] +'</div>'+
+          stations[idStation-1]["content"] = stations[idStation-1]["content"] +'</div>'+
                                   '</div>';
           
-          devices[idDevice-1]["sensorsId"].push(id);
+          stations[idStation-1]["sensorsId"].push(id);
         }
         initMap();
       });
       
-    }
-
-    
+    }    
   }
   
-  
   function initMap() {
-        var bosque = {lat: -2.15437, lng: -79.963035};
+        var bosque = {lat: -2.152062, lng: -79.963488};
         var estilos =[
             {
                 featureType: "poi",
@@ -81,9 +80,9 @@ function getDataSensor(){
         });
         map.setMapTypeId(google.maps.MapTypeId.HYBRID);
         
-        for(device of devices){
-          var coordenadas = {lat: parseFloat(device['lat']), lng: parseFloat(device['long'])};
-          var contentString = device["content"];
+        for(station of stations){
+          var coordenadas = {lat: parseFloat(station['lat']), lng: parseFloat(station['long'])};
+          var contentString = station["content"];
           var infowindow = new google.maps.InfoWindow({
           content: contentString
           });

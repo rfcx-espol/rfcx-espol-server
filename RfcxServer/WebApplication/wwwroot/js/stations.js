@@ -1,6 +1,6 @@
 $(window).on('load',function(){
     devices = []
-    $.get('api/Device/', getDevicesList);
+    $.get('api/Station/', getDevicesList);
     
     $("#masfilas").click(function(){
         $("#myt").append('<tr><td><input type="text" name="parametros[]"/></td><td> <input type="text" name="unidad[]"/></td><td> <input type="text" name="especificacion[]"/></td><td> <a href="#" class="delete"><i class="material-icons">delete_forever</i></a></td></tr>');
@@ -16,7 +16,7 @@ function getDevicesList(data) {
         var device_id = device['Id'];
         var device_name = device['Name'];
         var content = '<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6"><div class="titulo">'+
-        '<h4><a href="/DeviceView?deviceName='+device_name+'&deviceId='+device_id+'">'+device_name+'</a></h4>'+
+        '<h4><a href="/StationView?stationName='+device_name+'&stationId='+device_id+'">'+device_name+'</a></h4>'+
         '</div><div class="cuerpo">';
 
         devices_dic = {};
@@ -31,11 +31,11 @@ function getDevicesList(data) {
 function getSensors() {
     for(device of devices){
         var device_id = device['id']; 
-        $.get('api/Device/' + parseInt(device_id) + '/Sensor/', function(data){
+        $.get('api/Station/' + parseInt(device_id) + '/Sensor/', function(data){
             var data_dic = JSON.parse(data); 
             for(sensor of data_dic){
                 var sensor_id = sensor['Id'];
-                var device_id = sensor['DeviceId'];
+                var device_id = sensor['StationId'];
                 var sensor_type = sensor['Type'];
                 var sensor_location = sensor['Location'];
                 devices[device_id-1]["content"] = devices[device_id-1]["content"] + '<p>tipo lugar<p>';
@@ -45,7 +45,7 @@ function getSensors() {
             }
             devices[device_id-1]["content"] = devices[device_id-1]["content"] + '</div></div>';
             console.log(devices[device_id-1]["content"]);
-            $(devices[device_id-1]["content"]).insertBefore(".plus-device");
+            $(devices[device_id-1]["content"]).insertBefore(".plus-station");
             updateStations();
         });
     }
@@ -55,6 +55,7 @@ function updateStations(){
     var body_maximum_height = 0;
     var bodies = $(".cuerpo").get();
     var title_height = $(".titulo").get()[0];
+    console.log(title_height);
     var d = $(title_height).height();
     for(b of bodies) {
         if($(b).height() > body_maximum_height) {
