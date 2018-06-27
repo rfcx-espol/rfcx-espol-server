@@ -36,7 +36,7 @@ function getSensors(data){
             var nameDivTab = "'humedad'";
             var iconTab = '<i class="fa fa-tint"></i> Humedad - Ambiente';
 
-        }else if(type.includes("Temp") && (location.includes( "Dev")) || location.includes("Disp")){
+        }else if(type.includes("Temp") && (location.includes( "Dev")) || location.includes("Sta")){
             var idMin = "minMonDis";
             var idMax = "maxMonDisp";
             var idAvg = "avgMonDisp";
@@ -112,7 +112,7 @@ function addData(data) {
     }
     
     var titleVertical = "Temperatura °C";
-    if(typeS.includes("Temp") && (locationS.includes("Dev"))|| locationS.includes("Disp")){
+    if(typeS.includes("Temp") && (locationS.includes("Dev"))|| locationS.includes("Sta")){
         var colorP = "#424084";
         var idMin = "minMonDis";
         var idMax = "maxMonDisp";
@@ -220,7 +220,7 @@ function individualChart(nameChart){
         var maxVal = "maxValueAmb";
         var avgVal = "avgValueAmb";
         var idDiv = "temp_amb";
-    }else if(nameChart.includes("Temp") && (nameChart.includes("Dev")) || nameChart.includes("Disp")){
+    }else if(nameChart.includes("Temp") && (nameChart.includes("Sta")) || nameChart.includes("Dev")){
         var minVal = "minValueTemp";
         var maxVal = "maxValueTemp";
         var avgVal = "avgValueTemp";  
@@ -283,7 +283,7 @@ function addDataEachChart(data){
         var value = parseInt(points['Value']);
         var location = points['Location'];
         var titleVertical = "Temperatura °C";
-        if(type.includes("Temp") && (location.includes("Dev") || location.includes("Disp"))){
+        if(type.includes("Temp") && (location.includes("Sta") || location.includes("Dev"))){
             var colorP= "#424084";
             var minValId = "minValueTemp";
             var maxValId = "maxValueTemp";
