@@ -1,4 +1,4 @@
-var sensorsList = [] //[{'id':1,'type':'Temperature','location':'Ambiente'},{....}];
+var sensorsList = [] //[{'id':1,'type':'Temperature','location':'Environment'},{....}];
 var dataL=[];
 var ind=0;
 var stationName=$("#stationName").text();
@@ -283,19 +283,19 @@ function addDataEachChart(data){
         var value = parseInt(points['Value']);
         var location = points['Location'];
         var titleVertical = "Temperatura °C";
-        if(type=="Temperature" && location=="Device"){
+        if(type.includes("Temp") && (location.includes("Dev") || location.includes("Disp"))){
             var colorP= "#424084";
             var minValId = "minValueTemp";
             var maxValId = "maxValueTemp";
             var avgValId = "avgValueTemp";
             var chartId = "chart_temp_disp";
-        }else if(type=="Temperature" && location=="Ambiente"){
+        }else if(type.includes("Temp") && (location.includes("Env") || location.includes("Amb"))){
             var colorP= "orange";
             var minValId = "minValueAmb";
             var maxValId = "maxValueAmb";
             var avgValId = "avgValueAmb";
             var chartId = "chart_temp_amb";
-        }else if(type=="Humedad" && location=="Ambiente"){
+        }else if(type.includes("Hum") && (location.includes("Env") || location.includes("Amb"))){
             var colorP= "LightSeaGreen";
             var minValId = "minValueHum";
             var maxValId = "maxValueHum";

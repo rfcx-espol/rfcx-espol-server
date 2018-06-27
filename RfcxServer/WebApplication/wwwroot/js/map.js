@@ -33,11 +33,11 @@ function getDataSensor(){
           var typeSensor = sensor['Type'];
           var locationSensor = sensor['Location'];
           var contentS = stations[idStation-1]["content"];
-          if(typeSensor=="Humedad"){
+          if(typeSensor.includes("Hum")){
             stations[idStation-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb" ></i> Amb.: </p><p class="valueHum" id="humedadId" style="font-size: 14px; line-height: 2;"> 30 H</p>';
             stations[idStation-1]["content"] = stations[idStation-1]["content"].replace("humedadId", id);
           }
-          else if(typeSensor=="Temperature" && locationSensor=="Ambiente"){
+          else if(typeSensor.includes("Temp") && (locationSensor.includes("Amb") || locationSensor.includes("Env"))){
             stations[idStation-1]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #424084;"></i> Amb.: </p><p class="valueTempAmb" id="tempAmbId" style="font-size: 14px; line-height: 2;"> 35 °C</p>';
             stations[idStation-1]["content"] = stations[idStation-1]["content"].replace("tempAmbId", id);
           }else{
