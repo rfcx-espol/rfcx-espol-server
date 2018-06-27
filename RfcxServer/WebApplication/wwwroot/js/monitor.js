@@ -28,7 +28,7 @@ function getSensors(data){
         sensorsInf['location']=location;
         sensorsList.push(sensorsInf);
 
-        if(type.includes("Hum") && location.includes("Amb")) {
+        if(type.includes("Hum") && (location.includes("Amb")) || location.includes("Env")) {
             var idMin = "minMonHum";
             var idMax = "maxMonHum";
             var idAvg = "avgMonHum";
@@ -36,7 +36,7 @@ function getSensors(data){
             var nameDivTab = "'humedad'";
             var iconTab = '<i class="fa fa-tint"></i> Humedad - Ambiente';
 
-        }else if(type.includes("Temp") && location.includes( "Dev")){
+        }else if(type.includes("Temp") && (location.includes( "Dev")) || location.includes("Disp")){
             var idMin = "minMonDis";
             var idMax = "maxMonDisp";
             var idAvg = "avgMonDisp";
@@ -44,7 +44,7 @@ function getSensors(data){
             var nameDivTab = "'temp_disp'";
             var iconTab='<i class="fa fa-thermometer" ></i> Temperatura - Dispositivo';
             
-        }else if(type.includes("Temp") && location.includes("Amb")){
+        }else if(type.includes("Temp") && (location.includes("Amb")) || location.includes("Env")){
             var idMin = "minMonAmb";
             var idMax = "maxMonAmb";
             var idAvg = "avgMonAmb";
@@ -112,19 +112,19 @@ function addData(data) {
     }
     
     var titleVertical = "Temperatura °C";
-    if(typeS.includes("Temp") && locationS.includes("Dev")){
+    if(typeS.includes("Temp") && (locationS.includes("Dev"))|| locationS.includes("Disp")){
         var colorP = "#424084";
         var idMin = "minMonDis";
         var idMax = "maxMonDisp";
         var idAvg = "avgMonDisp";
         var divIdChart = "chartMonitorDisp";
-    }else if(typeS.includes("Temp") && locationS.includes("Amb")){
+    }else if(typeS.includes("Temp") && (locationS.includes("Amb"))|| locationS.includes("Env")){
         var colorP = "orange";
         var idMin = "minMonAmb";
         var idMax = "maxMonAmb";
         var idAvg = "avgMonAmb";
         var divIdChart = "chartMonitorAmb";
-    }else if(typeS.includes("Hum") && locationS.includes("Amb")){
+    }else if(typeS.includes("Hum") && (locationS.includes("Amb"))|| locationS.includes("Env")){
         var colorP = "LightSeaGreen";
         var titleVertical = "Humedad °H";
         var idMin = "minMonHum";
@@ -215,17 +215,17 @@ document.getElementById("defaultOpen").click();
 
 //Divs of individual charts
 function individualChart(nameChart){
-    if(nameChart.includes("Temp") && nameChart.includes("Amb")){
+    if(nameChart.includes("Temp") && (nameChart.includes("Amb")) || nameChart.includes("Env")){
         var minVal = "minValueAmb";
         var maxVal = "maxValueAmb";
         var avgVal = "avgValueAmb";
         var idDiv = "temp_amb";
-    }else if(nameChart.includes("Temp") && nameChart.includes("Dev")){
+    }else if(nameChart.includes("Temp") && (nameChart.includes("Dev")) || nameChart.includes("Disp")){
         var minVal = "minValueTemp";
         var maxVal = "maxValueTemp";
         var avgVal = "avgValueTemp";  
         var idDiv = "temp_disp";  
-    }else if(nameChart.includes("Hum") && nameChart.includes("Amb")){
+    }else if(nameChart.includes("Hum") && (nameChart.includes("Amb")) || nameChart.includes("Env")){
         var minVal = "minValueHum";
         var maxVal = "maxValueHum";
         var avgVal = "avgValueHum";
