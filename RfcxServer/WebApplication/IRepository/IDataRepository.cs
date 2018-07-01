@@ -18,6 +18,8 @@ namespace WebApplication.IRepository
         Task<IEnumerable<Data>> GetByStationSensor(int StationId, int SensorId);
         Task<Data> GetLastByStationSensor(int StationId, int SensorId);
         Task<IEnumerable<Data>> GetByStationSensorTimestamp(int StationId, int SensorId, long StartTimestamp, long EndTimestamp);
+        Task<IEnumerable<Data>> GetByStationSensorTimestampFilter(int StationId, int SensorId, 
+            long StartTimestamp, long EndTimeStamp, string Filter, int FilterValue);
         Task Add(Data item);
         Task<bool> Update(string id, Data item);
         Task<bool> Remove(string id);

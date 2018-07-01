@@ -11,9 +11,7 @@ namespace WebApplication {
             var client = new HttpClient();
             var response = client.GetAsync("http://127.0.0.1:5000/api/Station").Result;
             var stations = response.Content.ReadAsStringAsync().Result;
-            //ViewData["stations"] = JSON.parse(stations);
             ViewData["stations"] = JArray.Parse(stations.ToString());
-            //ViewData["stations"] = JsonConvert.SerializeObject(stations);
             return View();
         }
     }

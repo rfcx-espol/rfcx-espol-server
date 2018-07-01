@@ -55,6 +55,7 @@ function updateStations(){
     var body_maximum_height = 0;
     var bodies = $(".cuerpo").get();
     var title_height = $(".titulo").get()[0];
+    console.log(title_height);
     var d = $(title_height).height();
     for(b of bodies) {
         if($(b).height() > body_maximum_height) {
