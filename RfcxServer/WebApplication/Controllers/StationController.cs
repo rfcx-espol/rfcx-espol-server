@@ -48,6 +48,7 @@ namespace WebApplication.Controllers
         private async Task<string> GetStationByApiKey(string apiKey)
         {
             var Station= await _StationRepository.Get(apiKey) ?? new Station();
+            
             return JsonConvert.SerializeObject(Station);
         }
 

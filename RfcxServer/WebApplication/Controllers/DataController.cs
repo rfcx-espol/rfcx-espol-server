@@ -137,9 +137,26 @@ namespace WebApplication.Controllers
             return this.GetDataByStationSensorTimeStamp(StationId, SensorId, StartTimestamp, EndTimestamp);
         }
 
-        private async Task<string> GetDataByStationSensorTimeStamp(int StationId, int SensorId, long StartTimestamp, long EndTimeStamp)
+         private async Task<string> GetDataByStationSensorTimeStamp(int StationId, int SensorId, long StartTimestamp, long EndTimeStamp)
         {
             var Datas= await _DataRepository.GetByStationSensorTimestamp(StationId, SensorId, StartTimestamp, EndTimeStamp);
+            return JsonConvert.SerializeObject(Datas);
+        }
+
+        [HttpGet]
+        [Route("api/Station/{StationId:int}/Sensor/{SensorId:int}/DataTimestamp/Filter")]
+        //Filter: Hours, Months, Days, Weeks
+        public Task<string> GetDatasByStationSensorTimestampHour([FromRoute]int StationId,[FromRoute] int SensorId, 
+        [FromQuery] long StartTimestamp, [FromQuery] long EndTimestamp, [FromQuery] string Filter, [FromQuery] int FilterValue)
+        {
+            return this.GetDataByStationSensorTimeStampFilter(StationId, SensorId, StartTimestamp, EndTimestamp, Filter, FilterValue);
+        }
+
+        private async Task<string> GetDataByStationSensorTimeStampFilter(int StationId, int SensorId, 
+        long StartTimestamp, long EndTimeStamp, String Filter, int FilterValue)
+        {
+            var Datas= await _DataRepository.GetByStationSensorTimestampFilter(StationId, SensorId, 
+            StartTimestamp, EndTimeStamp, Filter, FilterValue);
             return JsonConvert.SerializeObject(Datas);
         }
 
