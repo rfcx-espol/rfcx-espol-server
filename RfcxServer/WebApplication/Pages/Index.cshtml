@@ -21,6 +21,7 @@
 
     function getDataDisp(data){
       var dataDic = JSON.parse(data);
+      console.log(dataDic);
       for(station of dataDic){
         var latitud = parseFloat(station['Latitude']);
         var longitud = parseFloat(station['Longitude']);
@@ -45,9 +46,7 @@
       }
       getDataSensor();
     }
-    
-    
-    $.get('api/Station', getDataDisp);
+    $.get('api/Station/', getDataDisp);
     });
     </script>
     <script async defer

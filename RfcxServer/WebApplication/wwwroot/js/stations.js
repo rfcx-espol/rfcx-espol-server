@@ -1,6 +1,6 @@
 $(window).on('load',function(){
-    devices = []
-    $.get('api/Device/', getDevicesList);
+    stations = []
+    $.get('api/Station/', getDevicesList);
     
     $("#masfilas").click(function(){
         $("#myt").append('<tr><td><input type="text" name="parametros[]"/></td><td> <input type="text" name="unidad[]"/></td><td> <a href="#" class="delete"><i class="material-icons">delete_forever</i></a></td></tr>');
@@ -12,40 +12,40 @@ $(window).on('load',function(){
 
 function getDevicesList(data) {
     var data_dic = JSON.parse(data);
-    for(device of data_dic){
-        var device_id = device['Id'];
-        var device_name = device['Name'];
+    for(station of data_dic){
+        var station_id = station['Id'];
+        var station_name = station['Name'];
         var content = '<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6"><div class="titulo">'+
-        '<h4><a href="/DeviceView?deviceName='+device_name+'&deviceId='+device_id+'">'+device_name+'</a></h4>'+
+        '<h4><a href="/DeviceView?deviceName='+station_name+'&deviceId='+station_id+'">'+station_name+'</a></h4>'+
         '</div><div class="cuerpo">';
 
-        devices_dic = {};
-        devices_dic["id"] = device_id;
-        devices_dic["content"] = content;
-        devices_dic["sensorsId"] = [];
-        devices.push(devices_dic);
+        stations_dic = {};
+        stations_dic["id"] = station_id;
+        stations_dic["content"] = content;
+        stations_dic["sensorsId"] = [];
+        stations.push(stations_dic);
     }
     getSensors();
 }
 
 function getSensors() {
-    for(device of devices){
-        var device_id = device['id']; 
-        $.get('api/Device/' + parseInt(device_id) + '/Sensor/', function(data){
+    for(station of stations){
+        var station_id = station['id']; 
+        $.get('api/Station/' + parseInt(station_id) + '/Sensor/', function(data){
             var data_dic = JSON.parse(data); 
             for(sensor of data_dic){
                 var sensor_id = sensor['Id'];
-                var device_id = sensor['DeviceId'];
+                var station_id = sensor['DeviceId'];
                 var sensor_type = sensor['Type'];
                 var sensor_location = sensor['Location'];
-                devices[device_id-1]["content"] = devices[device_id-1]["content"] + '<p>tipo lugar<p>';
-                devices[device_id-1]["content"] = devices[device_id-1]["content"].replace("tipo", sensor_type);
-                devices[device_id-1]["content"] = devices[device_id-1]["content"].replace("lugar", sensor_location);
-                devices[device_id-1]["sensorsId"].push(sensor_id);
+                stations[station_id-1]["content"] = stations[station_id-1]["content"] + '<p>tipo lugar<p>';
+                stations[station_id-1]["content"] = stations[station_id-1]["content"].replace("tipo", sensor_type);
+                stations[station_id-1]["content"] = stations[station_id-1]["content"].replace("lugar", sensor_location);
+                stations[station_id-1]["sensorsId"].push(sensor_id);
             }
-            devices[device_id-1]["content"] = devices[device_id-1]["content"] + '</div></div>';
-            console.log(devices[device_id-1]["content"]);
-            $(devices[device_id-1]["content"]).insertBefore(".plus-device");
+            stations[station_id-1]["content"] = stations[station_id-1]["content"] + '</div></div>';
+            console.log(stations[station_id-1]["content"]);
+            $(stations[station_id-1]["content"]).insertBefore(".plus-device");
             updateStations();
         });
     }

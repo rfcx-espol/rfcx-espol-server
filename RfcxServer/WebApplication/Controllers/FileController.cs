@@ -214,12 +214,12 @@ namespace WebApplication {
                         return BadRequest("Expected Format key");
                     }
 
-                    StringValues bitRate1;
+                    /*StringValues bitRate1;
                     ok = formData.TryGetValue("BitRate", out bitRate1);
                     int bitRate=0;
                     if(ok){
                         bitRate=Int32.Parse(bitRate1);
-                    }
+                    }*/
 
                     
                     string strfilename = filename.ToString();
@@ -248,7 +248,7 @@ namespace WebApplication {
                     audio.RecordingDate=recordingDate;
                     audio.Duration=duration;
                     audio.Format=format;
-                    audio.BitRate=bitRate;
+                    //audio.BitRate=bitRate;
                     Task result;
                     result=_AudioRepository.Add(audio);
 

@@ -4,10 +4,10 @@ dataL=[];
 window.onload = getData();
 
 setInterval(displayMonitor, 300000);
-//get sensors from one device
+//get sensors from one station
 function getData(){
     var idDevice = parseInt(document.getElementById("deviceId").innerHTML);
-    $.get('api/Device/'+parseInt(idDevice)+'/Sensor/',getSensors);
+    $.get('api/Station/'+parseInt(idDevice)+'/Sensor/',getSensors);
 }
 //keep data on sensorsList
 function getSensors(data){
@@ -15,7 +15,7 @@ function getSensors(data){
     for( sensor of sensors){
         var sensorsInf = {};
         sensorsInf['id']=parseInt(sensor['Id']);
-        sensorsInf['deviceId']=parseInt(sensor['DeviceId']);
+        sensorsInf['stationId']=parseInt(sensor['StationId']);
         sensorsInf['type']=sensor['Type'];
         sensorsInf['location']=sensor['Location'];
         sensorsList.push(sensorsInf);
@@ -26,7 +26,7 @@ function getSensors(data){
 function displayMonitor() {
     for (sensors of sensorsList){
         //Collect data
-        var idDevice = sensors['deviceId'];
+        var idDevice = sensors['stationId'];
         var idSensor = sensors['id'];
 
         var currentTime = new Date();
