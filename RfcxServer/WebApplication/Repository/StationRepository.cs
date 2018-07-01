@@ -41,6 +41,9 @@ namespace WebApplication.Repository
 
         try
         {
+            if(_context.Stations.Find(filter).ToList().Count==0){
+                return null;
+            }
             return await _context.Stations.Find(filter).FirstOrDefaultAsync();
         }
         catch (Exception ex)

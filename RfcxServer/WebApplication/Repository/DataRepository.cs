@@ -145,6 +145,10 @@ namespace WebApplication.Repository
         public async Task<IEnumerable<Data>> GetByStationSensorTimestampFilter(int StationId, int SensorId, 
             long StartTimestamp, long EndTimestamp, string Filter, int FilterValue)
         {
+            if(Filter==null  || FilterValue==0){
+                return null;
+            }
+
             var finalFilter=0;
             switch (Filter)
             {
@@ -181,25 +185,40 @@ namespace WebApplication.Repository
                 Builders<Data>.Filter.Lte("Timestamp", EndTimestamp);
                 var DataFilteredList =_context.Datas.Find(filter).ToList();
                 var Count= DataFilteredList.Count;
+                if(Count==0){
+                    return null;
+                }
                 var valueTemp=0;
                 int valueCountTemp=0;
                 var StartTimestampTemp=StartTimestamp;
-                Data DataTemp=DataFilteredList[0];
-                DataTemp.Id=0;
-                var DataAgreggateList= new List<Data>();           
-                for (int i=1;i<=Count;i++){
-                    if((Convert.ToInt64(DataFilteredList[i].Timestamp)<(StartTimestampTemp+finalFilter)) && 
-                    (Convert.ToInt64(DataFilteredList[i].Timestamp)>=StartTimestampTemp)){
+                var DataAgreggateList= new List<Data>();
+                for (int i=0;i<Count;i++){
+                    if(i==0){
+                        if(!((Convert.ToInt64(DataFilteredList[i].Timestamp)>=Convert.ToInt64(StartTimestampTemp)) && 
+                        (Convert.ToInt64(DataFilteredList[i].Timestamp)<(Convert.ToInt64(StartTimestampTemp)+finalFilter)))){
+                            StartTimestampTemp=DataFilteredList[i].Timestamp;                              
+                    }
+                       
+                    }
+                    if((Convert.ToInt64(DataFilteredList[i].Timestamp)>=Convert.ToInt64(StartTimestampTemp)) && 
+                    (Convert.ToInt64(DataFilteredList[i].Timestamp)<(Convert.ToInt64(StartTimestampTemp)+finalFilter))){
                         valueTemp+=Convert.ToInt32(DataFilteredList[i].Value);
-                        valueCountTemp++;
+                        valueCountTemp++;                        
                     }else{
                         if(valueCountTemp>0){
+                            Data DataTemp= new Data();
+                            DataTemp.StationId=DataFilteredList[0].StationId;
+                            DataTemp.SensorId=DataFilteredList[0].SensorId;
+                            DataTemp.Type=DataFilteredList[0].Type;
+                            DataTemp.Units=DataFilteredList[0].Units;
+                            DataTemp.Location=DataFilteredList[0].Location;
                             DataTemp.Value=Convert.ToString(Convert.ToInt32(valueTemp/valueCountTemp));
                             DataTemp.Timestamp=StartTimestampTemp;
                             valueTemp=0;
                             valueCountTemp=0;
                             DataAgreggateList.Add(DataTemp);
                             StartTimestampTemp+=finalFilter;
+                            DataTemp=null;
                         }
 
                     }

@@ -144,7 +144,7 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        [Route("api/Station/{StationId:int}/Sensor/{SensorId:int}/DataTimestamp/filter")]
+        [Route("api/Station/{StationId:int}/Sensor/{SensorId:int}/DataTimestamp/Filter")]
         //Filter: Hours, Months, Days, Weeks
         public Task<string> GetDatasByStationSensorTimestampHour([FromRoute]int StationId,[FromRoute] int SensorId, 
         [FromQuery] long StartTimestamp, [FromQuery] long EndTimestamp, [FromQuery] string Filter, [FromQuery] int FilterValue)
