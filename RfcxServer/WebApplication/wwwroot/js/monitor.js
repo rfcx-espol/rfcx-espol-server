@@ -1,16 +1,15 @@
 var sensorsList = [] //[{'id':1,'type':'Temperature','location':'Environment'},{....}];
+var idSensorDic = {};
 var dataL=[];
 var ind=0, ind2=0;
 var stationName=$("#stationName").text();
-console.log(stationName);
 var stationId = parseInt($("#stationId").text());
 
 charts = [];
 
 //Individual
 dataPoints = [];
-
-window.onload = getData();
+window.addEventListener("load", getData);
 
 setInterval(displayMonitor, 300000);
 //get sensors from one station
@@ -38,6 +37,8 @@ function getSensors(data){
             var divIdChart = "chartMonitorHum";
             var nameDivTab = "'tab_Hum_Env'";
             var iconTab = '<i class="fa fa-tint"></i> Humedad - Ambiente';
+            idSensorDic["Humedity"]=idSensor;
+
 
         }else if(type.includes("Temp") && (location.includes( "Dev") || location.includes("Sta"))){
             var idMin = "minMonDis";
@@ -46,6 +47,7 @@ function getSensors(data){
             var divIdChart = "chartMonitorSta";
             var nameDivTab = "'tab_Temp_Sta'";
             var iconTab='<i class="fa fa-thermometer" ></i> Temperatura - Dispositivo';
+            idSensorDic["Temp_Sta"]=idSensor;
             
         }else if(type.includes("Temp") && (location.includes("Amb") || location.includes("Env"))){
             var idMin = "minMonAmb";
@@ -53,7 +55,8 @@ function getSensors(data){
             var idAvg = "avgMonAmb";
             var divIdChart = "chartMonitorEnv";
             var nameDivTab = "'tab_Temp_Env'";
-            var iconTab = '<i class="fa fa-thermometer"></i> Temperatura - Ambiente'
+            var iconTab = '<i class="fa fa-thermometer"></i> Temperatura - Ambiente';
+            idSensorDic["Temp_Env"]=idSensor;
         }
         
         //Create divs
@@ -92,7 +95,7 @@ function displayMonitor() {
     for (sensors of sensorsList){
         //Collect data
         var idSensor = sensors['id'];
-        var currentTime = new Date();//Erase 1529794207*1000
+        var currentTime = new Date(1529794207*1000);//Erase 1529794207*1000
         var current = Math.round(currentTime.getTime()/1000);
         var lastTimestamp = Math.round(getLastTimeStampHour(current*1000, 2)/1000);
         var query = '/DataTimestamp?startTimestamp='+lastTimestamp+'&endTimestamp='+current;
@@ -176,7 +179,6 @@ function addData(data) {
 
 //Display individual chart
 function displayChart(divId, titleVertical, colorL, data, format){
-    console.log(divId);
     var chartMon = new CanvasJS.Chart(divId, {
         animationEnabled: true,
         zoomEnabled: true,
@@ -249,16 +251,26 @@ function individualChart(nameChart){
     '<div id='+idTab+' class="col-sm-12 col-md-12 col-lg-12 tabcontent" style="display: none;">'+
         '<div id='+idDiv+'>'+
         '<h4 class="chart-title"> '+stationName+"/ "+name+' </h4>'+
-            '<div id='+idChart+' style="height: 320px;"></div>'+
-            '<div id="boxInfoValues">'+
-                '<p class="boxLetters  initial"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id='+minVal+'></p>'+
-                '<p class="boxLetters middle"><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id='+maxVal+'></p>'+
-                '<p class="boxLetters last"><i class="fa iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id= '+avgVal+' ></p>'+
-                '</div>'+
+        '<div class="Dates">'+
+            '<label>Inicio</label>'+
+            '<input type="date" name="start'+idDiv+'" class="start" min="1899-01-01" max="2000-13-13">'+
+            '<label id="fin"> Fin   </label>'+
+            '<input type="date" name="finish'+idDiv+'" class="finish" ><br>'+
+            '<input type="hidden" id="id'+idDiv+'" value='+idSensorDic[idDiv]+' ><br>'+
+            '<button id="filter_'+idDiv+'" onclick="getDates(this.id)" class="filter" >Filtrar</button>'+
+            
+        '</div>'+
+        '<div id='+idChart+' style="height: 320px; clear: right;"></div>'+
+        '<div id="boxInfoValues">'+
+            '<p class="boxLetters  initial"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id='+minVal+'></p>'+
+            '<p class="boxLetters middle"><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id='+maxVal+'></p>'+
+            '<p class="boxLetters last"><i class="fa iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id= '+avgVal+' ></p>'+
+            '</div>'+
         '</div>'+
     '</div>';
 
     $("#individual").append(divEachChart); 
+    setInputDates();
 }
 
 //------------------------------------DATES----------------------------------------------
@@ -276,12 +288,43 @@ function getLastTimeStampDay(timestamp, days){
     var newDate = currentDate.setDate(currentDate.getDate() - days);
     return newDate;
 }
+function setMaxDateNow(){
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+     if(dd<10){
+            dd='0'+dd
+        } 
+        if(mm<10){
+            mm='0'+mm
+        } 
+  
+    today = yyyy+'-'+mm+'-'+dd;
+    return today;
+}
+function setInputDates(){
+    var elements=document.getElementsByClassName("start");
+    for(element of elements){
+        element.setAttribute("max", setMaxDateNow());
+        
+        var currentTime = new Date();
+        var dateN = Math.round(currentTime.getTime()/1000);
+        var last = new Date(Math.round(getLastTimeStampDay(dateN*1000, 6)));
+        element.valueAsDate = last;
+    }
+    var elements=document.getElementsByClassName("finish");
+    for(element of elements){
+        element.setAttribute("max", setMaxDateNow());
+        element.value = setMaxDateNow();
+    }
+}
 
 //---------------------------------INDIVIDUAL CHARTS--------------------------------------
 
 //ask for the data according to a timestamp
 function startDisplayEachChart(id) {
-    var currentTime = new Date();//Erase 1529794207*1000
+    var currentTime = new Date(1529794207*1000);//Erase 1529794207*1000
     var current = Math.round(currentTime.getTime()/1000);
     var lastTimestamp = Math.round(getLastTimeStampDay(current*1000, 2)/1000);
     var query = '/DataTimestamp?startTimestamp='+lastTimestamp+'&endTimestamp='+current;
