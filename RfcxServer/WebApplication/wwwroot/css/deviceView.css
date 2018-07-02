@@ -156,18 +156,15 @@ div#submenu a:hover {
     font-size:24px;
 }
 /*-----Date-------------------*/
-.Dates{
-    float: right;
-}
 /*Button filter*/
 .filter{
     color: #fff;
     background: #007f42;
     border-radius: 6px;
-    padding: 7px 10px;
+    padding: 5px 10px;
     border: none;
     cursor: pointer;
-    float: right;
+    margin-left: 15px;
 }
 .filter:hover {
     color: #e4b836; 
@@ -181,6 +178,10 @@ input{
 label{
     margin-right: 10px;
     color: #757575;
+}
+
+.selectDiv{
+    margin: 20px 0px 20px 0px;
 }
 
 /*-----Date-------------------*/
