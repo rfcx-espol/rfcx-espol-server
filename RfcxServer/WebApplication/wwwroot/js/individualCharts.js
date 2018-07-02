@@ -196,39 +196,45 @@ function addDataDays(data){
 }
 
 function addDataOneDay(data){
-    data = JSON.parse(data);
     var colorP = getLegends()[0], titleVertical = getLegends()[1];
     var minValId = getLegends()[2], maxValId= getLegends()[3];
     var avgValId= getLegends()[4], chartId= getLegends()[5];
-    if(data.length!=0){
-        //Boxes min, max, avg
-        var minV = 5000; var maxV = 0; var sumV = 0;
-        for(points of data){
-            var time = parseInt(points['Timestamp']);
-            var value = parseInt(points['Value']);
-            sumV = sumV + value;
-            if(value<minV){
-                minV = value;
-            }if(value>maxV){
-                maxV = value;
-            }
-            var date = new Date(time*1000);
-            var hours = date.getHours()+":"+date.getMinutes();
-            dataPoints.push({
-                x: date,
-                y: value,
-                hour: hours,
-                color: colorP
-            });
-        }
-        var lengthChart = dataPoints.length;
-        var avgV = (sumV/lengthChart).toFixed(2);
-        if (isNaN(avgV)){
-            avgV = 0;
-        }
-        changeValuesMinMaxAvg(minValId, maxValId, avgValId, minV, maxV, avgV);
+    if(data != "null"){
+        data = JSON.parse(data);
         
-    }else{
+        if(data.length!=0){
+            //Boxes min, max, avg
+            var minV = 5000; var maxV = 0; var sumV = 0;
+            for(points of data){
+                var time = parseInt(points['Timestamp']);
+                var value = parseInt(points['Value']);
+                sumV = sumV + value;
+                if(value<minV){
+                    minV = value;
+                }if(value>maxV){
+                    maxV = value;
+                }
+                var date = new Date(time*1000);
+                var hours = date.getHours()+":"+date.getMinutes();
+                dataPoints.push({
+                    x: date,
+                    y: value,
+                    hour: hours,
+                    color: colorP
+                });
+            }
+            var lengthChart = dataPoints.length;
+            var avgV = (sumV/lengthChart).toFixed(2);
+            if (isNaN(avgV)){
+                avgV = 0;
+            }
+            changeValuesMinMaxAvg(minValId, maxValId, avgValId, minV, maxV, avgV);
+            
+        }else{
+            changeValuesMinMaxAvg(minValId, maxValId, avgValId, 0, 0, 0);
+        }
+    }
+    else{
         changeValuesMinMaxAvg(minValId, maxValId, avgValId, 0, 0, 0);
         
     }
