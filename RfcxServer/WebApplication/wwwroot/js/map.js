@@ -113,3 +113,59 @@ function getDataSensor(){
         
           
 }
+
+function initMap() {
+	var bosque = {lat: -2.15437, lng: -79.963035};
+	var estilos =[
+		{
+			featureType: "poi",
+			elementType: "labels",
+			stylers: [
+					{ visibility: "off" }
+			]
+		},
+		{
+			featureType: "transit",
+			elementType: "labels",
+			stylers: [
+					{ visibility: "off" }
+			]
+		}
+	];
+	var map = new google.maps.Map(document.getElementById('map'), {
+		zoom: 17,
+		center: bosque,
+		styles: estilos
+	});
+	map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+	
+	for(station of stations){
+		var coordenadas = {lat: parseFloat(station['lat']), lng: parseFloat(station['long'])};
+		var contentString = station["content"];
+		var infowindow = new google.maps.InfoWindow({
+			content: contentString
+		});
+		var imageURL = 'http://maps.google.com/mapfiles/kml/paddle/orange-circle.png';
+		var image = {
+			url: imageURL,
+			scaledSize: new google.maps.Size(30, 30)
+		};
+		var marker = new google.maps.Marker({
+			position: coordenadas,
+			map: map,
+			icon: image
+		});
+		//infowindow.open(map,marker);
+		var currentInfoWindow = null;
+		google.maps.event.addListener(marker,'click', (function(marker,contentString,infowindow){ 
+			return function() {
+				if (currentInfoWindow != null) { 
+					currentInfoWindow.close(); 
+				}
+				infowindow.open(map, marker); 
+				currentInfoWindow = infowindow;
+				displayLastData();
+			};
+		})(marker,contentString,infowindow));	
+	}             
+}

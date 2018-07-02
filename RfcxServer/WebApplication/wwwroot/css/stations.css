@@ -1,24 +1,46 @@
 .container.body-content {
     padding: 20px !important;
 }
-.titulo {
+.title {
     background-color: rgba(247, 247, 247, 1);
     border: 1px solid #6c757d;
     padding-left: 5px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
-.titulo h4 {
+.title h4 {
     color: rgb(34, 37, 41);
+    position: relative;
+    text-align: center;
 }
-.cuerpo {
+/*#link {
+    float: left;
+}
+#delete, #edit {
+    float: right;
+    margin-top: 7px;
+    margin-right: 5px;
+}*/
+a.material-icons.edit {
+    position: absolute;
+    top: 7px;
+    right: 45px;
+    cursor: pointer;
+}
+a.material-icons.delete_station {
+    position: absolute;
+    top: 7px;
+    right: 19px;
+    cursor: pointer;
+}
+.station_body {
     padding: 10px 5px 0 5px;
     border: 1px solid #6c757d;
     border-top: 0;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
 }
-.cuerpo-nuevo {
+.new_station_button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -30,6 +52,12 @@
     flex-wrap: wrap;
     margin-bottom: 20px;
 }
-.estacion {
+.station {
     margin-bottom: 15px;
+}
+.modal-footer {
+    text-align: center;
+}
+input#save {
+    margin-right: 10px;
 }
