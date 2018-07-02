@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Text.Encodings.Web;
-
 namespace WebApplication {
 
     public class StationViewController : Controller {
@@ -13,5 +12,6 @@ namespace WebApplication {
             return View();
         }
     }
+
     
 }

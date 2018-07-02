@@ -62,7 +62,7 @@ hr{
     width: 100%;
     padding: 5px;
     margin-top: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 65px;
 }
 .boxLetters{
     margin-right: 20px;
@@ -155,6 +155,35 @@ div#submenu a:hover {
 .tablinks i{
     font-size:24px;
 }
+/*-----Date-------------------*/
+.Dates{
+    float: right;
+}
+/*Button filter*/
+.filter{
+    color: #fff;
+    background: #007f42;
+    border-radius: 6px;
+    padding: 7px 10px;
+    border: none;
+    cursor: pointer;
+    float: right;
+}
+.filter:hover {
+    color: #e4b836; 
+}
+input{
+    margin-bottom: 10px;
+}
+#fin{
+    margin-left: 10px;
+}
+label{
+    margin-right: 10px;
+    color: #757575;
+}
+
+/*-----Date-------------------*/
 @media (max-width: 1199px) {
     .initialMon{
         margin-left: 30%;
