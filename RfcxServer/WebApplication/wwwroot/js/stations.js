@@ -1,7 +1,6 @@
-$(window).on('load',function(){
+$(window).on("load", function(){
     stations = []
-    $.get('api/Station/', getDevicesList);
-    
+    $.get('api/Station/', getStationsList);
     $("#masfilas").click(function(){
         $("#myt").append('<tr><td><input type="text" name="parametros[]"/></td><td> <input type="text" name="unidad[]"/></td><td> <a href="#" class="delete"><i class="material-icons">delete_forever</i></a></td></tr>');
         $('.delete').off().click(function(e) {
@@ -10,14 +9,37 @@ $(window).on('load',function(){
     });
 });
 
-function getDevicesList(data) {
-    var data_dic = JSON.parse(data);
+function fillStationModal(id){
+    $.get('api/Station/'+id, function(data){
+        var data_dic = JSON.parse(data);
+        $("input#name").val(data_dic["Name"]);
+        $("input#api_key").val(data_dic["APIKey"]);
+        $("input#latitude").val(data_dic["Latitude"]);
+        $("input#longitude").val(data_dic["Longitude"]);
+        $("input#android_version").val(data_dic["AndroidVersion"]);
+        $("input#services_version").val(data_dic["ServicesVersion"]);
+        $("h4#modal_label").html("Editar Estación");
+        $("#station_modal").modal("show");
+    });
+    $('#station_modal').on('hidden.bs.modal', function (e) {
+        $("form input").val("");
+    })
+}
+
+function getStationsList(data) {
+    var data_dic = JSON.parse(data);    
     for(station of data_dic){
         var station_id = station['Id'];
         var station_name = station['Name'];
-        var content = '<div class="estacion col-lg-3 col-md-3 col-sm-4 col-xs-6"><div class="titulo">'+
-        '<h4><a href="/DeviceView?deviceName='+station_name+'&deviceId='+station_id+'">'+station_name+'</a></h4>'+
-        '</div><div class="cuerpo">';
+        var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title">'+
+        '<h4><a href="/StationView?stationName='+station_name+'&stationId='+station_id+'">'+station_name+'</a></h4>'+
+        '<a onclick="fillStationModal('+station_id+');" class="material-icons edit">edit</a>'+
+        '<a class="material-icons delete_station">delete</a>'+
+        '</div><div class="station_body">';
+        /*var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title">'+
+        '<div id="link"><h4><a href="/StationView?stationName='+station_name+'&stationId='+station_id+'">'+station_name+'</a></h4></div>'+
+        '<div id="delete"><a class="material-icons">delete</a></div><div id="edit"><a class="material-icons">edit</a></div><div style="clear: left;"/>'+
+        '</div><div class="station_body">';*/
 
         stations_dic = {};
         stations_dic["id"] = station_id;
@@ -35,7 +57,7 @@ function getSensors() {
             var data_dic = JSON.parse(data); 
             for(sensor of data_dic){
                 var sensor_id = sensor['Id'];
-                var station_id = sensor['DeviceId'];
+                var station_id = sensor['StationId'];
                 var sensor_type = sensor['Type'];
                 var sensor_location = sensor['Location'];
                 stations[station_id-1]["content"] = stations[station_id-1]["content"] + '<p>tipo lugar<p>';
@@ -44,8 +66,7 @@ function getSensors() {
                 stations[station_id-1]["sensorsId"].push(sensor_id);
             }
             stations[station_id-1]["content"] = stations[station_id-1]["content"] + '</div></div>';
-            console.log(stations[station_id-1]["content"]);
-            $(stations[station_id-1]["content"]).insertBefore(".plus-device");
+            $(stations[station_id-1]["content"]).insertBefore(".plus-station");
             updateStations();
         });
     }
@@ -53,9 +74,8 @@ function getSensors() {
 
 function updateStations(){
     var body_maximum_height = 0;
-    var bodies = $(".cuerpo").get();
-    var title_height = $(".titulo").get()[0];
-    console.log(title_height);
+    var bodies = $(".station_body").get();
+    var title_height = $(".title").get()[0];
     var d = $(title_height).height();
     for(b of bodies) {
         if($(b).height() > body_maximum_height) {
@@ -65,7 +85,5 @@ function updateStations(){
     for(b of bodies) {
         $(b).height(body_maximum_height);
     }
-    console.log("titulo: " + d);
-    console.log("cuerpo: " + body_maximum_height);
-    $(".cuerpo-nuevo").height(body_maximum_height + d+13);
+    $(".new_station_button").height(body_maximum_height + d+13);
 }
