@@ -10,17 +10,6 @@ function getDataSensor(idSensor){
         dataSensor['id'] = data['Id'];
     });
 }
-/*function getDataSensor(idSensor, startTimeStamp, finishTimeStamp, n){
-    $.getJSON('api/Sensor/'+idSensor, function(data){
-        dataSensor['location'] = data['Location'];
-        dataSensor['type'] = data['Type'];
-        dataSensor['id'] = data['Id'];
-        if(n!=0){
-            filterByTimeStamp(n, startTimeStamp, finishTimeStamp);
-        }
-        //$.getJSON('api/Station/'+stationId+'/Sensor/'+idSensor+query, addDataS);
-    });
-}*/
 //get the dates from inputs and make the query
 function getDates(id){
     var idButton = id.substring(7,id.length);
@@ -38,8 +27,6 @@ function getDates(id){
     if(n!=0){
         filterByTimeStamp(n, startTimeStamp, finishTimeStamp);
     }
-    //var query = '/DataTimestamp?startTimestamp='+startTimeStamp+'&endTimestamp='+finishTimeStamp;
-    //getDataSensor(idSensor, startTimeStamp, finishTimeStamp,n);
     
 }
 function getLegends(){
