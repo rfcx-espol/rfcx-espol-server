@@ -71,7 +71,7 @@ function getSensors(data){
 
 //Create divs of tabs
 function createTabs(idSensor, iconTab, nameDivTab){
-    var divTab = '<button class="tablinks" name='+nameDivTab+' id='+idSensor+' onclick="openDevice(event, '+nameDivTab+')">'+iconTab+'</button>';
+    var divTab = '<button class="tablinks" name='+nameDivTab+' id='+idSensor+' onclick="getDataSensor(this.id)" onfocus="openDevice(event, '+nameDivTab+')">'+iconTab+'</button>';
     $("#tab").append(divTab);
 }
 
@@ -95,11 +95,10 @@ function displayMonitor() {
     for (sensors of sensorsList){
         //Collect data
         var idSensor = sensors['id'];
-        var currentTime = new Date(1529794207*1000);//Erase 1529794207*1000
+        var currentTime = new Date();//Erase 1530075275*1000
         var current = Math.round(currentTime.getTime()/1000);
         var lastTimestamp = Math.round(getLastTimeStampHour(current*1000, 2)/1000);
         var query = '/DataTimestamp?startTimestamp='+lastTimestamp+'&endTimestamp='+current;
-        
         $.getJSON('api/Station/'+stationId+'/Sensor/'+idSensor+query, addData);
     }
 
@@ -251,16 +250,25 @@ function individualChart(nameChart){
     '<div id='+idTab+' class="col-sm-12 col-md-12 col-lg-12 tabcontent" style="display: none;">'+
         '<div id='+idDiv+'>'+
         '<h4 class="chart-title"> '+stationName+"/ "+name+' </h4>'+
-        '<div class="Dates">'+
+        '<div class="Dates col-lg-12 col-md-12 col-sm-12">'+
+            '<div class="col-lg-12 col-md-12 col-sm-12">'+
             '<label>Inicio</label>'+
             '<input type="date" name="start'+idDiv+'" class="start" min="1899-01-01" max="2000-13-13">'+
             '<label id="fin"> Fin   </label>'+
-            '<input type="date" name="finish'+idDiv+'" class="finish" ><br>'+
-            '<input type="hidden" id="id'+idDiv+'" value='+idSensorDic[idDiv]+' ><br>'+
+            '<input type="date" name="finish'+idDiv+'" class="finish" >'+
+            '<input type="hidden" id="id'+idDiv+'" value='+idSensorDic[idDiv]+' >'+
             '<button id="filter_'+idDiv+'" onclick="getDates(this.id)" class="filter" >Filtrar</button>'+
-            
+            '</div>'+
+            '<div class="col-lg-12 col-md-12 col-sm-12"><select id="selectBox'+idDiv+'" class="selectDiv" onchange="changeFunc(this.id);">'+
+            '<option disabled selected value> -- Escoge una opción -- </option>'+
+            '<option value="hora">Hora</option>'+
+            '<option value="12horas">12 horas</option>'+
+            '<option value="dia">Día</option>'+
+            '<option value="semana">Semana</option>'+
+            '<option value="mes">Mes</option>'+
+        '</select></div>'+
         '</div>'+
-        '<div id='+idChart+' style="height: 320px; clear: right;"></div>'+
+        '<div id='+idChart+' class="col-lg-12 col-md-12 col-sm-12" style="height: 320px; clear: right;"></div>'+
         '<div id="boxInfoValues">'+
             '<p class="boxLetters  initial"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id='+minVal+'></p>'+
             '<p class="boxLetters middle"><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id='+maxVal+'></p>'+
@@ -288,47 +296,56 @@ function getLastTimeStampDay(timestamp, days){
     var newDate = currentDate.setDate(currentDate.getDate() - days);
     return newDate;
 }
-function setMaxDateNow(){
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
-    var yyyy = today.getFullYear();
-     if(dd<10){
-            dd='0'+dd
-        } 
-        if(mm<10){
-            mm='0'+mm
-        } 
-  
-    today = yyyy+'-'+mm+'-'+dd;
-    return today;
-}
+
+//Set input type dates with actual date to finish input and 6 days before to start input
 function setInputDates(){
     var elements=document.getElementsByClassName("start");
-    for(element of elements){
-        element.setAttribute("max", setMaxDateNow());
-        
+    for(element of elements){        
         var currentTime = new Date();
         var dateN = Math.round(currentTime.getTime()/1000);
-        var last = new Date(Math.round(getLastTimeStampDay(dateN*1000, 6)));
-        element.valueAsDate = last;
+        var last = new Date(Math.round(getLastTimeStampDay(dateN*1000, 7))); 
+        console.log(last)
+        element.value=formatDate(last);
+        
+        var befDay = new Date(Math.round(getLastTimeStampDay(dateN*1000, 1)));
+        element.setAttribute("max", formatDate(befDay));
     }
     var elements=document.getElementsByClassName("finish");
     for(element of elements){
-        element.setAttribute("max", setMaxDateNow());
-        element.value = setMaxDateNow();
+        element.setAttribute("max", formatDate(new Date()));
+        element.value = formatDate(new Date());
     }
+}
+
+//Return string of Date with format yyyy-mm-dd
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+//Return number of Days on a month
+function getDaysNumber(date) {
+    var d = new Date(date.getFullYear(), date.getMonth()+1, 0);
+    var n = d.getDate();
+    return n;
 }
 
 //---------------------------------INDIVIDUAL CHARTS--------------------------------------
 
 //ask for the data according to a timestamp
 function startDisplayEachChart(id) {
-    var currentTime = new Date(1529794207*1000);//Erase 1529794207*1000
+    var currentTime = new Date();//Erase 1530075275*1000
     var current = Math.round(currentTime.getTime()/1000);
-    var lastTimestamp = Math.round(getLastTimeStampDay(current*1000, 2)/1000);
-    var query = '/DataTimestamp?startTimestamp='+lastTimestamp+'&endTimestamp='+current;
-    $.getJSON('api/Station/'+stationId+'/Sensor/'+id+query, addDataEachChart);
+    var lastTimestamp = Math.round(getLastTimeStampDay(current*1000, 7)/1000);
+    var query = 'api/Station/'+stationId+'/Sensor/'+id+'/DataTimestamp/Filter?StartTimestamp='+lastTimestamp+'&endTimestamp='+current+"&Filter=Days&FilterValue=1";
+    $.getJSON(query, addDataEachChart);
 }
 
 //Add the data for the graph
