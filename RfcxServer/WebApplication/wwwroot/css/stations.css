@@ -58,18 +58,6 @@ a.material-icons.delete_station {
 .modal-footer {
     text-align: center;
 }
-/*#station_modal {
-    width: 60%;
-    margin: 70px auto;
-    padding: 0 !important;
+input#save {
+    margin-right: 10px;
 }
-@media (max-width: 768px) {
-    #new_station_modal {
-        width: 100%;
-    }
-}
-@media (min-width: 768px) and (max-width: 992px) {
-    #new_station_modal {
-        width: 80%;
-    }
-}*/

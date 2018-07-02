@@ -23,6 +23,7 @@ function fillStationModal(id){
     });
     $('#station_modal').on('hidden.bs.modal', function (e) {
         $("form input").val("");
+        $("h4#modal_label").html("Nueva Estación");
     })
 }
 
