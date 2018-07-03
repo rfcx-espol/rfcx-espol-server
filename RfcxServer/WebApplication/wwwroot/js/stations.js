@@ -59,12 +59,14 @@ function saveNewStation() {
     var and_ver = $("input#android_version").val();
     var ser_ver = $("input#services_version").val();
     var api_k = $("input#api_key").val();
+    var data = JSON.stringify({ "Name": name, "Latitude": lat, "Longitude": long,
+                "AndroidVersion": and_ver, "ServicesVersion": ser_ver, "APIKey": api_k});
     $.ajax({
         type: 'POST',
-        url: 'api/Station', 
+        url: 'api/Station',
         dataType: 'json',
-        data: JSON.stringify({ Name: name, Latitude: lat, Longitude: long,
-            AndroidVersion: and_ver, ServicesVersion: ser_ver, APIKey: api_k}),
+        async: false,
+        data: data,
         contentType: 'application/json'
     });
 }
