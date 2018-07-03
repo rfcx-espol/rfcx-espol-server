@@ -7,11 +7,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication.Views.Alarm
 {
-    public class AlarmModel : PageModel
+    public class IndexModel : PageModel
     {
-        public void OnGet()
-        {
-        }
 
     }
 }
