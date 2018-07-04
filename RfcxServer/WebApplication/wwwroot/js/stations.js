@@ -44,10 +44,54 @@ $(window).on("load", function(){
     });
 });
 
-function deleteStation(id) {
-    
+function getStationsList(data) {
+    var data_dic = JSON.parse(data);
+    for(station of data_dic){
+        var station_id = station['Id'];
+        var station_name = station['Name'];
+        var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title">'+
+        '<h4><a href="/StationView?stationName='+station_name+'&stationId='+station_id+'">'+station_name+'</a></h4>'+
+        '<a class="material-icons edit" onclick="fillStationModal('+station_id+');">edit</a>'+
+        '<a class="material-icons delete_station" onclick="deleteStation('+station_id+');">delete</a>'+
+        '</div><div class="station_body">';
+        /*var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title">'+
+        '<div id="link"><h4><a href="/StationView?stationName='+station_name+'&stationId='+station_id+'">'+station_name+'</a></h4></div>'+
+        '<div id="delete"><a class="material-icons">delete</a></div><div id="edit"><a class="material-icons">edit</a></div><div style="clear: left;"/>'+
+        '</div><div class="station_body">';*/
+
+        stations_dic = {};
+        stations_dic["id"] = station_id;
+        stations_dic["content"] = content;
+        stations_dic["sensorsId"] = [];
+        stations.push(stations_dic);
+    }
+    getSensorsList();
 }
 
+function getSensorsList() {
+    for(station of stations){
+        var station_id = station['id']; 
+        $.ajax({
+            url : 'api/Station/' + parseInt(station_id) + '/Sensor/',
+            type: 'GET',
+            async: false,
+            success : function(data){
+                var data_dic = JSON.parse(data); 
+                for(sensor of data_dic){
+                    var sensor_id = sensor['Id'];
+                    var sensor_type = sensor['Type'];
+                    var sensor_location = sensor['Location'];
+                    stations[station_id-1]["content"] = stations[station_id-1]["content"] + '<p>tipo lugar<p>';
+                    stations[station_id-1]["content"] = stations[station_id-1]["content"].replace("tipo", sensor_type);
+                    stations[station_id-1]["content"] = stations[station_id-1]["content"].replace("lugar", sensor_location);
+                    stations[station_id-1]["sensorsId"].push(sensor_id);
+                }
+                stations[station_id-1]["content"] = stations[station_id-1]["content"] + '</div></div>';
+                $(stations[station_id-1]["content"]).insertBefore(".plus-station");
+            }
+        })
+    }
+}
 function saveStation() {
     var id = $("input#db_id").val();
     if(id == "") {
@@ -136,52 +180,31 @@ function getDbName(st) {
     }
 }
 
-function getStationsList(data) {
-    var data_dic = JSON.parse(data);    
-    for(station of data_dic){
-        var station_id = station['Id'];
-        var station_name = station['Name'];
-        var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title">'+
-        '<h4><a href="/StationView?stationName='+station_name+'&stationId='+station_id+'">'+station_name+'</a></h4>'+
-        '<a class="material-icons edit" onclick="fillStationModal('+station_id+');">edit</a>'+
-        '<a class="material-icons delete_station" onclick="deleteStation('+station_id+');">delete</a>'+
-        '</div><div class="station_body">';
-        /*var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title">'+
-        '<div id="link"><h4><a href="/StationView?stationName='+station_name+'&stationId='+station_id+'">'+station_name+'</a></h4></div>'+
-        '<div id="delete"><a class="material-icons">delete</a></div><div id="edit"><a class="material-icons">edit</a></div><div style="clear: left;"/>'+
-        '</div><div class="station_body">';*/
-
-        stations_dic = {};
-        stations_dic["id"] = station_id;
-        stations_dic["content"] = content;
-        stations_dic["sensorsId"] = [];
-        stations.push(stations_dic);
-    }
-    getSensorsList();
+function deleteStation(id) {
+    console.log("ID:" + id);
+    $.ajax({
+        url : 'api/Station/'+id+'/Sensor',
+        type: 'GET',
+        async: false,
+        success : deleteSensors
+    });
+    $.ajax({
+        url : 'api/Station/'+id,
+        type: 'DELETE',
+        async: false
+    });
+    window.location.reload();
 }
 
-function getSensorsList() {
-    for(station of stations){
-        var station_id = station['id']; 
+function deleteSensors(data) {
+    var sensors_dic = JSON.parse(data);
+    for(sensor of sensors_dic) {
+        var sensor_id = sensor["Id"];
         $.ajax({
-            url : 'api/Station/' + parseInt(station_id) + '/Sensor/',
-            type: 'GET',
+            url : 'api/Sensor/'+sensor_id,
+            type: 'DELETE',
             async: false,
-            success : function(data){
-                var data_dic = JSON.parse(data); 
-                for(sensor of data_dic){
-                    var sensor_id = sensor['Id'];
-                    var sensor_type = sensor['Type'];
-                    var sensor_location = sensor['Location'];
-                    stations[station_id-1]["content"] = stations[station_id-1]["content"] + '<p>tipo lugar<p>';
-                    stations[station_id-1]["content"] = stations[station_id-1]["content"].replace("tipo", sensor_type);
-                    stations[station_id-1]["content"] = stations[station_id-1]["content"].replace("lugar", sensor_location);
-                    stations[station_id-1]["sensorsId"].push(sensor_id);
-                }
-                stations[station_id-1]["content"] = stations[station_id-1]["content"] + '</div></div>';
-                $(stations[station_id-1]["content"]).insertBefore(".plus-station");
-            }
-        })
+        });
     }
 }
 
