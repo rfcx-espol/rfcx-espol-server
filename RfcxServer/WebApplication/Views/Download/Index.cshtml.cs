@@ -8,18 +8,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication.Views.Download
 {
-    public class IndexModel : PageModel
+    public class DOwnloadModel : PageModel
     {
         private List<String> stations;
 
         public void OnGet()
         {
+            
             stations = new List<String>();
             DirectoryInfo DI = new DirectoryInfo("files");
             foreach(var item in DI.GetFiles())
             {
                 stations.Add(item.Name);
             }
+            
 
         }
     }

@@ -80,7 +80,7 @@ function createDivsMonitor(iconTab, divIdChart, idMin,  idMax,  idAvg) {
     var div = "<div class='col-sm-12 col-md-12 col-lg-12 sensores_monitor'>"+
                 "<h4 class='titulo_sensor'>"+iconTab+"</h4>"+
                 "<div id='"+divIdChart+"' style='height: 320px'></div>"+
-                "<div id='boxInfoValues'>"+
+                "<div class='boxInfoValues'>"+
                 "<p class='boxLetters initialMon'><i class='material-icons iconsMinMax'>&#xe15d;</i> Min </p><p class='boxLetters initialValue'  id="+idMin+"></p>"+
                 "<p class='boxLetters middle' ><i class='material-icons iconsMinMax'>&#xe148;</i> Max </p><p class='boxLetters middleValue' id="+idMax+"></p>"+
                 "<p class='boxLetters last'><i class='fa  iconsAvg'>&#xf10c;</i> Avg</p><p class='boxLetters lastValue' id="+idAvg+"></p>"+
@@ -269,8 +269,8 @@ function individualChart(nameChart){
         '</select></div>'+
         '</div>'+
         '<div id='+idChart+' class="col-lg-12 col-md-12 col-sm-12" style="height: 320px; clear: right;"></div>'+
-        '<div id="boxInfoValues">'+
-            '<p class="boxLetters  initial"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id='+minVal+'></p>'+
+        '<div class="boxInfoValues">'+
+            '<p class="boxLetters  initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id='+minVal+'></p>'+
             '<p class="boxLetters middle"><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id='+maxVal+'></p>'+
             '<p class="boxLetters last"><i class="fa iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id= '+avgVal+' ></p>'+
             '</div>'+
@@ -304,7 +304,6 @@ function setInputDates(){
         var currentTime = new Date();
         var dateN = Math.round(currentTime.getTime()/1000);
         var last = new Date(Math.round(getLastTimeStampDay(dateN*1000, 7))); 
-        console.log(last)
         element.value=formatDate(last);
         
         var befDay = new Date(Math.round(getLastTimeStampDay(dateN*1000, 1)));

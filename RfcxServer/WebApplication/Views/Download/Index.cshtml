@@ -1,4 +1,5 @@
 ﻿
+
 @using Microsoft.Extensions.FileProviders
 @model WebApplication.IndexModel
 
@@ -7,7 +8,7 @@
 }
 
 @{
-    ViewBag.Title = "Download";
+    ViewBag.Title = "Downloader";
 }
 @section Home{
   <a id="home-pag" href='@Url.Action("Index","")'><i class="fa fa-home w3-xxlarge navbar-text"></i></a>
@@ -15,9 +16,11 @@
 <!-- Favicon -->
 <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
 
+
 <link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet"> 
 
-
+<!-- Slick slider -->
+<link rel="stylesheet" type="text/css" href="wwwroot/lib/bootstrap/slick.css">    
 
 <!-- Main style sheet -->
 <link href="~/css/site.css" rel="stylesheet">    
@@ -30,8 +33,8 @@
 <link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>   
 <!-- Open Sans for title -->
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
 <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
-<script src="/js/select.js"></script>
 
 <!-- Start About us -->
 <section id="mu-about-us">
@@ -47,31 +50,24 @@
         </div>
 
 
-        <form method="post" enctype="#mu-about-ustipart/form-data" action="/Download">
+
           <div class="form-group">
             <table class="table table-bordered" id="vertical-table">
               
               <tr><th><label for="ddl">Station </label></th> 
                 <td>    
-                @Html.DropDownList("ddl", Model.stationFolders.Select(item => new SelectListItem
-                {
-                    Value = item.ToString(),
-                    Text = item.ToString(),
-                    Selected = item == Model.selected
-
-                }))
                 </td>    
               </tr>
 
               <tr><th><label id="ReportBeginDate">Report Begin Date </label></th>
                 <td>  
-                  <input type="date" name="start" value="@if (Model.start != null) {@Model.start_d.ToString("yyyy-MM-dd"); }else{@DateTime.Today.ToString("yyyy-MM-dd");}" />
+                  <input type="date" class="form-control" name="start" value="" />
                 </td>
               </tr>
           
               <tr><th><label id="ReportEndDate">Report End Date</label></th>
                 <td>  
-                  <input type="date" name="end" value="@if (Model.end != null) {@Model.end_d.ToString("yyyy-MM-dd"); }else{@DateTime.Today.ToString("yyyy-MM-dd");}" />
+                  <input type="date" class="form-control" name="end" value="" />
                 </td>  
               </tr>  
           
@@ -80,7 +76,7 @@
             <br />
             <button type="submit" class="out">Search</button><br /><br /><br />
           </div> 
-        </form>
+
              
 
         
@@ -95,45 +91,24 @@
                   <th>Label &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i class="glyphicon glyphicon-search"></i></th>
                 </thead>
 
-                <form method="POST" id="form2" enctype="multipart/form-data" action="/Download/DownloadFiles">
-                @foreach (var item in Model.filesSorted)
-                {
                   <tr>
-                    @if (Model.start != null && Model.end != null)
-                    {
-                        @if (Model.start_d.CompareTo(item.LastModified.AddHours(-5).Date) <= 0 && Model.end_d.CompareTo(item.LastModified.AddHours(-5).Date) >= 0 && 
-                            ((item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".m4a") || (item.Name.ToString().Substring(item.Name.ToString().IndexOf('.'), 4) == ".3gp")) && item.Name.ToString().Length == 17)
-                        {
                             <td>
-                                <input type="checkbox" class="check" value="@item.Name">
+                                <input type="checkbox" class="check" value="">
                             </td>
                             <td>
-                                @item.Name
                             </td>
                             <td>
-                                @item.LastModified.AddHours(-5).ToString("dd/MMM/yyyy") - @item.LastModified.AddHours(-5).ToString("HH:mm:ss")
+                                
                             </td>
                             <td>
-                              <audio controls>
-                                <source src="/files/@Model.selected/audios/@item.Name" type="audio/x-m4a">
-                              </audio>  
                             </td>
-
-                          }
-                        }
                   </tr>
-                }
                 
               </table>
 
-            <input type="hidden" name="start" value="@if (Model.start != null) {@Model.start_d.ToString("yyyy-MM-dd"); }" />
-            <input type="hidden" name="end" value="@if (Model.end != null) {@Model.end_d.ToString("yyyy-MM-dd"); }" />
-            <input id="ddt" name="station" type="hidden" value="@Model.selected" />
-            <input type="hidden" id="lista" name="lista" value="" />
             <br />
             <button id="dl" type="button" class="out">Download</button><br /><br /><br /> 
           </div>        
-        </form>                                        
       </div>
     </div>      
   </div>

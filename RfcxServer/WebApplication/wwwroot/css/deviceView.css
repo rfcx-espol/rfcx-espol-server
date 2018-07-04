@@ -63,6 +63,7 @@ hr{
     padding: 5px;
     margin-top: 15px;
     margin-bottom: 65px;
+    clear: both;
 }
 .boxLetters{
     margin-right: 20px;
