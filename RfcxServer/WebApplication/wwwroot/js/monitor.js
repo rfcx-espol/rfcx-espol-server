@@ -95,10 +95,12 @@ function displayMonitor() {
     for (sensors of sensorsList){
         //Collect data
         var idSensor = sensors['id'];
-        var currentTime = new Date();//Erase 1530075275*1000
-        var current = Math.round(currentTime.getTime()/1000);
-        var lastTimestamp = Math.round(getLastTimeStampHour(current*1000, 2)/1000);
-        var query = '/DataTimestamp?startTimestamp='+lastTimestamp+'&endTimestamp='+current;
+
+        var actual = moment();
+        var actualTimestamp = actual.unix();
+        var lastTimestamp = actual.clone().subtract(2,'hours').unix();
+
+        var query = '/DataTimestamp?startTimestamp='+lastTimestamp+'&endTimestamp='+actualTimestamp;
         $.getJSON('api/Station/'+stationId+'/Sensor/'+idSensor+query, addData);
     }
 
@@ -110,7 +112,7 @@ function addData(data) {
         ind= 0;
     }
     //If there isn't data, take the names from sensorsList
-    if(data.length != 0 ){
+    if(data != null && data.length != 0){
         var typeS = data[0]['Type'];
         var locationS = data[0]['Location'];
     }else{
@@ -145,7 +147,7 @@ function addData(data) {
     var maxValue = 0;
     var sumValue = 0;
 
-    if(data.length != 0){
+    if(data!="null" && data.length != 0){
         for(var i = 0; i<data.length; i++){
             var value = parseInt(data[i].Value);
             var timestamp = parseInt(data[i].Timestamp);            
@@ -283,30 +285,15 @@ function individualChart(nameChart){
 
 //------------------------------------DATES----------------------------------------------
 
-//Return timestamp of n hours before
-function getLastTimeStampHour(timestamp, hours){
-    var currentDate = new Date(timestamp);
-    var newDate = currentDate.setHours(currentDate.getHours() - hours);
-    return newDate;
-}
-
-//Return timestamp of n days before
-function getLastTimeStampDay(timestamp, days){
-    var currentDate = new Date(timestamp);
-    var newDate = currentDate.setDate(currentDate.getDate() - days);
-    return newDate;
-}
-
 //Set input type dates with actual date to finish input and 6 days before to start input
 function setInputDates(){
     var elements=document.getElementsByClassName("start");
-    for(element of elements){        
-        var currentTime = new Date();
-        var dateN = Math.round(currentTime.getTime()/1000);
-        var last = new Date(Math.round(getLastTimeStampDay(dateN*1000, 7))); 
-        element.value=formatDate(last);
+    for(element of elements){
+        var actual = moment();
+        var last = new Date(actual.clone().subtract(1,'week').format("YYYY/MM/DD"));
+        element.value= formatDate(last);
         
-        var befDay = new Date(Math.round(getLastTimeStampDay(dateN*1000, 1)));
+        var befDay = new Date(actual.clone().subtract(1,'day').format("YYYY/MM/DD"));
         element.setAttribute("max", formatDate(befDay));
     }
     var elements=document.getElementsByClassName("finish");
@@ -328,22 +315,15 @@ function formatDate(date) {
 
     return [year, month, day].join('-');
 }
-
-//Return number of Days on a month
-function getDaysNumber(date) {
-    var d = new Date(date.getFullYear(), date.getMonth()+1, 0);
-    var n = d.getDate();
-    return n;
-}
-
 //---------------------------------INDIVIDUAL CHARTS--------------------------------------
 
 //ask for the data according to a timestamp
 function startDisplayEachChart(id) {
-    var currentTime = new Date();//Erase 1530075275*1000
-    var current = Math.round(currentTime.getTime()/1000);
-    var lastTimestamp = Math.round(getLastTimeStampDay(current*1000, 7)/1000);
-    var query = 'api/Station/'+stationId+'/Sensor/'+id+'/DataTimestamp/Filter?StartTimestamp='+lastTimestamp+'&endTimestamp='+current+"&Filter=Days&FilterValue=1";
+    var actual = moment();
+    var actualTimestamp = actual.unix();
+    var lastTimestamp = actual.clone().subtract(1,'week').unix();
+
+    var query = 'api/Station/'+stationId+'/Sensor/'+id+'/DataTimestamp/Filter?StartTimestamp='+lastTimestamp+'&endTimestamp='+actualTimestamp+"&Filter=Days&FilterValue=1";
     $.getJSON(query, addDataEachChart);
 }
 
@@ -353,12 +333,13 @@ function addDataEachChart(data){
         ind2= 0;
     }
     //If there isn't data, take the names from sensorsList
-    if(data.length != 0 ){
+    if(data!="null" && data.length != 0 ){
         var typeS = data[0]['Type'];
         var locationS = data[0]['Location'];
         //Boxes min, max, avg
         var minV = 5000; var maxV = 0; var sumV = 0;
-    }else{
+    }
+    else{
         var typeS = sensorsList[ind2]['type'];
         var locationS = sensorsList[ind2]['location'];
         //Boxes min, max, avg
