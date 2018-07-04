@@ -264,7 +264,7 @@ function filterByTwelveHours(){
     var currentTime = new Date();//Erase 1530409720*1000
     var current = Math.round(currentTime.getTime()/1000);
     var lastTimestamp = Math.round(getLastTimeStampHour(current*1000, 12)/1000);
-    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp?StartTimestamp="+lastTimestamp+"&EndTimestamp="+current;
+    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+lastTimestamp+"&EndTimestamp="+current+"&Filter=Days&FilterValue=1";
     $.get(query, addDataOneDay);
 }
 
