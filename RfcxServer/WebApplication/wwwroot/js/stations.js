@@ -1,17 +1,41 @@
 $(window).on("load", function(){
     stations = []
+    stations_input_changed = []
     $.ajax({
         url : 'api/Station/',
         type: 'GET',
         async: false,
         success : getStationsList
     })
+
     updateStationsHeight();
+
+    $("#station_modal input.form-control").change(function () {
+        var input_id = $(this).attr("id");
+        if(!stations_input_changed.includes(input_id)) {
+            switch(input_id) {
+                case "latitude":
+                    if(stations_input_changed.includes("longitude")) {
+                        return;
+                    }
+                    break;
+                case "longitude":
+                    if(stations_input_changed.includes("latitude")) {
+                        return;
+                    }
+                    break;
+            }
+            stations_input_changed.push(input_id);
+        }
+    });
+
     $('#station_modal').on('hidden.bs.modal', function (e) {
         $("form input").val("");
         $("h4#modal_label").html("Nueva Estación");
         $("input#api_key").removeAttr("disabled");
-    });    
+        stations_input_changed.length = 0;
+    });
+
     $("#masfilas").click(function(){
         $("#myt").append('<tr><td><input type="text" name="parametros[]"/></td><td> <input type="text" name="unidad[]"/></td><td> <a href="#" class="delete"><i class="material-icons">delete_forever</i></a></td></tr>');
         $('.delete').off().click(function(e) {
@@ -20,36 +44,18 @@ $(window).on("load", function(){
     });
 });
 
-function fillStationModal(id){
-    $.ajax({
-        url : 'api/Station/'+id,
-        type: 'GET',
-        async: false,
-        success : function(data){
-            var data_dic = JSON.parse(data);
-            $("input#name").val(data_dic["Name"]);
-            $("input#api_key").val(data_dic["APIKey"]);
-            $("input#latitude").val(data_dic["Latitude"]);
-            $("input#longitude").val(data_dic["Longitude"]);
-            $("input#android_version").val(data_dic["AndroidVersion"]);
-            $("input#services_version").val(data_dic["ServicesVersion"]);
-            $("input#db_id").val(data_dic["Id"]);
-            $("h4#modal_label").html("Editar Estación");
-            $("input#api_key").attr("disabled","disabled");
-            $("#station_modal").modal("show");
-        }
-    })
+function deleteStation(id) {
+    
 }
 
 function saveStation() {
     var id = $("input#db_id").val();
     if(id == "") {
         saveNewStation();
-        window.location.reload();
     } else {
-        //updateStation(id);
-        console.log("actualizar estación");
+        updateStation(id);
     }
+    window.location.reload();
 }
 
 function saveNewStation() {
@@ -71,9 +77,64 @@ function saveNewStation() {
     });
 }
 
-/*function updateStation(int id) {
-    
-}*/
+function updateStation(id) {
+    for(st of stations_input_changed) {
+        var obj = {};
+        var api_url = getApiUrl(st);
+        var db_name = getDbName(st);
+        var value = $("input#" + st).val();
+        obj[db_name] = value;
+        if(db_name == "Latitude") {
+            var long = $("input#longitude").val();
+            var data = JSON.stringify({ "Latitude": value, "Longitude":long });
+        } else if(db_name == "Longitude") {
+            var lat = $("input#latitude").val();
+            var data = JSON.stringify({ "Latitude": lat, "Longitude":value });
+        } else {
+            var data = JSON.stringify(obj);
+        }
+        $.ajax({
+            type: 'PATCH',
+            url: 'api/Station/' + id + '/' + api_url,
+            dataType: 'json',
+            async: false,
+            data: data,
+            contentType: 'application/json'
+        });
+        console.log("URL: "+ 'api/Station/'+id+'/'+api_url);
+        console.log("DATA: "+data);
+    }
+}
+
+function getApiUrl(st) {
+    switch(st) {
+        case "name":
+            return "Name";
+        case "latitude":
+            return "Coordinates";
+        case "longitude":
+            return "Coordinates";
+        case "android_version":
+            return "AndroidV";
+        case "services_version":
+            return "ServicesV";
+    }
+}
+
+function getDbName(st) {
+    switch(st) {
+        case "name":
+            return "Name";
+        case "latitude":
+            return "Latitude";
+        case "longitude":
+            return "Longitude";
+        case "android_version":
+            return "AndroidVersion";
+        case "services_version":
+            return "ServicesVersion";
+    }
+}
 
 function getStationsList(data) {
     var data_dic = JSON.parse(data);    
@@ -82,8 +143,8 @@ function getStationsList(data) {
         var station_name = station['Name'];
         var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title">'+
         '<h4><a href="/StationView?stationName='+station_name+'&stationId='+station_id+'">'+station_name+'</a></h4>'+
-        '<a onclick="fillStationModal('+station_id+');" class="material-icons edit">edit</a>'+
-        '<a class="material-icons delete_station">delete</a>'+
+        '<a class="material-icons edit" onclick="fillStationModal('+station_id+');">edit</a>'+
+        '<a class="material-icons delete_station" onclick="deleteStation('+station_id+');">delete</a>'+
         '</div><div class="station_body">';
         /*var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title">'+
         '<div id="link"><h4><a href="/StationView?stationName='+station_name+'&stationId='+station_id+'">'+station_name+'</a></h4></div>'+
@@ -122,6 +183,27 @@ function getSensorsList() {
             }
         })
     }
+}
+
+function fillStationModal(id){
+    $.ajax({
+        url : 'api/Station/'+id,
+        type: 'GET',
+        async: false,
+        success : function(data){
+            var data_dic = JSON.parse(data);
+            $("input#name").val(data_dic["Name"]);
+            $("input#api_key").val(data_dic["APIKey"]);
+            $("input#latitude").val(data_dic["Latitude"]);
+            $("input#longitude").val(data_dic["Longitude"]);
+            $("input#android_version").val(data_dic["AndroidVersion"]);
+            $("input#services_version").val(data_dic["ServicesVersion"]);
+            $("input#db_id").val(data_dic["Id"]);
+            $("h4#modal_label").html("Editar Estación");
+            $("input#api_key").attr("disabled","disabled");
+            $("#station_modal").modal("show");
+        }
+    })
 }
 
 function updateStationsHeight(){
