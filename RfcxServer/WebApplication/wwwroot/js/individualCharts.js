@@ -15,17 +15,14 @@ function getDates(id){
     var idButton = id.substring(7,id.length);
     var nameStart = "start"+idButton;
     var nameFinish = "finish"+idButton;
-    var start = $("input[name="+nameStart+"]").val();  
-    var finish = $("input[name="+nameFinish+"]").val(); 
+    var start = moment($("input[name="+nameStart+"]").val());  
+    var finish = moment($("input[name="+nameFinish+"]").val()); 
+    var startUnixTimestamp = start.unix();
+    var finishUnixTimestamp = finish.unix();
 
-    var startDate = new Date(start);
-    startTimeStamp = Math.round(startDate.getTime()/1000);
-    var finishDate = new Date(finish);
-    finishTimeStamp = Math.round(finishDate.getTime()/1000);
-
-    var n = (finishDate.getDate() - startDate.getDate());
+    var n = (finish.date() - start.date());
     if(n!=0){
-        filterByTimeStamp(n, startTimeStamp, finishTimeStamp);
+        filterByTimeStamp(n, startUnixTimestamp, finishUnixTimestamp);
     }
     
 }
@@ -244,45 +241,50 @@ function filterByTimeStamp(n, startTimeStamp, finishTimeStamp){
 
 function filterByWeek(){
     var idSensor = parseInt(dataSensor['id']);
-    var currentTime = new Date();
-    var current = Math.round(currentTime.getTime()/1000);
-    var lastTimestamp = Math.round(getLastTimeStampDay(current*1000, 7)/1000);
-    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+lastTimestamp+"&EndTimestamp="+current+"&Filter=Days&FilterValue=1";
+    var actual = moment();
+    var actualTimestamp = actual.unix();
+    var lastTimestamp = actual.clone().subtract(1,'week').unix();
+    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+lastTimestamp+"&EndTimestamp="+actualTimestamp+"&Filter=Days&FilterValue=1";
     $.get(query, addDataDays);
 }
 function filterByHour(){
     var idSensor = parseInt(dataSensor['id']);
-    var currentTime = new Date();//Erase 1530409720*1000
-    var current = Math.round(currentTime.getTime()/1000);
-    var lastTimestamp = Math.round(getLastTimeStampHour(current*1000, 1)/1000);
-    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp?StartTimestamp="+lastTimestamp+"&EndTimestamp="+current;
+    var actual = moment();
+    var actualTimestamp = actual.unix();
+    var lastTimestamp = actual.clone().subtract(1,'hour').unix();
+
+    /*var currentTime = new Date();//Erase 1530409720*1000*/
+    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp?StartTimestamp="+lastTimestamp+"&EndTimestamp="+actualTimestamp;
     $.get(query, addDataOneDay);
 }
 
 function filterByTwelveHours(){
     var idSensor = parseInt(dataSensor['id']);
-    var currentTime = new Date();//Erase 1530409720*1000
-    var current = Math.round(currentTime.getTime()/1000);
-    var lastTimestamp = Math.round(getLastTimeStampHour(current*1000, 12)/1000);
-    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+lastTimestamp+"&EndTimestamp="+current+"&Filter=Days&FilterValue=1";
+    var actual = moment();
+    var actualTimestamp = actual.unix();
+    var lastTimestamp = actual.clone().subtract(12,'hours').unix();
+
+    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+lastTimestamp+"&EndTimestamp="+actualTimestamp+"&Filter=Days&FilterValue=1";
     $.get(query, addDataOneDay);
 }
 
 function filterByDay(){
     var idSensor = parseInt(dataSensor['id']);
-    var currentTime = new Date();
-    var current = Math.round(currentTime.getTime()/1000);
-    var lastTimestamp = Math.round(getLastTimeStampDay(current*1000, 1)/1000);
-    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+lastTimestamp+"&EndTimestamp="+current+"&Filter=Hours&FilterValue=1";
+    var actual = moment();
+    var actualTimestamp = actual.unix();
+    var lastTimestamp = actual.clone().subtract(1,'day').unix();
+
+    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+lastTimestamp+"&EndTimestamp="+actualTimestamp+"&Filter=Hours&FilterValue=1";
     $.get(query, addDataOneDay);
 }
 function filterByMonth(){
-    var nDays = getDaysNumber(new Date());
     var idSensor = parseInt(dataSensor['id']);
-    var currentTime = new Date();
-    var current = Math.round(currentTime.getTime()/1000);
-    var lastTimestamp = Math.round(getLastTimeStampDay(current*1000, nDays)/1000);
-    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+lastTimestamp+"&EndTimestamp="+current+"&Filter=Weeks&FilterValue=1";
+
+    var actual = moment();
+    var actualTimestamp = actual.unix();
+    var lastTimestamp = actual.clone().subtract(1,'month').unix();
+
+    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+lastTimestamp+"&EndTimestamp="+actualTimestamp+"&Filter=Weeks&FilterValue=1";
     $.get(query, addDataOneDay);
 }
 
