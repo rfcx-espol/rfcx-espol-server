@@ -33,12 +33,12 @@ namespace WebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //Core.MakeFilesFolder();
-            //services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Core.FilesFolderPath));
+            Core.MakeFilesFolder();
+            services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Core.FilesFolderPath));
             services.AddMvc();
 
-            //IFileProvider physicalProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory());
-            //services.AddSingleton<IFileProvider>(physicalProvider);
+            IFileProvider physicalProvider = new PhysicalFileProvider(Core.getServerDirectory());
+            services.AddSingleton<IFileProvider>(physicalProvider);
             services.Configure<Settings>(
             options =>
                 {
@@ -69,12 +69,12 @@ namespace WebApplication
             app.UseMvcWithDefaultRoute();
             app.UseStaticFiles();
 
-            /*app.UseStaticFiles(new StaticFileOptions
+            app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-            Path.Combine(Directory.GetCurrentDirectory(), "files")),
+            Path.Combine(Core.getServerDirectory(), "files")),
                 RequestPath = "/files"
-            });*/
+            });
 
             
             // app.Map("/hello", HandleHello);
