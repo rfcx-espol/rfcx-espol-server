@@ -58,7 +58,7 @@ hr{
     border: 1px solid #ccc;
 }
 
-#boxInfoValues{
+.boxInfoValues{
     width: 100%;
     padding: 5px;
     margin-top: 15px;
@@ -170,6 +170,9 @@ div#submenu a:hover {
 .filter:hover {
     color: #e4b836; 
 }
+.filter:disabled {
+    background: #007f429c;
+}
 input{
     margin-bottom: 10px;
 }
@@ -182,7 +185,7 @@ label{
 }
 
 .selectDiv{
-    margin: 20px 0px 20px 0px;
+    margin: 20px 0px 20px 20px;
 }
 
 /*-----Date-------------------*/

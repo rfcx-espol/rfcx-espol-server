@@ -1,8 +1,8 @@
 var stationId = parseInt($("#stationId").text());
 var dataPoints = [];
 var dataSensor = {};
-//get location and type of actual sensor
 
+//get location and type of actual sensor
 function getDataSensor(idSensor){
     $.getJSON('api/Sensor/'+idSensor, function(data){
         dataSensor['location'] = data['Location'];
@@ -15,16 +15,16 @@ function getDates(id){
     var idButton = id.substring(7,id.length);
     var nameStart = "start"+idButton;
     var nameFinish = "finish"+idButton;
+    var nameSelect = "selectBox"+idButton+"2";
     var start = moment($("input[name="+nameStart+"]").val());  
     var finish = moment($("input[name="+nameFinish+"]").val()); 
-    var startUnixTimestamp = start.unix();
-    var finishUnixTimestamp = finish.unix();
+    var selectFilter = $("#"+nameSelect)[0];
+    var selectValue = selectFilter.options[selectFilter.selectedIndex].value;
+    //var startUnixTimestamp = start.unix();
+    //var finishUnixTimestamp = finish.unix();
+    console.log(start, finish);
+    filterByRange(start, finish, selectValue);
 
-    var n = (finish.date() - start.date());
-    if(n!=0){
-        filterByTimeStamp(n, startUnixTimestamp, finishUnixTimestamp);
-    }
-    
 }
 function getLegends(){
     var location = dataSensor["location"];
@@ -225,86 +225,143 @@ function addDataOneDay(data){
     displayChartInd(chartId, titleVertical, colorP, dataPoints, "hh:mm TT", "<strong> {hour}</strong> {y}");
 
 }
-//Filter by n days
-function filterByTimeStamp(n, startTimeStamp, finishTimeStamp){
+//Filter by date ranges
+function filterByRange(start, finish, selectedValue){
     var idSensor = parseInt(dataSensor['id']);
-    if(n>0 && n<=2){
-        $.get("api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+startTimeStamp+"&EndTimestamp="+finishTimeStamp+"&Filter=Hours&FilterValue=1", addDataHours);
-    }else if(n>2 && n<=6){
-        $.get("api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+startTimeStamp+"&EndTimestamp="+finishTimeStamp+"&Filter=Hours&FilterValue=4", addDataHours);
-    }else if(n>6 && n<=25){
-        $.get("api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+startTimeStamp+"&EndTimestamp="+finishTimeStamp+"&Filter=Days&FilterValue=1", addDataDays);
+    if(selectedValue=="hora"){
+        var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+start.unix()+"&EndTimestamp="+finish.unix()+"&Filter=Hours&FilterValue=1";
+        $.get(query, addDataDays);
+    }
+    else if(selectedValue=="12horas"){
+        //filterByTwelveHours(start, finish);
+        var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+start.unix()+"&EndTimestamp="+finish.unix()+"&Filter=Hours&FilterValue=12";
+        $.get(query, addDataDays);
+    }
+    else if(selectedValue=="dia"){
+        //filterByDay(start, finish);
+        var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+start.unix()+"&EndTimestamp="+finish.unix()+"&Filter=Days&FilterValue=1";
+        $.get(query, addDataDays);
+    }
+    else if(selectedValue=="semana"){
+        //filterByWeek(start, finish);
+        var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+start.unix()+"&EndTimestamp="+finish.unix()+"&Filter=Weeks&FilterValue=1";
+        $.get(query, addDataDays);
     }else{
-        $.get("api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+startTimeStamp+"&EndTimestamp="+finishTimeStamp+"&Filter=Weeks&FilterValue=1", addDataDays);
+        //filterByMonth(start, finish);
+        var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+start.unix()+"&EndTimestamp="+finish.unix()+"&Filter=Months&FilterValue=1";
+        $.get(query, addDataDays);
     }
 }
 
-function filterByWeek(){
+function filterByWeek(dateStart=0, dateFinish = new Date()){
     var idSensor = parseInt(dataSensor['id']);
-    var actual = moment();
+    var finish = moment(dateFinish);
+    var finishTimestamp = finish.unix();
+    if(dateStart == 0){
+        var startTimestamp = finish.clone().subtract(1,'week').unix();
+    }else{
+        var startTimestamp = dateStart.unix();
+    }
+    /*var actual = moment();
     var actualTimestamp = actual.unix();
-    var lastTimestamp = actual.clone().subtract(1,'week').unix();
-    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+lastTimestamp+"&EndTimestamp="+actualTimestamp+"&Filter=Days&FilterValue=1";
+    var lastTimestamp = actual.clone().subtract(1,'week').unix();*/
+    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+startTimestamp+"&EndTimestamp="+finishTimestamp+"&Filter=Hours&FilterValue=6";
+    console.log(query);
     $.get(query, addDataDays);
 }
-function filterByHour(){
+function filterByHour(dateStart=0, dateFinish = new Date()){
     var idSensor = parseInt(dataSensor['id']);
-    var actual = moment();
+    /*var actual = moment();
     var actualTimestamp = actual.unix();
-    var lastTimestamp = actual.clone().subtract(1,'hour').unix();
+    var lastTimestamp = actual.clone().subtract(1,'hour').unix();*/
+    var finish = moment(dateFinish);
+    var finishTimestamp = finish.unix();
+    if(dateStart == 0){
+        var startTimestamp = finish.clone().subtract(1,'hour').unix();
+    }else{
+        var startTimestamp = dateStart.unix();
+    }
 
     /*var currentTime = new Date();//Erase 1530409720*1000*/
-    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp?StartTimestamp="+lastTimestamp+"&EndTimestamp="+actualTimestamp;
+    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp?StartTimestamp="+startTimestamp+"&EndTimestamp="+finishTimestamp;
+    console.log(query);
     $.get(query, addDataOneDay);
 }
 
-function filterByTwelveHours(){
+function filterByTwelveHours(dateStart=0, dateFinish = new Date()){
     var idSensor = parseInt(dataSensor['id']);
-    var actual = moment();
-    var actualTimestamp = actual.unix();
-    var lastTimestamp = actual.clone().subtract(12,'hours').unix();
+    var finish = moment(dateFinish);
+    var finishTimestamp = finish.unix();
+    if(dateStart == 0){
+        var startTimestamp = finish.clone().subtract(12,'hours').unix();
+    }else{
+        var startTimestamp = dateStart.unix();
+    }
 
-    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+lastTimestamp+"&EndTimestamp="+actualTimestamp+"&Filter=Days&FilterValue=1";
+    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+startTimestamp+"&EndTimestamp="+finishTimestamp+"&Filter=Hours&FilterValue=1";
+    console.log(query);
     $.get(query, addDataOneDay);
 }
 
-function filterByDay(){
+function filterByDay(dateStart=0, dateFinish = new Date()){
     var idSensor = parseInt(dataSensor['id']);
-    var actual = moment();
+    var finish = moment(dateFinish);
+    var finishTimestamp = finish.unix();
+    if(dateStart == 0){
+        var startTimestamp = finish.clone().subtract(1,'day').unix();
+    }else{
+        var startTimestamp = dateStart.unix();
+    }
+    /*var actual = moment();
     var actualTimestamp = actual.unix();
-    var lastTimestamp = actual.clone().subtract(1,'day').unix();
+    var lastTimestamp = actual.clone().subtract(1,'day').unix();*/
 
-    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+lastTimestamp+"&EndTimestamp="+actualTimestamp+"&Filter=Hours&FilterValue=1";
+    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+startTimestamp+"&EndTimestamp="+finishTimestamp+"&Filter=Hours&FilterValue=1";
     $.get(query, addDataOneDay);
 }
-function filterByMonth(){
+function filterByMonth(dateStart=0, dateFinish = new Date()){
     var idSensor = parseInt(dataSensor['id']);
-
-    var actual = moment();
+    var finish = moment(dateFinish);
+    var finishTimestamp = finish.unix();
+    if(dateStart == 0){
+        var startTimestamp = finish.clone().subtract(1,'month').unix();
+    }else{
+        var startTimestamp = dateStart.unix();
+    }
+    /*var actual = moment();
     var actualTimestamp = actual.unix();
-    var lastTimestamp = actual.clone().subtract(1,'month').unix();
+    var lastTimestamp = actual.clone().subtract(1,'month').unix();*/
 
-    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+lastTimestamp+"&EndTimestamp="+actualTimestamp+"&Filter=Weeks&FilterValue=1";
+    var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+startTimestamp+"&EndTimestamp="+finishTimestamp+"&Filter=Days&FilterValue=1";
+    console.log(query);
     $.get(query, addDataOneDay);
 }
 
-/*-----SELECT---------*/
 function changeFunc(id) {
     var selectBox = document.getElementById(id);
     var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-    if(selectedValue=="hora"){
-        filterByHour();
-    }
-    else if(selectedValue=="12horas"){
-        filterByTwelveHours();
-    }
-    else if(selectedValue=="dia"){
-        filterByDay();
-    }
-    else if(selectedValue=="semana"){
-        filterByWeek();
+    if(id.endsWith("2")){
+/*-----SELECT---------*/
+        var nameButton = "filter_"+id.substring(9,id.length-1);
+        var filterButton =  document.getElementById(nameButton); 
+        filterButton.disabled = false; 
     }else{
-        filterByMonth();
+        if(selectedValue=="hora"){
+            filterByHour();
+        }
+        else if(selectedValue=="12horas"){
+            filterByTwelveHours();
+        }
+        else if(selectedValue=="dia"){
+            filterByDay();
+        }
+        else if(selectedValue=="semana"){
+            filterByWeek();
+        }else{
+            filterByMonth();
+        }
     }
+    
+    
 }
 

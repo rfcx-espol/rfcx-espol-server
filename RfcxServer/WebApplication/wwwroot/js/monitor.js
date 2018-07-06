@@ -253,24 +253,40 @@ function individualChart(nameChart){
         '<div id='+idDiv+'>'+
         '<h4 class="chart-title"> '+stationName+"/ "+name+' </h4>'+
         '<div class="Dates col-lg-12 col-md-12 col-sm-12">'+
-            '<div class="col-lg-12 col-md-12 col-sm-12">'+
-            '<label>Inicio</label>'+
-            '<input type="date" name="start'+idDiv+'" class="start" min="1899-01-01" max="2000-13-13">'+
-            '<label id="fin"> Fin   </label>'+
-            '<input type="date" name="finish'+idDiv+'" class="finish" >'+
-            '<input type="hidden" id="id'+idDiv+'" value='+idSensorDic[idDiv]+' >'+
-            '<button id="filter_'+idDiv+'" onclick="getDates(this.id)" class="filter" >Filtrar</button>'+
+            '<ul class="nav nav-tabs">'+
+                '<li class="active"><a data-toggle="tab" href="#data-act-'+idDiv+'">Datos actuales</a></li>'+
+                '<li><a data-toggle="tab" href="#date-range-'+idDiv+'">Rango de fechas</a></li>'+
+            '</ul>'+
+            '<div class="tab-content">'+
+                '<div id="data-act-'+idDiv+'" class="tab-pane fade in active">'+
+                    '<select id="selectBox'+idDiv+'1" class="selectDiv" onchange="changeFunc(this.id);">'+
+                    '<option disabled selected value> -- Escoge una opción -- </option>'+
+                    '<option value="hora">Hora</option>'+
+                    '<option value="12horas">12 horas</option>'+
+                    '<option value="dia">Día</option>'+
+                    '<option value="semana">Semana</option>'+
+                    '<option value="mes">Mes</option>'+
+                    '</select>'+
+                '</div>'+
+                '<div id="date-range-'+idDiv+'" class="tab-pane fade">'+
+                    '<label>Inicio</label>'+
+                    '<input type="date" name="start'+idDiv+'" class="start" min="1899-01-01" max="2000-13-13">'+
+                    '<label id="fin"> Fin   </label>'+
+                    '<input type="date" name="finish'+idDiv+'" class="finish" >'+
+                    '<input type="hidden" id="id'+idDiv+'" value='+idSensorDic[idDiv]+' >'+
+                    '<select id="selectBox'+idDiv+'2" class="selectDiv" onchange="changeFunc(this.id);">'+
+                    '<option disabled selected value> -- Escoge una opción -- </option>'+
+                    '<option value="hora">Hora</option>'+
+                    '<option value="12horas">12 horas</option>'+
+                    '<option value="dia">Día</option>'+
+                    '<option value="semana">Semana</option>'+
+                    '<option value="mes">Mes</option>'+
+                    '</select>'+
+                    '<button id="filter_'+idDiv+'" disabled onclick="getDates(this.id)" class="filter">Filtrar</button>'+
+                '</div>'+
             '</div>'+
-            '<div class="col-lg-12 col-md-12 col-sm-12"><select id="selectBox'+idDiv+'" class="selectDiv" onchange="changeFunc(this.id);">'+
-            '<option disabled selected value> -- Escoge una opción -- </option>'+
-            '<option value="hora">Hora</option>'+
-            '<option value="12horas">12 horas</option>'+
-            '<option value="dia">Día</option>'+
-            '<option value="semana">Semana</option>'+
-            '<option value="mes">Mes</option>'+
-        '</select></div>'+
         '</div>'+
-        '<div id='+idChart+' class="col-lg-12 col-md-12 col-sm-12" style="height: 320px; clear: right;"></div>'+
+        '<div id='+idChart+' class="col-lg-12 col-md-12 col-sm-12" style="height: 320px; clear: right; margin-top: 20px;"></div>'+
         '<div class="boxInfoValues">'+
             '<p class="boxLetters  initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id='+minVal+'></p>'+
             '<p class="boxLetters middle"><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id='+maxVal+'></p>'+
