@@ -88,12 +88,16 @@ namespace WebApplication.Repository
         }
     }
 
-    public async Task<bool> Remove(string id)
+    public async Task<bool> Remove(int id)
     {
         try
         {
             DeleteResult actionResult = await _context.Stations.DeleteOneAsync(
-                    Builders<Station>.Filter.Eq("StationId", id));
+                    Builders<Station>.Filter.Eq("Id", id));
+	    var filter1=Builders<Sensor>.Filter.Eq("StationId", id);
+	    var filter2=Builders<Data>.Filter.Eq("StationId", id);
+	    _context.Sensors.DeleteMany(filter1);
+	    _context.Datas.DeleteMany(filter2);
 
             return actionResult.IsAcknowledged 
                 && actionResult.DeletedCount > 0;

@@ -83,9 +83,9 @@ namespace WebApplication.Controllers
         */
 
         [HttpDelete("{id}")]
-        public async Task<bool> Delete([FromRoute] string id)
+        public async Task<bool> Delete([FromRoute] int id)
         {
-            if (string.IsNullOrEmpty(id)) return false;
+            if (id==0) return false;
             return await _StationRepository.Remove(id);
              
         }
