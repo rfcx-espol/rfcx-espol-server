@@ -167,7 +167,7 @@ namespace WebApplication.Repository
         }
 
         public Sensor getSensorByStation(int StationId, int SensorId){
-            var filter = Builders<Sensor>.Filter.Eq("StationId", StationId) & Builders<Sensor>.Filter.Eq("SensorId", SensorId);
+            var filter = Builders<Sensor>.Filter.Eq("StationId", StationId) & Builders<Sensor>.Filter.Eq("Id", SensorId);
             Sensor sensor=_context.Sensors.Find(filter).FirstOrDefaultAsync().Result;
             int count = _context.Sensors.Find(filter).ToList().Count; 
             if(count==0){
