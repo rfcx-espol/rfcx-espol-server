@@ -36,7 +36,8 @@ function getSensors(data){
             var idAvg = "avgMonHum";
             var divIdChart = "chartMonitorHum";
             var nameDivTab = "'tab_Hum_Env'";
-            var iconTab = '<i class="fa fa-tint"></i> Humedad - Ambiente';
+            var iconTab = '<i class="fa fa-tint tabL"></i> <p class="nameHum">Humedad - Ambiente </p>';
+            var iconTitle = '<i class="fa fa-tint"></i> Humedad - Ambiente';
             idSensorDic["Humedity"]=idSensor;
 
 
@@ -46,7 +47,8 @@ function getSensors(data){
             var idAvg = "avgMonDisp";
             var divIdChart = "chartMonitorSta";
             var nameDivTab = "'tab_Temp_Sta'";
-            var iconTab='<i class="fa fa-thermometer" ></i> Temperatura - Dispositivo';
+            var iconTab='<i class="fa" id="mobil">&#xf10b;</i><i class="fa fa-thermometer tabL" ></i> <p class="nameTempDisp">Temperatura - Dispositivo </p>';
+            var iconTitle = '<i class="fa fa-thermometer"></i> Temperatura - Dispositivo';
             idSensorDic["Temp_Sta"]=idSensor;
             
         }else if(type.includes("Temp") && (location.includes("Amb") || location.includes("Env"))){
@@ -55,12 +57,13 @@ function getSensors(data){
             var idAvg = "avgMonAmb";
             var divIdChart = "chartMonitorEnv";
             var nameDivTab = "'tab_Temp_Env'";
-            var iconTab = '<i class="fa fa-thermometer"></i> Temperatura - Ambiente';
+            var iconTab = '<i class="fa fa-thermometer tabL"></i> <p class="nameTempAmb">Temperatura - Ambiente </p>';
+            var iconTitle = '<i class="fa fa-thermometer"></i> Temperatura - Ambiente';
             idSensorDic["Temp_Env"]=idSensor;
         }
         
         //Create divs
-        createDivsMonitor(iconTab, divIdChart, idMin, idMax, idAvg);
+        createDivsMonitor(iconTitle, divIdChart, idMin, idMax, idAvg);
         createTabs(idSensor, iconTab, nameDivTab);
         individualChart(type+" - "+location);
         startDisplayEachChart(idSensor);

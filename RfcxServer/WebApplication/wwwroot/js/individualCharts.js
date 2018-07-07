@@ -114,7 +114,7 @@ function addDataHours(data){
                 maxV = value;
             }
             var date = new Date(time*1000);
-            var hours = date.getHours()+":00 ";
+            var hours = date.getHours()+":"+(date.getMinutes()<10?'0':'') + date.getMinutes();;
             dataPoints.push({
                 x: date,
                 y: value,
@@ -315,7 +315,7 @@ function filterByMonth(dateStart=0, dateFinish = new Date()){
     }
 
     var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+startTimestamp+"&EndTimestamp="+finishTimestamp+"&Filter=Days&FilterValue=1";
-    $.get(query, addDataOneDay);
+    $.get(query, addDataDays);
 }
 
 function changeFunc(id) {
