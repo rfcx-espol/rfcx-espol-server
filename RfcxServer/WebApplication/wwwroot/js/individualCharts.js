@@ -20,9 +20,6 @@ function getDates(id){
     var finish = moment($("input[name="+nameFinish+"]").val()); 
     var selectFilter = $("#"+nameSelect)[0];
     var selectValue = selectFilter.options[selectFilter.selectedIndex].value;
-    //var startUnixTimestamp = start.unix();
-    //var finishUnixTimestamp = finish.unix();
-    console.log(start, finish);
     filterByRange(start, finish, selectValue);
 
 }
@@ -117,7 +114,7 @@ function addDataHours(data){
                 maxV = value;
             }
             var date = new Date(time*1000);
-            var hours = date.getHours()+" horas";
+            var hours = date.getHours()+":00 ";
             dataPoints.push({
                 x: date,
                 y: value,
@@ -199,7 +196,7 @@ function addDataOneDay(data){
                     maxV = value;
                 }
                 var date = new Date(time*1000);
-                var hours = date.getHours()+":"+date.getMinutes();
+                var hours = date.getHours()+":"+(date.getMinutes()<10?'0':'') + date.getMinutes();
                 dataPoints.push({
                     x: date,
                     y: value,
@@ -230,12 +227,12 @@ function filterByRange(start, finish, selectedValue){
     var idSensor = parseInt(dataSensor['id']);
     if(selectedValue=="hora"){
         var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+start.unix()+"&EndTimestamp="+finish.unix()+"&Filter=Hours&FilterValue=1";
-        $.get(query, addDataDays);
+        $.get(query, addDataHours);
     }
     else if(selectedValue=="12horas"){
         //filterByTwelveHours(start, finish);
         var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+start.unix()+"&EndTimestamp="+finish.unix()+"&Filter=Hours&FilterValue=12";
-        $.get(query, addDataDays);
+        $.get(query, addDataHours);
     }
     else if(selectedValue=="dia"){
         //filterByDay(start, finish);
@@ -250,6 +247,7 @@ function filterByRange(start, finish, selectedValue){
         //filterByMonth(start, finish);
         var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+start.unix()+"&EndTimestamp="+finish.unix()+"&Filter=Months&FilterValue=1";
         $.get(query, addDataDays);
+        
     }
 }
 
@@ -262,18 +260,11 @@ function filterByWeek(dateStart=0, dateFinish = new Date()){
     }else{
         var startTimestamp = dateStart.unix();
     }
-    /*var actual = moment();
-    var actualTimestamp = actual.unix();
-    var lastTimestamp = actual.clone().subtract(1,'week').unix();*/
     var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+startTimestamp+"&EndTimestamp="+finishTimestamp+"&Filter=Hours&FilterValue=6";
-    console.log(query);
     $.get(query, addDataDays);
 }
 function filterByHour(dateStart=0, dateFinish = new Date()){
     var idSensor = parseInt(dataSensor['id']);
-    /*var actual = moment();
-    var actualTimestamp = actual.unix();
-    var lastTimestamp = actual.clone().subtract(1,'hour').unix();*/
     var finish = moment(dateFinish);
     var finishTimestamp = finish.unix();
     if(dateStart == 0){
@@ -282,9 +273,7 @@ function filterByHour(dateStart=0, dateFinish = new Date()){
         var startTimestamp = dateStart.unix();
     }
 
-    /*var currentTime = new Date();//Erase 1530409720*1000*/
     var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp?StartTimestamp="+startTimestamp+"&EndTimestamp="+finishTimestamp;
-    console.log(query);
     $.get(query, addDataOneDay);
 }
 
@@ -299,7 +288,6 @@ function filterByTwelveHours(dateStart=0, dateFinish = new Date()){
     }
 
     var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+startTimestamp+"&EndTimestamp="+finishTimestamp+"&Filter=Hours&FilterValue=1";
-    console.log(query);
     $.get(query, addDataOneDay);
 }
 
@@ -312,9 +300,6 @@ function filterByDay(dateStart=0, dateFinish = new Date()){
     }else{
         var startTimestamp = dateStart.unix();
     }
-    /*var actual = moment();
-    var actualTimestamp = actual.unix();
-    var lastTimestamp = actual.clone().subtract(1,'day').unix();*/
 
     var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+startTimestamp+"&EndTimestamp="+finishTimestamp+"&Filter=Hours&FilterValue=1";
     $.get(query, addDataOneDay);
@@ -328,12 +313,8 @@ function filterByMonth(dateStart=0, dateFinish = new Date()){
     }else{
         var startTimestamp = dateStart.unix();
     }
-    /*var actual = moment();
-    var actualTimestamp = actual.unix();
-    var lastTimestamp = actual.clone().subtract(1,'month').unix();*/
 
     var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+startTimestamp+"&EndTimestamp="+finishTimestamp+"&Filter=Days&FilterValue=1";
-    console.log(query);
     $.get(query, addDataOneDay);
 }
 
@@ -341,7 +322,6 @@ function changeFunc(id) {
     var selectBox = document.getElementById(id);
     var selectedValue = selectBox.options[selectBox.selectedIndex].value;
     if(id.endsWith("2")){
-/*-----SELECT---------*/
         var nameButton = "filter_"+id.substring(9,id.length-1);
         var filterButton =  document.getElementById(nameButton); 
         filterButton.disabled = false; 
