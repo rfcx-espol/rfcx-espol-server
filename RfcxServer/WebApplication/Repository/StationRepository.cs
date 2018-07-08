@@ -41,7 +41,6 @@ namespace WebApplication.Repository
 
         try
         {
-
             Console.WriteLine(_context.Stations.Find(filter).ToList().Count);
             if(_context.Stations.Find(filter).ToList().Count==0){
                 return null;
@@ -79,7 +78,7 @@ namespace WebApplication.Repository
     {
         try
         {
-            item.Id=(int) _context.Stations.Find(_ => true).ToList().Count+1;
+            item.Id=(int) _context.Stations.Find(_ => true).ToList()[-1].Id + 1;
             await _context.Stations.InsertOneAsync(item);
         }
         catch (Exception ex)
