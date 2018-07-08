@@ -12,6 +12,16 @@ body {font-family: "Lato", sans-serif;}
 .tabcontent{
   background-color: white;
 }
+.nameHum, .nameTempDisp, .nameTempAmb, .tabMonitor{
+    margin-left: 20px;
+    font-size: 15px;
+}
+.tabL{
+    float: left;
+}
+#mobil{
+    display: none;
+}
 /* Style the individual graphics*/
 .line {
     fill: none;
@@ -36,7 +46,7 @@ hr{
     cursor: pointer;
     transition: 0.3s;
     font-size: 17px;
-    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
 }
 
 /* Change background color of buttons on hover */
@@ -58,7 +68,7 @@ hr{
     border: 1px solid #ccc;
 }
 
-#boxInfoValues{
+.boxInfoValues{
     width: 100%;
     padding: 5px;
     margin-top: 15px;
@@ -170,6 +180,9 @@ div#submenu a:hover {
 .filter:hover {
     color: #e4b836; 
 }
+.filter:disabled {
+    background: #007f429c;
+}
 input{
     margin-bottom: 10px;
 }
@@ -182,7 +195,7 @@ label{
 }
 
 .selectDiv{
-    margin: 20px 0px 20px 0px;
+    margin: 20px 0px 20px 20px;
 }
 
 /*-----Date-------------------*/
@@ -240,6 +253,14 @@ label{
     .chart-title{
         font-size: 15px;
     }
+    .nameHum, .nameTempDisp, .nameTempAmb, .tabMonitor{
+        display: none;
+    }
+    #mobil{
+        display: inline-block;
+        font-size: 29px;
+        margin-left: 8px;
+    }
   }
 
 @media (max-width: 360px) {
@@ -258,5 +279,13 @@ label{
     }
     .chart-title{
         font-size: 15px;
+    }
+    .nameHum, .nameTempDisp, .nameTempAmb, .tabMonitor{
+        display: none;
+    }
+    #mobil{
+        display: inline-block;
+        font-size: 29px;
+        margin-left: 3px;
     }
 }

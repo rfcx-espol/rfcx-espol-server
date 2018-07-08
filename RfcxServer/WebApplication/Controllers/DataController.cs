@@ -183,7 +183,7 @@ namespace WebApplication.Controllers
             for (var i = 0; i <data.Count; i++) {
                 var sensorId=data[i].SensorId;
                 var stationId=data[i].StationId;
-                Sensor Sensor= _SensorRepository.getSensor(sensorId);
+                Sensor Sensor= _SensorRepository.getSensorByStation(stationId, sensorId);
                 if(Sensor==null){
                     var type=data[i].Type;
                     var location=data[i].Location;

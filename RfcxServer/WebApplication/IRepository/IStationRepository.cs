@@ -18,7 +18,7 @@ namespace WebApplication.IRepository
         Task<bool> UpdateName(int id, string name);
         Task<bool> UpdatePosition(int id, string latitud, string longitud);
 
-        Task<bool> Remove(string id);
+        Task<bool> Remove(int id);
         Task<bool> RemoveAll();
     }
 }
