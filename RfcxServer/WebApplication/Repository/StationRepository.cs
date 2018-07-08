@@ -41,7 +41,6 @@ namespace WebApplication.Repository
 
         try
         {
-            Console.WriteLine(_context.Stations.Find(filter).ToList().Count);
             if(_context.Stations.Find(filter).ToList().Count==0){
                 return null;
             }
