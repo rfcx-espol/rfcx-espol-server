@@ -13,14 +13,6 @@
     position: relative;
     text-align: center;
 }
-/*#link {
-    float: left;
-}
-#delete, #edit {
-    float: right;
-    margin-top: 7px;
-    margin-right: 5px;
-}*/
 a.material-icons.edit {
     position: absolute;
     top: 7px;
@@ -60,4 +52,16 @@ a.material-icons.delete_station {
 }
 input#save {
     margin-right: 10px;
+}
+.modal-header.alert-danger {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    background-color: #d9534f;;
+}
+h4#modal_alert_label {
+    color: white;
+}
+.modal-header.alert-danger button.close{
+    color: white;
+    opacity: 1;
 }

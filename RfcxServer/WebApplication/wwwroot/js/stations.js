@@ -36,11 +36,8 @@ $(window).on("load", function(){
         stations_input_changed.length = 0;
     });
 
-    $("#masfilas").click(function(){
-        $("#myt").append('<tr><td><input type="text" name="parametros[]"/></td><td> <input type="text" name="unidad[]"/></td><td> <a href="#" class="delete"><i class="material-icons">delete_forever</i></a></td></tr>');
-        $('.delete').off().click(function(e) {
-            $(this).parent('td').parent('tr').remove();
-        });      
+    $('#alert_modal').on('hidden.bs.modal', function (e) {
+        $("input#st_id").val("");
     });
 });
 
@@ -52,12 +49,8 @@ function getStationsList(data) {
         var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title">'+
         '<h4><a href="/StationView?stationName='+station_name+'&stationId='+station_id+'">'+station_name+'</a></h4>'+
         '<a class="material-icons edit" onclick="fillStationModal('+station_id+');">edit</a>'+
-        '<a class="material-icons delete_station" onclick="deleteStation('+station_id+');">delete</a>'+
+        '<a class="material-icons delete_station" onclick="showAlertModal('+station_id+');">delete</a>'+
         '</div><div class="station_body">';
-        /*var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title">'+
-        '<div id="link"><h4><a href="/StationView?stationName='+station_name+'&stationId='+station_id+'">'+station_name+'</a></h4></div>'+
-        '<div id="delete"><a class="material-icons">delete</a></div><div id="edit"><a class="material-icons">edit</a></div><div style="clear: left;"/>'+
-        '</div><div class="station_body">';*/
 
         stations_dic = {};
         stations_dic["id"] = station_id;
@@ -92,6 +85,7 @@ function getSensorsList() {
         })
     }
 }
+
 function saveStation() {
     var id = $("input#db_id").val();
     if(id == "") {
@@ -145,8 +139,6 @@ function updateStation(id) {
             data: data,
             contentType: 'application/json'
         });
-        console.log("URL: "+ 'api/Station/'+id+'/'+api_url);
-        console.log("DATA: "+data);
     }
 }
 
@@ -180,32 +172,19 @@ function getDbName(st) {
     }
 }
 
-function deleteStation(id) {
-    console.log("ID:" + id);
-    $.ajax({
-        url : 'api/Station/'+id+'/Sensor',
-        type: 'GET',
-        async: false,
-        success : deleteSensors
-    });
+function showAlertModal(id) {
+    $("input#st_id").val(id);
+    $("#alert_modal").modal("show");
+}
+
+function deleteStation() {
+    var id = $("input#st_id").val();
     $.ajax({
         url : 'api/Station/'+id,
         type: 'DELETE',
         async: false
     });
     window.location.reload();
-}
-
-function deleteSensors(data) {
-    var sensors_dic = JSON.parse(data);
-    for(sensor of sensors_dic) {
-        var sensor_id = sensor["Id"];
-        $.ajax({
-            url : 'api/Sensor/'+sensor_id,
-            type: 'DELETE',
-            async: false,
-        });
-    }
 }
 
 function fillStationModal(id){
@@ -240,11 +219,23 @@ function updateStationsHeight(){
         }
     }
     for(b of bodies) {
-        $(b).height(body_maximum_height);
+        if((body_maximum_height + d + 13) < 85) {
+            $(b).height(72 - d);
+        } else {
+            $(b).height(body_maximum_height);
+        }
     }
-    $(".new_station_button").height(body_maximum_height + d+13);
+    if((body_maximum_height + d + 13) < 85) {
+        $(".new_station_button").height(85);
+    } else {
+        $(".new_station_button").height(body_maximum_height + d + 13);
+    }    
 }
 
-function closeModal(){
-    $("#station_modal").modal("hide");
+function closeModal(id){
+    if(id == 1) {
+        $("#station_modal").modal("hide");
+    } else {
+        $("#alert_modal").modal("hide");
+    }
 }
