@@ -46,10 +46,17 @@ function getStationsList(data) {
     for(station of data_dic){
         var station_id = station['Id'];
         var station_name = station['Name'];
-        var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title">'+
-        '<h4><a href="/StationView?stationName='+station_name+'&stationId='+station_id+'">'+station_name+'</a></h4>'+
+        /*var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title">'+
+        '<a class="material-icons chart" href="/StationView?stationName='+station_name+'&stationId='+station_id+'">pie_chart</a>'+
+        '<h4>'+station_name+'</h4>'+
         '<a class="material-icons edit" onclick="fillStationModal('+station_id+');">edit</a>'+
         '<a class="material-icons delete_station" onclick="showAlertModal('+station_id+');">delete</a>'+
+        '</div><div class="station_body">';*/
+        var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title row">'+
+        '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons chart" href="/StationView?stationName='+station_name+'&stationId='+station_id+'">bar_chart</a></div>'+
+        '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 header"><h4>'+station_name+'</h4></div>'+
+        '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons edit" onclick="fillStationModal('+station_id+');">edit</a></div>'+
+        '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons delete_station" onclick="showAlertModal('+station_id+');">delete</a></div>'+
         '</div><div class="station_body">';
         stations_dic = {};
         stations_dic["id"] = station_id;
