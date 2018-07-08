@@ -69,7 +69,11 @@ namespace WebApplication.Controllers
         {
             var nombre=Station.Name;
             
-            await _StationRepository.Add(Station);
+            var x=await _StationRepository.Add(Station);
+            if(x==false){
+                return "Id already exists!";
+            }
+            
             return "";
         }
         

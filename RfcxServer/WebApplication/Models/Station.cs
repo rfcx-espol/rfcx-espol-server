@@ -1,10 +1,11 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace WebApplication.Models
 {
 
-    public class Station
+    public class Station : IComparable
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -16,6 +17,24 @@ namespace WebApplication.Models
         public string Longitude { get; set; }
         public string AndroidVersion { get; set; }
         public string ServicesVersion { get; set; }
+
+        public int CompareTo(object obj)
+        {
+        Station station = obj as Station;
+        if(station == null) return 1;
+        if (station.Id < Id)
+        {
+            return 1;
+        }
+        if (station.Id > Id)
+        {
+            return -1;
+        }
+
+        return 0;
+        }
     }
+
+    
     
 }

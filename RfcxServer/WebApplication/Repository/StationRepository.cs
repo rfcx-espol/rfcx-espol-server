@@ -41,6 +41,7 @@ namespace WebApplication.Repository
 
         try
         {
+            Console.WriteLine(_context.Stations.Find(filter).ToList().Count);
             if(_context.Stations.Find(filter).ToList().Count==0){
                 return null;
             }
@@ -73,12 +74,29 @@ namespace WebApplication.Repository
         }
     }
 
-    public async Task Add(Station item)
+    public async Task<bool> Add(Station item)
     {
         try
         {
-            item.Id=(int) _context.Stations.Find(_ => true).ToList()[-1].Id + 1;
+            
+            var list=_context.Stations.Find(_ => true).ToList();
+            if(item.Id==0){
+                if(list.Count>0){
+                    list.Sort();
+                    item.Id=list[list.Count-1].Id+1;
+                }
+                else{
+                    item.Id=1;
+                } 
+            }else{
+                for (int i=0;i<list.Count;i++){
+                    if(item.Id==list[i].Id){
+                        return false;
+                    }
+                }
+            }            
             await _context.Stations.InsertOneAsync(item);
+            return true;
         }
         catch (Exception ex)
         {
@@ -92,10 +110,10 @@ namespace WebApplication.Repository
         {
             DeleteResult actionResult = await _context.Stations.DeleteOneAsync(
                     Builders<Station>.Filter.Eq("Id", id));
-	    var filter1=Builders<Sensor>.Filter.Eq("StationId", id);
-	    var filter2=Builders<Data>.Filter.Eq("StationId", id);
-	    _context.Sensors.DeleteMany(filter1);
-	    _context.Datas.DeleteMany(filter2);
+            var filter1=Builders<Sensor>.Filter.Eq("StationId", id);
+            var filter2=Builders<Data>.Filter.Eq("StationId", id);
+            _context.Sensors.DeleteMany(filter1);
+            _context.Datas.DeleteMany(filter2);
 
             return actionResult.IsAcknowledged 
                 && actionResult.DeletedCount > 0;
@@ -105,8 +123,6 @@ namespace WebApplication.Repository
             throw ex;
         }
     }
-
-    
 
     public async Task<bool> Update(string id, Station item)
     {
