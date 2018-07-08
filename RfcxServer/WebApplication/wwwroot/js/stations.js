@@ -51,7 +51,6 @@ function getStationsList(data) {
         '<a class="material-icons edit" onclick="fillStationModal('+station_id+');">edit</a>'+
         '<a class="material-icons delete_station" onclick="showAlertModal('+station_id+');">delete</a>'+
         '</div><div class="station_body">';
-
         stations_dic = {};
         stations_dic["id"] = station_id;
         stations_dic["content"] = content;
@@ -62,6 +61,7 @@ function getStationsList(data) {
 }
 
 function getSensorsList() {
+    var counter = 0;
     for(station of stations){
         var station_id = station['id']; 
         $.ajax({
@@ -74,15 +74,16 @@ function getSensorsList() {
                     var sensor_id = sensor['Id'];
                     var sensor_type = sensor['Type'];
                     var sensor_location = sensor['Location'];
-                    stations[station_id-1]["content"] = stations[station_id-1]["content"] + '<p>tipo lugar<p>';
-                    stations[station_id-1]["content"] = stations[station_id-1]["content"].replace("tipo", sensor_type);
-                    stations[station_id-1]["content"] = stations[station_id-1]["content"].replace("lugar", sensor_location);
-                    stations[station_id-1]["sensorsId"].push(sensor_id);
+                    stations[counter]["content"] = stations[counter]["content"] + '<p>tipo lugar<p>';
+                    stations[counter]["content"] = stations[counter]["content"].replace("tipo", sensor_type);
+                    stations[counter]["content"] = stations[counter]["content"].replace("lugar", sensor_location);
+                    stations[counter]["sensorsId"].push(sensor_id);
                 }
-                stations[station_id-1]["content"] = stations[station_id-1]["content"] + '</div></div>';
-                $(stations[station_id-1]["content"]).insertBefore(".plus-station");
+                stations[counter]["content"] = stations[counter]["content"] + '</div></div>';
+                $(stations[counter]["content"]).insertBefore(".plus-station");
             }
         })
+        counter++;
     }
 }
 
