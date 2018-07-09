@@ -19,12 +19,39 @@
     padding: 0;
     text-align: center;
 }
-a.material-icons{
+.icon_station{
     cursor: pointer;
     margin-top: 7px;
 }
+.body {
+    padding: 0;
+    text-align: center;
+}
+.body.text {
+    text-align: left;
+}
+.station_body .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+i#hum {
+    color: #527cfb;
+    font-size: 20px;
+}
+i#temp_env {
+    color: #424084;
+    font-size: 20px;
+}
+i#temp_station {
+    color: #ff7800;
+    font-size: 20px;
+}
 .station_body {
-    padding: 10px 5px 0 5px;
+    margin-left: 0;
+    margin-right: 0;
+    padding-top: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
     border: 1px solid #6c757d;
     border-top: 0;
     border-bottom-left-radius: 4px;

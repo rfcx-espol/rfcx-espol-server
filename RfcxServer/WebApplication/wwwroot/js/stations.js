@@ -46,22 +46,15 @@ function getStationsList(data) {
     for(station of data_dic){
         var station_id = station['Id'];
         var station_name = station['Name'];
-        /*var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title">'+
-        '<a class="material-icons chart" href="/StationView?stationName='+station_name+'&stationId='+station_id+'">pie_chart</a>'+
-        '<h4>'+station_name+'</h4>'+
-        '<a class="material-icons edit" onclick="fillStationModal('+station_id+');">edit</a>'+
-        '<a class="material-icons delete_station" onclick="showAlertModal('+station_id+');">delete</a>'+
-        '</div><div class="station_body">';*/
         var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title row">'+
-        '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons chart" href="/StationView?stationName='+station_name+'&stationId='+station_id+'">bar_chart</a></div>'+
+        '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons icon_station" href="/StationView?stationName='+station_name+'&stationId='+station_id+'">bar_chart</a></div>'+
         '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 header"><h4>'+station_name+'</h4></div>'+
-        '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons edit" onclick="fillStationModal('+station_id+');">edit</a></div>'+
-        '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons delete_station" onclick="showAlertModal('+station_id+');">delete</a></div>'+
+        '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons icon_station" onclick="fillStationModal('+station_id+');">edit</a></div>'+
+        '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons icon_station" onclick="showAlertModal('+station_id+');">delete</a></div>'+
         '</div><div class="station_body">';
         stations_dic = {};
         stations_dic["id"] = station_id;
         stations_dic["content"] = content;
-        stations_dic["sensorsId"] = [];
         stations.push(stations_dic);
     }
     getSensorsList();
@@ -81,16 +74,69 @@ function getSensorsList() {
                     var sensor_id = sensor['Id'];
                     var sensor_type = sensor['Type'];
                     var sensor_location = sensor['Location'];
-                    stations[counter]["content"] = stations[counter]["content"] + '<p>tipo lugar<p>';
-                    stations[counter]["content"] = stations[counter]["content"].replace("tipo", sensor_type);
-                    stations[counter]["content"] = stations[counter]["content"].replace("lugar", sensor_location);
-                    stations[counter]["sensorsId"].push(sensor_id);
+                    var icon_type = getIconType(sensor_type);
+                    var icon_id = getIconId(sensor_type, sensor_location);
+                    stations[counter]["content"] = stations[counter]["content"] + '<div class="row"><div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 body"><i id="'+ icon_id +'" class="fa '+ icon_type +'"></i></div>';
+                    stations[counter]["content"] = stations[counter]["content"] + '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 body text"><p>'+ sensor_type + " " + sensor_location +'</p></div>';
+                    stations[counter]["content"] = stations[counter]["content"] + '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 body"><p id="'+ sensor_id +'"></p></div></div>';
                 }
                 stations[counter]["content"] = stations[counter]["content"] + '</div></div>';
                 $(stations[counter]["content"]).insertBefore(".plus-station");
             }
         })
         counter++;
+    }
+    getLastData();
+}
+
+function getLastData() {
+    $.ajax({
+        url : 'api/Data/LastData',
+        type: 'GET',
+        async: false,
+        success : function(full_data){
+            var data_dic = JSON.parse(full_data); 
+            for(data of data_dic){
+                var sensor_id = data['SensorId'];
+                var value = data['Value'];
+                var unit = getUnit(data['Units']);
+                var s = $("p#"+sensor_id);
+                s.html(value + " " + unit);
+            }
+        }
+    })
+}
+
+setInterval(getLastData, 300000);
+
+function getUnit(sensor_type) {
+    switch(sensor_type) {
+        case "H":
+            return "%";
+        case "CELCIUS":
+            return "°C";
+        default:
+            return "?";
+    }
+}
+
+function getIconType(sensor_type) {
+    if(sensor_type.includes("Temp")) {
+        return "fa-thermometer";
+    } else if(sensor_type.includes("Hum")) {
+        return "fa-tint";
+    }
+}
+
+function getIconId(sensor_type, sensor_location) {
+    if(sensor_type.includes("Hum")) {
+        return "hum";
+    } else if((sensor_type.includes("Temp") && sensor_location.includes("Env")) ||
+                (sensor_type.includes("Temp") && sensor_location.includes("Amb"))) {
+        return "temp_env";
+    } else if((sensor_type.includes("Temp") && sensor_location.includes("Sta")) ||
+                (sensor_type.includes("Temp") && sensor_location.includes("Esta"))) {
+        return "temp_station";
     }
 }
 
