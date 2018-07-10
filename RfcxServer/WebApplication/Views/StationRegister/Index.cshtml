@@ -12,15 +12,12 @@
 }
 
 <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
-<!-- <link href="assets/css/font-awesome.css" rel="stylesheet"> -->
-<link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet"> 
-<!-- <link rel="stylesheet" type="text/css" href="wwwroot/lib/bootstrap/slick.css"> -->   
+<link href="~/css/bootstrap.css" rel="stylesheet"> 
 <link href="~/css/site.css" rel="stylesheet">    
 <link href='https://fonts.googleapis.com/css?family=Prata' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>   
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel='stylesheet' type='text/css' href='~/css/stations.css'>
+<link href='~/css/stations.css' rel='stylesheet' type='text/css'>
 
 <div class="row equal">
  	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 plus-station" style="margin-bottom: 15px">
@@ -44,38 +41,38 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
-				<form>
+				<form id="form">
 					<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-						<label>Nombre:</label>
-						<input id="name" class="form-control" type="text"/>
+						<label class="control-label">Nombre:</label>
+						<input id="name" name="name" class="form-control" type="text"/>
 					</div>
 					<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-						<label>API Key:</label>
-						<input id="api_key" class="form-control" type="text"/>
+						<label class="control-label">API Key:</label>
+						<input id="api_key" name="api_key" class="form-control" type="text"/>
 					</div>
 					<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-						<label>Latitud:</label>
-						<input id="latitude" class="form-control" type="text"/>
+						<label class="control-label">Latitud:</label>
+						<input id="latitude" name="latitude" class="form-control" type="text"/>
 					</div>
 					<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-						<label>Longitud:</label>
-						<input id="longitude" class="form-control" type="text"/>
+						<label class="control-label">Longitud:</label>
+						<input id="longitude" name="longitude" class="form-control" type="text"/>
 					</div>
 					<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-						<label>Versión de Android:</label>
-						<input id="android_version" class="form-control" type="text"/>
+						<label class="control-label">Versión de Android:</label>
+						<input id="android_version" name="android_version" class="form-control" type="text"/>
 					</div>
 					<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-						<label>Versión de Servicios:</label>
-						<input id="services_version" class="form-control" type="text"/>
+						<label class="control-label">Versión de Servicios:</label>
+						<input id="services_version" name="services_version" class="form-control" type="text"/>
 					</div>
 					<input id="db_id" type="hidden"/>
 				</form>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<input id="save" type="button" class="out" value="Guardar" onclick="saveStation()"/>
-				<input id="cancel" type="button" class="out" value="Cancelar" onclick="closeModal(1)" />
+				<button id="save" class="btn btn-primary" onclick="saveStation()">Guardar</button>
+				<button id="cancel" class="btn btn-default" onclick="closeModal(1)">Cancelar</button>
 			</div>
 		</div>
 	</div>

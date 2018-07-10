@@ -33,12 +33,17 @@ $(window).on("load", function(){
         $("form input").val("");
         $("h4#modal_label").html("Nueva Estación");
         $("input#api_key").removeAttr("disabled");
+        var inputs = $(".form-group");
+        for(i of inputs) {
+            $(i).removeClass("has-error"); 
+        }
         stations_input_changed.length = 0;
     });
 
     $('#alert_modal').on('hidden.bs.modal', function (e) {
         $("input#st_id").val("");
     });
+
 });
 
 function getStationsList(data) {
@@ -141,13 +146,44 @@ function getIconId(sensor_type, sensor_location) {
 }
 
 function saveStation() {
-    var id = $("input#db_id").val();
-    if(id == "") {
-        saveNewStation();
-    } else {
-        updateStation(id);
+    if(validateForm()) {
+        var id = $("input#db_id").val();
+        if(id == "") {
+            saveNewStation();
+        } else {
+            updateStation(id);
+        }
+        window.location.reload();
     }
-    window.location.reload();
+}
+
+function validateForm() {
+    var result = true;
+    var inputs = $(".form-group");
+    for(i of inputs) {
+        $(i).removeClass("has-error"); 
+    }
+    var name = $("#form #name");
+    var api_key = $("#form #api_key");
+    var latitude = $("#form #latitude");
+    var longitude = $("#form #longitude");
+    if(name.val() == "") {
+        name.parent(".form-group").addClass("has-error");
+        result = false;
+    } 
+    if(api_key.val() == "") {
+        api_key.parent(".form-group").addClass("has-error");
+        result = false;
+    } 
+    if(!($.isNumeric(latitude.val()) && (latitude.val() >= -90) && (latitude.val() <= 90))) {
+        latitude.parent(".form-group").addClass("has-error");
+        result = false;   
+    } 
+    if(!($.isNumeric(longitude.val()) && (longitude.val() >= -180) && (longitude.val() <= 180))) {
+        longitude.parent(".form-group").addClass("has-error");
+        result = false;   
+    }
+    return result;
 }
 
 function saveNewStation() {
