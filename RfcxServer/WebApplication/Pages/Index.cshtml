@@ -22,7 +22,6 @@
     function getDataDisp(data){
       var dataDic = JSON.parse(data);
       for(station of dataDic){
-        console.log(station);
         var latitud = parseFloat(station['Latitude']);
         var longitud = parseFloat(station['Longitude']);
         var idStation=station['Id'];
@@ -41,10 +40,7 @@
         stationsDic["lat"]=latitud;
         stationsDic["long"]=longitud;
         stationsDic["sensorsId"] = [];
-        stations[idStation] = stationsDic;  
-        //stations.push(stationsDic);
-        
-        
+        stations[idStation] = stationsDic;
       }
       getDataSensor();
     }
