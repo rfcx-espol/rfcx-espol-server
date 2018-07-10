@@ -35,14 +35,14 @@ function getDataSensor(){
           var locationSensor = sensor['Location'];
           var contentS = stations[counter]["content"];
           if(typeSensor.includes("Hum")){
-            stations[counter]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-tint" style="font-size:20px; color: #527cfb" ></i> Amb.: </p><p class="valueHum" id="humedadId" style="font-size: 14px; line-height: 2;"> 30 H</p>';
+            stations[counter]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-tint" style="font-size:20px; color: #527cfb" ></i> Amb.: </p><p class="valueHum" id="humedadId"> <i class="fa fa-circle-o-notch fa-spin" style="font-size:15px"></i></p>';
             stations[counter]["content"] = stations[counter]["content"].replace("humedadId", id);
           }
           else if(typeSensor.includes("Temp") && (locationSensor.includes("Amb") || locationSensor.includes("Env"))){
-            stations[counter]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #424084;"></i> Amb.: </p><p class="valueTempAmb" id="tempAmbId" style="font-size: 14px; line-height: 2;"> 35 °C</p>';
+            stations[counter]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-thermometer" style="font-size:20px; color: #424084;"></i> Amb.: </p><p class="valueTempAmb" id="tempAmbId"> <i class="fa fa-circle-o-notch fa-spin" style="font-size:15px"></i></p>';
             stations[counter]["content"] = stations[counter]["content"].replace("tempAmbId", id);
           }else{
-            stations[counter]["content"] = contentS + '<p style="font-size: 14px; float: left;"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Disp.: </p><p class="valueTempDisp" id="tempDispId" style="font-size: 14px; line-height: 2;"> 40 °C</p>';
+            stations[counter]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Disp.: </p><p class="valueTempDisp" id="tempDispId"> <i class="fa fa-circle-o-notch fa-spin" style="font-size:15px"></i></p>';
             stations[counter]["content"] = stations[counter]["content"].replace("tempDispId", id);
           }
           stations[counter]["content"] = stations[counter]["content"] +'</div>'+
@@ -50,11 +50,11 @@ function getDataSensor(){
           
           stations[counter]["sensorsId"].push(id);
         }
+        counter++;
         initMap();
       });
-      
     }  
-    counter++;  
+      
   }
 
 function initMap() {
