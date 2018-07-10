@@ -352,59 +352,61 @@ function addDataEachChart(data){
         ind2= 0;
     }
     //If there isn't data, take the names from sensorsList
-    if(data!="null" && data.length != 0 ){
+    if(data!=null && data.length != 0 ){
         var typeS = data[0]['Type'];
         var locationS = data[0]['Location'];
         //Boxes min, max, avg
         var minV = 5000; var maxV = 0; var sumV = 0;
+
+        for(points of data){
+            var type = points['Type'];
+            var time = parseInt(points['Timestamp']);
+            var value = parseInt(points['Value']);
+            var location = points['Location'];
+            
+            sumV = sumV + value;
+            if(value<minV){
+                minV = value;
+            }if(value>maxV){
+                maxV = value;
+            }
+            var date = new Date(time*1000);
+            dataPoints.push({
+                x: new Date(time*1000),
+                y: value,
+                color: colorP
+            });
+        }
     }
     else{
         var typeS = sensorsList[ind2]['type'];
         var locationS = sensorsList[ind2]['location'];
         //Boxes min, max, avg
         var minV = 0; var maxV = 0; var avgV = 0;
-    }
-    var titleVertical = "Temperatura °C";
-    if(typeS.includes("Temp") && (locationS.includes("Dev") || locationS.includes("Sta"))){
-        var colorP = "#424084";
-        var minValId = "minValueTemp";
-        var maxValId = "maxValueTemp";
-        var avgValId = "avgValueTemp";
-        var chartId = "chart_Temp_Sta";
-    }else if(typeS.includes("Temp") && (locationS.includes("Amb") || locationS.includes("Env"))){
-        var colorP = "orange";
-        var minValId = "minValueAmb";
-        var maxValId = "maxValueAmb";
-        var avgValId = "avgValueAmb";
-        var chartId = "chart_Temp_Env";
-    }else if(typeS.includes("Hum") && (locationS.includes("Amb") || locationS.includes("Env"))){
-        var colorP = "LightSeaGreen";
-        var titleVertical = "Humedad °H";
-        var minValId = "minValueHum";
-        var maxValId = "maxValueHum";
-        var avgValId = "avgValueHum";
-        var chartId = "chart_Humedity";
+
+        var titleVertical = "Temperatura °C";
+        if(typeS.includes("Temp") && (locationS.includes("Dev") || locationS.includes("Sta"))){
+            var colorP = "#424084";
+            var minValId = "minValueTemp";
+            var maxValId = "maxValueTemp";
+            var avgValId = "avgValueTemp";
+            var chartId = "chart_Temp_Sta";
+        }else if(typeS.includes("Temp") && (locationS.includes("Amb") || locationS.includes("Env"))){
+            var colorP = "orange";
+            var minValId = "minValueAmb";
+            var maxValId = "maxValueAmb";
+            var avgValId = "avgValueAmb";
+            var chartId = "chart_Temp_Env";
+        }else if(typeS.includes("Hum") && (locationS.includes("Amb") || locationS.includes("Env"))){
+            var colorP = "LightSeaGreen";
+            var titleVertical = "Humedad %";
+            var minValId = "minValueHum";
+            var maxValId = "maxValueHum";
+            var avgValId = "avgValueHum";
+            var chartId = "chart_Humedity";
+        }
     }
     
-    for(points of data){
-        var type = points['Type'];
-        var time = parseInt(points['Timestamp']);
-        var value = parseInt(points['Value']);
-        var location = points['Location'];
-        
-        sumV = sumV + value;
-        if(value<minV){
-            minV = value;
-        }if(value>maxV){
-            maxV = value;
-        }
-        var date = new Date(time*1000);
-        dataPoints.push({
-            x: new Date(time*1000),
-            y: value,
-            color: colorP
-        });
-    }
     ind2 = ind2 + 1;
     var lengthChart = dataPoints.length;
     var avgV = (sumV/lengthChart).toFixed(2);

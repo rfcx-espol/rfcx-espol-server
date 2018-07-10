@@ -17,12 +17,12 @@
   <script src="js/map.js"></script>
   <script>
     $(window).on('load',function(){
-    stations=[];//{"id":1,"sensorsId":[],"content":<>,"lat": -2.3,"long": -64.3}
+    stations=[];//{1:{"sensorsId":[],"content":<>,"lat": -2.3,"long": -64.3}}
 
     function getDataDisp(data){
       var dataDic = JSON.parse(data);
-      console.log(dataDic);
       for(station of dataDic){
+        console.log(station);
         var latitud = parseFloat(station['Latitude']);
         var longitud = parseFloat(station['Longitude']);
         var idStation=station['Id'];
@@ -37,12 +37,13 @@
         contentString = contentString.replace("stationIdVal", idStation);
 
         stationsDic = {};
-        stationsDic["id"] = idStation;
         stationsDic["content"] = contentString;
         stationsDic["lat"]=latitud;
         stationsDic["long"]=longitud;
         stationsDic["sensorsId"] = [];
-        stations.push(stationsDic);
+        stations[idStation] = stationsDic;  
+        //stations.push(stationsDic);
+        
         
       }
       getDataSensor();

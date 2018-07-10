@@ -1,21 +1,20 @@
 setInterval(displayLastData, 300000);
 
 function displayLastData(){
-    for(station of stations){
-        for(sensor of station['sensorsId']){
-          $.get('api/Station/'+station['id']+'/Sensor/'+sensor+'/Data/lastData', function(data){
+    for(stationId in stations){
+        for(sensor of stations[stationId]['sensorsId']){
+          $.get('api/Station/'+stationId+'/Sensor/'+sensor+'/Data/lastData', function(data){
             var lastData = JSON.parse(data)
             if(lastData!=null){
               var p = document.getElementById(lastData['SensorId']);
               if(p != null){
                 var unit = lastData['Units'];
-                if(unit=="CELCIUS"){
+                if(unit=="CELCIUS" || unit=="Celcius"){
                   unit = "°C";
                 }else if (unit=="H"){
                   unit = "%";
                 }
                 p.innerHTML = lastData['Value'] +" "+ unit;
-                console.log("changed to", lastData['Value'] + unit);
               }
             }
           });
@@ -23,34 +22,32 @@ function displayLastData(){
     }
 }
 function getDataSensor(){
-  var counter = 0;  
-  for(station of stations){
-      var stationId = station['id']; 
-      $.get('api/Station/'+parseInt(stationId)+'/Sensor/', function(data){
-        var dataDic = JSON.parse(data);
-        for(sensor of dataDic){
-          var id = sensor['Id'];
-          var idStation = sensor['StationId'];
-          var typeSensor = sensor['Type'];
-          var locationSensor = sensor['Location'];
-          var contentS = stations[counter]["content"];
-          if(typeSensor.includes("Hum")){
-            stations[counter]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-tint" style="font-size:20px; color: #527cfb" ></i> Amb.: </p><p class="valueHum" id="humedadId"> <i class="fa fa-circle-o-notch fa-spin" style="font-size:15px"></i></p>';
-            stations[counter]["content"] = stations[counter]["content"].replace("humedadId", id);
-          }
-          else if(typeSensor.includes("Temp") && (locationSensor.includes("Amb") || locationSensor.includes("Env"))){
-            stations[counter]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-thermometer" style="font-size:20px; color: #424084;"></i> Amb.: </p><p class="valueTempAmb" id="tempAmbId"> <i class="fa fa-circle-o-notch fa-spin" style="font-size:15px"></i></p>';
-            stations[counter]["content"] = stations[counter]["content"].replace("tempAmbId", id);
-          }else{
-            stations[counter]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Disp.: </p><p class="valueTempDisp" id="tempDispId"> <i class="fa fa-circle-o-notch fa-spin" style="font-size:15px"></i></p>';
-            stations[counter]["content"] = stations[counter]["content"].replace("tempDispId", id);
-          }
-          stations[counter]["content"] = stations[counter]["content"] +'</div>'+
-                                  '</div>';
-          
-          stations[counter]["sensorsId"].push(id);
-        }
-        counter++;
+  for(var stationId in stations){
+      $.get('api/Station/'+stationId+'/Sensor/', function(data){
+				var dataDic = JSON.parse(data);
+					for(sensor of dataDic){
+						var idStation = sensor['StationId'];
+						var id = sensor['Id'];
+						var typeSensor = sensor['Type'];
+						var locationSensor = sensor['Location'];
+						var contentS = stations[idStation]["content"];
+						
+						if(typeSensor.includes("Hum")){
+							stations[idStation]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-tint" style="font-size:20px; color: #527cfb" ></i> Amb.: </p><p class="valueHum" id="humedadId"> - </p>';
+							stations[idStation]["content"] = stations[idStation]["content"].replace("humedadId", id);
+						}
+						else if(typeSensor.includes("Temp") && (locationSensor.includes("Amb") || locationSensor.includes("Env"))){
+							stations[idStation]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-thermometer" style="font-size:20px; color: #424084;"></i> Amb.: </p><p class="valueTempAmb" id="tempAmbId"> - </p>';
+							stations[idStation]["content"] = stations[idStation]["content"].replace("tempAmbId", id);
+						}else{
+							stations[idStation]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-thermometer" style="font-size:20px; color: #ff7800;"></i> Disp.: </p><p class="valueTempDisp" id="tempDispId"> - </p>';
+							stations[idStation]["content"] = stations[idStation]["content"].replace("tempDispId", id);
+						}
+						stations[idStation]["content"] = stations[idStation]["content"] +'</div>'+
+																		'</div>';
+						
+						stations[idStation]["sensorsId"].push(id);
+					}
         initMap();
       });
     }  
@@ -82,9 +79,9 @@ function initMap() {
 	});
 	map.setMapTypeId(google.maps.MapTypeId.HYBRID);
 	
-	for(station of stations){
-		var coordenadas = {lat: parseFloat(station['lat']), lng: parseFloat(station['long'])};
-		var contentString = station["content"];
+	for(var stationId in stations){
+		var coordenadas = {lat: parseFloat(stations[stationId]["lat"]), lng: parseFloat(stations[stationId]["long"])};
+		var contentString = stations[stationId]["content"];
 		var infowindow = new google.maps.InfoWindow({
 			content: contentString
 		});
