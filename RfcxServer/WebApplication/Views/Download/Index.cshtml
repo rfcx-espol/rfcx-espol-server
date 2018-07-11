@@ -54,18 +54,19 @@
           <div class="form-group">
             <table class="table table-bordered" id="vertical-table">
               
-              <tr><th><label for="ddl">Station </label></th> 
-                <td>    
+              <tr><th><label for="ddl"> Estación </label></th> 
+                <td>   
+                  <select id="select"></select>     
                 </td>    
               </tr>
 
-              <tr><th><label id="ReportBeginDate">Report Begin Date </label></th>
+              <tr><th><label id="ReportBeginDate"> Fecha inicial </label></th>
                 <td>  
                   <input type="date" class="form-control" name="start" value="" />
                 </td>
               </tr>
           
-              <tr><th><label id="ReportEndDate">Report End Date</label></th>
+              <tr><th><label id="ReportEndDate"> Fecha final</label></th>
                 <td>  
                   <input type="date" class="form-control" name="end" value="" />
                 </td>  
@@ -74,7 +75,7 @@
             </table>
 
             <br />
-            <button type="submit" class="out">Search</button><br /><br /><br />
+            <button type="submit" class="out"> Buscar </button><br /><br /><br />
           </div> 
 
              
@@ -92,22 +93,19 @@
                 </thead>
 
                   <tr>
-                            <td>
-                                <input type="checkbox" class="check" value="">
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                                
-                            </td>
-                            <td>
-                            </td>
+                      <td>
+                          <input type="checkbox" class="check" value="">
+                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                   </tr>
                 
               </table>
 
             <br />
-            <button id="dl" type="button" class="out">Download</button><br /><br /><br /> 
+            <button id="dl" type="submit" class="out">Download</button><br /><br /><br /> 
           </div>        
       </div>
     </div>      
@@ -115,38 +113,5 @@
 </div>
 </section>
 @section Scripts {
-   <script type="text/javascript">
-      $(document).ready(function(){
-        $("#selectAll").change(function(){
-    	    var cbs = $("input.check");
-    	    if($("#selectAll").is(":checked")){
-        	  cbs.each(function(){
-              $(this).prop("checked", true);
-            });
-          } else {
-        	  cbs.each(function(){
-              $(this).prop("checked", false);
-            });
-          }
-        });
-
-        $("#dl").click(function(){
-    	    var cbs = $("input.check");
-          var lista_check = "";
-          cbs.each(function(){
-            if($(this).is(":checked")){
-              lista_check = lista_check + $(this).val() + ",";
-            }
-          });
-          lista_check = lista_check.substring(0, lista_check.length - 1);
-          $("#lista").attr("value", lista_check);
-          if(lista_check.length != 0){
-            $("#form2").submit();        
-          } else {
-            alert("No ha seleccionado ningún archivo");
-          }
-        });
-        
-      });
-    </script> 
-}
+  <script src="~/js/download.js"></script>
+  }
