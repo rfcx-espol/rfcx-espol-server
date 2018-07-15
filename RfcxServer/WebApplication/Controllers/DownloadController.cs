@@ -84,10 +84,10 @@ namespace WebApplication
             end_d = FromString(end);*/
 
             IndexModel content = new IndexModel();
-            content.Files = _fileProvider.GetDirectoryContents("/files/" + station + "/audios");
-            content.Stations = _fileProvider.GetDirectoryContents("/files/");
+            content.Files = _fileProvider.GetDirectoryContents("/rfcx-espol-server/files/station" + station + "/audios");
+            content.Stations = _fileProvider.GetDirectoryContents("/rfcx-espol-server/files/station");
             Console.WriteLine(content.Files);
-            IFileInfo[] files = _fileProvider.GetDirectoryContents("/files/" + station + "/audios").OrderBy(p => p.LastModified).ToArray();
+            IFileInfo[] files = _fileProvider.GetDirectoryContents("/rfcx-espol-server/files/station" + station + "/audios").OrderBy(p => p.LastModified).ToArray();
             Console.WriteLine(files.Length);
             content.filesSorted = files;
 
@@ -125,15 +125,15 @@ namespace WebApplication
             station = Request.Form["station"];
             lista = Request.Form["lista"];
             string[] archivos_desc = lista.Split(",");
-            Console.Write("DEVICE: "+station);
+            Console.Write("STATION: "+station);
             Console.Write("LISTA: "+lista);
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var enc1252 = Encoding.GetEncoding(1252);
 
-            DirectoryInfo DI = new DirectoryInfo("files/" + station + "/audios");
+            DirectoryInfo DI = new DirectoryInfo("rfcx-espol-server/files/" + station + "/audios");
             Ionic.Zip.ZipFile zip;
 
-            var ifp = _fileProvider.GetDirectoryContents("/files/" + station + "/audios");
+            var ifp = _fileProvider.GetDirectoryContents("/rfcx-espol-server/files/" + station + "/audios");
             
             using (zip = new Ionic.Zip.ZipFile())
             {
@@ -155,7 +155,7 @@ namespace WebApplication
             var data = net.DownloadData(fileAddress);
             var content = new System.IO.MemoryStream(data);
 
-            System.IO.File.Delete("files/" + station + "/audios/"+ date);
+            System.IO.File.Delete("rfcx-espol-server/files/" + station + "/audios/"+ date);
 
             return File(content, "APPLICATION/octet-stream", date);
         }
@@ -164,7 +164,7 @@ namespace WebApplication
         // Download a unique file by clicking the file in the showed list.
         public ActionResult DownloadUniqueFile(string namefile, string station)
         {
-            DirectoryInfo DI = new DirectoryInfo("files/" + station + "/audios/");
+            DirectoryInfo DI = new DirectoryInfo("/rfcx-espol-server/files/" + station + "/audios/");
 
             // DOWNLOADING FILE
             string fileAddress = DI.FullName + namefile;
