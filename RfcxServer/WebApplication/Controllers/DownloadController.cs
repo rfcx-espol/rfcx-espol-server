@@ -57,9 +57,12 @@ namespace WebApplication
             return date.ToString();
         }
 
-        public IActionResult Index(string dd1)
+        public IActionResult Index(string selected, string start, string end)
         {
-            string station = "";
+            DateTime start_d = FromString(start);
+            DateTime end_d = FromString(end);
+            string station = "station"+selected;
+            /*string station = "";
             string selected = "";
             string start = null;
             string end = null;
@@ -78,14 +81,14 @@ namespace WebApplication
             }
 
             start_d = FromString(start);
-            end_d = FromString(end);
+            end_d = FromString(end);*/
 
             IndexModel content = new IndexModel();
             content.Files = _fileProvider.GetDirectoryContents("/files/" + station + "/audios");
             content.Stations = _fileProvider.GetDirectoryContents("/files/");
-
+            Console.WriteLine(content.Files);
             IFileInfo[] files = _fileProvider.GetDirectoryContents("/files/" + station + "/audios").OrderBy(p => p.LastModified).ToArray();
-
+            Console.WriteLine(files.Length);
             content.filesSorted = files;
 
             string pattern = @"^(station)[(0-9)]";
@@ -108,7 +111,6 @@ namespace WebApplication
                 content.start_d = start_d;
                 content.end_d = end_d;
             }
-
            
             return View(content);
         }

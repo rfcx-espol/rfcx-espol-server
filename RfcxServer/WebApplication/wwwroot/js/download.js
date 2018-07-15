@@ -36,6 +36,7 @@ var station;
 
 
 $(window).on("load", function(){
+    setInputDates();
     $.ajax({
         url : 'api/Station/',
         type: 'GET',
@@ -43,19 +44,14 @@ $(window).on("load", function(){
         success : getStationsList
     })
 });
-
+//REVISA LA FUNCION BUSCARAUDIOS()
 function getStationsList(data) {
     var data_dic = JSON.parse(data);
     console.log(data_dic);
     for(station of data_dic){
     $("#select").append('<option value='+station["Id"]+'>' + station['Name']+ '</option>');	
     }
-
-    $.post("/Download", cargarAudios);
-}
-
-function cargarAudios(data){
-    
+    buscarAudios()
 }
 
 
@@ -92,6 +88,43 @@ function getAllAudiosList(data){
 
 }
 
- 
+//DATES---------------
+//Aparecen las fechas de hoy al cargar la página
+function setInputDates(){
+    var start = document.getElementById("start");
+    var finish = document.getElementById("end");
 
- 
+    start.setAttribute("max", formatDate(new Date()));
+    start.value = formatDate(new Date());
+
+    finish.setAttribute("max", formatDate(new Date()));
+    finish.value = formatDate(new Date());
+}
+
+//Return string of Date with format yyyy-mm-dd
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+//AQUÍ HAGO POST EN DOWNLOAD Y ENVÍO EL ID DE LA ESTACIÓN, FECHA INI, FECHA FIN 
+function buscarAudios(){
+    var selectFilter = $("#select")[0];
+    var selectValue = selectFilter.options[selectFilter.selectedIndex].value;
+
+    var startInput = $("#start").val();
+    var endInput = $("#end").val();
+    console.log(selectValue+" "+startInput+" "+endInput);
+    $.post("/Download", {
+        selected: selectValue, 
+        start: startInput, 
+        end: endInput 
+    } ,cargarAudios);
+}
