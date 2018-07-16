@@ -57,9 +57,12 @@ namespace WebApplication
             return date.ToString();
         }
 
-        public IActionResult Index(string dd1)
+        public IActionResult Index(string selected, string start, string end)
         {
-            string station = "";
+            DateTime start_d = FromString(start);
+            DateTime end_d = FromString(end);
+            string station = "station"+selected;
+            /*string station = "";
             string selected = "";
             string start = null;
             string end = null;
@@ -78,14 +81,14 @@ namespace WebApplication
             }
 
             start_d = FromString(start);
-            end_d = FromString(end);
+            end_d = FromString(end);*/
 
             IndexModel content = new IndexModel();
-            content.Files = _fileProvider.GetDirectoryContents("/files/" + station + "/audios");
-            content.Stations = _fileProvider.GetDirectoryContents("/files/");
-
-            IFileInfo[] files = _fileProvider.GetDirectoryContents("/files/" + station + "/audios").OrderBy(p => p.LastModified).ToArray();
-
+            content.Files = _fileProvider.GetDirectoryContents("/rfcx-espol-server/files/station" + station + "/audios");
+            content.Stations = _fileProvider.GetDirectoryContents("/rfcx-espol-server/files/station");
+            Console.WriteLine(content.Files);
+            IFileInfo[] files = _fileProvider.GetDirectoryContents("/rfcx-espol-server/files/station" + station + "/audios").OrderBy(p => p.LastModified).ToArray();
+            Console.WriteLine(files.Length);
             content.filesSorted = files;
 
             string pattern = @"^(station)[(0-9)]";
@@ -108,7 +111,6 @@ namespace WebApplication
                 content.start_d = start_d;
                 content.end_d = end_d;
             }
-
            
             return View(content);
         }
@@ -123,15 +125,15 @@ namespace WebApplication
             station = Request.Form["station"];
             lista = Request.Form["lista"];
             string[] archivos_desc = lista.Split(",");
-            Console.Write("DEVICE: "+station);
+            Console.Write("STATION: "+station);
             Console.Write("LISTA: "+lista);
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var enc1252 = Encoding.GetEncoding(1252);
 
-            DirectoryInfo DI = new DirectoryInfo("files/" + station + "/audios");
+            DirectoryInfo DI = new DirectoryInfo("rfcx-espol-server/files/" + station + "/audios");
             Ionic.Zip.ZipFile zip;
 
-            var ifp = _fileProvider.GetDirectoryContents("/files/" + station + "/audios");
+            var ifp = _fileProvider.GetDirectoryContents("/rfcx-espol-server/files/" + station + "/audios");
             
             using (zip = new Ionic.Zip.ZipFile())
             {
@@ -153,7 +155,7 @@ namespace WebApplication
             var data = net.DownloadData(fileAddress);
             var content = new System.IO.MemoryStream(data);
 
-            System.IO.File.Delete("files/" + station + "/audios/"+ date);
+            System.IO.File.Delete("rfcx-espol-server/files/" + station + "/audios/"+ date);
 
             return File(content, "APPLICATION/octet-stream", date);
         }
@@ -162,7 +164,7 @@ namespace WebApplication
         // Download a unique file by clicking the file in the showed list.
         public ActionResult DownloadUniqueFile(string namefile, string station)
         {
-            DirectoryInfo DI = new DirectoryInfo("files/" + station + "/audios/");
+            DirectoryInfo DI = new DirectoryInfo("/rfcx-espol-server/files/" + station + "/audios/");
 
             // DOWNLOADING FILE
             string fileAddress = DI.FullName + namefile;

@@ -13,5 +13,7 @@ namespace WebApplication.IRepository
         Task<bool> Update(string id, Alert item);
         Task<bool> Remove(string id);
         Task<bool> RemoveAll();
+        Task<bool> UpdateLastNotification(int id, string lastNotification);
+        Task<bool> UpdateStatus(int id, string lastNotification);
     }
 }

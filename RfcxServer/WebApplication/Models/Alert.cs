@@ -19,7 +19,12 @@ namespace WebApplication.Models
         VERIFIED: When Alert is already VERIFIED by Receiver
         CORRECT: When station is already verified. Then server can create new alert to this station
         */
-        public string Status { get; set; } 
+        public string Status { get; set; }
+        public string Repeat { get; set; }
+        public string NotificationReceiver { get; set; }
+        public string NotificationType { get; set; }
+
+
     }
     
 }

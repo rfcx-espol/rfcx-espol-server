@@ -47,7 +47,7 @@
 
         <div class="mu-title">
           <br />
-          <h2>Settings</h2>
+          <h2> Configuraciones </h2>
         </div>
 
 
@@ -55,23 +55,33 @@
           <div class="form-group">
             <table class="table table-bordered" id="vertical-table">
               
-              <tr><th><label for="ddl">Date </label></th> 
+              <tr><th><label for="ddl"> Estación </label></th> 
                 <td> <input class="form-control"/> </td>              
               </tr>
 
-              <tr><th><label>Time </label></th>
-                <td> <input class="form-control"/> </td>
+              <tr><th><label> Sensor </label></th>
+                <td>@Html.DropDownList("day", new SelectList(new Dictionary<string,string> { 
+                  { "1", "Temperatura" }, { "2","Humedad" }, 
+                  { "3","..." }, { "4","..." } },
+                  "Key", "Value", "Monthly"))
+                </td>              
               </tr>
           
-              <tr><th><label>Name </label></th>
+              <tr><th><label> Acción </label></th>
                 <td> <input class="form-control"/> </td>
               </tr>  
-          
-              <tr><th><label>email </label></th>
+              <tr>
+                <td><td> <input type="number"/>  -  <input type="number"/> </td></td>
+              </tr>
+              <tr><th><label> Notificación </label></th>
                 <td> <input class="form-control"/> </td>              
               </tr>  
 
-              <tr><th><label>Phone</label></th>
+              <tr><th><label> Receptor </label></th>
+                <td> <input class="form-control"/></td>
+              </tr>  
+
+              <tr><th><label> Repetir </label></th>
                 <td> <input class="form-control"/></td>
               </tr>  
 
