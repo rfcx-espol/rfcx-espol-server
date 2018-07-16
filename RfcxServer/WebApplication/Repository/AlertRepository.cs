@@ -118,6 +118,13 @@ namespace WebApplication.Repository
             return Update(alert.AlertId, alert);
         }
 
+        public Task<bool> UpdateStatus(int id, string status)
+        {
+            Alert alert=getAlert(id);
+            alert.Status= status;
+            return Update(alert.AlertId, alert);
+        }
+
         public Alert getAlert(int id){
         var filter = Builders<Alert>.Filter.Eq("Id", id);
         Alert alert=_context.Alerts.Find(filter).FirstOrDefaultAsync().Result;

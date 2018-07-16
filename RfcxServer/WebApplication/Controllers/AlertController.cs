@@ -72,5 +72,12 @@ namespace WebApplication.Controllers
             if (id==0) return false;
             return await _AlertRepository.UpdateLastNotification(id, json.LastNotification);
         }
+
+        [HttpPatch("{id}/Status")]
+        public async Task<bool> PatchStatus(int id, [FromBody]  Arrays json)
+        {
+            if (id==0) return false;
+            return await _AlertRepository.UpdateStatus(id, json.Status);
+        }
     }
 }
