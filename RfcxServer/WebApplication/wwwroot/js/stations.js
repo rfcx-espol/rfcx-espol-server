@@ -1,4 +1,5 @@
-$(window).on("load", function(){
+$(document).ready(function(){
+//$(window).on("load", function(){
     stations_input_changed = []
     $.ajax({
         url : 'api/Station/',
@@ -55,7 +56,7 @@ function getStationsList(data) {
         '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 header"><h4>'+station_name+'</h4></div>'+
         '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons icon_station" onclick="fillStationModal('+station_id+');">edit</a></div>'+
         '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons icon_station" onclick="showAlertModal('+station_id+');">delete</a></div>'+
-        '</div><div class="station_body" id="'+ station_id +'"></div></div>';
+        '</div><div class="station_body" id="station'+ station_id +'"></div></div>';
         $(content).insertBefore(".plus-station");
     }
     $.ajax({
@@ -75,10 +76,10 @@ function getSensorsList(data) {
         var sensor_location = sensor['Location'];
         var icon_type = getIconType(sensor_type);
         var icon_id = getIconId(sensor_type, sensor_location);
-        var station_body = $("div.station_body#"+station_id);
+        var station_body = $("div.station_body#station"+station_id);
         var content = '<div class="row"><div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 body"><i id="'+ icon_id +'" class="fa '+ icon_type +'"></i></div>' +
         '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 body text"><p>'+ sensor_type + " " + sensor_location +'</p></div>' +
-        '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 body"><p id="'+ sensor_id +'"></p></div></div>';
+        '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 body"><p id="sensor'+ sensor_id +'"></p></div></div>';
         $(station_body).append(content);
     }
     getLastData();
@@ -95,8 +96,8 @@ function getLastData() {
                 var station_id = data['StationId'];
                 var sensor_id = data['SensorId'];
                 var value = data['Value'];
-                var unit = getUnit(data['Units']);
-                var s = $("div.station_body#"+station_id+" p#"+sensor_id);
+                var unit = getUnit(data['Type']);
+                var s = $("div.station_body#station"+station_id+" p#sensor"+sensor_id);
                 s.html(value + " " + unit);
             }
         }
@@ -106,13 +107,13 @@ function getLastData() {
 setInterval(getLastData, 300000);
 
 function getUnit(sensor_type) {
-    switch(sensor_type) {
-        case "Percent":
-            return "%";
-        case "Celsius":
-            return "°C";
-        default:
-            return "?";
+    var type = sensor_type.toLowerCase();
+    if(type.includes("hum")) {
+        return "%";
+    } else if(type.includes("temp")) {
+        return "°C";
+    } else {
+        return "?";
     }
 }
 
