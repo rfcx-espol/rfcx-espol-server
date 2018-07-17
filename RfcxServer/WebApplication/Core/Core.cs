@@ -68,6 +68,11 @@ namespace WebApplication {
             }
         }
 
+        public static string RecyclerFolderPath() {
+
+            return Path.Combine(FilesFolderPath, "recycler");
+        }
+
         public static string StationFolderPath(string stationId) {
 
             return Path.Combine(FilesFolderPath, "station" + stationId);
@@ -98,6 +103,12 @@ namespace WebApplication {
 
         public static string StationOggFolderPathName(string name) {
             return Path.Combine(StationFolderPathName(name), "ogg");
+        }
+        public static void MakeRecyclerFolder() {
+            var recyclerFolderPath = RecyclerFolderPath();
+            if (!Directory.Exists(recyclerFolderPath)) {
+                Directory.CreateDirectory(recyclerFolderPath);
+            }
         }
 
         public static void MakeStationFolder(string stationId) {

@@ -10,11 +10,11 @@ namespace WebApplication.IRepository
         Task<IEnumerable<Audio>> Get();
         Task<Audio> Get(string id);
         Task<Audio> Get(int id);
-        Task<Audio> Get(int DispositivoId, int AudioId);
-        Task<IEnumerable<Audio>> GetByDispositivo(int DispositivoId);
+        Task<Audio> Get(int StationId, int AudioId);
+        Task<IEnumerable<Audio>> GetByStation(int StationId);
         Task Add(Audio item);
-        Task<bool> Update(int DispositivoId, int AudioId, Audio item);
-        Task<bool> Remove(int DispositivoId, int AudioId);
+        Task<bool> Update(int StationId, int AudioId, Audio item);
+        Task<bool> Remove(int StationId, int AudioId);
         Task<bool> RemoveAll();
         
     }

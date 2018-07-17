@@ -9,7 +9,10 @@ using MongoDB.Bson.Serialization.Attributes;
 using System;
 using MongoDB.Driver;
 using System.IO;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5f4350f29a2ee5d926012780d8f726b6415150a8
 
 
 namespace WebApplication.Repository
@@ -110,12 +113,13 @@ namespace WebApplication.Repository
         try
         {
             DeleteResult actionResult = await _context.Stations.DeleteOneAsync(
-                    Builders<Station>.Filter.Eq("Id", id));
+            Builders<Station>.Filter.Eq("Id", id));
             var filter1=Builders<Sensor>.Filter.Eq("StationId", id);
             var filter2=Builders<Data>.Filter.Eq("StationId", id);
             var filter3=Builders<Audio>.Filter.Eq("StationId", id);
             _context.Sensors.DeleteMany(filter1);
             _context.Datas.DeleteMany(filter2);
+<<<<<<< HEAD
             _context.Audios.DeleteMany(filter2);
             folderStation=Core.StationFolderPath(id.ToString());
             Core.MakeRecyclerFolder();
@@ -132,6 +136,28 @@ namespace WebApplication.Repository
                 System.IO.Directory.Delete(folderStation);
             }
             
+=======
+            _context.Audios.DeleteMany(filter3);
+
+            string stationDeletedPath = Core.StationFolderPath(id.ToString());
+            string reclyclerPath = Core.RecyclerFolderPath();
+            string audioName="";
+            string recyclerName="";
+
+            if (Directory.Exists(stationDeletedPath))
+            {
+                string[] audios = Directory.GetFiles(stationDeletedPath);
+
+                // Copy the files and overwrite destination files if they already exist.
+                foreach (string audio in audios)
+                {
+                    // Use static Path methods to extract only the file name from the path.
+                    audioName = Path.GetFileName(audio);
+                    recyclerName = Path.Combine(reclyclerPath, audioName);
+                    File.Move(audio, recyclerName);
+                }
+            }
+>>>>>>> 5f4350f29a2ee5d926012780d8f726b6415150a8
 
             return actionResult.IsAcknowledged 
                 && actionResult.DeletedCount > 0;
