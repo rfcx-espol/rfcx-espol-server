@@ -121,10 +121,10 @@ function buscarAudios(){
 
     var startInput = $("#start").val();
     var endInput = $("#end").val();
-    //Console.log(selectValue+" "+startInput+" "+endInput);
     $.post("/Download", {
         selected: selectValue, 
         start: startInput, 
         end: endInput 
-    } , function(data){});
+    } , function(data){
+    });
 }

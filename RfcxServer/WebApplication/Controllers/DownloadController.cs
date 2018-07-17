@@ -61,33 +61,13 @@ namespace WebApplication
         {
             DateTime start_d = FromString(start);
             DateTime end_d = FromString(end);
-            string station = "station"+selected;
-            /*string station = "";
-            string selected = "";
-            string start = null;
-            string end = null;
-            DateTime start_d, end_d;
-            if (Request.Method == "POST")
-            {
-                station = Request.Form["ddl"];
-                selected = station;
-                start = Request.Form["start"];
-                end = Request.Form["end"];
-                if(start.Length >0 && end.Length > 0)
-                {
-                    start_d = FromString(start);
-                    end_d = FromString(end);
-                }
-            }
-
-            start_d = FromString(start);
-            end_d = FromString(end);*/
-
+            string station = "station5";
+            //string station = "station"+selected;
             IndexModel content = new IndexModel();
-            content.Files = _fileProvider.GetDirectoryContents("/rfcx-espol-server/files/station" + station + "/audios");
-            content.Stations = _fileProvider.GetDirectoryContents("/rfcx-espol-server/files/station");
-            Console.WriteLine(content.Files);
-            IFileInfo[] files = _fileProvider.GetDirectoryContents("/rfcx-espol-server/files/station" + station + "/audios").OrderBy(p => p.LastModified).ToArray();
+            content.Files = _fileProvider.GetDirectoryContents("files/" + station + "/audios");
+            content.Stations = _fileProvider.GetDirectoryContents("files/");
+            Console.WriteLine("files/" + station + "/audios");
+            IFileInfo[] files = _fileProvider.GetDirectoryContents("files/" + station + "/audios").OrderBy(p => p.LastModified).ToArray();
             Console.WriteLine(files.Length);
             content.filesSorted = files;
 
@@ -106,6 +86,7 @@ namespace WebApplication
             content.selected = selected;
             content.start = start;
             content.end = end;
+            Console.WriteLine(start);
             if (start_d != null && end_d != null)
             {
                 content.start_d = start_d;
