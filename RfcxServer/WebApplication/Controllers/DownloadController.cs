@@ -61,7 +61,7 @@ namespace WebApplication
         {
             DateTime start_d = FromString(start);
             DateTime end_d = FromString(end);
-            string station = "station5";
+            string station = "station1";
             //string station = "station"+selected;
             IndexModel content = new IndexModel();
             content.Files = _fileProvider.GetDirectoryContents("files/" + station + "/audios");
@@ -83,7 +83,7 @@ namespace WebApplication
 
             content.stationFolders = df;
 
-            content.selected = selected;
+            content.selected = station;
             content.start = start;
             content.end = end;
             Console.WriteLine(start);
