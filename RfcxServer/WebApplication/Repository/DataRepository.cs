@@ -82,14 +82,15 @@ namespace WebApplication.Repository
                 List<int> dataIdList=new List<int>();
                 List<Data> data;
                 List<Sensor> sensor;
-                var stationCount= _context.Stations.Find(_=>true).ToList().Count;
+                List<Station> stations= _context.Stations.Find(_=>true).ToList();
+                var stationCount= stations.Count;
                 var sensorCount=0;
-                for (int i=1;i<=stationCount;i++){
-                    var filter=Builders<Sensor>.Filter.Eq("StationId",i);
+                for (int i=0;i<stationCount;i++){
+                    var filter=Builders<Sensor>.Filter.Eq("StationId",stations[i].Id);
                     sensor=_context.Sensors.Find(filter).ToList();
                     sensorCount=sensor.Count;
                     for(int j=0;j<sensorCount;j++){
-                        var filter1 =Builders<Data>.Filter.Eq("StationId", i) & Builders<Data>.Filter.Eq("SensorId", sensor[j].Id);
+                        var filter1 =Builders<Data>.Filter.Eq("StationId", stations[i].Id) & Builders<Data>.Filter.Eq("SensorId", sensor[j].Id);
                         data=_context.Datas.Find(filter1).ToList();
                         if(data.Count>0){
                             var dataId=data.Count-1;
