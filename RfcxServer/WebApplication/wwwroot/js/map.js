@@ -8,10 +8,10 @@ function displayLastData(){
             if(lastData!=null){
               var p = document.getElementById(lastData['SensorId']);
               if(p != null){
-                var unit = lastData['Units'];
-                if(unit=="CELCIUS" || unit=="Celcius"){
+                var tipo = lastData['Type'];
+                if(tipo.toUpperCase().includes("TEMP")){
                   unit = "°C";
-                }else if (unit=="H"){
+                }else if (tipo.toUpperCase().includes("HUM")){
                   unit = "%";
                 }
                 p.innerHTML = lastData['Value'] +" "+ unit;
@@ -33,14 +33,14 @@ function getDataSensor(){
 						var contentS = stations[idStation]["content"];
 						
 						if(typeSensor.includes("Hum")){
-							stations[idStation]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-tint" style="color: #527cfb" ></i> Amb.: </p><p class="valueHum" id="humedadId"> - </p>';
+							stations[idStation]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-tint" style="color: #527cfb" ></i> Amb.: </p><p class="valueHum" id="humedadId"> <i class="fa fa-circle-o-notch fa-spin"></i> </p>';
 							stations[idStation]["content"] = stations[idStation]["content"].replace("humedadId", id);
 						}
 						else if(typeSensor.includes("Temp") && (locationSensor.includes("Amb") || locationSensor.includes("Env"))){
-							stations[idStation]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-thermometer" style="color: #424084;"></i> Amb.: </p><p class="valueTempAmb" id="tempAmbId"> - </p>';
+							stations[idStation]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-thermometer" style="color: #424084;"></i> Amb.: </p><p class="valueTempAmb" id="tempAmbId"> <i class="fa fa-circle-o-notch fa-spin"></i> </p>';
 							stations[idStation]["content"] = stations[idStation]["content"].replace("tempAmbId", id);
 						}else{
-							stations[idStation]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-thermometer" style="color: #ff7800;"></i> Disp.: </p><p class="valueTempDisp" id="tempDispId"> - </p>';
+							stations[idStation]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-thermometer" style="color: #ff7800;"></i> Disp.: </p><p class="valueTempDisp" id="tempDispId"> <i class="fa fa-circle-o-notch fa-spin"></i> </p>';
 							stations[idStation]["content"] = stations[idStation]["content"].replace("tempDispId", id);
 						}
 						stations[idStation]["content"] = stations[idStation]["content"] +'</div>'+
