@@ -63,11 +63,11 @@ namespace WebApplication.Repository
         }
     }
 
-        public async Task<IEnumerable<Audio>> GetByDispositivo(int DispositivoId)
+        public async Task<IEnumerable<Audio>> GetByStation(int StationId)
         {
             try
             {
-                var filter =Builders<Audio>.Filter.Eq("DispositivoId", DispositivoId);
+                var filter =Builders<Audio>.Filter.Eq("StationId", StationId);
                 return await _context.Audios.Find(filter).ToListAsync();
             }
             catch (Exception ex)
@@ -76,9 +76,9 @@ namespace WebApplication.Repository
             }
         }
         
-        public async Task<Audio> Get(int DispositivoId, int AudioId)
+        public async Task<Audio> Get(int StationId, int AudioId)
         {
-            var filter = Builders<Audio>.Filter.Eq("Id", AudioId) & Builders<Audio>.Filter.Eq("DispositivoId", DispositivoId);
+            var filter = Builders<Audio>.Filter.Eq("Id", AudioId) & Builders<Audio>.Filter.Eq("StationId", StationId);
 
             try
             {
@@ -103,7 +103,7 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<bool> Remove(int DispositivoId, int AudioId)
+        public async Task<bool> Remove(int StationId, int AudioId)
         {
             try
             {
@@ -119,7 +119,7 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<bool> Update(int DispositivoId, int AudioId, Audio item)
+        public async Task<bool> Update(int StationId, int AudioId, Audio item)
         {
             try
             {
