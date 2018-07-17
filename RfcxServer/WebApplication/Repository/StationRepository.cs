@@ -8,6 +8,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using MongoDB.Driver;
+using System.IO;
 
 
 
@@ -112,8 +113,25 @@ namespace WebApplication.Repository
                     Builders<Station>.Filter.Eq("Id", id));
             var filter1=Builders<Sensor>.Filter.Eq("StationId", id);
             var filter2=Builders<Data>.Filter.Eq("StationId", id);
+            var filter3=Builders<Audio>.Filter.Eq("StationId", id);
             _context.Sensors.DeleteMany(filter1);
             _context.Datas.DeleteMany(filter2);
+            _context.Audios.DeleteMany(filter2);
+            folderStation=Core.StationFolderPath(id.ToString());
+            Core.MakeRecyclerFolder();
+            if (Directory.Exists(folderStation))
+            {
+                string[] audios = Directory.GetFiles(folderStation);
+                foreach (string audio in audios)
+                {
+                    audioFileDeleted = Path.GetFileName(audio);
+                    audioFileRecycled = Path.Combine(Core.RecyclerFolderPath(), audioFileDeleted);
+                    File.Move(audioFileDeleted, audioFileRecycled);
+                }
+
+                System.IO.Directory.Delete(folderStation);
+            }
+            
 
             return actionResult.IsAcknowledged 
                 && actionResult.DeletedCount > 0;

@@ -109,6 +109,17 @@ namespace WebApplication {
             }
         }
 
+        public static string RecyclerFolderPath(){
+            return Path.Combine(FilesFolderPath, "recycler");
+        }
+
+        public static void MakeRecyclerFolder() {
+            var recyclerFolderPath = RecyclerFolderPath();
+            if (!Directory.Exists(recyclerFolderPath)) {
+                Directory.CreateDirectory(recyclerFolderPath);
+            }
+        }
+
         public static void MakeStationFolderName(string name){
             string name1=Path.Combine(FilesFolderPath,name);
             if(!Directory.Exists(name1)){
