@@ -9,6 +9,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using System;
 using MongoDB.Driver;
 using System.IO;
+using System.Text.RegularExpressions;
 
 
 namespace WebApplication.Repository
@@ -116,11 +117,14 @@ namespace WebApplication.Repository
             _context.Sensors.DeleteMany(filter1);
             _context.Datas.DeleteMany(filter2);
             _context.Audios.DeleteMany(filter3);
-
+            Core.MakeRecyclerFolder();
+            string audiosDeletedPath = Core.StationAudiosFolderPath(id.ToString());
+            string audiosOggDeletedPath = Core.StationOggFolderPath(id.ToString());
             string stationDeletedPath = Core.StationFolderPath(id.ToString());
             string reclyclerPath = Core.RecyclerFolderPath();
             string audioName="";
             string recyclerName="";
+            string[] filesInRecycler=Directory.GetFiles(reclyclerPath);
 
             if (Directory.Exists(stationDeletedPath))
             {
@@ -132,9 +136,48 @@ namespace WebApplication.Repository
                     // Use static Path methods to extract only the file name from the path.
                     audioName = Path.GetFileName(audio);
                     recyclerName = Path.Combine(reclyclerPath, audioName);
-                    File.Move(audio, recyclerName);
+                    File.Move(audio, AutoRenameFilename(recyclerName));
                 }
             }
+
+            audioName="";
+            recyclerName="";
+
+            if (Directory.Exists(audiosDeletedPath))
+            {
+                string[] audios1 = Directory.GetFiles(audiosDeletedPath);
+
+                // Copy the files and overwrite destination files if they already exist.
+                foreach (string audio in audios1)
+                {
+                    // Use static Path methods to extract only the file name from the path.
+                    audioName = Path.GetFileName(audio);
+                    recyclerName = Path.Combine(reclyclerPath, audioName);
+                    File.Move(audio, AutoRenameFilename(recyclerName));
+                }
+                Directory.Delete(audiosDeletedPath);
+            }
+
+            audioName="";
+            recyclerName="";
+
+            if (Directory.Exists(audiosOggDeletedPath))
+            {
+                string[] audios2 = Directory.GetFiles(audiosOggDeletedPath);
+
+                // Copy the files and overwrite destination files if they already exist.
+                foreach (string audio in audios2)
+                {
+                    // Use static Path methods to extract only the file name from the path.
+                    audioName = Path.GetFileName(audio);
+                    recyclerName = Path.Combine(reclyclerPath, audioName);
+                    File.Move(audio, AutoRenameFilename(recyclerName));
+                }
+                Directory.Delete(audiosOggDeletedPath);
+                Directory.Delete(stationDeletedPath);
+            }
+
+
 
             return actionResult.IsAcknowledged 
                 && actionResult.DeletedCount > 0;
@@ -213,6 +256,37 @@ namespace WebApplication.Repository
         var filter = Builders<Station>.Filter.Eq("Id", id);
         Station disp=_context.Stations.Find(filter).FirstOrDefaultAsync().Result;
         return disp;
+    }
+
+
+
+    private string AutoRenameFilename(String fileCompleteName)
+    {
+        if (File.Exists(fileCompleteName))
+    {
+        string folder = Path.GetDirectoryName(fileCompleteName);
+        string filename = Path.GetFileNameWithoutExtension(fileCompleteName);
+        string extension = Path.GetExtension(fileCompleteName);
+        int number = 1;
+
+        Match regex = Regex.Match(fileCompleteName, @"(.+) \((\d+)\)\.\w+");
+
+        if (regex.Success)
+        {
+            filename = regex.Groups[1].Value;
+            number = int.Parse(regex.Groups[2].Value);
+        }
+
+        do
+        {
+            number++;
+            fileCompleteName = Path.Combine(folder, string.Format("{0} ({1}){2}", filename, number, extension));
+        }
+        while (File.Exists(fileCompleteName));
+    }
+
+    return fileCompleteName;
+
     }
 
 
