@@ -74,31 +74,31 @@ namespace WebApplication.Controllers
         */
 
         [HttpGet]
-        [Route("api/Station/{StationId:int}/[controller]")]
-        public Task<string> GetAudiosByStation([FromRoute]int StationId)
+        [Route("api/Dispositivo/{DispositivoId:int}/[controller]")]
+        public Task<string> GetAudiosByDispositivo([FromRoute]int DispositivoId)
         {
-            return this.GetAudioByStation(StationId);
+            return this.GetAudioByDispositivo(DispositivoId);
         }
 
-        private async Task<string> GetAudioByStation(int StationId)
+        private async Task<string> GetAudioByDispositivo(int DispositivoId)
         {
-            var Audios= await _AudioRepository.GetByStation(StationId);
+            var Audios= await _AudioRepository.GetByDispositivo(DispositivoId);
             return JsonConvert.SerializeObject(Audios);
         }
 
 
         //[HttpGet("{id}")]
         [HttpGet]
-        [Route("api/Station/{StationId:int}/[controller]/{AudioId:int}")]
+        [Route("api/Dispositivo/{DispositivoId:int}/[controller]/{AudioId:int}")]
         //[Route("")]
-        public Task<string> Get([FromRoute]int StationId, [FromRoute]int AudioId)
+        public Task<string> Get([FromRoute]int DispositivoId, [FromRoute]int AudioId)
         {
-            return this.GetAudioById(StationId, AudioId);
+            return this.GetAudioById(DispositivoId, AudioId);
         }
 
-        private async Task<string> GetAudioById(int StationId, int AudioId)
+        private async Task<string> GetAudioById(int DispositivoId, int AudioId)
         {
-            var Audio= await _AudioRepository.Get(StationId, AudioId) ?? new Audio();
+            var Audio= await _AudioRepository.Get(DispositivoId, AudioId) ?? new Audio();
             return JsonConvert.SerializeObject(Audio);
         }
         /* 
@@ -114,20 +114,20 @@ namespace WebApplication.Controllers
 
         //[HttpPut("{id}")]
         [HttpPut]
-        [Route("api/Station/{StationId:int}/[controller]/{AudioId:int}")]
-        public async Task<bool> Put([FromRoute]int StationId, [FromRoute]int AudioId, [FromBody] Audio Audio)
+        [Route("api/Dispositivo/{DispositivoId:int}/[controller]/{AudioId:int}")]
+        public async Task<bool> Put([FromRoute]int DispositivoId, [FromRoute]int AudioId, [FromBody] Audio Audio)
         {
             if (AudioId==0) return false;
-            return await _AudioRepository.Update(StationId, AudioId, Audio);
+            return await _AudioRepository.Update(DispositivoId, AudioId, Audio);
         }
 
         //[HttpDelete("{id}")]
         [HttpDelete]
-        [Route("api/Station/{StationId:int}/[controller]/{AudioId:int}")]
-        public async Task<bool> Delete([FromRoute]int StationId, [FromRoute]int AudioId)
+        [Route("api/Dispositivo/{DispositivoId:int}/[controller]/{AudioId:int}")]
+        public async Task<bool> Delete([FromRoute]int DispositivoId, [FromRoute]int AudioId)
         {
             if (AudioId==0) return false;
-            return await _AudioRepository.Remove(StationId, AudioId);
+            return await _AudioRepository.Remove(DispositivoId, AudioId);
         }
     }
 }

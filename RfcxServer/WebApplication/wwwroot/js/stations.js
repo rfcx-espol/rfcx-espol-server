@@ -1,4 +1,5 @@
 $(window).on("load", function(){
+    stations = []
     stations_input_changed = []
     $.ajax({
         url : 'api/Station/',
@@ -55,31 +56,40 @@ function getStationsList(data) {
         '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 header"><h4>'+station_name+'</h4></div>'+
         '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons icon_station" onclick="fillStationModal('+station_id+');">edit</a></div>'+
         '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons icon_station" onclick="showAlertModal('+station_id+');">delete</a></div>'+
-        '</div><div class="station_body" id="'+ station_id +'"></div></div>';
-        $(content).insertBefore(".plus-station");
+        '</div><div class="station_body">';
+        stations_dic = {};
+        stations_dic["id"] = station_id;
+        stations_dic["content"] = content;
+        stations.push(stations_dic);
     }
-    $.ajax({
-        url : 'api/Sensor/',
-        type: 'GET',
-        async: false,
-        success : getSensorsList
-    })
+    getSensorsList();
 }
 
-function getSensorsList(data) {
-    var data_dic = JSON.parse(data); 
-    for(sensor of data_dic){
-        var sensor_id = sensor['Id'];
-        var station_id = sensor['StationId'];
-        var sensor_type = sensor['Type'];
-        var sensor_location = sensor['Location'];
-        var icon_type = getIconType(sensor_type);
-        var icon_id = getIconId(sensor_type, sensor_location);
-        var station_body = $("div.station_body#"+station_id);
-        var content = '<div class="row"><div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 body"><i id="'+ icon_id +'" class="fa '+ icon_type +'"></i></div>' +
-        '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 body text"><p>'+ sensor_type + " " + sensor_location +'</p></div>' +
-        '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 body"><p id="'+ sensor_id +'"></p></div></div>';
-        $(station_body).append(content);
+function getSensorsList() {
+    var counter = 0;
+    for(station of stations){
+        var station_id = station['id']; 
+        $.ajax({
+            url : 'api/Station/' + parseInt(station_id) + '/Sensor/',
+            type: 'GET',
+            async: false,
+            success : function(data){
+                var data_dic = JSON.parse(data); 
+                for(sensor of data_dic){
+                    var sensor_id = sensor['Id'];
+                    var sensor_type = sensor['Type'];
+                    var sensor_location = sensor['Location'];
+                    var icon_type = getIconType(sensor_type);
+                    var icon_id = getIconId(sensor_type, sensor_location);
+                    stations[counter]["content"] = stations[counter]["content"] + '<div class="row"><div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 body"><i id="'+ icon_id +'" class="fa '+ icon_type +'"></i></div>';
+                    stations[counter]["content"] = stations[counter]["content"] + '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 body text"><p>'+ sensor_type + " " + sensor_location +'</p></div>';
+                    stations[counter]["content"] = stations[counter]["content"] + '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 body"><p id="'+ sensor_id +'"></p></div></div>';
+                }
+                stations[counter]["content"] = stations[counter]["content"] + '</div></div>';
+                $(stations[counter]["content"]).insertBefore(".plus-station");
+            }
+        })
+        counter++;
     }
     getLastData();
 }
@@ -92,11 +102,10 @@ function getLastData() {
         success : function(full_data){
             var data_dic = JSON.parse(full_data); 
             for(data of data_dic){
-                var station_id = data['StationId'];
                 var sensor_id = data['SensorId'];
                 var value = data['Value'];
                 var unit = getUnit(data['Units']);
-                var s = $("div.station_body#"+station_id+" p#"+sensor_id);
+                var s = $("p#"+sensor_id);
                 s.html(value + " " + unit);
             }
         }
@@ -107,9 +116,9 @@ setInterval(getLastData, 300000);
 
 function getUnit(sensor_type) {
     switch(sensor_type) {
-        case "Percent":
+        case "H":
             return "%";
-        case "Celcius":
+        case "CELCIUS":
             return "°C";
         default:
             return "?";
@@ -117,21 +126,21 @@ function getUnit(sensor_type) {
 }
 
 function getIconType(sensor_type) {
-    if(sensor_type.toLowerCase().includes("temp")) {
+    if(sensor_type.includes("Temp")) {
         return "fa-thermometer";
-    } else if(sensor_type.toLowerCase().includes("hum")) {
+    } else if(sensor_type.includes("Hum")) {
         return "fa-tint";
     }
 }
 
 function getIconId(sensor_type, sensor_location) {
-    if(sensor_type.toLowerCase().includes("hum")) {
+    if(sensor_type.includes("Hum")) {
         return "hum";
-    } else if((sensor_type.toLowerCase().includes("temp") && sensor_location.toLowerCase().includes("env")) ||
-                (sensor_type.toLowerCase().includes("temp") && sensor_location.toLowerCase().includes("amb"))) {
+    } else if((sensor_type.includes("Temp") && sensor_location.includes("Env")) ||
+                (sensor_type.includes("Temp") && sensor_location.includes("Amb"))) {
         return "temp_env";
-    } else if((sensor_type.toLowerCase().includes("temp") && sensor_location.toLowerCase().includes("sta")) ||
-                (sensor_type.toLowerCase().includes("temp") && sensor_location.toLowerCase().includes("esta"))) {
+    } else if((sensor_type.includes("Temp") && sensor_location.includes("Sta")) ||
+                (sensor_type.includes("Temp") && sensor_location.includes("Esta"))) {
         return "temp_station";
     }
 }

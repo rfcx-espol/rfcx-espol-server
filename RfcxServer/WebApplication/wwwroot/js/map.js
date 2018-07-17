@@ -11,7 +11,7 @@ function displayLastData(){
                 var unit = lastData['Units'];
                 if(unit=="CELCIUS" || unit=="Celcius"){
                   unit = "°C";
-                }else if (unit=="Percent"){
+                }else if (unit=="H"){
                   unit = "%";
                 }
                 p.innerHTML = lastData['Value'] +" "+ unit;
@@ -21,7 +21,6 @@ function displayLastData(){
         }
     }
 }
-
 function getDataSensor(){
   for(var stationId in stations){
       $.get('api/Station/'+stationId+'/Sensor/', function(data){
