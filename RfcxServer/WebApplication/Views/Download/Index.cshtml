@@ -83,6 +83,7 @@
                   <th>Play</th>
                   <th>Label &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i class="glyphicon glyphicon-search"></i></th>
                 </thead>
+                <tbody id="myTable-page">
                 @foreach (IFileInfo item in Model.Files)
                   {
                     <tr>
@@ -91,14 +92,18 @@
                               </td>
                               <td> @item.Name </td>
                               <td></td>
-                              <td></td>
+                              <td>
+                                <audio controls>
+                                  <source src="/files/@Model.selected/audios/@item.Name" type="audio/x-m4a">
+                                </audio>  
+                              </td>
                               <td></td>
                           
                     </tr>
                   }
-                
+                </tbody>
               </table>
-
+            <ul class="pagination pagination-lg pager" id="myPager"></ul>
             <br />
             <button id="dl" type="submit" class="out">Download</button><br /><br /><br /> 
           </div>        
@@ -109,4 +114,10 @@
 </section>
 @section Scripts {
   <script src="~/js/download.js"></script>
-  }
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+  <script src="~/js/paged.js"></script>
+
+}
+

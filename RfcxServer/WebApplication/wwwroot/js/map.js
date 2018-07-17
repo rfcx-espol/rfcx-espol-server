@@ -1,25 +1,30 @@
 setInterval(displayLastData, 300000);
 
 function displayLastData(){
-    for(stationId in stations){
-        for(sensor of stations[stationId]['sensorsId']){
-          $.get('api/Station/'+stationId+'/Sensor/'+sensor+'/Data/lastData', function(data){
-            var lastData = JSON.parse(data)
-            if(lastData!=null){
-              var p = document.getElementById(lastData['SensorId']);
-              if(p != null){
-                var tipo = lastData['Type'];
-                if(tipo.toUpperCase().includes("TEMP")){
-                  unit = "°C";
-                }else if (tipo.toUpperCase().includes("HUM")){
-                  unit = "%";
-                }
-                p.innerHTML = lastData['Value'] +" "+ unit;
-              }
-            }
-          });
-        }
-    }
+	$.ajax({
+			url : 'api/Data/LastData',
+			type: 'GET',
+			async: false,
+			success : function(full_data){
+					var data_dic = JSON.parse(full_data); 
+					for(data of data_dic){	
+						var station_id = data['StationId'];
+						var sensor_id = data['SensorId'];
+						var value = data['Value'];
+						var p = document.getElementById("Sta"+station_id+"Sens"+sensor_id);
+						if(p != null){
+							var tipo = data['Type'];
+							var unit = "?";
+							if(tipo.toUpperCase().includes("TEMP")){
+								unit = "°C";
+							}else if (tipo.toUpperCase().includes("HUM")){
+								unit = "%";
+							}
+							p.innerHTML = value +" "+ unit;
+						}
+					}
+			}
+	})
 }
 function getDataSensor(){
   for(var stationId in stations){
@@ -34,14 +39,14 @@ function getDataSensor(){
 						
 						if(typeSensor.includes("Hum")){
 							stations[idStation]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-tint" style="color: #527cfb" ></i> Amb.: </p><p class="valueHum" id="humedadId"> <i class="fa fa-circle-o-notch fa-spin"></i> </p>';
-							stations[idStation]["content"] = stations[idStation]["content"].replace("humedadId", id);
+							stations[idStation]["content"] = stations[idStation]["content"].replace("humedadId", "Sta"+idStation+"Sens"+id);
 						}
 						else if(typeSensor.includes("Temp") && (locationSensor.includes("Amb") || locationSensor.includes("Env"))){
 							stations[idStation]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-thermometer" style="color: #424084;"></i> Amb.: </p><p class="valueTempAmb" id="tempAmbId"> <i class="fa fa-circle-o-notch fa-spin"></i> </p>';
-							stations[idStation]["content"] = stations[idStation]["content"].replace("tempAmbId", id);
+							stations[idStation]["content"] = stations[idStation]["content"].replace("tempAmbId", "Sta"+idStation+"Sens"+id);
 						}else{
 							stations[idStation]["content"] = contentS + '<p class="sensor-title"><i class="fa fa-thermometer" style="color: #ff7800;"></i> Disp.: </p><p class="valueTempDisp" id="tempDispId"> <i class="fa fa-circle-o-notch fa-spin"></i> </p>';
-							stations[idStation]["content"] = stations[idStation]["content"].replace("tempDispId", id);
+							stations[idStation]["content"] = stations[idStation]["content"].replace("tempDispId", "Sta"+idStation+"Sens"+id);
 						}
 						stations[idStation]["content"] = stations[idStation]["content"] +'</div>'+
 																		'</div>';
