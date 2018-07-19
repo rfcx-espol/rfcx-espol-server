@@ -29,39 +29,25 @@ function getSensors(data){
         sensorsInf['type']=type;
         sensorsInf['location']=location;
         sensorsList.push(sensorsInf);
-        
-        if(type.includes("Hum") && (location.includes("Amb") || location.includes("Env"))) {
-            var idMin = "minMonHum";
-            var idMax = "maxMonHum";
-            var idAvg = "avgMonHum";
-            var divIdChart = "chartMonitorHum";
-            var nameDivTab = "'tab_Hum_Env'";
-            var iconTab = '<i class="fa fa-tint tabL"></i> <p class="nameHum">Humedad - Ambiente </p>';
-            var iconTitle = '<i class="fa fa-tint"></i> Humedad - Ambiente';
-            idSensorDic["Humedity"]=idSensor;
-
-
-        }else if(type.includes("Temp") && (location.includes( "Dev") || location.includes("Sta"))){
-            var idMin = "minMonDis";
-            var idMax = "maxMonDisp";
-            var idAvg = "avgMonDisp";
-            var divIdChart = "chartMonitorSta";
-            var nameDivTab = "'tab_Temp_Sta'";
-            var iconTab='<i class="fa" id="mobil">&#xf10b;</i><i class="fa fa-thermometer tabL" ></i> <p class="nameTempDisp">Temperatura - Dispositivo </p>';
-            var iconTitle = '<i class="fa fa-thermometer"></i> Temperatura - Dispositivo';
-            idSensorDic["Temp_Sta"]=idSensor;
+        var idMin = "minMon"+type+"_"+location;
+        var idMax = "maxMon"+type+"_"+location;
+        var idAvg = "avgMon"+type+"_"+location;
+        var divIdChart = "chartMonitor"+type+"_"+location;
+        var nameDivTab = "tab_"+type+"_"+location;
+        if(type.toUpperCase().includes("HUM") && (location.toUpperCase().includes("AMB") || location.toUpperCase().includes("ENV"))) {
+            var iconTab = '<i class="fa fa-tint tabL"></i> <p class="nameHum">'+type+'-'+location+'</p>';
+            var iconTitle = '<i class="fa fa-tint"></i> '+type+'-'+location;
+            idSensorDic[type+"_"+location]=idSensor;
+        }else if(type.toUpperCase().includes("TEMP") && (location.toUpperCase().includes( "DEV") || location.toUpperCase().includes("STA"))){
+            var iconTab='<i class="fa" id="mobil">&#xf10b;</i><i class="fa fa-thermometer tabL" ></i> <p class="nameTempDisp">'+type+'-'+location+'</p>';
+            var iconTitle = '<i class="fa fa-thermometer"></i> '+type+'-'+location;
+            idSensorDic[type+"_"+location]=idSensor;
             
-        }else if(type.includes("Temp") && (location.includes("Amb") || location.includes("Env"))){
-            var idMin = "minMonAmb";
-            var idMax = "maxMonAmb";
-            var idAvg = "avgMonAmb";
-            var divIdChart = "chartMonitorEnv";
-            var nameDivTab = "'tab_Temp_Env'";
-            var iconTab = '<i class="fa fa-thermometer tabL"></i> <p class="nameTempAmb">Temperatura - Ambiente </p>';
-            var iconTitle = '<i class="fa fa-thermometer"></i> Temperatura - Ambiente';
-            idSensorDic["Temp_Env"]=idSensor;
+        }else if(type.toUpperCase().includes("TEMP") && (location.toUpperCase().includes("AMB") || location.toUpperCase().includes("ENV"))){
+            var iconTab = '<i class="fa fa-thermometer tabL"></i> <p class="nameTempAmb">'+type+'-'+location+'</p>';
+            var iconTitle = '<i class="fa fa-thermometer"></i> '+type+'-'+location;
+            idSensorDic[type+"_"+location]=idSensor;
         }
-        
         //Create divs
         createDivsMonitor(iconTitle, divIdChart, idMin, idMax, idAvg);
         createTabs(idSensor, iconTab, nameDivTab);
@@ -74,7 +60,8 @@ function getSensors(data){
 
 //Create divs of tabs
 function createTabs(idSensor, iconTab, nameDivTab){
-    var divTab = '<button class="tablinks" name='+nameDivTab+' id='+idSensor+' onclick="getDataSensor(this.id)" onfocus="openDevice(event, '+nameDivTab+')">'+iconTab+'</button>';
+    name = "'"+nameDivTab+"'";
+    var divTab = '<button class="tablinks" name='+nameDivTab+' id='+idSensor+' onclick="getDataSensor(this.id)" onfocus="openDevice(event, '+name+')">'+iconTab+'</button>';
     $("#tab").append(divTab);
 }
 
@@ -123,26 +110,17 @@ function addData(data) {
         var locationS = sensorsList[ind]['location'];
     }
     var titleVertical = "Temperatura °C";
-    if(typeS.includes("Temp") && (locationS.includes("Dev") || locationS.includes("Sta"))){
+    var idMin = "minMon"+typeS+"_"+locationS;
+    var idMax = "maxMon"+typeS+"_"+locationS;
+    var idAvg = "avgMon"+typeS+"_"+locationS;
+    var divIdChart = "chartMonitor"+typeS+"_"+locationS;
+    if(typeS.includes("TEMP") && (locationS.includes("DEV") || locationS.includes("STA"))){
         var colorP = "#424084";
-        var idMin = "minMonDis";
-        var idMax = "maxMonDisp";
-        var idAvg = "avgMonDisp";
-        var divIdChart = "chartMonitorSta";
-    }else if(typeS.includes("Temp") && (locationS.includes("Amb") || locationS.includes("Env"))){
+    }else if(typeS.toUpperCase().includes("TEMP") && (locationS.toUpperCase().includes("AMB") || locationS.toUpperCase().includes("ENV"))){
         var colorP = "orange";
-        var idMin = "minMonAmb";
-        var idMax = "maxMonAmb";
-        var idAvg = "avgMonAmb";
-        var divIdChart = "chartMonitorEnv";
-    }else if(typeS.includes("Hum") && (locationS.includes("Amb") || locationS.includes("Env"))){
+    }else if(typeS.toUpperCase().includes("HUM") && (locationS.toUpperCase().includes("AMB") || locationS.toUpperCase().includes("ENV"))){
         var colorP = "LightSeaGreen";
         var titleVertical = "Humedad °H";
-        var idMin = "minMonHum";
-        var idMax = "maxMonHum";
-        var idAvg = "avgMonHum";
-        
-        var divIdChart = "chartMonitorHum";
     }
 
     ind = ind+1;
@@ -150,7 +128,7 @@ function addData(data) {
     var maxValue = 0;
     var sumValue = 0;
 
-    if(data!="null" && data.length != 0){
+    if(data!=null && data.length != 0){
         for(var i = 0; i<data.length; i++){
             var value = parseInt(data[i].Value);
             var timestamp = parseInt(data[i].Timestamp);            
@@ -203,6 +181,8 @@ function displayChart(divId, titleVertical, colorL, data, format){
     });
 
     //keeps the charts to render then
+    var divIdList = divId.split("_");
+    var typeS = divIdList[1]; locationS = divIdList[2];
     if(divId.includes("Monitor")){
         chartMon.render();
         if(charts["monitor"]==null || charts["monitor"].length==3){
@@ -211,12 +191,8 @@ function displayChart(divId, titleVertical, colorL, data, format){
             charts["monitor"].push(chartMon);
         }
     }
-    else if(divId.includes("Hum")){
-        charts["tab_Hum_Env"]=chartMon;
-    }else if(divId.includes("Sta")){
-        charts["tab_Temp_Sta"]=chartMon;
-    }else if(divId.includes("Env")){
-        charts["tab_Temp_Env"]=chartMon;
+    else{
+        charts["tab_"+typeS+"_"+locationS]=chartMon;
     }
 
     //chartMon.render();
@@ -230,25 +206,14 @@ document.getElementById("defaultOpen").click();
 
 //Divs of individual charts
 function individualChart(nameChart){
-    if(nameChart.includes("Temp") && nameChart.includes("Env")){
-        var name = "Temperatura - Ambiente";
-        var minVal = "minValueAmb";
-        var maxVal = "maxValueAmb";
-        var avgVal = "avgValueAmb";
-        var idDiv = "Temp_Env", idTab = "tab_Temp_Env";
-    }else if(nameChart.includes("Temp") && nameChart.includes("Sta")){
-        var name = "Temperatura - Dispositivo";
-        var minVal = "minValueTemp";
-        var maxVal = "maxValueTemp";
-        var avgVal = "avgValueTemp";  
-        var idDiv = "Temp_Sta", idTab = "tab_Temp_Sta";  
-    }else if(nameChart.includes("Hum") && nameChart.includes("Env")){
-        var name = "Humedad - Ambiente";
-        var minVal = "minValueHum";
-        var maxVal = "maxValueHum";
-        var avgVal = "avgValueHum";
-        var idDiv = "Humedity", idTab = "tab_Hum_Env";
-    }
+    nameC=nameChart.split("-");
+    var type=nameC[0].trim(); var location = nameC[1].trim();
+    
+    name=type+"-"+location
+    var minVal = "minValue"+type+"_"+location;
+    var maxVal = "maxValue"+type+"_"+location;
+    var avgVal = "avgValue"+type+"_"+location;
+    var idDiv = type+"_"+location, idTab = "tab_"+type+"_"+location;
     var idChart = "chart_"+idDiv;
     //If there is another sensor, add else if
     var divEachChart = 
@@ -340,9 +305,11 @@ function formatDate(date) {
 function startDisplayEachChart(id) {
     var actual = moment();
     var actualTimestamp = actual.unix();
-    var lastTimestamp = actual.clone().subtract(1,'week').unix();
+    var lastTimestamp = actual.clone().subtract(1,'hour').unix();
 
-    var query = 'api/Station/'+stationId+'/Sensor/'+id+'/DataTimestamp/Filter?StartTimestamp='+lastTimestamp+'&endTimestamp='+actualTimestamp+"&Filter=Days&FilterValue=1";
+    //var query = 'api/Station/'+stationId+'/Sensor/'+id+'/DataTimestamp/Filter?StartTimestamp='+lastTimestamp+'&endTimestamp='+actualTimestamp+"&Filter=Days&FilterValue=1";
+    var query = "api/Station/"+stationId+"/Sensor/"+id+"/DataTimestamp?StartTimestamp="+lastTimestamp+"&EndTimestamp="+actualTimestamp;
+    console.log(query);
     $.getJSON(query, addDataEachChart);
 }
 
@@ -352,7 +319,7 @@ function addDataEachChart(data){
         ind2= 0;
     }
     //If there isn't data, take the names from sensorsList
-    if(data!="null" && data.length != 0 ){
+    if(data!=null && data.length != 0 ){
         var typeS = data[0]['Type'];
         var locationS = data[0]['Location'];
         //Boxes min, max, avg
@@ -364,33 +331,24 @@ function addDataEachChart(data){
         //Boxes min, max, avg
         var minV = 0; var maxV = 0; var avgV = 0;
     }
+    var minValId = "minValue"+typeS+"_"+locationS;
+    var maxValId = "maxValue"+typeS+"_"+locationS;
+    var avgValId = "avgValue"+typeS+"_"+locationS;
+    var chartId = "chart_"+typeS+"_"+locationS;
     var titleVertical = "Temperatura °C";
-    if(typeS.includes("Temp") && (locationS.includes("Dev") || locationS.includes("Sta"))){
+    if(typeS.toUpperCase().includes("TEMP") && (locationS.toUpperCase().includes("DEV") || locationS.toUpperCase().includes("STA"))){
         var colorP = "#424084";
-        var minValId = "minValueTemp";
-        var maxValId = "maxValueTemp";
-        var avgValId = "avgValueTemp";
-        var chartId = "chart_Temp_Sta";
-    }else if(typeS.includes("Temp") && (locationS.includes("Amb") || locationS.includes("Env"))){
+    }else if(typeS.toUpperCase().includes("TEMP") && (locationS.toUpperCase().includes("AMB") || locationS.toUpperCase().includes("ENV"))){
         var colorP = "orange";
-        var minValId = "minValueAmb";
-        var maxValId = "maxValueAmb";
-        var avgValId = "avgValueAmb";
-        var chartId = "chart_Temp_Env";
-    }else if(typeS.includes("Hum") && (locationS.includes("Amb") || locationS.includes("Env"))){
+    }else if(typeS.toUpperCase().includes("HUM") && (locationS.toUpperCase().includes("AMB") || locationS.toUpperCase().includes("ENV"))){
         var colorP = "LightSeaGreen";
         var titleVertical = "Humedad °H";
-        var minValId = "minValueHum";
-        var maxValId = "maxValueHum";
-        var avgValId = "avgValueHum";
-        var chartId = "chart_Humedity";
     }
-    
-    for(points of data){
+    if(data!=null){
+        for(points of data){
         var type = points['Type'];
         var time = parseInt(points['Timestamp']);
         var value = parseInt(points['Value']);
-        var location = points['Location'];
         
         sumV = sumV + value;
         if(value<minV){
@@ -405,6 +363,8 @@ function addDataEachChart(data){
             color: colorP
         });
     }
+    }
+    
     ind2 = ind2 + 1;
     var lengthChart = dataPoints.length;
     var avgV = (sumV/lengthChart).toFixed(2);
