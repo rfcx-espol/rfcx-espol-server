@@ -10,6 +10,7 @@ using System;
 using MongoDB.Driver;
 using System.IO;
 using System.Text.RegularExpressions;
+using WebApplication.Models;
 
 namespace WebApplication.Repository
 {
@@ -98,7 +99,7 @@ namespace WebApplication.Repository
             }
             await _context.Stations.InsertOneAsync(item);
             Core.MakeStationFolder(item.Id.ToString());
-            
+
             return true;
         }
         catch (Exception ex)

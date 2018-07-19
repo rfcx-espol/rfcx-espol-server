@@ -122,7 +122,7 @@ namespace WebApplication {
 
                 string templateFile=Path.Combine(SERVER_ICECAST_CONFIG_DIRECTORY,TEMPLATE_ICECAST_CONFIG);
 
-                filename=TEMPLATE_ICECAST_CONFIG_FILENAME.Replace("0",item.Id.ToString());
+                string filename=TEMPLATE_ICECAST_CONFIG_FILENAME.Replace("0",stationId);
 
                 string icecastConfigApp=Path.Combine(APP_ICECAST_CONFIG_DIRECTORY,filename);
 
@@ -132,11 +132,11 @@ namespace WebApplication {
                 File.Copy(templateFile,icecastConfigServer, true);
 
                 string text = File.ReadAllText(icecastConfigApp);
-                text = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0",item.Id.ToString()));
+                text = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0",stationId));
                 File.WriteAllText(icecastConfigApp, text);
 
                 string text1 = File.ReadAllText(icecastConfigServer);
-                text1 = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0",item.Id.ToString()));
+                text1 = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0",stationId));
                 File.WriteAllText(icecastConfigApp, text1);
 
             }
@@ -153,7 +153,7 @@ namespace WebApplication {
 
                 string templateFile=Path.Combine(SERVER_ICECAST_CONFIG_DIRECTORY,TEMPLATE_ICECAST_CONFIG);
 
-                filename=TEMPLATE_ICECAST_CONFIG_FILENAME.Replace("0",item.Id.ToString());
+                string filename=TEMPLATE_ICECAST_CONFIG_FILENAME.Replace("0",stationId);
 
                 string icecastConfigApp=Path.Combine(APP_ICECAST_CONFIG_DIRECTORY,filename);
 
@@ -163,11 +163,11 @@ namespace WebApplication {
                 File.Copy(templateFile,icecastConfigServer, true);
 
                 string text = File.ReadAllText(icecastConfigApp);
-                text = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0",item.Id.ToString()));
+                text = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0",stationId));
                 File.WriteAllText(icecastConfigApp, text);
 
                 string text1 = File.ReadAllText(icecastConfigServer);
-                text1 = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0",item.Id.ToString()));
+                text1 = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0",stationId));
                 File.WriteAllText(icecastConfigApp, text1);
             }
         }
