@@ -1,4 +1,5 @@
 using WebApplication.DbModels;
+using WebApplication.Core;
 using WebApplication.IRepository;
 using Microsoft.Extensions.Options;
 using WebApplication.Models;
@@ -92,10 +93,12 @@ namespace WebApplication.Repository
                 for (int i=0;i<list.Count;i++){
                     if(item.Id==list[i].Id){
                         return false;
-                    }
+                    }s
                 }
-            }            
+            }
             await _context.Stations.InsertOneAsync(item);
+            Core.MakeStationFolder(item.Id.ToString());
+            
             return true;
         }
         catch (Exception ex)
@@ -113,9 +116,13 @@ namespace WebApplication.Repository
             var filter1=Builders<Sensor>.Filter.Eq("StationId", id);
             var filter2=Builders<Data>.Filter.Eq("StationId", id);
             var filter3=Builders<Audio>.Filter.Eq("StationId", id);
+            var filter4=Builders<Alert>.Filter.Eq("StationId", id);
+            var filter5=Builders<AlertsConfiguration>.Filter.Eq("StationId", id);
             _context.Sensors.DeleteMany(filter1);
             _context.Datas.DeleteMany(filter2);
             _context.Audios.DeleteMany(filter3);
+            _context.Audios.DeleteMany(filter4);
+            _context.Audios.DeleteMany(filter5);
             Core.MakeRecyclerFolder();
             string audiosDeletedPath = Core.StationAudiosFolderPath(id.ToString());
             string audiosOggDeletedPath = Core.StationOggFolderPath(id.ToString());
