@@ -123,8 +123,8 @@ namespace WebApplication.Repository
             _context.Sensors.DeleteMany(filter1);
             _context.Datas.DeleteMany(filter2);
             _context.Audios.DeleteMany(filter3);
-            _context.Audios.DeleteMany(filter4);
-            _context.Audios.DeleteMany(filter5);
+            _context.Alerts.DeleteMany(filter4);
+            _context.AlertsConfigurations.DeleteMany(filter5);
             Core.MakeRecyclerFolder();
             string audiosDeletedPath = Core.StationAudiosFolderPath(id.ToString());
             string audiosOggDeletedPath = Core.StationOggFolderPath(id.ToString());
