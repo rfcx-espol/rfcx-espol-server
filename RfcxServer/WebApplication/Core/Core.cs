@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using WebApplication.Models;
+using System;
+
 
 
 namespace WebApplication {
@@ -137,7 +139,7 @@ namespace WebApplication {
 
                 string text1 = File.ReadAllText(icecastConfigServer);
                 text1 = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0",stationId));
-                File.WriteAllText(icecastConfigApp, text1);
+                File.WriteAllText(icecastConfigServer, text1);
 
             }
         }
