@@ -67,13 +67,13 @@
 
               <tr><th><label id="ReportBeginDate">Report Begin Date </label></th>
                 <td>  
-                  <input type="date" name="start" value="@if (Model.start != null) {@Model.start_d.ToString("yyyy-MM-dd"); }else{@DateTime.Today.ToString("yyyy-MM-dd");}" />
+                  <input type="date" id="start" name="start" value="@if (Model.start != null) {@Model.start_d.ToString("yyyy-MM-dd"); }else{@DateTime.Today.ToString("yyyy-MM-dd");}" />
                 </td>
               </tr>
           
               <tr><th><label id="ReportEndDate">Report End Date </label></th>
                 <td>  
-                  <input type="date" name="end" value="@if (Model.end != null) {@Model.end_d.ToString("yyyy-MM-dd"); }else{@DateTime.Today.ToString("yyyy-MM-dd");}" />
+                  <input type="date" id="end" name="end" value="@if (Model.end != null) {@Model.end_d.ToString("yyyy-MM-dd"); }else{@DateTime.Today.ToString("yyyy-MM-dd");}" />
                 </td>  
               </tr>  
           

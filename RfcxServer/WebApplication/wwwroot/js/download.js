@@ -51,9 +51,9 @@ function getStationsList(data) {
     var data_dic = JSON.parse(data);
     console.log(data_dic);
     for(station of data_dic){
-    $("#select").append('<option value='+station["Id"]+'>' + station['Name']+ '</option>');	
+    $("#ddl").append('<option value='+station["Id"]+'>' + station['Name']+ '</option>');	
     }
-    buscarAudios()
+    //buscarAudios()
 }
 
 
@@ -118,7 +118,7 @@ function formatDate(date) {
 
 //AQUÍ HAGO POST EN DOWNLOAD Y ENVÍO EL ID DE LA ESTACIÓN, FECHA INI, FECHA FIN 
 function buscarAudios(){
-    var selectFilter = $("#select")[0];
+    var selectFilter = $("#ddl")[0];
     var selectValue = selectFilter.options[selectFilter.selectedIndex].value;
 
     var startInput = $("#start").val();
