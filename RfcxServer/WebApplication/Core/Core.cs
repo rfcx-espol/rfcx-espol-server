@@ -120,7 +120,7 @@ namespace WebApplication {
                 Directory.CreateDirectory(StationOggFolderPath(stationId));
                 File.Create(Path.Combine(stationFolderPath, Constants.PLAYLIST_FILE_NAME));
 
-                string templateFile=Path.Combine(Constants.SERVER_ICECAST_CONFIG_DIRECTORY,ConstantsTEMPLATE_ICECAST_CONFIG);
+                string templateFile=Path.Combine(Constants.SERVER_ICECAST_CONFIG_DIRECTORY,Constants.TEMPLATE_ICECAST_CONFIG);
 
                 string filename=Constants.TEMPLATE_ICECAST_CONFIG_FILENAME.Replace("0",stationId);
 
@@ -149,7 +149,6 @@ namespace WebApplication {
                 Directory.CreateDirectory(name1);
                 Directory.CreateDirectory(StationAudiosFolderPathName(name1));
                 Directory.CreateDirectory(StationOggFolderPathName(name1));
-                File.Create(Path.Combine(stationFolderPath, Constants.PLAYLIST_FILE_NAME));
             }
         }
         public static string getServerDirectory(){
