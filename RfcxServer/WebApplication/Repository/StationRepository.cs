@@ -1,5 +1,4 @@
 using WebApplication.DbModels;
-using WebApplication.Core;
 using WebApplication.IRepository;
 using Microsoft.Extensions.Options;
 using WebApplication.Models;
@@ -78,6 +77,7 @@ namespace WebApplication.Repository
     public async Task<bool> Add(Station item)
     {
         try
+
         {
             
             var list=_context.Stations.Find(_ => true).ToList();
@@ -93,7 +93,7 @@ namespace WebApplication.Repository
                 for (int i=0;i<list.Count;i++){
                     if(item.Id==list[i].Id){
                         return false;
-                    }s
+                    }
                 }
             }
             await _context.Stations.InsertOneAsync(item);

@@ -8,6 +8,6 @@ namespace WebApplication.Models
         public const string TEMPLATE_ICECAST_CONFIG="template/ices-playlist-0.xml";
         public const string APP_ICECAST_CONFIG_DIRECTORY="../Icecast/icecast-config/";
         public const string TEMPLATE_ICECAST_CONFIG_FILENAME="ices-playlist-0.xml";
-        public const string PLAYLIST_FILE_NAME="playlist.txt"
+        public const string PLAYLIST_FILE_NAME="playlist.txt";
     }
 }
