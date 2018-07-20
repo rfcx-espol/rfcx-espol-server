@@ -97,7 +97,7 @@ function addDataHours(data){
                 maxV = value;
             }
             var date = new Date(time*1000);
-            var hours = date.getHours()+":"+(date.getMinutes()<10?'0':'') + date.getMinutes();;
+            var hours = date.getHours()+":"+(date.getMinutes()<10?'0':'') + date.getMinutes();
             dataPoints.push({
                 x: date,
                 y: value,

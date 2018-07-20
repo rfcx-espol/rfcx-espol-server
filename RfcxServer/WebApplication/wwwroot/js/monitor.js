@@ -86,7 +86,7 @@ function displayMonitor() {
         //Collect data
         var idSensor = sensors['id'];
 
-        var actual = moment();
+        var actual = moment('19-07-2018');
         var actualTimestamp = actual.unix();
         var lastTimestamp = actual.clone().subtract(2,'hours').unix();
 
@@ -139,9 +139,12 @@ function addData(data) {
             }if(value>maxValue){
                 maxValue = value;
             }
+            var date = new Date(time*1000);
+            var hours = date.getHours()+":"+(date.getMinutes()<10?'0':'') + date.getMinutes();
             dataL.push({
                 x: new Date(timestamp*1000),
                 y: value,
+                hour, hours,
                 color: colorP
             });
         }
@@ -156,16 +159,19 @@ function addData(data) {
     $("#"+idMax).text(maxValue);
     $("#"+idAvg).text(avgValue);
 
-    displayChart(divIdChart, titleVertical, colorP, dataL, "hh:mm TT");
+    displayChart(divIdChart, titleVertical, colorP, dataL, "DDD/D HH:mm", "<strong> {hour}</strong>: {y}");
 }
 
 //Display individual chart
-function displayChart(divId, titleVertical, colorL, data, format){
+function displayChart(divId, titleVertical, colorL, data, format, contentTool){
     var chartMon = new CanvasJS.Chart(divId, {
         animationEnabled: true,
         zoomEnabled: true,
         height: 320,
         theme: "light2",
+        toolTip:{   
+			content: contentTool   
+		},
         axisX:{      
             valueFormatString: format
         },
@@ -228,7 +234,6 @@ function individualChart(nameChart){
             '<div class="tab-content">'+
                 '<div id="data-act-'+idDiv+'" class="tab-pane fade in active">'+
                     '<select id="selectBox'+idDiv+'1" class="selectDiv" onchange="changeFunc(this.id);">'+
-                    '<option disabled selected value> -- Escoge una opción -- </option>'+
                     '<option value="hora">Hora</option>'+
                     '<option value="12horas">12 horas</option>'+
                     '<option value="dia">Día</option>'+
@@ -356,9 +361,11 @@ function addDataEachChart(data){
             maxV = value;
         }
         var date = new Date(time*1000);
+        var hours = date.getHours()+":"+(date.getMinutes()<10?'0':'') + date.getMinutes();
         dataPoints.push({
             x: new Date(time*1000),
             y: value,
+            hour: hours,
             color: colorP
         });
     }
@@ -374,7 +381,7 @@ function addDataEachChart(data){
     $("#"+maxValId).text(maxV);
     $("#"+avgValId).text(avgV);
     
-    displayChart(chartId, titleVertical, colorP, dataPoints, "DDD DD");
+    displayChart(chartId, titleVertical, colorP, dataPoints, "DDD/D HH:mm", "<strong> {hour}</strong>: {y}");
 }
 
 //Open tab selected
