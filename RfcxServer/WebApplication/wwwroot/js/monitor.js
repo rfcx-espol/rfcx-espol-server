@@ -130,7 +130,7 @@ function addData(data) {
 
     if(data!=null && data.length != 0){
         for(var i = 0; i<data.length; i++){
-            var value = parseInt(data[i].Value);
+            var value = parseFloat(data[i].Value);
             var timestamp = parseInt(data[i].Timestamp);            
             
             sumValue = sumValue + value;
@@ -347,7 +347,7 @@ function addDataEachChart(data){
         for(points of data){
         var type = points['Type'];
         var time = parseInt(points['Timestamp']);
-        var value = parseInt(points['Value']);
+        var value = parseFloat(points['Value']);
         
         sumV = sumV + value;
         if(value<minV){

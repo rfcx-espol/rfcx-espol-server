@@ -89,7 +89,7 @@ function addDataHours(data){
         var minV = 5000; var maxV = 0; var sumV = 0;
         for(points of data){
             var time = parseInt(points['Timestamp']);
-            var value = parseInt(points['Value']);
+            var value = parseFloat(points['Value']);
             sumV = sumV + value;
             if(value<minV){
                 minV = value;
@@ -130,7 +130,7 @@ function addDataDays(data){
         var minV = 5000; var maxV = 0; var sumV = 0;
         for(points of data){
             var time = parseInt(points['Timestamp']);
-            var value = parseInt(points['Value']);
+            var value = parseFloat(points['Value']);
             sumV = sumV + value;
             if(value<minV){
                 minV = value;
@@ -169,7 +169,7 @@ function addDataOneDay(data, status){
             var minV = 5000; var maxV = 0; var sumV = 0;
             for(points of data){
                 var time = parseInt(points['Timestamp']);
-                var value = parseInt(points['Value']);
+                var value = parseFloat(points['Value']);
                 sumV = sumV + value;
                 if(value<minV){
                     minV = value;
