@@ -86,7 +86,7 @@ function displayMonitor() {
         //Collect data
         var idSensor = sensors['id'];
 
-        var actual = moment('19-07-2018');
+        var actual = moment();
         var actualTimestamp = actual.unix();
         var lastTimestamp = actual.clone().subtract(2,'hours').unix();
 
