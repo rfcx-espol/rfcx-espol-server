@@ -139,7 +139,7 @@ function addData(data) {
             }if(value>maxValue){
                 maxValue = value;
             }
-            var date = new Date(time*1000);
+            var date = new Date(timestamp*1000);
             var hours = date.getHours()+":"+(date.getMinutes()<10?'0':'') + date.getMinutes();
             dataL.push({
                 x: new Date(timestamp*1000),
