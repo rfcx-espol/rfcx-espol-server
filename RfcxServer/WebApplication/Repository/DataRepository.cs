@@ -195,18 +195,24 @@ namespace WebApplication.Repository
                 var DataAgreggateList= new List<Data>();
                 for (int i=0;i<Count;i++){
                     if(i==0){
+                        Console.Write("GG1");
                         if(!((Convert.ToInt64(DataFilteredList[i].Timestamp)>=Convert.ToInt64(StartTimestampTemp)) && 
                         (Convert.ToInt64(DataFilteredList[i].Timestamp)<(Convert.ToInt64(StartTimestampTemp)+finalFilter)))){
                             StartTimestampTemp=DataFilteredList[i].Timestamp;                              
                     }
                        
                     }
+                    Console.WriteLine("GG2");
+                    Console.WriteLine("datahere "+DataFilteredList[i].Timestamp);
+                                        Console.Write(DataFilteredList[i].Timestamp);
                     if((Convert.ToInt64(DataFilteredList[i].Timestamp)>=Convert.ToInt64(StartTimestampTemp)) && 
                     (Convert.ToInt64(DataFilteredList[i].Timestamp)<(Convert.ToInt64(StartTimestampTemp)+finalFilter))){
+                        Console.Write(DataFilteredList[i].Value);
                         valueTemp+=Convert.ToInt32(DataFilteredList[i].Value);
                         valueCountTemp++;                        
                     }else{
                         if(valueCountTemp>0){
+                            Console.Write("GG3");
                             Data DataTemp= new Data();
                             DataTemp.StationId=DataFilteredList[0].StationId;
                             DataTemp.SensorId=DataFilteredList[0].SensorId;

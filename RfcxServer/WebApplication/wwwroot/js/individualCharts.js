@@ -4,7 +4,7 @@ var dataSensor = {};
 
 //get location and type of actual sensor
 function getDataSensor(idSensor){
-    $.getJSON('api/Sensor/'+idSensor, function(data){
+    $.getJSON('api/Station/'+stationId+'/Sensor/'+idSensor, function(data){
         dataSensor['location'] = data['Location'];
         dataSensor['type'] = data['Type'];
         dataSensor['id'] = data['Id'];
@@ -159,7 +159,7 @@ function addDataDays(data){
 
 }
 
-function addDataOneDay(data){
+function addDataOneDay(data, status){
     var colorP = getLegends()[0], titleVertical = getLegends()[1];
     var minValId = getLegends()[2], maxValId= getLegends()[3];
     var avgValId= getLegends()[4], chartId= getLegends()[5];
