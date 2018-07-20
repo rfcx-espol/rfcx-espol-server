@@ -18,9 +18,6 @@
 <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
 
 
-
-
-
 <!-- Main style sheet -->
 <link href="~/css/site.css" rel="stylesheet">    
 
@@ -45,15 +42,15 @@
 
         <div class="mu-title">
           <br />
-          <h2>Sound Files Downloader</h2>
+          <h2> Descarga de Audios </h2>
         </div>
 
 
-        <form method="post" enctype="#mu-about-ustipart/form-data" action="/Download">
+        <form method="post" id="form1" enctype="#mu-about-ustipart/form-data" action="/Download">
           <div class="form-group">
             <table class="table table-bordered" id="vertical-table">
               
-              <tr><th><label for="ddl"> Descarga de Audios </label></th> 
+              <tr><th><label for="ddl"> Estación </label></th> 
                 <td>    
                 @Html.DropDownList("ddl", Model.stationFolders.Select(item => new SelectListItem
                 {
@@ -65,13 +62,14 @@
                 </td>    
               </tr>
 
-              <tr><th><label id="ReportBeginDate">Report Begin Date </label></th>
+              <tr><th><label id="ReportBeginDate">Fecha Inicial </label></th>
                 <td>  
-                  <input type="date" id="start" name="start" value="@if (Model.start != null) {@Model.start_d.ToString("yyyy-MM-dd"); }else{@DateTime.Today.ToString("yyyy-MM-dd");}" />
+                  <input type="date" id="start" name="start" value="@if (Model.start != null) {@Model.start_d.ToString("yyyy-MM-dd"); }else{@DateTime.Today.ToString("yyyy-MM-dd");}" /> 
+                  
                 </td>
               </tr>
           
-              <tr><th><label id="ReportEndDate">Report End Date </label></th>
+              <tr><th><label id="ReportEndDate">Fecha Final </label></th>
                 <td>  
                   <input type="date" id="end" name="end" value="@if (Model.end != null) {@Model.end_d.ToString("yyyy-MM-dd"); }else{@DateTime.Today.ToString("yyyy-MM-dd");}" />
                 </td>  
@@ -80,7 +78,7 @@
             </table>
 
             <br />
-            <button type="submit" class="out">Search </button><br /><br /><br />
+            <button id="search" type="submit" class="out"> Buscar </button><br /><br /><br /> <button id="hide" type="submit">automticGet</button>
           </div> 
         </form>
              
@@ -91,13 +89,14 @@
                 <thead>
                   <!-- <th>#</th> -->
                   <th><input type="checkbox" id="selectAll"></th>
-                  <th>Name File</th>
-                  <th>Date Created</th>
-                  <th>Play</th>
-                  <th>Label &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i class="glyphicon glyphicon-search"></i></th>
+                  <th>Nombre de Archivo</th>
+                  <th>Fecha de Creación</th>
+                  <th>Reproducir</th>
+                  <th>Etiqueta &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i class="material-icons">search</i></th>
                 </thead>
 
                 <form method="POST" id="form2" enctype="multipart/form-data" action="/Download/DownloadFiles">
+                <tbody id="myTable-page">
                 @foreach (var item in Model.filesSorted)
                 {
                   <tr>
@@ -125,15 +124,17 @@
                         }
                   </tr>
                 }
-                
+                </tbody>
               </table>
 
             <input type="hidden" name="start" value="@if (Model.start != null) {@Model.start_d.ToString("yyyy-MM-dd"); }" />
+            
             <input type="hidden" name="end" value="@if (Model.end != null) {@Model.end_d.ToString("yyyy-MM-dd"); }" />
             <input id="ddt" name="station" type="hidden" value="@Model.selected" />
             <input type="hidden" id="lista" name="lista" value="" />
+            <ul class="pagination pagination-lg pager" id="myPager"></ul>
             <br />
-            <button id="dl" type="button" class="out">Download</button><br /><br /><br /> 
+            <button id="dl" type="submit" class="out"> Descargar </button><br /><br /><br /> 
           </div>        
         </form>                                        
       </div>
@@ -142,5 +143,11 @@
 </div>
 </section>
 @section Scripts {
+
   <script src="~/js/download.js"></script> 
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+  <script src="~/js/paged.js"></script> 
+
 }
