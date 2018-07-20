@@ -144,7 +144,7 @@ function addData(data) {
             dataL.push({
                 x: new Date(timestamp*1000),
                 y: value,
-                hour, hours,
+                hour: hours,
                 color: colorP
             });
         }
