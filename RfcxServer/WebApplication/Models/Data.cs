@@ -16,5 +16,7 @@ namespace WebApplication.Models
         public string Value { get; set; }
         public string Units { get; set; }
         public string Location { get; set; }
+
+        
     }
 }

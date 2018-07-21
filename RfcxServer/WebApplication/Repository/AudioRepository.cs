@@ -94,7 +94,13 @@ namespace WebApplication.Repository
         {
             try
             {
-                item.Id=_context.Audios.Find(_ => true).ToList().Count+1;
+                var list=_context.Audios.Find(_ => true).ToList();
+                if(list.Count>0){
+                    item.Id=list[list.Count-1].Id+1;
+                }else{
+                    item.Id=1;
+                }
+    
                 await _context.Audios.InsertOneAsync(item);
             }
             catch (Exception ex)

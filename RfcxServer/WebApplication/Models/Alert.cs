@@ -17,7 +17,7 @@ namespace WebApplication.Models
         CREATED: When Alert is just created because a rule is being breaking.
         SEND: When Alert is just send to Receiver
         VERIFIED: When Alert is already VERIFIED by Receiver
-        CORRECT: When station is already verified. Then server can create new alert to this station
+        CORRECT: When alert is already verified. Then server can create new alert to this station
         */
         public string Status { get; set; }
         public string Repeat { get; set; }

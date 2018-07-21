@@ -79,7 +79,7 @@ namespace WebApplication.Repository
         {
             try
             {
-                List<int> dataIdList=new List<int>();
+                List<String> dataIdList=new List<String>();
                 List<Data> data;
                 List<Sensor> sensor;
                 List<Station> stations= _context.Stations.Find(_=>true).ToList();
@@ -94,12 +94,12 @@ namespace WebApplication.Repository
                         data=_context.Datas.Find(filter1).ToList();
                         if(data.Count>0){
                             var dataId=data.Count-1;
-                            dataIdList.Add(data[dataId].Id);
+                            dataIdList.Add(data[dataId].DataId);
                         }
                         
                     }
                 }
-                var filter2=Builders<Data>.Filter.In("Id", dataIdList);
+                var filter2=Builders<Data>.Filter.In("DataId", dataIdList);
                 return await _context.Datas.Find(filter2).ToListAsync();
             
             }
@@ -241,14 +241,14 @@ namespace WebApplication.Repository
             
             try
             {
-                int id=0;
+                var dataId="";
                 var filter =Builders<Data>.Filter.Eq("StationId", StationId) & Builders<Data>.Filter.Eq("SensorId", SensorId);
                 List<Data> data=_context.Datas.Find(filter).ToList();
                 if(data.Count>0){
-                    id=data[data.Count-1].Id;
+                    dataId=data[data.Count-1].DataId;
                 }
                 
-                var filter2=Builders<Data>.Filter.Eq("Id", id);
+                var filter2=Builders<Data>.Filter.Eq("DataId", dataId);
                 return await _context.Datas.Find(filter2).FirstOrDefaultAsync();
             
             }
@@ -263,14 +263,14 @@ namespace WebApplication.Repository
             
             try
             {
-                int id=0;
+                var dataId="";
                 var filter =Builders<Data>.Filter.Eq("StationId", StationId);
                 List<Data> data=_context.Datas.Find(filter).ToList();
                 if(data.Count>0){
-                    id=data[data.Count-1].Id;
+                    dataId=data[data.Count-1].DataId;
                 }
                 
-                var filter2=Builders<Data>.Filter.Eq("Id", id);
+                var filter2=Builders<Data>.Filter.Eq("DataId", dataId);
                 return await _context.Datas.Find(filter2).FirstOrDefaultAsync();
             
             }
@@ -299,7 +299,13 @@ namespace WebApplication.Repository
         {
             try
             {
-                item.Id=_context.Datas.Find(_ => true).ToList().Count+1;
+                var list=_context.Datas.Find(_ => true).ToList();
+                if(list.Count>0){
+                    item.Id=list[list.Count-1].Id+1;
+                }else{
+                    item.Id=1;
+                }
+                
                 await _context.Datas.InsertOneAsync(item);
             }
             catch (Exception ex)
