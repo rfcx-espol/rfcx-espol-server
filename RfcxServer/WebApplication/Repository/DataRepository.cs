@@ -195,16 +195,12 @@ namespace WebApplication.Repository
                 var DataAgreggateList= new List<Data>();
                 for (int i=0;i<Count;i++){
                     if(i==0){
-                        Console.Write("GG1");
                         if(!((Convert.ToInt64(DataFilteredList[i].Timestamp)>=Convert.ToInt64(StartTimestampTemp)) && 
                         (Convert.ToInt64(DataFilteredList[i].Timestamp)<(Convert.ToInt64(StartTimestampTemp)+finalFilter)))){
                             StartTimestampTemp=DataFilteredList[i].Timestamp;                              
                     }
                        
                     }
-                    Console.WriteLine("GG2");
-                    Console.WriteLine("datahere "+DataFilteredList[i].Timestamp);
-                                        Console.Write(DataFilteredList[i].Timestamp);
                     if((Convert.ToInt64(DataFilteredList[i].Timestamp)>=Convert.ToInt64(StartTimestampTemp)) && 
                     (Convert.ToInt64(DataFilteredList[i].Timestamp)<(Convert.ToInt64(StartTimestampTemp)+finalFilter))){
                         Console.Write(DataFilteredList[i].Value);
@@ -212,7 +208,6 @@ namespace WebApplication.Repository
                         valueCountTemp++;                        
                     }else{
                         if(valueCountTemp>0){
-                            Console.Write("GG3");
                             Data DataTemp= new Data();
                             DataTemp.StationId=DataFilteredList[0].StationId;
                             DataTemp.SensorId=DataFilteredList[0].SensorId;
@@ -250,8 +245,7 @@ namespace WebApplication.Repository
                 var filter =Builders<Data>.Filter.Eq("StationId", StationId) & Builders<Data>.Filter.Eq("SensorId", SensorId);
                 List<Data> data=_context.Datas.Find(filter).ToList();
                 if(data.Count>0){
-                    var dataId=data.Count-1;
-                    id=data[dataId].Id;
+                    id=data[data.Count-1].Id;
                 }
                 
                 var filter2=Builders<Data>.Filter.Eq("Id", id);
@@ -273,8 +267,7 @@ namespace WebApplication.Repository
                 var filter =Builders<Data>.Filter.Eq("StationId", StationId);
                 List<Data> data=_context.Datas.Find(filter).ToList();
                 if(data.Count>0){
-                    var dataId=data.Count-1;
-                    id=data[dataId].Id;
+                    id=data[data.Count-1].Id;
                 }
                 
                 var filter2=Builders<Data>.Filter.Eq("Id", id);
