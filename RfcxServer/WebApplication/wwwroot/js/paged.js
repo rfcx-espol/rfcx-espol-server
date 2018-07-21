@@ -10,11 +10,32 @@ $.fn.pageMe = function(opts){
  
     var listElement = $this;
 
-    var perPage = settings.perPage; 
-    var children = listElement.children();
-    console.log("children: " + children );
-    var pager = $('.pager');
+    var perPage = settings.perPage;
     
+    var children = listElement.children();
+        
+    var n = 0;
+
+    for(var i=0; i< children.length; i++){
+       var l_children = (children[i].innerHTML);
+        if((l_children.length) == 19){
+            n ++;
+        }    
+    }   
+
+    while(n > 0){
+        for(var i=0; i< children.length; i++){
+            var l_children = (children[i].innerHTML);
+            if((l_children.length) == 19){
+                children.splice(i, 1);
+            }    
+        }
+        n--;
+    }    
+
+    var pager = $('.pager');
+     
+
     if (typeof settings.childSelector!="undefined") {
         children = listElement.find(settings.childSelector);
     }
@@ -22,12 +43,10 @@ $.fn.pageMe = function(opts){
     if (typeof settings.pagerSelector!="undefined") {
         pager = $(settings.pagerSelector);
     }
-    console.log(perPage);
+    
     var numItems = children.size();
     var numPages = Math.ceil(numItems/perPage);
-    console.log(numItems);
-    console.log(numPages);
-
+    
     pager.data("curr",0);
     
     
@@ -88,9 +107,6 @@ $.fn.pageMe = function(opts){
     function goTo(page){
         var startAt = page * perPage,
             endOn = startAt + perPage;
-
-        console.log("startAt: " + startAt);
-        console.log("endOn: " + endOn);
 
         children.css('display','none').slice(startAt, endOn).show();
         
