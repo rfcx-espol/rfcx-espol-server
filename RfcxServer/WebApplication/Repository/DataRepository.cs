@@ -203,7 +203,6 @@ namespace WebApplication.Repository
                     }
                     if((Convert.ToInt64(DataFilteredList[i].Timestamp)>=Convert.ToInt64(StartTimestampTemp)) && 
                     (Convert.ToInt64(DataFilteredList[i].Timestamp)<(Convert.ToInt64(StartTimestampTemp)+finalFilter))){
-                        Console.Write(DataFilteredList[i].Value);
                         valueTemp+=Convert.ToInt32(DataFilteredList[i].Value);
                         valueCountTemp++;                        
                     }else{
@@ -246,6 +245,8 @@ namespace WebApplication.Repository
                 List<Data> data=_context.Datas.Find(filter).ToList();
                 if(data.Count>0){
                     dataId=data[data.Count-1].DataId;
+                }else{
+                    return null;
                 }
                 
                 var filter2=Builders<Data>.Filter.Eq("DataId", dataId);
@@ -268,6 +269,8 @@ namespace WebApplication.Repository
                 List<Data> data=_context.Datas.Find(filter).ToList();
                 if(data.Count>0){
                     dataId=data[data.Count-1].DataId;
+                }else{
+                    return null;
                 }
                 
                 var filter2=Builders<Data>.Filter.Eq("DataId", dataId);
