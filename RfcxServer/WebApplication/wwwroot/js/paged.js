@@ -13,26 +13,31 @@ $.fn.pageMe = function(opts){
     var perPage = settings.perPage;
     
     var children = listElement.children();
+
         
-    var n = 0;
+    /*   BEGIN: Delete audios out of date of paged table   */
+
+    var audiosOutOfDate = 0;
 
     for(var i=0; i< children.length; i++){
-       var l_children = (children[i].innerHTML);
-        if((l_children.length) == 19){
-            n ++;
+        var lengthChildren = (children[i].innerHTML);
+        if((lengthChildren.length) == 19){
+            audiosOutOfDate ++;
         }    
     }   
-
-    while(n > 0){
+ 
+    while(audiosOutOfDate > 0){
         for(var i=0; i< children.length; i++){
             var l_children = (children[i].innerHTML);
             if((l_children.length) == 19){
                 children.splice(i, 1);
             }    
         }
-        n--;
+        audiosOutOfDate--;
     }    
-
+ 
+    /*  END: Delete audios out of date of paged table   */
+    
     var pager = $('.pager');
      
 
@@ -45,6 +50,7 @@ $.fn.pageMe = function(opts){
     }
     
     var numItems = children.size();
+
     var numPages = Math.ceil(numItems/perPage);
     
     pager.data("curr",0);
@@ -54,13 +60,16 @@ $.fn.pageMe = function(opts){
         $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);;
     }
     
-    /* Para crear botones con los números del paginado */
+    /* BEGIN: Para crear botones con los números del paginado */
+
     var curr = 0;
+
     while(numPages > curr && (settings.hidePageNumbers==false)){
         $('<li><a href="#" class="page_link">'+(curr+1)+'</a></li>').appendTo(pager);
         curr++;
     }
     
+    /* END: Para crear botones con los números del paginado */
     
     if (settings.showPrevNext){
         $('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
@@ -129,10 +138,13 @@ $.fn.pageMe = function(opts){
         pager.children().eq(page+1).addClass("active");
     
     }
+
 };
 
 $(document).ready(function(){
-    
+
     $('#myTable-page').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage: 10});
-    
+
 });
+
+
