@@ -9,11 +9,13 @@
   font-size: 1.33em;
   margin: 2px;
   padding-bottom: 5px;
-  /*border-bottom: 1px #e09913 solid;*/
+  border-bottom: 1px #8b8080 solid;
+  margin-bottom: 15px;
   text-align: center;
 }
 #firstHeading a{
-  color: #007f42 !important;
+  /*color: #007f42 !important;*/
+  color: #8b8080 !important; 
   text-decoration: none !important;
 }
 #firstHeading a:hover{
@@ -34,6 +36,7 @@ p{
 .sensor-title{
   font-size: 13px; 
   float: left;
+  margin-right: 5px;
 }
 .fa{
   font-size: 19px;

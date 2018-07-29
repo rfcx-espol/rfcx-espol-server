@@ -52,7 +52,16 @@ namespace WebApplication
             services.AddTransient<ISensorRepository, SensorRepository>();
             services.AddTransient<IDataRepository, DataRepository>();
             services.AddTransient<IInfoSensoresRepository, InfoSensoresRepository>();
-            
+            services.AddCors(options =>
+                {
+                    options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyOrigin();
+                    });
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +75,7 @@ namespace WebApplication
             {
                 app.UseExceptionHandler("/Error");
             }
+            app.UseCors("AllowAllOrigins");
             app.UseMvcWithDefaultRoute();
             app.UseStaticFiles();
 

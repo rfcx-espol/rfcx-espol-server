@@ -13,6 +13,7 @@ namespace WebApplication.Models
         public int Id { get; set; }
         public string APIKey { get; set; }
         public string Name { get; set; }
+        public int GameStation { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
         public string AndroidVersion { get; set; }

@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication.Views.Download
 {
-    public class DOwnloadModel : PageModel
+    public class DownloadModel : PageModel
     {
         private List<String> stations;
 
@@ -26,3 +27,4 @@ namespace WebApplication.Views.Download
         }
     }
 }
+

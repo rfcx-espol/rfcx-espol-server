@@ -4,7 +4,7 @@ var dataSensor = {};
 
 //get location and type of actual sensor
 function getDataSensor(idSensor){
-    $.getJSON('api/Sensor/'+idSensor, function(data){
+    $.getJSON('api/Station/'+stationId+'/Sensor/'+idSensor, function(data){
         dataSensor['location'] = data['Location'];
         dataSensor['type'] = data['Type'];
         dataSensor['id'] = data['Id'];
@@ -27,36 +27,19 @@ function getLegends(){
     var location = dataSensor["location"];
     var type = dataSensor["type"];
     var titleVertical = "Temperatura °C";
+    var minValId = "minValue"+type+"_"+location;
+    var maxValId = "maxValue"+type+"_"+location;
+    var avgValId = "avgValue"+type+"_"+location;
+    var chartId = "chart_"+type+"_"+location;
     if(type=="Humidity" && location=="Environment"){
-        type=type.replace("Humidity", "Humedad");
-        location = location.replace("Environment", "Ambiente");
-
         var colorP = "#424084";
         var titleVertical = "Humedad °H";
-        var minValId = "minValueHum";
-        var maxValId = "maxValueHum";
-        var avgValId = "avgValueHum";
-        var chartId = "chart_Humedity";
     }
     else if(type=="Temperature" && location=="Environment"){
-        type=type.replace("Temperature", "Temperatura");
-        location = location.replace("Environment", "Ambiente");
-
         var colorP = "orange";
-        var minValId = "minValueAmb";
-        var maxValId = "maxValueAmb";
-        var avgValId = "avgValueAmb";
-        var chartId = "chart_Temp_Env";
     }
     else if(type=="Temperature" && location=="Station"){
-        type=type.replace("Temperature", "Temperatura");
-        location = location.replace("Station", "Estación");
-
         var colorP = "LightSeaGreen";
-        var minValId = "minValueTemp";
-        var maxValId = "maxValueTemp";
-        var avgValId = "avgValueTemp";
-        var chartId = "chart_Temp_Sta";
     }
     return [colorP, titleVertical, minValId, maxValId, avgValId, chartId]
 }
@@ -101,12 +84,12 @@ function addDataHours(data){
     var colorP = getLegends()[0], titleVertical = getLegends()[1];
     var minValId = getLegends()[2], maxValId= getLegends()[3];
     var avgValId= getLegends()[4], chartId= getLegends()[5];
-    if(data.length!=0){
+    if(data!=null && data.length!=0){
         //Boxes min, max, avg
         var minV = 5000; var maxV = 0; var sumV = 0;
         for(points of data){
             var time = parseInt(points['Timestamp']);
-            var value = parseInt(points['Value']);
+            var value = parseFloat(points['Value']);
             sumV = sumV + value;
             if(value<minV){
                 minV = value;
@@ -114,7 +97,7 @@ function addDataHours(data){
                 maxV = value;
             }
             var date = new Date(time*1000);
-            var hours = date.getHours()+":"+(date.getMinutes()<10?'0':'') + date.getMinutes();;
+            var hours = date.getHours()+":"+(date.getMinutes()<10?'0':'') + date.getMinutes();
             dataPoints.push({
                 x: date,
                 y: value,
@@ -142,12 +125,12 @@ function addDataDays(data){
     var colorP = getLegends()[0], titleVertical = getLegends()[1];
     var minValId = getLegends()[2], maxValId= getLegends()[3];
     var avgValId= getLegends()[4], chartId= getLegends()[5];
-    if(data.length!=0){
+    if(data!=null && data.length!=0){
         //Boxes min, max, avg
         var minV = 5000; var maxV = 0; var sumV = 0;
         for(points of data){
             var time = parseInt(points['Timestamp']);
-            var value = parseInt(points['Value']);
+            var value = parseFloat(points['Value']);
             sumV = sumV + value;
             if(value<minV){
                 minV = value;
@@ -176,19 +159,17 @@ function addDataDays(data){
 
 }
 
-function addDataOneDay(data){
+function addDataOneDay(data, status){
     var colorP = getLegends()[0], titleVertical = getLegends()[1];
     var minValId = getLegends()[2], maxValId= getLegends()[3];
     var avgValId= getLegends()[4], chartId= getLegends()[5];
-    if(data != "null"){
-        data = JSON.parse(data);
-        
-        if(data.length!=0){
+    data = JSON.parse(data);
+    if(data!=null && data.length!=0){
             //Boxes min, max, avg
             var minV = 5000; var maxV = 0; var sumV = 0;
             for(points of data){
                 var time = parseInt(points['Timestamp']);
-                var value = parseInt(points['Value']);
+                var value = parseFloat(points['Value']);
                 sumV = sumV + value;
                 if(value<minV){
                     minV = value;
@@ -210,10 +191,6 @@ function addDataOneDay(data){
                 avgV = 0;
             }
             changeValuesMinMaxAvg(minValId, maxValId, avgValId, minV, maxV, avgV);
-            
-        }else{
-            changeValuesMinMaxAvg(minValId, maxValId, avgValId, 0, 0, 0);
-        }
     }
     else{
         changeValuesMinMaxAvg(minValId, maxValId, avgValId, 0, 0, 0);

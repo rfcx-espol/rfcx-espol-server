@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using WebApplication.Models;
+using System;
+
 
 
 namespace WebApplication {
@@ -68,6 +70,11 @@ namespace WebApplication {
             }
         }
 
+        public static string RecyclerFolderPath() {
+
+            return Path.Combine(FilesFolderPath, "recycler");
+        }
+
         public static string StationFolderPath(string stationId) {
 
             return Path.Combine(FilesFolderPath, "station" + stationId);
@@ -99,6 +106,13 @@ namespace WebApplication {
         public static string StationOggFolderPathName(string name) {
             return Path.Combine(StationFolderPathName(name), "ogg");
         }
+        
+        public static void MakeRecyclerFolder() {
+            var recyclerFolderPath = RecyclerFolderPath();
+            if (!Directory.Exists(recyclerFolderPath)) {
+                Directory.CreateDirectory(recyclerFolderPath);
+            }
+        }
 
         public static void MakeStationFolder(string stationId) {
             var stationFolderPath = StationFolderPath(stationId);
@@ -106,19 +120,30 @@ namespace WebApplication {
                 Directory.CreateDirectory(stationFolderPath);
                 Directory.CreateDirectory(StationAudiosFolderPath(stationId));
                 Directory.CreateDirectory(StationOggFolderPath(stationId));
+                File.Create(Path.Combine(stationFolderPath, Constants.PLAYLIST_FILE_NAME));
+
+                string templateFile=Path.Combine(Constants.SERVER_ICECAST_CONFIG_DIRECTORY,Constants.TEMPLATE_ICECAST_CONFIG);
+
+                string filename=Constants.TEMPLATE_ICECAST_CONFIG_FILENAME.Replace("0",stationId);
+
+                string icecastConfigApp=Path.Combine(Constants.APP_ICECAST_CONFIG_DIRECTORY,filename);
+
+                string icecastConfigServer=Path.Combine(Constants.SERVER_ICECAST_CONFIG_DIRECTORY, filename);
+
+                File.Copy(templateFile, icecastConfigApp, true);
+                File.Copy(templateFile,icecastConfigServer, true);
+
+                string text = File.ReadAllText(icecastConfigApp);
+                text = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0",stationId));
+                File.WriteAllText(icecastConfigApp, text);
+
+                string text1 = File.ReadAllText(icecastConfigServer);
+                text1 = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0",stationId));
+                File.WriteAllText(icecastConfigServer, text1);
+
             }
         }
 
-        public static string RecyclerFolderPath(){
-            return Path.Combine(FilesFolderPath, "recycler");
-        }
-
-        public static void MakeRecyclerFolder() {
-            var recyclerFolderPath = RecyclerFolderPath();
-            if (!Directory.Exists(recyclerFolderPath)) {
-                Directory.CreateDirectory(recyclerFolderPath);
-            }
-        }
 
         public static void MakeStationFolderName(string name){
             string name1=Path.Combine(FilesFolderPath,name);

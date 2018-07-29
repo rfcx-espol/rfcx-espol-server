@@ -253,6 +253,11 @@ a:focus {
   margin: 0% 0.6% 0% 0.6%;
 }
 
+#hide{
+  display: none;
+}
+
+
 #horizontal-table {
   width: 98%;
   border-bottom: 2px solid #000000;

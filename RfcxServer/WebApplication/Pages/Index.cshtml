@@ -26,11 +26,10 @@
         var longitud = parseFloat(station['Longitude']);
         var idStation=station['Id'];
         var nameStation=station['Name'];
-        nameStation=nameStation.replace("Station","Estación");
 
         var contentString = '<div id="contentInfo">'+
                     '<h3 id="firstHeading" class="firstHeading"> @Html.ActionLink("titulo", "Index", "StationView", new { stationName = "stationNameValue", stationId = "stationIdVal" })</h3>'+
-                    '<div id="bodyContent" style="width: 85px;">';
+                    '<div id="bodyContent" style="width: 125px;">';
         contentString = contentString.replace("titulo", nameStation);
         contentString = contentString.replace("stationNameValue", nameStation);
         contentString = contentString.replace("stationIdVal", idStation);

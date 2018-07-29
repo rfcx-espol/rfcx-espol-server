@@ -9,8 +9,8 @@ using MongoDB.Bson.Serialization.Attributes;
 using System;
 using MongoDB.Driver;
 using System.IO;
-
-
+using System.Text.RegularExpressions;
+using WebApplication.Models;
 
 namespace WebApplication.Repository
 {
@@ -78,6 +78,7 @@ namespace WebApplication.Repository
     public async Task<bool> Add(Station item)
     {
         try
+
         {
             
             var list=_context.Stations.Find(_ => true).ToList();
@@ -95,8 +96,10 @@ namespace WebApplication.Repository
                         return false;
                     }
                 }
-            }            
+            }
             await _context.Stations.InsertOneAsync(item);
+            Core.MakeStationFolder(item.Id.ToString());
+
             return true;
         }
         catch (Exception ex)
@@ -110,28 +113,77 @@ namespace WebApplication.Repository
         try
         {
             DeleteResult actionResult = await _context.Stations.DeleteOneAsync(
-                    Builders<Station>.Filter.Eq("Id", id));
+            Builders<Station>.Filter.Eq("Id", id));
             var filter1=Builders<Sensor>.Filter.Eq("StationId", id);
             var filter2=Builders<Data>.Filter.Eq("StationId", id);
             var filter3=Builders<Audio>.Filter.Eq("StationId", id);
+            var filter4=Builders<Alert>.Filter.Eq("StationId", id);
+            var filter5=Builders<AlertsConfiguration>.Filter.Eq("StationId", id);
             _context.Sensors.DeleteMany(filter1);
             _context.Datas.DeleteMany(filter2);
-            _context.Audios.DeleteMany(filter2);
-            folderStation=Core.StationFolderPath(id.ToString());
+            _context.Audios.DeleteMany(filter3);
+            _context.Alerts.DeleteMany(filter4);
+            _context.AlertsConfigurations.DeleteMany(filter5);
             Core.MakeRecyclerFolder();
-            if (Directory.Exists(folderStation))
+            string audiosDeletedPath = Core.StationAudiosFolderPath(id.ToString());
+            string audiosOggDeletedPath = Core.StationOggFolderPath(id.ToString());
+            string stationDeletedPath = Core.StationFolderPath(id.ToString());
+            string reclyclerPath = Core.RecyclerFolderPath();
+            string audioName="";
+            string recyclerName="";
+            string[] filesInRecycler=Directory.GetFiles(reclyclerPath);
+
+            if (Directory.Exists(stationDeletedPath))
             {
-                string[] audios = Directory.GetFiles(folderStation);
+                string[] audios = Directory.GetFiles(stationDeletedPath);
+
                 foreach (string audio in audios)
                 {
-                    audioFileDeleted = Path.GetFileName(audio);
-                    audioFileRecycled = Path.Combine(Core.RecyclerFolderPath(), audioFileDeleted);
-                    File.Move(audioFileDeleted, audioFileRecycled);
+                    audioName = Path.GetFileName(audio);
+                    recyclerName = Path.Combine(reclyclerPath, audioName);
+                    File.Move(audio, AutoRenameFilename(recyclerName));
                 }
-
-                System.IO.Directory.Delete(folderStation);
+		Directory.Delete(stationDeletedPath);
             }
-            
+
+            audioName="";
+            recyclerName="";
+
+            if (Directory.Exists(audiosDeletedPath))
+            {
+                string[] audios1 = Directory.GetFiles(audiosDeletedPath);
+
+                // Copy the files and overwrite destination files if they already exist.
+                foreach (string audio in audios1)
+                {
+                    // Use static Path methods to extract only the file name from the path.
+                    audioName = Path.GetFileName(audio);
+                    recyclerName = Path.Combine(reclyclerPath, audioName);
+                    File.Move(audio, AutoRenameFilename(recyclerName));
+                }
+                Directory.Delete(audiosDeletedPath);
+            }
+
+            audioName="";
+            recyclerName="";
+
+            if (Directory.Exists(audiosOggDeletedPath))
+            {
+                string[] audios2 = Directory.GetFiles(audiosOggDeletedPath);
+
+                // Copy the files and overwrite destination files if they already exist.
+                foreach (string audio in audios2)
+                {
+                    // Use static Path methods to extract only the file name from the path.
+                    audioName = Path.GetFileName(audio);
+                    recyclerName = Path.Combine(reclyclerPath, audioName);
+                    File.Move(audio, AutoRenameFilename(recyclerName));
+                }
+                Directory.Delete(audiosOggDeletedPath);
+                Directory.Delete(stationDeletedPath);
+            }
+
+
 
             return actionResult.IsAcknowledged 
                 && actionResult.DeletedCount > 0;
@@ -210,6 +262,37 @@ namespace WebApplication.Repository
         var filter = Builders<Station>.Filter.Eq("Id", id);
         Station disp=_context.Stations.Find(filter).FirstOrDefaultAsync().Result;
         return disp;
+    }
+
+
+
+    private string AutoRenameFilename(String fileCompleteName)
+    {
+        if (File.Exists(fileCompleteName))
+    {
+        string folder = Path.GetDirectoryName(fileCompleteName);
+        string filename = Path.GetFileNameWithoutExtension(fileCompleteName);
+        string extension = Path.GetExtension(fileCompleteName);
+        int number = 1;
+
+        Match regex = Regex.Match(fileCompleteName, @"(.+) \((\d+)\)\.\w+");
+
+        if (regex.Success)
+        {
+            filename = regex.Groups[1].Value;
+            number = int.Parse(regex.Groups[2].Value);
+        }
+
+        do
+        {
+            number++;
+            fileCompleteName = Path.Combine(folder, string.Format("{0} ({1}){2}", filename, number, extension));
+        }
+        while (File.Exists(fileCompleteName));
+    }
+
+    return fileCompleteName;
+
     }
 
 
