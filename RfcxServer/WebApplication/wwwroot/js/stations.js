@@ -1,14 +1,11 @@
 $(document).ready(function(){
-//$(window).on("load", function(){
     stations_input_changed = []
     $.ajax({
         url : 'api/Station/',
         type: 'GET',
-        async: false,
+        //async: false,
         success : getStationsList
-    })
-
-    updateStationsHeight();
+    })  
 
     $("#station_modal input.form-control").change(function () {
         var input_id = $(this).attr("id");
@@ -62,7 +59,7 @@ function getStationsList(data) {
     $.ajax({
         url : 'api/Sensor/',
         type: 'GET',
-        async: false,
+        //async: false,
         success : getSensorsList
     })
 }
@@ -89,7 +86,7 @@ function getLastData() {
     $.ajax({
         url : 'api/Data/LastData',
         type: 'GET',
-        async: false,
+        //async: false,
         success : function(full_data){
             var data_dic = JSON.parse(full_data); 
             for(data of data_dic){
@@ -102,6 +99,7 @@ function getLastData() {
             }
         }
     })
+    updateStationsHeight();
 }
 
 setInterval(getLastData, 300000);
@@ -156,6 +154,7 @@ function validateForm() {
         $(i).removeClass("has-error"); 
     }
     var name = $("#form #name");
+    var game_station = $("#form #game_station");
     var api_key = $("#form #api_key");
     var latitude = $("#form #latitude");
     var longitude = $("#form #longitude");
@@ -166,6 +165,10 @@ function validateForm() {
     if(api_key.val() == "") {
         api_key.parent(".form-group").addClass("has-error");
         result = false;
+    } 
+    if(game_station.val() <= 0) {
+        game_station.parent(".form-group").addClass("has-error");
+        result = false;   
     } 
     if(!($.isNumeric(latitude.val()) && (latitude.val() >= -90) && (latitude.val() <= 90))) {
         latitude.parent(".form-group").addClass("has-error");
@@ -180,18 +183,19 @@ function validateForm() {
 
 function saveNewStation() {
     var name = $("input#name").val();
+    var game_station = $("input#game_station").val();
     var lat = $("input#latitude").val();
     var long = $("input#longitude").val();
     var and_ver = $("input#android_version").val();
     var ser_ver = $("input#services_version").val();
     var api_k = $("input#api_key").val();
-    var data = JSON.stringify({ "Name": name, "Latitude": lat, "Longitude": long,
-                "AndroidVersion": and_ver, "ServicesVersion": ser_ver, "APIKey": api_k});
+    var data = JSON.stringify({ "Name": name, "GameStation": game_station, "Latitude": lat, 
+    "Longitude": long, "AndroidVersion": and_ver, "ServicesVersion": ser_ver, "APIKey": api_k});
     $.ajax({
         type: 'POST',
         url: 'api/Station',
         dataType: 'json',
-        async: false,
+        //async: false,
         data: data,
         contentType: 'application/json'
     });
@@ -228,6 +232,8 @@ function getApiUrl(st) {
     switch(st) {
         case "name":
             return "Name";
+        case "game_station":
+            return "GameStation";
         case "latitude":
             return "Coordinates";
         case "longitude":
@@ -243,6 +249,8 @@ function getDbName(st) {
     switch(st) {
         case "name":
             return "Name";
+        case "game_station":
+            return "GameStation";
         case "latitude":
             return "Latitude";
         case "longitude":
@@ -277,6 +285,7 @@ function fillStationModal(id){
         success : function(data){
             var data_dic = JSON.parse(data);
             $("input#name").val(data_dic["Name"]);
+            $("input#game_station").val(data_dic["GameStation"]);
             $("input#api_key").val(data_dic["APIKey"]);
             $("input#latitude").val(data_dic["Latitude"]);
             $("input#longitude").val(data_dic["Longitude"]);
