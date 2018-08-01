@@ -23,11 +23,57 @@ body {
 	padding: 0px !important;
 }
 
+/* BEGIN: CSS ALARM SUBMENU. */
+
+#submenu {
+  float:left;
+  z-index: 1;
+}
+
+#submenu a {
+  background-color: #007f42 !important;
+  color:#fff;
+  text-decoration:none;
+  display:block;
+  padding-left: 5%;
+}
+
+#submenu ul {
+  display:none;
+  position:absolute;
+  min-width:140px;
+  background-color: #007f42 !important;
+}
+
+#submenu:hover > ul {
+  display:block;
+}
+
+#submenu ul li {
+  position:relative;
+  margin-bottom: 10%;
+}
+
+/* END: CSS ALARM SUBMENU. */
+
+
 ul {
   padding: 0;
   margin: 0;
   list-style: none;
 }
+
+/* BEGIN: CSS Paging Numbers */
+
+#myPager {
+
+  position: relative;
+  left: 77%;
+
+}
+
+/* FIN: CSS Paging Numbers */
+
 
 .navbar-default .navbar-text {
   color: #fff !important;

@@ -60,7 +60,7 @@ $.fn.pageMe = function(opts){
         $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);;
     }
     
-    /* BEGIN: Para crear botones con los números del paginado */
+    /* BEGIN: Create buttons with paging numbers. */
 
     var curr = 0;
 
@@ -69,7 +69,7 @@ $.fn.pageMe = function(opts){
         curr++;
     }
     
-    /* END: Para crear botones con los números del paginado */
+    /* END: Create buttons with paging numbers. */
     
     if (settings.showPrevNext){
         $('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
@@ -82,12 +82,10 @@ $.fn.pageMe = function(opts){
     }
   	pager.children().eq(1).addClass("active");
     
-    
     children.hide();
     
     children.slice(0, perPage).show();
     
-
     
     pager.find('li .page_link').click(function(){
         var clickedPage = $(this).html().valueOf()-1;
