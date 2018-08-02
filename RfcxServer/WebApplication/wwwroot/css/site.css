@@ -56,24 +56,11 @@ body {
 
 /* END: CSS ALARM SUBMENU. */
 
-
 ul {
   padding: 0;
   margin: 0;
   list-style: none;
 }
-
-/* BEGIN: CSS Paging Numbers */
-
-#myPager {
-
-  position: relative;
-  left: 77%;
-
-}
-
-/* FIN: CSS Paging Numbers */
-
 
 .navbar-default .navbar-text {
   color: #fff !important;
