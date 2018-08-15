@@ -18,7 +18,8 @@ systemctl enable rfcx-espol-server.service
 systemctl start rfcx-espol-server.service
 # systemctl status rfcx-espol-server.service
 
-chmod -R 777 $APP_DIR/files
+chmod -R 755 $APP_DIR/files
+chown -R $ICE_USER $APP_DIR/files
 
 # Icecast
 cd ./Icecast
