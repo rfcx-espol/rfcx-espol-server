@@ -3,6 +3,9 @@ using System.IO;
 using Newtonsoft.Json;
 using WebApplication.Models;
 using System;
+using System.Security.AccessControl;
+using System.Security.Principal;
+using Mono.Unix.Native;
 
 
 
@@ -118,10 +121,13 @@ namespace WebApplication {
             var stationFolderPath = StationFolderPath(stationId);
             if (!Directory.Exists(stationFolderPath)) {
                 Directory.CreateDirectory(stationFolderPath);
+                GrantAccess(stationFolderPath);
                 Directory.CreateDirectory(StationAudiosFolderPath(stationId));
+                GrantAccess(StationAudiosFolderPath(stationId));
                 Directory.CreateDirectory(StationOggFolderPath(stationId));
+                GrantAccess(StationOggFolderPath(stationId));
                 File.Create(Path.Combine(stationFolderPath, Constants.PLAYLIST_FILE_NAME));
-
+                GrantAccess(Path.Combine(stationFolderPath, Constants.PLAYLIST_FILE_NAME));
                 string templateFile=Path.Combine(Constants.SERVER_ICECAST_CONFIG_DIRECTORY,Constants.TEMPLATE_ICECAST_CONFIG);
 
                 string filename=Constants.TEMPLATE_ICECAST_CONFIG_FILENAME.Replace("0",stationId);
@@ -136,10 +142,12 @@ namespace WebApplication {
                 string text = File.ReadAllText(icecastConfigApp);
                 text = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0",stationId));
                 File.WriteAllText(icecastConfigApp, text);
-
+                GrantAccess(icecastConfigApp);
                 string text1 = File.ReadAllText(icecastConfigServer);
                 text1 = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0",stationId));
                 File.WriteAllText(icecastConfigServer, text1);
+                GrantAccess(icecastConfigServer);
+
 
             }
         }
@@ -155,6 +163,21 @@ namespace WebApplication {
         }
         public static string getServerDirectory(){
             return Constants.serverDirecrtory;
+        }
+
+        private static void GrantAccess(string fullPath)
+        {
+            Syscall.chown(fullPath, Constants.USER_ID, Constants.GROUP_ID);//1000 es el UID y GID de estudiante (file, UID, GID)
+            //Syscall.chmod(fullPath);
+            /* 
+            DirectoryInfo dInfo = new DirectoryInfo(fullPath);
+            DirectorySecurity dSecurity = dInfo.GetAccessControl();
+            dSecurity.AddAccessRule(new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null),
+             FileSystemRights.FullControl, InheritanceFlags.ObjectInherit | InheritanceFlags.ContainerInherit, 
+             PropagationFlags.None, AccessControlType.Allow));
+            dInfo.SetAccessControl(dSecurity);
+            */
+            
         }
         
     }
