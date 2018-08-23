@@ -143,7 +143,6 @@ namespace WebApplication.Repository
                     recyclerName = Path.Combine(reclyclerPath, audioName);
                     File.Move(audio, AutoRenameFilename(recyclerName));
                 }
-		Directory.Delete(stationDeletedPath);
             }
 
             audioName="";
@@ -161,7 +160,7 @@ namespace WebApplication.Repository
                     recyclerName = Path.Combine(reclyclerPath, audioName);
                     File.Move(audio, AutoRenameFilename(recyclerName));
                 }
-                Directory.Delete(audiosDeletedPath);
+                DeleteDirectory(audiosDeletedPath);
             }
 
             audioName="";
@@ -179,8 +178,9 @@ namespace WebApplication.Repository
                     recyclerName = Path.Combine(reclyclerPath, audioName);
                     File.Move(audio, AutoRenameFilename(recyclerName));
                 }
-                Directory.Delete(audiosOggDeletedPath);
-                Directory.Delete(stationDeletedPath);
+                File.Delete(stationDeletedPath+"/playlist.txt");
+                DeleteDirectory(audiosOggDeletedPath);
+                DeleteDirectory(stationDeletedPath);
             }
 
 
@@ -293,6 +293,26 @@ namespace WebApplication.Repository
 
     return fileCompleteName;
 
+    }
+    public static void DeleteDirectory(string path)
+    {
+        foreach (string directory in Directory.GetDirectories(path))
+        {
+            DeleteDirectory(directory);
+        }
+
+        try
+        {
+            Directory.Delete(path, true);
+        }
+        catch (IOException) 
+        {
+            Directory.Delete(path, true);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            Directory.Delete(path, true);
+        }
     }
 
 

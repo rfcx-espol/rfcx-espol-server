@@ -168,15 +168,7 @@ namespace WebApplication {
         private static void GrantAccess(string fullPath)
         {
             Syscall.chown(fullPath, Constants.USER_ID, Constants.GROUP_ID);//1000 es el UID y GID de estudiante (file, UID, GID)
-            //Syscall.chmod(fullPath);
-            /* 
-            DirectoryInfo dInfo = new DirectoryInfo(fullPath);
-            DirectorySecurity dSecurity = dInfo.GetAccessControl();
-            dSecurity.AddAccessRule(new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null),
-             FileSystemRights.FullControl, InheritanceFlags.ObjectInherit | InheritanceFlags.ContainerInherit, 
-             PropagationFlags.None, AccessControlType.Allow));
-            dInfo.SetAccessControl(dSecurity);
-            */
+            Syscall.chmod(fullPath, FilePermissions.ALLPERMS);
             
         }
         
