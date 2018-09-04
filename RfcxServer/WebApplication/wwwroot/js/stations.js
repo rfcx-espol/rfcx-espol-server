@@ -285,7 +285,7 @@ function fillStationModal(id){
         success : function(data){
             var data_dic = JSON.parse(data);
             $("input#name").val(data_dic["Name"]);
-            $("input#game_station").val(data_dic["GameStation"]);
+            $("input#game_station").val(parseInt(data_dic["GameStation"]));
             $("input#api_key").val(data_dic["APIKey"]);
             $("input#latitude").val(data_dic["Latitude"]);
             $("input#longitude").val(data_dic["Longitude"]);
