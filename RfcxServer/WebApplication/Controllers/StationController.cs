@@ -123,5 +123,12 @@ namespace WebApplication.Controllers
             return await _StationRepository.UpdatePosition(id, json.Latitude, json.Longitude);
         }
 
+        [HttpPatch("{id}/Gamestation")]
+        public async Task<bool> PatchGamestation(int id, [FromBody]  Arrays json)
+        {
+            if (id==0) return false;
+            return await _StationRepository.UpdateGamestation(id, json.Gamestation);
+        }
+
     }
 }

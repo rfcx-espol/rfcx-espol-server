@@ -250,6 +250,13 @@ namespace WebApplication.Repository
         return Update(disp.StationId, disp);
     }
 
+    public Task<bool> UpdateGamestation(int id, int gamestation)
+    {
+        Station disp=getStation(id);
+        disp.GameStation=gamestation;
+        return Update(disp.StationId, disp);
+    }
+
     public Task<bool> UpdatePosition(int id, string latitud, string longitud)
     {
         Station disp=getStation(id);
