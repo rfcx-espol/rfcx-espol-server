@@ -2,7 +2,7 @@ namespace WebApplication.Models
 {
     public class Constants
     {
-        public const string APP_DIRECTORY="/home/estudiante/rfcx-espol-server/Rfcxserver";
+        public const string APP_DIRECTORY="/home/estudiante/rfcx-espol-server/RfcxServer";
         public const string serverDirecrtory="/var/rfcx-espol-server/";
         public const string BASE_LINK="station0";
         public const string SERVER_ICECAST_CONFIG_DIRECTORY="/var/rfcx-espol-server/icecast-config/";
