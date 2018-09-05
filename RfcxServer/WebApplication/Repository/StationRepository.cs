@@ -181,6 +181,15 @@ namespace WebApplication.Repository
                 File.Delete(stationDeletedPath+"/playlist.txt");
                 DeleteDirectory(audiosOggDeletedPath);
                 DeleteDirectory(stationDeletedPath);
+
+                string filename=Constants.TEMPLATE_ICECAST_CONFIG_FILENAME.Replace("0",id.ToString());
+
+                string icecastConfigApp=Path.Combine(Constants.APP_ICECAST_CONFIG_DIRECTORY,filename);
+
+                string icecastConfigServer=Path.Combine(Constants.SERVER_ICECAST_CONFIG_DIRECTORY, filename);
+                File.Delete(icecastConfigApp);
+                File.Delete(icecastConfigServer);
+                
             }
 
 
