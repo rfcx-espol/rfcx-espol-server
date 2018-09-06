@@ -219,7 +219,7 @@ namespace WebApplication.Repository
                             DataTemp.Type=DataFilteredList[0].Type;
                             DataTemp.Units=DataFilteredList[0].Units;
                             DataTemp.Location=DataFilteredList[0].Location;
-                            DataTemp.Value=Convert.ToString(Convert.ToInt32(double.Parse(valueTemp/valueCountTemp)));
+                            DataTemp.Value=Convert.ToString(Convert.ToInt32(valueTemp/valueCountTemp));
                             DataTemp.Timestamp=StartTimestampTemp;
                             valueTemp=0;
                             valueCountTemp=0;
