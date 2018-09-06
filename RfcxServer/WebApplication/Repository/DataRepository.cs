@@ -186,23 +186,21 @@ namespace WebApplication.Repository
                 Builders<Data>.Filter.Lte("Timestamp", EndTimestamp);
                 var DataFilteredList =_context.Datas.Find(filter).ToList();
                 var Count= DataFilteredList.Count;
-		var flagReal=0;
+		        var flagReal=0;
                 if(Count==0){
                     return null;
-		}else{
-			flagReal=1;
-		}
+		        }else{
+			        flagReal=1;
+		        }
                 var valueTemp=0;
                 int valueCountTemp=0;
                 var StartTimestampTemp=StartTimestamp;
                 var DataAgreggateList= new List<Data>();
-		if(flagReal==1){
-			StartTimestampTemp=Convert.ToInt64(DataFilteredList[0].Timestamp)-1;
-		}
+		        if(flagReal==1){
+			        StartTimestampTemp=Convert.ToInt64(DataFilteredList[0].Timestamp)-1;
+		        }
                 for (int i=0;i<Count;i++){
                     if(i==0){
-			//Console.Write(DataFilteredList[i].Timestamp);
-			//Console.Write(StartTimestampTemp);
                         if(!((Convert.ToInt64(DataFilteredList[i].Timestamp)>=Convert.ToInt64(StartTimestampTemp)) && 
                         (Convert.ToInt64(DataFilteredList[i].Timestamp)<(Convert.ToInt64(StartTimestampTemp)+finalFilter)))){
                             StartTimestampTemp=DataFilteredList[i].Timestamp;                              
@@ -211,7 +209,6 @@ namespace WebApplication.Repository
                     }
                     if((Convert.ToInt64(DataFilteredList[i].Timestamp)>=Convert.ToInt64(StartTimestampTemp)) && 
                     (Convert.ToInt64(DataFilteredList[i].Timestamp)<(Convert.ToInt64(StartTimestampTemp)+finalFilter))){
-			//Console.Write(DataFilteredList[i].Value);
                         valueTemp+=Convert.ToInt32(double.Parse(DataFilteredList[i].Value));
                         valueCountTemp++;                        
                     }else{
@@ -222,7 +219,7 @@ namespace WebApplication.Repository
                             DataTemp.Type=DataFilteredList[0].Type;
                             DataTemp.Units=DataFilteredList[0].Units;
                             DataTemp.Location=DataFilteredList[0].Location;
-                            DataTemp.Value=Convert.ToString(Convert.ToInt32(valueTemp/valueCountTemp));
+                            DataTemp.Value=Convert.ToString(Convert.ToInt32(double.Parse(valueTemp/valueCountTemp)));
                             DataTemp.Timestamp=StartTimestampTemp;
                             valueTemp=0;
                             valueCountTemp=0;
