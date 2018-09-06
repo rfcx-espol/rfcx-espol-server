@@ -30,7 +30,5 @@ $(document).ready(function(){
         } else {
         alert("No ha seleccionado ningún archivo");
         }
-    });
-    
+    }); 
 });
-
