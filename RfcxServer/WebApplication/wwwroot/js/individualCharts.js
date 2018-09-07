@@ -343,33 +343,43 @@ function getDataSensorExport(name){
     listToExport = [];
     var estacion = stationNameSensor;
     var sensor = name.substring(7,name.length).replace("_", " ");
+    console.log(listDataSensor);
     if(listValuesMinMaxAvg.length==0 || listDataSensor.length==0){
         listValuesMinMaxAvg = [0, 0, 0];
     }
 
-    console.log(listValuesMinMaxAvg);
+    console.log(listDataSensor, dataPoints);
+
     listToExport = [
         ["ESTATION", estacion],
         ["SENSOR", sensor],
         ["MAX", listValuesMinMaxAvg[0]],
         ["MIN", listValuesMinMaxAvg[1]],
         ["AVG", listValuesMinMaxAvg[2]],
-        ["","","",""],
-        ["DATE", "HOUR", "VALUE", "UNIT"]        
+        ["","","",""]     
     ];
-    valuesList = []
-    for(var i = 0; i<listDataSensor.length; i++){
-        //x is the date in Date format
-        var dateToExport = listDataSensor[i]["x"];
-        valuesList.push(dateToExport.getDate()+"/"+(dateToExport.getMonth()+1)+"/"+dateToExport.getFullYear());
-        valuesList.push(listDataSensor[i]["hour"]);
-        //y is the value
-        valuesList.push(listDataSensor[i]["y"]);
-        valuesList.push(dataSensor['unit']);
-        listToExport.push(valuesList);
-        valuesList=[];
+    if (listDataSensor.length!=0){
+        if("hour" in listDataSensor[0]){
+            listToExport.push(["DATE", "HOUR", "VALUE", "UNIT"]);
+        }else{
+            listToExport.push(["DATE", "VALUE", "UNIT"]);
+        }
+        valuesList = []
+        for(var i = 0; i<listDataSensor.length; i++){
+            //x is the date in Date format
+            var dateToExport = listDataSensor[i]["x"];
+            valuesList.push(dateToExport.getDate()+"/"+(dateToExport.getMonth()+1)+"/"+dateToExport.getFullYear());
+            if("hour" in listDataSensor[0]){
+                valuesList.push(listDataSensor[i]["hour"]);
+            }
+            //y is the value
+            valuesList.push(listDataSensor[i]["y"]);
+            valuesList.push(dataSensor['unit']);
+            listToExport.push(valuesList);
+            valuesList=[];
+        }
+    
     }
-    console.log(listToExport);
     return listToExport;
 
 }
