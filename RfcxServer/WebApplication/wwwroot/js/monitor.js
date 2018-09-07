@@ -120,7 +120,7 @@ function addData(data) {
         var colorP = "orange";
     }else if(typeS.toUpperCase().includes("HUM") && (locationS.toUpperCase().includes("AMB") || locationS.toUpperCase().includes("ENV"))){
         var colorP = "LightSeaGreen";
-        var titleVertical = "Humedad °H";
+        var titleVertical = "Humedad %";
     }
 
     ind = ind+1;
@@ -221,12 +221,13 @@ function individualChart(nameChart){
     var avgVal = "avgValue"+type+"_"+location;
     var idDiv = type+"_"+location, idTab = "tab_"+type+"_"+location;
     var idChart = "chart_"+idDiv;
-    //If there is another sensor, add else if
+    
     var divEachChart = 
     '<div id='+idTab+' class="col-sm-12 col-md-12 col-lg-12 tabcontent" style="display: none;">'+
         '<div id='+idDiv+'>'+
         '<h4 class="chart-title"> '+stationName+"/ "+name+' </h4>'+
         '<div class="Dates col-lg-12 col-md-12 col-sm-12">'+
+            '<a class="exportcsv" id="export_'+idDiv+'" href="#" onclick="downloadCSV(this.id);">EXPORTAR</a>'+
             '<ul class="nav nav-tabs">'+
                 '<li class="active"><a data-toggle="tab" href="#data-act-'+idDiv+'">Datos actuales</a></li>'+
                 '<li><a data-toggle="tab" href="#date-range-'+idDiv+'">Rango de fechas</a></li>'+
@@ -346,7 +347,7 @@ function addDataEachChart(data){
         var colorP = "orange";
     }else if(typeS.toUpperCase().includes("HUM") && (locationS.toUpperCase().includes("AMB") || locationS.toUpperCase().includes("ENV"))){
         var colorP = "LightSeaGreen";
-        var titleVertical = "Humedad °H";
+        var titleVertical = "Humedad %";
     }
     if(data!=null){
         for(points of data){

@@ -1,5 +1,23 @@
 * {box-sizing: border-box}
 body {font-family: "Lato", sans-serif;}
+/*Style exportar*/
+.exportcsv {
+    background-color: #ffff;
+    border: 1px solid #007f42;
+    color: #007f42;
+    padding: 8px 10px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 13px;
+    margin: 2px 2px;
+    cursor: pointer;
+    float: right;
+}
+
+.exportcsv:hover, .exportcsv:focus {
+    text-decoration: none;
+    color: #007f42;
+}
 
 /* Style the tab */
 .tab {

@@ -1,6 +1,9 @@
 var stationId = parseInt($("#stationId").text());
+var stationNameSensor=$("#stationName").text();
 var dataPoints = [];
+var listDataSensor = [];
 var dataSensor = {};
+var listValuesMinMaxAvg = [];
 
 //get location and type of actual sensor
 function getDataSensor(idSensor){
@@ -8,6 +11,11 @@ function getDataSensor(idSensor){
         dataSensor['location'] = data['Location'];
         dataSensor['type'] = data['Type'];
         dataSensor['id'] = data['Id'];
+        if(data['Type'].toLowerCase().startsWith("hum")){
+            dataSensor['unit'] = "%";
+        }else{
+            dataSensor['unit'] = "CELCIUS";
+        }
     });
 }
 //get the dates from inputs and make the query
@@ -31,14 +39,14 @@ function getLegends(){
     var maxValId = "maxValue"+type+"_"+location;
     var avgValId = "avgValue"+type+"_"+location;
     var chartId = "chart_"+type+"_"+location;
-    if(type=="Humidity" && location=="Environment"){
+    if(type.toLowerCase().startsWith("hum") && location.toLowerCase().startsWith("env")){
         var colorP = "#424084";
-        var titleVertical = "Humedad °H";
+        var titleVertical = "Humedad %";
     }
-    else if(type=="Temperature" && location=="Environment"){
+    else if(location.toLowerCase().startsWith("temp") && location.toLowerCase().startsWith("env")){
         var colorP = "orange";
     }
-    else if(type=="Temperature" && location=="Station"){
+    else if(location.toLowerCase().startsWith("temp") && location.toLowerCase().startsWith("sta")){
         var colorP = "LightSeaGreen";
     }
     return [colorP, titleVertical, minValId, maxValId, avgValId, chartId]
@@ -75,6 +83,7 @@ function displayChartInd(divId, titleVertical, colorL, data, format, contentTool
 
 
     chartMon.render();
+    listDataSensor = dataPoints.slice();
     dataPoints = [];
     
 }
@@ -110,12 +119,14 @@ function addDataHours(data){
         if (isNaN(avgV)){
             avgV = 0;
         }
+        listValuesMinMaxAvg = [maxV, minV, avgV.replace(".",",")];
         changeValuesMinMaxAvg(minValId, maxValId, avgValId, minV, maxV, avgV);
         
     }else{
         changeValuesMinMaxAvg(minValId, maxValId, avgValId, 0, 0, 0);
         
     }
+    console.log(dataPoints);
     displayChartInd(chartId, titleVertical, colorP, dataPoints, "DDD/D HH:mm", "<strong> {hour}</strong>: {y}");
 
 }
@@ -163,6 +174,7 @@ function addDataOneDay(data, status){
     var colorP = getLegends()[0], titleVertical = getLegends()[1];
     var minValId = getLegends()[2], maxValId= getLegends()[3];
     var avgValId= getLegends()[4], chartId= getLegends()[5];
+    console.log(getLegends);
     data = JSON.parse(data);
     if(data!=null && data.length!=0){
             //Boxes min, max, avg
@@ -322,3 +334,60 @@ function changeFunc(id) {
     
 }
 
+
+//EXPORT FUNCTION
+
+//GET DATA FROM ACTUAL SENSOR
+//Example: name=export_humedad_ambiente
+function getDataSensorExport(name){
+    listToExport = [];
+    var estacion = stationNameSensor;
+    var sensor = name.substring(7,name.length).replace("_", " ");
+    if(listValuesMinMaxAvg.length==0 || listDataSensor.length==0){
+        listValuesMinMaxAvg = [0, 0, 0];
+    }
+
+    console.log(listValuesMinMaxAvg);
+    listToExport = [
+        ["ESTATION", estacion],
+        ["SENSOR", sensor],
+        ["MAX", listValuesMinMaxAvg[0]],
+        ["MIN", listValuesMinMaxAvg[1]],
+        ["AVG", listValuesMinMaxAvg[2]],
+        ["","","",""],
+        ["DATE", "HOUR", "VALUE", "UNIT"]        
+    ];
+    valuesList = []
+    for(var i = 0; i<listDataSensor.length; i++){
+        //x is the date in Date format
+        var dateToExport = listDataSensor[i]["x"];
+        valuesList.push(dateToExport.getDate()+"/"+(dateToExport.getMonth()+1)+"/"+dateToExport.getFullYear());
+        valuesList.push(listDataSensor[i]["hour"]);
+        //y is the value
+        valuesList.push(listDataSensor[i]["y"]);
+        valuesList.push(dataSensor['unit']);
+        listToExport.push(valuesList);
+        valuesList=[];
+    }
+    console.log(listToExport);
+    return listToExport;
+
+}
+//EXPORT ARRAY IN CSV 
+//Example: name export_humedad_ambiente
+function downloadCSV(name){
+    dataSensorExport = getDataSensorExport(name);
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+    dataSensorExport.forEach(function(rowArray){
+       let row = rowArray.join(";");
+       csvContent += row + "\r\n";
+    }); 
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "datos_"+name.substring(7,name.length)+".csv");
+    document.body.appendChild(link); //Required
+
+    link.click();
+}
