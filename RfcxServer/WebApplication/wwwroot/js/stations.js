@@ -3,7 +3,6 @@ $(document).ready(function(){
     $.ajax({
         url : 'api/Station/',
         type: 'GET',
-        //async: false,
         success : getStationsList
     })  
 
@@ -25,6 +24,8 @@ $(document).ready(function(){
             stations_input_changed.push(input_id);
         }
     });
+
+    $("input").val("");
 
     $('#station_modal').on('hidden.bs.modal', function (e) {
         $("form input").val("");
@@ -49,17 +50,17 @@ function getStationsList(data) {
         var station_id = station['Id'];
         var station_name = station['Name'];
         var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title row">'+
-        '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons icon_station fa fa-line-chart " style="font-size:24px; color:blue;" href="/StationView?stationName='+station_name+'&stationId='+station_id+'"></a></div>'+
-        '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 header"><h4>'+station_name+'</h4></div>'+
-        '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons icon_station" style="font-size:23px;" onclick="fillStationModal('+station_id+');">edit</a></div>'+
-        '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 header"><a class="material-icons icon_station" style="font-size:23px; color:rgb(231,037,018);" onclick="showAlertModal('+station_id+');">delete</a></div>'+
+        '<div class="col-lg-8 col-md-7 col-sm-7 col-xs-7"><h4>'+station_name+'</h4></div>'+
+        '<div class="col-lg-4 col-md-5 col-sm-5 col-xs-5 header"><a class="icon_station" href="/StationView?stationName='+station_name+'&stationId='+station_id+'">' + 
+        '<i class="material-icons fa fa-line-chart" id="barra"></i></a>'+
+        '<i class="material-icons icon_station" style="font-size:23px; color:#2874A6;" onclick="fillStationModal('+station_id+');">edit</i>'+
+        '<i class="material-icons icon_station" style="font-size:23px; color:#CB4335;" onclick="showAlertModal('+station_id+');">delete</i></div>'+
         '</div><div class="station_body" id="station'+ station_id +'"></div></div>';
         $(content).insertBefore(".plus-station");
     }
     $.ajax({
         url : 'api/Sensor/',
         type: 'GET',
-        //async: false,
         success : getSensorsList
     })
 }
@@ -86,7 +87,6 @@ function getLastData() {
     $.ajax({
         url : 'api/Data/LastData',
         type: 'GET',
-        //async: false,
         success : function(full_data){
             var data_dic = JSON.parse(full_data); 
             for(data of data_dic){
@@ -195,7 +195,7 @@ function saveNewStation() {
         type: 'POST',
         url: 'api/Station',
         dataType: 'json',
-        //async: false,
+        async: false,
         data: data,
         contentType: 'application/json'
     });

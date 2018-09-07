@@ -9,16 +9,15 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="~/css/w3.css" rel="stylesheet">     
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        @RenderSection("Style", required: false)
         <environment include="Development">
             <link rel="stylesheet" href="~/css/bootstrap.css" />
-            <link href='~/css/stations.css' rel='stylesheet' type='text/css'>
         </environment>
         <environment exclude="Development">
             <link rel="stylesheet" href="~/css/bootstrap.css"
                 asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
                 asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         </environment>
+        @RenderSection("Style", required: false)
     </head>
     <body>
         <div id="logo">
