@@ -14,20 +14,32 @@ function getStationsList(data) {
     var data_dic = JSON.parse(data);
     var combo = document.getElementById("ddl");
     var list_station_name = [];
-    var n_item = 0;
+    var list_station_N = [];
+
     for(station of data_dic){
         list_station_name.push(station['Name']);
-        combo.options[n_item].text = station['Name'];  
-        n_item ++;
-    }
+        list_station_N.push(station['Id']);
+    }    
 
-    var a = list_station_name.length;
-    var b = combo.length;
+    var id;
+    var zl;
+    var l = 0;
+    var ln = list_station_N.length;
+    for(var t=0; t<ln; t++){
 
-    while(b>a){
-        b --;
-        combo.remove(b);
-    }
+        zl = combo.options[t].value;
+        l = zl.length;
+
+        id = combo.options[t].value.substr( 7, l);
+
+        for(var y=0; y<ln; y++){
+            if(id == (list_station_N[y])){
+                combo.options[t].text = list_station_name[y];
+            }
+        }
+
+        
+    }    
 }
 
 /* END: Station name in select */
