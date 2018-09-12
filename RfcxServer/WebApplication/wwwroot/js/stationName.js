@@ -15,7 +15,6 @@ function getStationsList(data) {
     var combo = document.getElementById("ddl");
     var list_station_name = [];
     var list_station_N = [];
-
     for(station of data_dic){
         list_station_name.push(station['Name']);
         list_station_N.push(station['Id']);
@@ -31,16 +30,11 @@ function getStationsList(data) {
         l = zl.length;
         id = combo.options[t].value.substr( 7, l);
         for(var y=0; y<ln; y++){
-            console.log("list_station_N[y]: " + list_station_N[y]);
-            console.log("id: " + id);
             if(id == (list_station_N[y])){
                 combo.options[n_item].text = list_station_name[y];
                 n_item++;
-                console.log(combo.options[t].text + " == " + list_station_name[y]);
             }
-        }
-
-        
+        }        
     }    
 }
 
