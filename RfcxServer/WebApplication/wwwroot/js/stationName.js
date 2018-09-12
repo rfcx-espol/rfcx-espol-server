@@ -36,8 +36,9 @@ function getStationsList(data) {
             console.log("list_station_N[y]: " + list_station_N[y]);
             console.log("id: " + id);
             if(id == (list_station_N[y])){
-                console.log("==");
+                
                 combo.options[t].text = list_station_name[y];
+                console.log(combo.options[t].text + " == " + list_station_name[y]);
             }
         }
 
