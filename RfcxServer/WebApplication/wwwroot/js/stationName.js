@@ -25,19 +25,17 @@ function getStationsList(data) {
     var zl;
     var l = 0;
     var ln = list_station_N.length;
+    var n_item = 0;
     for(var t=0; t<ln; t++){
-
         zl = combo.options[t].value;
         l = zl.length;
-
         id = combo.options[t].value.substr( 7, l);
-
         for(var y=0; y<ln; y++){
             console.log("list_station_N[y]: " + list_station_N[y]);
             console.log("id: " + id);
             if(id == (list_station_N[y])){
-                
-                combo.options[t].text = list_station_name[y];
+                combo.options[n_item].text = list_station_name[y];
+                n_item++;
                 console.log(combo.options[t].text + " == " + list_station_name[y]);
             }
         }
