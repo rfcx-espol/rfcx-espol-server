@@ -33,7 +33,10 @@ function getStationsList(data) {
         id = combo.options[t].value.substr( 7, l);
 
         for(var y=0; y<ln; y++){
+            console.log("list_station_N[y]: " + list_station_N[y]);
+            console.log("id: " + id);
             if(id == (list_station_N[y])){
+                console.log("==");
                 combo.options[t].text = list_station_name[y];
             }
         }
