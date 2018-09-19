@@ -26,12 +26,14 @@
 	<source id="source" src="" type="audio/ogg">
 </audio>
 
-<div class="webgl-content">
-<div id="gameContainer" style="width: 960px; height: 600px"></div>
-<div class="footer">
-	<div class="webgl-logo"></div>
-	<div class="fullscreen" onclick="gameInstance.SetFullscreen(1)"></div>
-	<div class="title">Bosque Virtual</div>
+<div class="container" style="border: 2px solid yellow;">	
+	<div class="webgl-content" style="border: 2px solid blue; position: absolute;">
+	<div id="gameContainer" style="width: 960px; height: 600px; border: 2px solid red;"></div>
+	<div class="footer">
+		<div class="webgl-logo"></div>
+		<div class="fullscreen" onclick="gameInstance.SetFullscreen(1)"></div>
+		<div class="title">Bosque Virtual</div>
+	</div>
 </div>
 
 @section Scripts {
