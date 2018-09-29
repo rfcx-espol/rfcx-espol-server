@@ -12,7 +12,7 @@ Views and Controllers:
 
 -	StationView used StationController:
 Create, delete, edit one station.
-Home View is in Pages/_Layuot & Pages/Index.
+Home View is in Pages/_Layout & Pages/Index.
 -	Audios used DownloadController:
 Find and download audios in file .zip
 
