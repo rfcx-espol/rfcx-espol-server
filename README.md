@@ -10,9 +10,9 @@ You can see into server: rfcx-espol-server/files
 
 Views and Controllers:
 
--	StationView (Home) used StationController:
+-	StationView used StationController:
 Create, delete, edit one station.
-
+Home View is in Pages/_Layuot & Pages/Index.
 -	Audios used DownloadController:
 Find and download audios in file .zip
 
