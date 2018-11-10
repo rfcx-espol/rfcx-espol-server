@@ -34,7 +34,7 @@ namespace WebApplication.Repository
 
         public async Task<Photo> Get(string id)
         {
-            var filter = Builders<Photo>.Filter.Eq("PhotoId", id);
+            var filter = Builders<Photo>.Filter.Eq("Id", id);
 
             try
             {
@@ -110,7 +110,7 @@ namespace WebApplication.Repository
             try
             {
                 DeleteResult actionResult = await _context.Photos.DeleteOneAsync(
-                        Builders<Photo>.Filter.Eq("PhotoId", PhotoId));
+                        Builders<Photo>.Filter.Eq("Id", PhotoId));
 
                 return actionResult.IsAcknowledged 
                     && actionResult.DeletedCount > 0;
@@ -127,7 +127,7 @@ namespace WebApplication.Repository
             {
                 ReplaceOneResult actionResult 
                     = await _context.Photos
-                                    .ReplaceOneAsync(n => n.PhotoId.Equals(PhotoId)
+                                    .ReplaceOneAsync(n => n.Id.Equals(PhotoId)
                                             , item
                                             , new UpdateOptions { IsUpsert = true });
                 return actionResult.IsAcknowledged
@@ -137,6 +137,19 @@ namespace WebApplication.Repository
             {
                 throw ex;
             }
+        }
+
+        public Task<bool> UpdateDescription(int PhotoId, string description)
+        {
+            Photo photo = getPhoto(PhotoId);
+            photo.Description = description;
+            return Update(photo.Id, photo);        
+        }
+
+        public Photo getPhoto(int id){
+            var filter = Builders<Photo>.Filter.Eq("Id", id);
+            Photo photo = _context.Photos.Find(filter).FirstOrDefaultAsync().Result;
+            return photo;
         }
 
         public async Task<bool> RemoveAll()

@@ -3,11 +3,12 @@ using WebApplication.IRepository;
 using System.Threading.Tasks;
 using WebApplication.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
 using System;
 
 namespace WebApplication.Controllers
 {
-    [Route("")]
+    [Route("api/bpv/[controller]")]
     public class KindController
     {
         
@@ -18,8 +19,7 @@ namespace WebApplication.Controllers
             _KindRepository=KindRepository;
         }
 
-        [HttpGet]
-        [Route("api/bpv/[controller]")]
+        [HttpGet()]
         public Task<string> Get()
         {
             return this.GetKind();
@@ -31,8 +31,7 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Kind);
         }
 
-        [HttpGet]
-        [Route("api/bpv/[controller]/{id:int}")]
+        [HttpGet("{id:int}")]
         public Task<string> Get(int id)
         {
             return this.GetKindByIdInt(id);
@@ -44,16 +43,31 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Kind);
         }
 
-        [HttpPut]
-        [Route("api/bpv/[controller]/{KindId:int}")]
-        public async Task<bool> Put([FromRoute]int KindId, [FromBody] Kind Kind)
-        {
-            if (KindId==0) return false;
-            return await _KindRepository.Update(KindId, Kind);
+        [HttpPost]
+        public async Task<string> Post([FromBody] Kind Kind)
+        {            
+            var x = await _KindRepository.Add(Kind);
+            if(x==false){
+                return "Id already exists!";
+            }
+            return "";
         }
 
-        [HttpDelete]
-        [Route("api/bpv/[controller]/{KindId:int}")]
+        [HttpPatch("{id}/Name")]
+        public async Task<bool> PatchName(int id, [FromBody]  Arrays json)
+        {
+            if (id==0) return false;
+            return await _KindRepository.UpdateName(id, json.Name);
+        }
+
+        [HttpPatch("{id}/Family")]
+        public async Task<bool> PatchFamily(int id, [FromBody]  Arrays json)
+        {
+            if (id==0) return false;
+            return await _KindRepository.UpdateFamily(id, json.Family);
+        }
+
+        [HttpDelete("{KindId:int}")]
         public async Task<bool> Delete([FromRoute]int KindId)
         {
             if (KindId==0) return false;

@@ -18,8 +18,7 @@ namespace WebApplication.Controllers
             _PhotoRepository=PhotoRepository;
         }
 
-        [HttpGet]
-        [Route("api/bpv/[controller]")]
+        [HttpGet("api/bpv/[controller]")]
         public Task<string> Get()
         {
             return this.GetPhoto();
@@ -31,8 +30,7 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Photo);
         }
 
-        [HttpGet]
-        [Route("api/bpv/[controller]/{id:int}")]
+        [HttpGet("api/bpv/[controller]/{id:int}")]
         public Task<string> Get(int id)
         {
             return this.GetPhotoByIdInt(id);
@@ -44,8 +42,7 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Photo);
         }
 
-        [HttpGet]
-        [Route("api/bpv/Kind/{KindId:int}/[controller]")]
+        [HttpGet("api/bpv/Kind/{KindId:int}/[controller]")]
         public Task<string> GetPhotosByKind([FromRoute]int KindId)
         {
             return this.GetPhotoByKind(KindId);
@@ -57,8 +54,7 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Photos);
         }
 
-        [HttpGet]
-        [Route("api/bpv/Kind/{KindId:int}/[controller]/{PhotoId:int}")]
+        [HttpGet("api/bpv/Kind/{KindId:int}/[controller]/{PhotoId:int}")]
         public Task<string> Get([FromRoute]int KindId, [FromRoute]int PhotoId)
         {
             return this.GetPhotoById(KindId, PhotoId);
@@ -70,16 +66,7 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Photo);
         }
 
-        [HttpPut]
-        [Route("api/bpv/[controller]/{PhotoId:int}")]
-        public async Task<bool> Put([FromRoute]int PhotoId, [FromBody] Photo Photo)
-        {
-            if (PhotoId==0) return false;
-            return await _PhotoRepository.Update(PhotoId, Photo);
-        }
-
-        [HttpDelete]
-        [Route("api/bpv/[controller]/{PhotoId:int}")]
+        [HttpDelete("api/bpv/[controller]/{PhotoId:int}")]
         public async Task<bool> Delete([FromRoute]int PhotoId)
         {
             if (PhotoId==0) return false;

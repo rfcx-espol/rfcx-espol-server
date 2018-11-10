@@ -4,7 +4,6 @@ using System;
 
 namespace WebApplication.Models
 {
-
     public class Station : IComparable
     {
         [BsonId]
@@ -35,7 +34,5 @@ namespace WebApplication.Models
         return 0;
         }
     }
-
-    
     
 }

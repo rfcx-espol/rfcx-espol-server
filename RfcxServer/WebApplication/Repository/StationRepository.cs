@@ -279,8 +279,6 @@ namespace WebApplication.Repository
         return disp;
     }
 
-
-
     private string AutoRenameFilename(String fileCompleteName)
     {
         if (File.Exists(fileCompleteName))

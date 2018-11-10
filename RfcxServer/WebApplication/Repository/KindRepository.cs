@@ -60,18 +60,30 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task Add(Kind item)
+        public async Task<bool> Add(Kind item)
         {
             try
             {
                 var list=_context.Kinds.Find(_ => true).ToList();
-                if(list.Count>0){
-                    item.Id=list[list.Count-1].Id+1;
+                if(item.Id==0){
+                    if(list.Count>0){
+                        list.Sort();
+                        item.Id=list[list.Count-1].Id+1;
+                    }
+                    else{
+                        item.Id=1;
+                    } 
                 }else{
-                    item.Id=1;
+                    for (int i=0;i<list.Count;i++){
+                        if(item.Id==list[i].Id){
+                            return false;
+                        }
+                    }
                 }
     
                 await _context.Kinds.InsertOneAsync(item);
+                Core.MakeKindFolder(item.Id.ToString());
+                return true;
             }
             catch (Exception ex)
             {
@@ -84,7 +96,7 @@ namespace WebApplication.Repository
             try
             {
                 DeleteResult actionResult = await _context.Kinds.DeleteOneAsync(
-                        Builders<Kind>.Filter.Eq("KindId", KindId));
+                        Builders<Kind>.Filter.Eq("Id", KindId));
 
                 return actionResult.IsAcknowledged 
                     && actionResult.DeletedCount > 0;
@@ -101,7 +113,7 @@ namespace WebApplication.Repository
             {
                 ReplaceOneResult actionResult 
                     = await _context.Kinds
-                                    .ReplaceOneAsync(n => n.KindId.Equals(KindId)
+                                    .ReplaceOneAsync(n => n.Id.Equals(KindId)
                                             , item
                                             , new UpdateOptions { IsUpsert = true });
                 return actionResult.IsAcknowledged
@@ -111,6 +123,26 @@ namespace WebApplication.Repository
             {
                 throw ex;
             }
+        }
+
+        public Task<bool> UpdateName(int id, string name)
+        {
+            Kind kind = getKind(id);
+            kind.Name = name;
+            return Update(kind.Id, kind);
+        }
+
+        public Task<bool> UpdateFamily(int id, string family)
+        {
+            Kind kind = getKind(id);
+            kind.Family = family;
+            return Update(kind.Id, kind);
+        }
+
+        public Kind getKind(int id){
+            var filter = Builders<Kind>.Filter.Eq("Id", id);
+            Kind kind=_context.Kinds.Find(filter).FirstOrDefaultAsync().Result;
+            return kind;
         }
 
         public async Task<bool> RemoveAll()

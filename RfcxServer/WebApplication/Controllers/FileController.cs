@@ -22,12 +22,6 @@ using Microsoft.Extensions.Primitives;
 
 namespace WebApplication {
 
-    /* 
-    public class Thing {
-        public string fileName;
-        public string stationId;
-    }
-    */
     [Route("[controller]")]
     public class FileController : Controller {
         private readonly IAudioRepository _AudioRepository;
@@ -36,7 +30,6 @@ namespace WebApplication {
         public class StationFile {
             public KeyValueAccumulator formAccumulator;
             public MemoryStream memoryStream;
-
             public StationFile() {
                 formAccumulator = new KeyValueAccumulator();
                 memoryStream = new MemoryStream();
@@ -90,10 +83,6 @@ namespace WebApplication {
                     }
                     else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
                     {
-                        // Content-Disposition: form-data; name="key"
-                        //
-                        // value
-
                         // Do not limit the key name length here because the 
                         // multipart headers length limit is already in effect.
                         var key = HeaderUtilities.RemoveQuotes(contentDisposition.Name);
@@ -155,22 +144,9 @@ namespace WebApplication {
                 return BadRequest("Expected ID key");
             }
 
-            /*
-            {
-                Core.StationDictionary.TryAdd(stationId.ToString(), Core.StationDictionary.Count);
-                Core.SaveStationDictionaryToFile();
-            }
-            */
-            
-
             {
                 string strStationId = "";
                 int id;
-                /*
-                if (Core.StationDictionary.TryGetValue(stationId.ToString(), out id)) {
-                    strStationId = id.ToString();
-                }
-                */
                 var StationResult=_StationRepository.Get(APIKey.ToString());
                 var stationCount=_StationRepository.GetStationCount(APIKey);
                 
@@ -190,18 +166,12 @@ namespace WebApplication {
                         return BadRequest("Expected filename key");
                     }
                     
-                    /*
-                    StringValues fechaLlegada;
-                    ok = formData.TryGetValue("FechaLlegada", out fechaLlegada);
-                    if (!ok) {
-                        return BadRequest("Expected FechaLlegada key");
-                    }
-                    */
                     StringValues recordingDate;
                     ok = formData.TryGetValue("RecordingDate", out recordingDate);
                     if (!ok) {
                         return BadRequest("Expected RecordingDate key");
                     }
+
                     StringValues duration;
                     ok = formData.TryGetValue("Duration", out duration);
                     if (!ok) {
@@ -213,14 +183,6 @@ namespace WebApplication {
                     if (!ok) {
                         return BadRequest("Expected Format key");
                     }
-
-                    /*StringValues bitRate1;
-                    ok = formData.TryGetValue("BitRate", out bitRate1);
-                    int bitRate=0;
-                    if(ok){
-                        bitRate=Int32.Parse(bitRate1);
-                    }*/
-
                     
                     string strfilename = filename.ToString();
                     var filePath="";
@@ -229,18 +191,7 @@ namespace WebApplication {
                         filePath = Path.Combine(Core.StationAudiosFolderPath(strStationId),
                                                     strfilename);
                         Console.Write(filePath);
-                    }
-                    //Folder name by station Name
-                    /* 
-                    else{
-                        name=name.Replace(" ","");
-                        Core.MakeStationFolderName(name);
-                        filePath = Path.Combine(Core.StationAudiosFolderPathName(name),
-                                                    strfilename);
-                        Console.Write(filePath);
-                    
-                    } 
-                    */             
+                    }   
 
                     var audio =new Audio();
                     //audio.FechaLlegada=fechaLlegada;
@@ -256,21 +207,6 @@ namespace WebApplication {
                         await stationFile.memoryStream.CopyToAsync(stream);
                         stationFile.memoryStream.Close();
                     }
-
-
-                    //var fileInfo = new FileInfo(filePath);
-                    //var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));
-                    
-                    /*
-                    { // Decompression Test
-                        using (var compressedStream = new FileStream(gzipFilePath, FileMode.Open)) {
-                            using (var decompressedFileStream = new FileStream(decompressedPath, FileMode.Create)) {
-                                using (var decompressionStream = new GZipStream(compressedStream, CompressionMode.Decompress)) {
-                                    decompressionStream.CopyTo(decompressedFileStream);
-                                }
-                            }
-                        }
-                    }*/
                     
                     { // Convert Decompressed File to ogg and add to playlist
                         var process = new Process();
@@ -289,50 +225,10 @@ namespace WebApplication {
                 }
                 else{
                     return Content("Invalid APIKEY");
-                }
-                
-                
+                }                
             }
             return Content("File received");
-
         }
-        /*
-        [HttpPost]
-        public async Task<IActionResult> UploadFile(IFormFile file) {
-            if (file == null || file.Length == 0)
-                return Content("File not selected");
-            var gzipFilePath = Path.Combine(Core.GzipFolderPath,
-                                            file.FileName);
-            using (var stream = new FileStream(gzipFilePath, FileMode.Create)) {
-                await file.CopyToAsync(stream);
-            }
-            var gzipFileInfo = new FileInfo(gzipFilePath);
-            var decompressedPath = gzipFilePath.Remove((int)(gzipFileInfo.FullName.Length - gzipFileInfo.Extension.Length));
-            
-            { // Decompression Test
-                using (var compressedStream = new FileStream(gzipFilePath, FileMode.Open)) {
-                    using (var decompressedFileStream = new FileStream(decompressedPath, FileMode.Create)) {
-                        using (var decompressionStream = new GZipStream(compressedStream, CompressionMode.Decompress)) {
-                            decompressionStream.CopyTo(decompressedFileStream);
-                        }
-                    }
-                }
-            }
-            
-            { // Convert Decompressed File to ogg and add to playlist
-                var process = new Process();
-                process.StartInfo.FileName = "ffmpeg";
-                var decompressedFileInfo = new FileInfo(decompressedPath);
-                var filename = decompressedFileInfo.Name.Remove((int)(decompressedFileInfo.Name.Length - decompressedFileInfo.Extension.Length));
-                // var milliseconds = long.Parse(filename);
-                // var date = DateTimeExtensions.DateTimeFromMilliseconds(milliseconds);
-                // var localDate = date.ToLocalTime();
-                var oggFilename = filename + ".ogg";
-                var oggFilePath = Path.Combine(Core.OggFolderPath, oggFilename) ;
-                process.StartInfo.Arguments = "-i " + decompressedPath + " " + oggFilePath;
-                process.Start();
-            }
-            return Content("File received");
-        }*/
+        
     }
 }

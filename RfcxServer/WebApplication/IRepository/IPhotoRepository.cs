@@ -14,6 +14,7 @@ namespace WebApplication.IRepository
         Task<IEnumerable<Photo>> GetByKind(int KindId);
         Task Add(Photo item);
         Task<bool> Update(int PhotoId, Photo item);
+        Task<bool> UpdateDescription(int PhotoId, string description);
         Task<bool> Remove(int PhotoId);
         Task<bool> RemoveAll();    
     }

@@ -10,8 +10,10 @@ namespace WebApplication.IRepository
         Task<IEnumerable<Kind>> Get();
         Task<Kind> Get(string id);
         Task<Kind> Get(int id);
-        Task Add(Kind item);
+        Task<bool> Add(Kind item);
         Task<bool> Update(int KindId, Kind item);
+        Task<bool> UpdateName(int id, string name);
+        Task<bool> UpdateFamily(int id, string family);
         Task<bool> Remove(int KindId);
         Task<bool> RemoveAll();    
     }

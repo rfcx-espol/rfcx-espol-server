@@ -17,5 +17,7 @@ namespace WebApplication.Models
         public string LastNotification { get; set; }
         public string Status { get; set; }
         public int Gamestation { get; set; }
+        public string Family { get; set; }
+        public string Description { get; set; }
         }
 }
