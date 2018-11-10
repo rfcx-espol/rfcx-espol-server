@@ -57,6 +57,22 @@ namespace WebApplication.DbModels
             }
         }
 
+        public IMongoCollection<Kind> Kinds
+        {
+            get
+            {
+                return _database.GetCollection<Kind>("Kind");
+            }
+        }
+
+        public IMongoCollection<Photo> Photos
+        {
+            get
+            {
+                return _database.GetCollection<Photo>("Photo");
+            }
+        }
+
         public IMongoCollection<Label> Labels
         {
             get

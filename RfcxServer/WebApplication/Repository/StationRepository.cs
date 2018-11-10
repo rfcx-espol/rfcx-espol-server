@@ -10,7 +10,6 @@ using System;
 using MongoDB.Driver;
 using System.IO;
 using System.Text.RegularExpressions;
-using WebApplication.Models;
 
 namespace WebApplication.Repository
 {
@@ -279,8 +278,6 @@ namespace WebApplication.Repository
         Station disp=_context.Stations.Find(filter).FirstOrDefaultAsync().Result;
         return disp;
     }
-
-
 
     private string AutoRenameFilename(String fileCompleteName)
     {
