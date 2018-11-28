@@ -25,12 +25,12 @@ namespace WebApplication {
     [Route("[controller]")]
     public class PhotoFileController : Controller {
         private readonly IPhotoRepository _PhotoRepository;
-        private readonly IKindRepository _KindRepository;
+        private readonly ISpecieRepository _SpecieRepository;
 
-        public class KindFile {
+        public class SpecieFile {
             public KeyValueAccumulator formAccumulator;
             public MemoryStream memoryStream;
-            public KindFile() {
+            public SpecieFile() {
                 formAccumulator = new KeyValueAccumulator();
                 memoryStream = new MemoryStream();
             }
@@ -38,10 +38,9 @@ namespace WebApplication {
 
         private readonly IFileProvider _fileProvider;
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
-        public PhotoFileController(IFileProvider fileProvider, IPhotoRepository PhotoRepository, IKindRepository KindRepository) {
+        public PhotoFileController(IFileProvider fileProvider, ISpecieRepository SpecieRepository) {
             _fileProvider = fileProvider;
-             _PhotoRepository=PhotoRepository;
-             _KindRepository=KindRepository;
+             _SpecieRepository=SpecieRepository;
         }
 
         [HttpGet]
@@ -62,8 +61,8 @@ namespace WebApplication {
             return mediaType.Encoding;
         }
 
-        public async Task<KindFile> HandleMultipartRequest() {
-            var kindFile = new KindFile();
+        public async Task<SpecieFile> HandleMultipartRequest() {
+            var specieFile = new SpecieFile();
 
             var boundary = MultipartRequestHelper.GetBoundary(
                 MediaTypeHeaderValue.Parse(Request.ContentType),
@@ -79,8 +78,8 @@ namespace WebApplication {
                 {
                     if (MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
                     {
-                        await section.Body.CopyToAsync(kindFile.memoryStream);
-                        kindFile.memoryStream.Seek(0, SeekOrigin.Begin);
+                        await section.Body.CopyToAsync(specieFile.memoryStream);
+                        specieFile.memoryStream.Seek(0, SeekOrigin.Begin);
                     }
                     else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
                     {
@@ -101,9 +100,9 @@ namespace WebApplication {
                             {
                                 value = String.Empty;
                             }
-                            kindFile.formAccumulator.Append(key.Value, value);
+                            specieFile.formAccumulator.Append(key.Value, value);
 
-                            if (kindFile.formAccumulator.ValueCount > _defaultFormOptions.ValueCountLimit)
+                            if (specieFile.formAccumulator.ValueCount > _defaultFormOptions.ValueCountLimit)
                             {
                                 throw new InvalidDataException($"Form key count limit {_defaultFormOptions.ValueCountLimit} exceeded.");
                             }
@@ -115,7 +114,30 @@ namespace WebApplication {
                 // reads the headers for the next section.
                 section = await reader.ReadNextSectionAsync();
             }
-            return kindFile;
+            return specieFile;
+        }
+
+        [HttpPost("CreateSpecie")]
+        public async Task<IActionResult> CreateSpecie() {
+            var SpecieData = await HandleMultipartRequest();
+            var formData = SpecieData.formAccumulator.GetResults();
+            bool ok = false;
+            StringValues nombre_especie;
+            StringValues familia;
+            ok = formData.TryGetValue("nombre_especie", out nombre_especie);
+            if (!ok) {
+                return BadRequest("Expected specie name");
+            }
+            ok = formData.TryGetValue("familia", out familia);
+            if (!ok) {
+                return BadRequest("Expected family name");
+            }
+            Specie spe = new Specie();
+            spe.Name = nombre_especie;
+            spe.Family = familia;
+            Task result;
+            result = _SpecieRepository.Add(spe);
+            return Content("Specie Created successfully");
         }
 
         [HttpPost("UploadPhoto")]
@@ -125,21 +147,21 @@ namespace WebApplication {
                 return BadRequest($"Expected a multipart request, but got {Request.ContentType}");
             }
 
-            var kindFile = await HandleMultipartRequest();
-            var formData = kindFile.formAccumulator.GetResults();
+            var specieFile = await HandleMultipartRequest();
+            var formData = specieFile.formAccumulator.GetResults();
             bool ok = false;
             StringValues Filename;
-            StringValues KindId;
+            StringValues SpecieId;
 
-            ok = formData.TryGetValue("KindId", out KindId);
+            ok = formData.TryGetValue("SpecieId", out SpecieId);
             if (!ok) {
                 return BadRequest("Expected ID key");
             }
 
             {
-                var KindResult = _KindRepository.Get(Int32.Parse(KindId));
-                int kind_id = KindResult.Result.Id;
-                string str_kind_id = kind_id.ToString();
+                var SpecieResult = _SpecieRepository.Get(Int32.Parse(SpecieId));
+                int specie_id = SpecieResult.Result.Id;
+                string str_specie_id = specie_id.ToString();
                 var filePath = "";
                 
                 ok = formData.TryGetValue("Filename", out Filename);
@@ -155,21 +177,22 @@ namespace WebApplication {
                 
                 string strfilename = Filename.ToString();
 
-                if(str_kind_id != null){
-                    Core.MakeKindFolder(str_kind_id);
-                    filePath = Path.Combine(Core.KindFolderPath(str_kind_id), strfilename);
+                if(str_specie_id != null){
+                    Core.MakeSpecieFolder(str_specie_id);
+                    filePath = Path.Combine(Core.SpecieFolderPath(str_specie_id), strfilename);
                     Console.Write(filePath);
                 }
 
                 var photo =new Photo();
-                photo.KindId = kind_id;
                 photo.Description = description;
+                photo.Filename = strfilename;
                 Task result;
                 result = _PhotoRepository.Add(photo);
+                result = _SpecieRepository.AddPhoto(Int32.Parse(str_specie_id), photo);
 
                 using (var stream = new FileStream(filePath, FileMode.Create)) {
-                    await kindFile.memoryStream.CopyToAsync(stream);
-                    kindFile.memoryStream.Close();
+                    await specieFile.memoryStream.CopyToAsync(stream);
+                    specieFile.memoryStream.Close();
                 }
                      
             }

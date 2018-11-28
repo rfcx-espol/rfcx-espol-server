@@ -11,17 +11,35 @@
             body {
                 height: 200px;
             }
+            #formulario1 {
+                margin-bottom: 50px;
+            }
         </style>
         <div class="container">
+            <div id="formulario1" class="row">
+                <form id="form_crear_especie" method="post" enctype="multipart/form-data" action="/PhotoFile/CreateSpecie">
+                    <div class="form-control col-lg-12 col-md-12">
+                        <label>Nombre de la especie: </label>
+                        <input id="nombre_especie" type="text" name="nombre_especie" required>
+                    </div>
+                    <div class="form-control col-lg-12 col-md-12">
+                        <label>Familia: </label>
+                        <input id="familia" type="text" name="familia" required>
+                    </div>
+                    <div class="form-control col-lg-12 col-md-12">
+                        <button class="btn btn-primary" type="submit">Crear especie</button>
+                    </div>
+                </form>
+            </div>
             <div class="row">
-                <form method="post" enctype="multipart/form-data" action="/PhotoFile/UploadPhoto">
+                <form id="form_subir_foto" method="post" enctype="multipart/form-data" action="/PhotoFile/UploadPhoto">
                     <div class="form-control col-lg-12 col-md-12">
                         <label>Archivo: </label>
                         <input id="file" type="file" name="file" accept="image/png, image/jpeg, image/jpg" required>
                     </div>
                     <div class="form-control col-lg-12 col-md-12">
                         <label>Id de la especie: </label>
-                        <input id="KindId" type="number" name="KindId" required>
+                        <input id="SpecieId" type="number" name="SpecieId" required>
                     </div>
                     <div class="form-control col-lg-12 col-md-12">
                         <label>Descripción: </label>

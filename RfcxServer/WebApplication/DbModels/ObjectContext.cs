@@ -57,11 +57,11 @@ namespace WebApplication.DbModels
             }
         }
 
-        public IMongoCollection<Kind> Kinds
+        public IMongoCollection<Specie> Species
         {
             get
             {
-                return _database.GetCollection<Kind>("Kind");
+                return _database.GetCollection<Specie>("Specie");
             }
         }
 
