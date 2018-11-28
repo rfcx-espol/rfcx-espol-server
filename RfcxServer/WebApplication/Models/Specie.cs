@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace WebApplication.Models
 {
-    public class Kind : IComparable
+    public class Specie : IComparable
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string KindId { get; set; }
+        public string SpecieId { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
         public string Family { get; set; }
@@ -17,13 +17,13 @@ namespace WebApplication.Models
 
         public int CompareTo(object obj)
         {
-            Kind kind = obj as Kind;
-            if(kind == null) return 1;
-            if (kind.Id < Id)
+            Specie specie = obj as Specie;
+            if(specie == null) return 1;
+            if (specie.Id < Id)
             {
                 return 1;
             }
-            if (kind.Id > Id)
+            if (specie.Id > Id)
             {
                 return -1;
             }

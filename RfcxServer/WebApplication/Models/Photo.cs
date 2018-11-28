@@ -10,8 +10,8 @@ namespace WebApplication.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string PhotoId { get; set; }
         public int Id { get; set; }
-        public int KindId { get; set; }
         public string Description { get; set; }
+        public string Filename { get; set; }
     }
     
 }

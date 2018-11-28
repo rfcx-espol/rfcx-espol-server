@@ -77,8 +77,12 @@ namespace WebApplication {
             return Path.Combine(FilesFolderPath, "station" + stationId);
         }
 
-        public static string KindFolderPath(string kindId) {
-            return Path.Combine(FilesFolderPath, "kind" + kindId);
+        public static string SpecieImagesFolderPath { get {
+            return Path.Combine(FilesFolderPath, "bpv/images");
+        }}
+
+        public static string SpecieFolderPath(string specieId) {
+            return Path.Combine(SpecieImagesFolderPath, "specie" + specieId);
         }
 
         public static string StationFolderPathName(string name) {
@@ -145,23 +149,23 @@ namespace WebApplication {
             }
         }
 
-        public static void MakeKindFolder(string kindId) {
-            var kindFolderPath = KindFolderPath(kindId);
-            if (!Directory.Exists(kindFolderPath)) {
-                Directory.CreateDirectory(kindFolderPath);
-                GrantAccess(kindFolderPath);
+        public static void MakeSpecieFolder(string specieId) {
+            var specieFolderPath = SpecieFolderPath(specieId);
+            if (!Directory.Exists(specieFolderPath)) {
+                Directory.CreateDirectory(specieFolderPath);
+                GrantAccess(specieFolderPath);
                 string templateFile = Path.Combine(Constants.SERVER_ICECAST_CONFIG_DIRECTORY,Constants.TEMPLATE_ICECAST_CONFIG);
-                string filename = Constants.TEMPLATE_ICECAST_CONFIG_FILENAME.Replace("0", kindId);
+                string filename = Constants.TEMPLATE_ICECAST_CONFIG_FILENAME.Replace("0", specieId);
                 string icecastConfigApp = Path.Combine(Constants.APP_ICECAST_CONFIG_DIRECTORY, filename);
                 string icecastConfigServer = Path.Combine(Constants.SERVER_ICECAST_CONFIG_DIRECTORY, filename);
                 File.Copy(templateFile, icecastConfigApp, true);
                 File.Copy(templateFile, icecastConfigServer, true);
                 string text = File.ReadAllText(icecastConfigApp);
-                text = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0", kindId));
+                text = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0", specieId));
                 File.WriteAllText(icecastConfigApp, text);
                 GrantAccess(icecastConfigApp);
                 string text1 = File.ReadAllText(icecastConfigServer);
-                text1 = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0", kindId));
+                text1 = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0", specieId));
                 File.WriteAllText(icecastConfigServer, text1);
                 GrantAccess(icecastConfigServer);
             }
