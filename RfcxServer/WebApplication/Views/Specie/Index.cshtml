@@ -1,0 +1,122 @@
+@{
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "Crear Especie";
+}
+@section Style {
+    <style>
+        #titulo {
+            text-align: center;
+        }
+        #boton_especie {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #subtitulo {
+            margin-bottom: 5px;
+        }
+        #formulario {
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%;
+        }
+        textarea {
+            resize: none;
+        }
+        .botones_eliminar {
+            padding: 0;
+            text-align: right;
+            display: none;
+            margin-bottom: 5px;
+        }
+        #boton_agregar {
+            padding: 0;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .descripcion, .botones_eliminar, #boton_agregar {
+            margin-bottom: 5px;
+        }
+    </style>
+}
+<div id="formulario" class="row">
+    <form id="form_crear_especie" method="post" enctype="multipart/form-data" action="/api/bpv/specie/">
+        <div id="titulo" class="form-group col-lg-12 col-md-12">
+            <h2>Creación de especies</h2>
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+            <label>Nombre de la especie: </label>
+            <input id="nombre_especie" class="form-control" type="text" name="nombre_especie" required>
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+            <label>Familia: </label>
+            <input id="familia" class="form-control" type="text" name="familia" required>
+        </div>
+        <div id="subtitulo" class="form-group col-lg-12 col-md-12">
+            <h4>Ingreso de imágenes</h4>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <label>Descripción: </label>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <label>Archivo: </label>
+        </div>
+        <div id="imagenes">
+            <div class="form-group col-lg-6 col-md-6 descripcion">
+                <textarea name="descripciones" class="form-control" rows="1" type="text" required></textarea>
+            </div>
+            <div class="form-group col-lg-4 col-md-4 archivo">
+                <input name="archivos" type="file" accept="image/png, image/jpeg, image/jpg" required>
+            </div>
+            <div class="form-group botones_eliminar col-lg-1 col-md-1">
+                <input id="boton_eliminar_1" type="button" class="btn btn-danger" value="x" onclick="eliminarImagen(1)"/>
+            </div>
+            <div id="boton_agregar" class="form-group col-lg-1 col-md-1">
+                <input type="button" class="btn btn-primary" value="+" onclick="agregarImagen();"/>
+            </div>
+        </div>
+        <div id="boton_especie" class="form-group col-lg-12 col-md-12">
+            <button class="btn btn-primary" type="submit">Crear especie</button>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    <script>
+        var descripcion_inicial, archivo_inicial, boton_eliminar_inicial;
+
+        $(document).ready(function() {
+            descripcion_inicial = $($(".descripcion")[0]).clone(false, true);
+            archivo_inicial = $($(".archivo")[0]).clone(false, true);
+            boton_eliminar_inicial = $($(".botones_eliminar")[0]).clone(false, true);
+        });
+
+        function agregarImagen() {
+		    $(descripcion_inicial).clone(false, true).appendTo("#imagenes");
+            $(archivo_inicial).clone(false, true).appendTo("#imagenes");
+            $(boton_eliminar_inicial).css("display", "block").clone(false, true).appendTo("#imagenes");
+            $("#boton_agregar").appendTo("#imagenes");
+            if($(".descripcion").length > 1)
+                $($(".botones_eliminar")[0]).css("display", "block");
+            restablecerIds();
+		}
+
+        function restablecerIds() {
+            var botones_eliminar = $(".botones_eliminar");
+            for(var i = 0; i < botones_eliminar.length; i++) {
+                $($(botones_eliminar[i]).children()[0]).attr("id", "boton_eliminar_" + (i + 1));
+                $($(botones_eliminar[i]).children()[0]).attr("onclick", "eliminarImagen(" + (i + 1) + ");");
+			}
+        }
+
+        function eliminarImagen(indice) {
+            $($(".descripcion")[indice - 1]).remove();
+            $($(".archivo")[indice - 1]).remove();
+            $($(".botones_eliminar")[indice - 1]).remove();
+            restablecerIds();
+            if($(".descripcion").length === 1)
+                $($(".botones_eliminar")[0]).css('display', 'none');
+		}
+    </script>
+}

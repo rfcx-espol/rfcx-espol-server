@@ -42,27 +42,27 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Photo);
         }
 
-        [HttpGet("api/bpv/Kind/{KindId:int}/[controller]")]
-        public Task<string> GetPhotosByKind([FromRoute]int KindId)
+        [HttpGet("api/bpv/Specie/{SpecieId:int}/[controller]")]
+        public Task<string> GetPhotosBySpecie([FromRoute]int SpecieId)
         {
-            return this.GetPhotoByKind(KindId);
+            return this.GetPhotoBySpecie(SpecieId);
         }
 
-        private async Task<string> GetPhotoByKind(int KindId)
+        private async Task<string> GetPhotoBySpecie(int SpecieId)
         {
-            var Photos= await _PhotoRepository.GetByKind(KindId);
+            var Photos= await _PhotoRepository.GetBySpecie(SpecieId);
             return JsonConvert.SerializeObject(Photos);
         }
 
-        [HttpGet("api/bpv/Kind/{KindId:int}/[controller]/{PhotoId:int}")]
-        public Task<string> Get([FromRoute]int KindId, [FromRoute]int PhotoId)
+        [HttpGet("api/bpv/Specie/{SpecieId:int}/[controller]/{PhotoId:int}")]
+        public Task<string> Get([FromRoute]int SpecieId, [FromRoute]int PhotoId)
         {
-            return this.GetPhotoById(KindId, PhotoId);
+            return this.GetPhotoById(SpecieId, PhotoId);
         }
 
-        private async Task<string> GetPhotoById(int KindId, int PhotoId)
+        private async Task<string> GetPhotoById(int SpecieId, int PhotoId)
         {
-            var Photo= await _PhotoRepository.Get(KindId, PhotoId) ?? new Photo();
+            var Photo= await _PhotoRepository.Get(SpecieId, PhotoId) ?? new Photo();
             return JsonConvert.SerializeObject(Photo);
         }
 

@@ -25,17 +25,26 @@ using Microsoft.Extensions.Primitives;
 using System.Web;
 using System.Drawing;
 
-namespace WebApplication.Controllers
+namespace WebApplication
 {
     [Route("api/bpv/[controller]")]
-    public class SpecieController
+    public class SpecieController : Controller
     {
-        
         private readonly ISpecieRepository _SpecieRepository;
+        private readonly IPhotoRepository _PhotoRepository;
+        private readonly IFileProvider _fileProvider;
+        private static readonly FormOptions _defaultFormOptions = new FormOptions();
 
-        public SpecieController(ISpecieRepository SpecieRepository)
+        public SpecieController(IFileProvider fileProvider, ISpecieRepository SpecieRepository, IPhotoRepository PhotoRepository)
         {
+            _fileProvider = fileProvider;
             _SpecieRepository=SpecieRepository;
+            _PhotoRepository= PhotoRepository;
+        }
+
+        [HttpGet("create")]
+        public IActionResult Index() {
+            return View();
         }
 
         [HttpGet()]
@@ -62,31 +71,58 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Specie);
         }
 
-        [HttpGet("{specieId:int}/Photo/{photoId:int}")]
-        public Task<Photo> Get(int specieId, int photoId)
+        [HttpGet("{specieId:int}/gallery/{photoId:int}")]
+        public void Get(int specieId, int photoId)
         {
-            return this.GetPhotoByIdInt(specieId, photoId);
+            this.GetPhotoByIdInt(specieId, photoId);
         }
 
-        private async Task<Photo> GetPhotoByIdInt(int specieId, int photoId)
+        private void GetPhotoByIdInt(int specieId, int photoId)
         {
-            var filePath = await _SpecieRepository.GetPhoto(specieId, photoId);
-            string url = Constants.BASE_URL + "api/bpv/Specie/" + specieId.ToString() + "/Photo/" + photoId.ToString();
+            string filePath = "C:" + Constants.RUTA_ARCHIVOS_IMAGENES_ESPECIES + specieId.ToString() + "/" + 
+                                photoId.ToString() + ".jpg";
+            string url = Constants.BASE_URL + "api/bpv/specie/" + specieId.ToString() + "/gallery/" + photoId.ToString();
+            //string url = "http://localhost:5000/" + "api/bpv/specie/" + specieId.ToString() + "/gallery/" + photoId.ToString();
+            Console.Write("filepath: " + filePath);
+            Console.Write("url: " + url);
             using (var client = new WebClient())
             { 
                 client.DownloadFile(url, filePath);
-                return null;
             }
         }
 
         [HttpPost]
-        public async Task<string> Post([FromBody] Specie Specie)
-        {            
-            var x = await _SpecieRepository.Add(Specie);
-            if(x==false){
-                return "Id already exists!";
+        public async Task<IActionResult> Post(string nombre_especie, string familia, List<string> descripciones, 
+                                                List<IFormFile> archivos)
+        {
+            string filePath;
+            Task result;
+
+            Specie spe = new Specie();
+            spe.Name = nombre_especie;
+            spe.Family = familia;
+            spe.Gallery = new List<Photo>();
+            result = _SpecieRepository.Add(spe);
+
+            Core.MakeSpecieFolder(spe.Id.ToString());
+
+            for(int i = 1; i < (archivos.Count + 1); i++)
+            {
+                Photo photo = new Photo();
+                photo.Description = descripciones[i - 1];
+                _PhotoRepository.Add(photo);
+                result = _SpecieRepository.AddPhoto(spe.Id, photo);
+                filePath = Path.Combine(Core.SpecieFolderPath(spe.Id.ToString()), i.ToString() + ".jpg");
+                if (archivos[i - 1].Length > 0)
+                {
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await archivos[i - 1].CopyToAsync(stream);
+                    }
+                }
             }
-            return "";
+
+            return Redirect("/api/bpv/specie/create/");
         }
 
         [HttpPatch("{id}/Name")]

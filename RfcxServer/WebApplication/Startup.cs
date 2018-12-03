@@ -35,6 +35,7 @@ namespace WebApplication
         public void ConfigureServices(IServiceCollection services)
         {
             Core.MakeFilesFolder();
+            Core.MakeSpeciesFolder();
             services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Core.FilesFolderPath));
             services.AddMvc();
 
@@ -85,8 +86,15 @@ namespace WebApplication
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-            Path.Combine(Core.getServerDirectory(), "files")),
+                Path.Combine(Core.getServerDirectory(), "files")),
                 RequestPath = "/files"
+            });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(Core.getServerDirectory(), "resources")),
+                RequestPath = "/resources"
             });
 
             
