@@ -178,7 +178,6 @@ namespace WebApplication
             return File(content, "APPLICATION/octet-stream", namefile);
         }
 
-
     }
 }
 

@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Primitives;
 using System.Web;
 using System.Drawing;
+using System.Net.Http;
 
 namespace WebApplication
 {
@@ -72,23 +73,14 @@ namespace WebApplication
         }
 
         [HttpGet("{specieId:int}/gallery/{photoId:int}")]
-        public void Get(int specieId, int photoId)
+        public ActionResult Get(int specieId, int photoId)
         {
-            this.GetPhotoByIdInt(specieId, photoId);
-        }
-
-        private void GetPhotoByIdInt(int specieId, int photoId)
-        {
-            string filePath = "C:" + Constants.RUTA_ARCHIVOS_IMAGENES_ESPECIES + specieId.ToString() + "/" + 
-                                photoId.ToString() + ".jpg";
-            string url = Constants.BASE_URL + "api/bpv/specie/" + specieId.ToString() + "/gallery/" + photoId.ToString();
-            //string url = "http://localhost:5000/" + "api/bpv/specie/" + specieId.ToString() + "/gallery/" + photoId.ToString();
-            Console.Write("filepath: " + filePath);
-            Console.Write("url: " + url);
-            using (var client = new WebClient())
-            { 
-                client.DownloadFile(url, filePath);
-            }
+            DirectoryInfo DI = new DirectoryInfo(Constants.RUTA_ARCHIVOS_IMAGENES_ESPECIES + specieId.ToString() + "/");
+            string fileAddress = DI.FullName + photoId.ToString() + ".jpg";
+            var net = new System.Net.WebClient();
+            var data = net.DownloadData(fileAddress);
+            var content = new System.IO.MemoryStream(data);
+            return File(content, "application/jpg", photoId.ToString() + ".jpg");
         }
 
         [HttpPost]

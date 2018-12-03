@@ -11,7 +11,6 @@ namespace WebApplication.IRepository
         Task<Photo> Get(string id);
         Task<Photo> Get(int id);
         Task<Photo> Get(int SpecieId, int PhotoId);
-        Task<IEnumerable<Photo>> GetBySpecie(int SpecieId);
         void Add(Photo item);
         Task<bool> Update(int PhotoId, Photo item);
         Task<bool> UpdateDescription(int PhotoId, string description);

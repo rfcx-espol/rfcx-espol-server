@@ -98,6 +98,7 @@ namespace WebApplication.Repository
                 }
     
                  _context.Photos.InsertOne(item);
+                 return;
             }
             catch (Exception ex)
             {
