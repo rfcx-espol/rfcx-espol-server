@@ -63,14 +63,6 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<string> GetPhoto(int specieId, int photoId)
-        {
-            var filter = Builders<Photo>.Filter.Eq("Id", photoId);
-            var photo = await _context.Photos.Find(filter).FirstOrDefaultAsync();
-            var filePath = Path.Combine(Core.SpecieFolderPath(specieId.ToString()), photo.Filename);
-            return filePath;
-        }
-
         public async Task<bool> Add(Specie item)
         {
             try

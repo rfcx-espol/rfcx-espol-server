@@ -57,6 +57,10 @@ namespace WebApplication {
             return Path.Combine(getServerDirectory() , FilesFolderName);
         }}
 
+        public static string SpeciesFolderPath { get {
+            return Constants.RUTA_ARCHIVOS_IMAGENES_ESPECIES;
+        }}
+
         public static void MakeFilesFolder() {
             if (!Directory.Exists(FilesFolderPath)) {
                 Directory.CreateDirectory(FilesFolderPath);
@@ -69,6 +73,12 @@ namespace WebApplication {
             }
         }
 
+        public static void MakeSpeciesFolder() {
+            if (!Directory.Exists(SpeciesFolderPath)) {
+                Directory.CreateDirectory(SpeciesFolderPath);
+            }
+        }
+
         public static string RecyclerFolderPath() {
             return Path.Combine(FilesFolderPath, "recycler");
         }
@@ -77,12 +87,8 @@ namespace WebApplication {
             return Path.Combine(FilesFolderPath, "station" + stationId);
         }
 
-        public static string SpecieImagesFolderPath { get {
-            return Path.Combine(FilesFolderPath, "bpv/images");
-        }}
-
         public static string SpecieFolderPath(string specieId) {
-            return Path.Combine(SpecieImagesFolderPath, "specie" + specieId);
+            return Path.Combine(Constants.RUTA_ARCHIVOS_IMAGENES, "species/" + specieId + "/");
         }
 
         public static string StationFolderPathName(string name) {
@@ -181,7 +187,7 @@ namespace WebApplication {
         }
 
         public static string getServerDirectory(){
-            return Constants.serverDirecrtory;
+            return Constants.SERVER_DIRECTORY;
         }
 
         private static void GrantAccess(string fullPath) {

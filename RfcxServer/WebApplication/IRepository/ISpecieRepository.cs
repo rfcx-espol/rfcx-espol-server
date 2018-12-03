@@ -10,7 +10,6 @@ namespace WebApplication.IRepository
         Task<IEnumerable<Specie>> Get();
         Task<Specie> Get(string id);
         Task<Specie> Get(int id);
-        Task<string> GetPhoto(int specieId, int photoId);
         Task<bool> Add(Specie item);
         Task<bool> Update(int SpecieId, Specie item);
         Task<bool> UpdateName(int id, string name);

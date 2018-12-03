@@ -60,11 +60,11 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<IEnumerable<Photo>> GetByKind(int KindId)
+        public async Task<IEnumerable<Photo>> GetBySpecie(int SpecieId)
         {
             try
             {
-                var filter =Builders<Photo>.Filter.Eq("KindId", KindId);
+                var filter =Builders<Photo>.Filter.Eq("SpecieId", SpecieId);
                 return await _context.Photos.Find(filter).ToListAsync();
             }
             catch (Exception ex)
@@ -73,9 +73,9 @@ namespace WebApplication.Repository
             }
         }
         
-        public async Task<Photo> Get(int KindId, int PhotoId)
+        public async Task<Photo> Get(int SpecieId, int PhotoId)
         {
-            var filter = Builders<Photo>.Filter.Eq("Id", PhotoId) & Builders<Photo>.Filter.Eq("KindId", KindId);
+            var filter = Builders<Photo>.Filter.Eq("Id", PhotoId) & Builders<Photo>.Filter.Eq("SpecieId", SpecieId);
 
             try
             {
@@ -86,7 +86,7 @@ namespace WebApplication.Repository
                 throw ex;
             }
         }
-        public async Task Add(Photo item)
+        public void Add(Photo item)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace WebApplication.Repository
                     item.Id=1;
                 }
     
-                await _context.Photos.InsertOneAsync(item);
+                 _context.Photos.InsertOne(item);
             }
             catch (Exception ex)
             {
