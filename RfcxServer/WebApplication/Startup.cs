@@ -56,6 +56,7 @@ namespace WebApplication
             services.AddTransient<IInfoSensoresRepository, InfoSensoresRepository>();
             services.AddTransient<ISpecieRepository, SpecieRepository>();
             services.AddTransient<IPhotoRepository, PhotoRepository>();
+            services.AddTransient<IQuestionRepository, QuestionRepository>();
             services.AddCors(options =>
                 {
                     options.AddPolicy("AllowAllOrigins",

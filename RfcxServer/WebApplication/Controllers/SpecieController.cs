@@ -117,27 +117,6 @@ namespace WebApplication
             return Redirect("/api/bpv/specie/create/");
         }
 
-        [HttpPatch("{id}/Name")]
-        public async Task<bool> PatchName(int id, [FromBody]  Arrays json)
-        {
-            if (id==0) return false;
-            return await _SpecieRepository.UpdateName(id, json.Name);
-        }
-
-        [HttpPatch("{id}/Family")]
-        public async Task<bool> PatchFamily(int id, [FromBody]  Arrays json)
-        {
-            if (id==0) return false;
-            return await _SpecieRepository.UpdateFamily(id, json.Family);
-        }
-
-        [HttpDelete("{SpecieId:int}")]
-        public async Task<bool> Delete([FromRoute]int SpecieId)
-        {
-            if (SpecieId==0) return false;
-            return await _SpecieRepository.Remove(SpecieId);
-        }
-
     }
 
 }

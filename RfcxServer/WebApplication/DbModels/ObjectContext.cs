@@ -73,6 +73,14 @@ namespace WebApplication.DbModels
             }
         }
 
+        public IMongoCollection<Question> Questions
+        {
+            get
+            {
+                return _database.GetCollection<Question>("Question");
+            }
+        }
+
         public IMongoCollection<Label> Labels
         {
             get
