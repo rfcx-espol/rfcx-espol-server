@@ -62,9 +62,7 @@ namespace WebApplication
                     options.AddPolicy("AllowAllOrigins",
                     builder =>
                     {
-                        builder.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyOrigin();
+                        builder.AllowAnyOrigin();
                     });
                 });
         }
@@ -72,14 +70,17 @@ namespace WebApplication
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            if (env.IsDevelopment())
+            /*if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseExceptionHandler("/Error");
-            }
+            }*/
+
+            app.UseDeveloperExceptionPage();
+
             app.UseCors("AllowAllOrigins");
             app.UseMvcWithDefaultRoute();
             app.UseStaticFiles();
@@ -108,11 +109,11 @@ namespace WebApplication
             
             loggerFactory.AddSerilog();
 
-	    StaticFileOptions option = new StaticFileOptions();
-	    FileExtensionContentTypeProvider contentTypeProvider = (FileExtensionContentTypeProvider)option.ContentTypeProvider ?? new FileExtensionContentTypeProvider();
-	    contentTypeProvider.Mappings.Add(".unityweb", "application/octet-stream");
-	    option.ContentTypeProvider = contentTypeProvider;
-	    app.UseStaticFiles(option);
+            StaticFileOptions option = new StaticFileOptions();
+            FileExtensionContentTypeProvider contentTypeProvider = (FileExtensionContentTypeProvider)option.ContentTypeProvider ?? new FileExtensionContentTypeProvider();
+            contentTypeProvider.Mappings.Add(".unityweb", "application/octet-stream");
+            option.ContentTypeProvider = contentTypeProvider;
+            app.UseStaticFiles(option);
 
         }
     }

@@ -125,6 +125,33 @@ namespace WebApplication.Repository
             return specie;
         }
 
+        public async Task<bool> Remove(int id)
+        {
+            try
+            {
+                var filtro_especie = Builders<Specie>.Filter.Eq("Id", id);
+                Specie specie = await _context.Species.Find(filtro_especie).FirstOrDefaultAsync();
+
+                foreach(Photo photo in specie.Gallery) {
+                    var filtro_foto = Builders<Photo>.Filter.Eq("Id", photo.Id);
+                    _context.Photos.DeleteOne(filtro_foto);
+                }
+
+                DeleteResult actionResult = await _context.Species.DeleteOneAsync(filtro_especie);
+                var filtro_pregunta = Builders<Question>.Filter.Eq("SpecieId", id);
+                _context.Questions.DeleteMany(filtro_pregunta);
+                string specieDeletedPath = Core.SpecieFolderPath(id.ToString());
+                Directory.Delete(specieDeletedPath, true);              
+
+                return actionResult.IsAcknowledged 
+                    && actionResult.DeletedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 
 }

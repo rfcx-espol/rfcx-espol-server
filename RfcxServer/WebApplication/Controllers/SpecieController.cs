@@ -117,6 +117,14 @@ namespace WebApplication
             return Redirect("/api/bpv/specie/create/");
         }
 
+        [HttpDelete("{id}")]
+        public async Task<bool> Delete([FromRoute] int id)
+        {
+            if (id==0) return false;
+            return await _SpecieRepository.Remove(id);
+             
+        }
+
     }
 
 }

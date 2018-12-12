@@ -98,7 +98,6 @@
             valor = "";
 
             $(".file").change(function(){
-                alert("valor antiguo: " + valor);
                 for(var i = 0; i < tipos_archivo.length; i++) {
                     if(this.files[0].type === tipos_archivo[i]) {
                         valor = this.value;
