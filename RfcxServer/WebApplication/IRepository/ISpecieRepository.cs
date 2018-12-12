@@ -7,7 +7,7 @@ namespace WebApplication.IRepository
 {
     public interface ISpecieRepository
     {
-        Task<IEnumerable<Specie>> Get();
+        List<Specie> Get();
         Task<Specie> Get(string id);
         Task<Specie> Get(int id);
         Task<bool> Add(Specie item);

@@ -30,12 +30,22 @@
             <h2>Creación de pregunta</h2>
         </div>
         <div class="form-group col-lg-3 col-md-3">
+            <label>Especie: </label>
+            <select name="especie" class="form-control" required>
+                <option hidden value="">Escoja una opción</option>
+                @foreach (var especie in ViewBag.especies)
+                {
+                    <option value=@especie.Id>@especie.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-lg-3 col-md-3">
             <label>Id de la especie: </label>
             <input id="id_especie" class="form-control" type="number" min="1" name="id_especie" required>
         </div>
         <div class="form-group col-lg-9 col-md-9">
             <label>Pregunta: </label>
-            <input id="pregunta" class="form-control" type="text" name="pregunta" required>
+            <input id="pregunta" class="form-control" type="text" name="pregunta" required>            
         </div>
         <div class="form-group col-lg-6 col-md-6">
             <label>Opción 1: </label>

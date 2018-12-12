@@ -68,7 +68,7 @@
                 <textarea name="descripciones" class="form-control" rows="1" type="text" required></textarea>
             </div>
             <div class="form-group col-lg-4 col-md-4 archivo">
-                <input name="archivos" type="file" accept="image/png, image/jpeg, image/jpg" required>
+                <input name="archivos" type="file" accept="image/*" class="file" required>
             </div>
             <div class="form-group botones_eliminar col-lg-1 col-md-1">
                 <input id="boton_eliminar_1" type="button" class="btn btn-danger" value="x" onclick="eliminarImagen(1)"/>
@@ -84,12 +84,35 @@
 </div>
 @section Scripts {
     <script>
-        var descripcion_inicial, archivo_inicial, boton_eliminar_inicial;
+        var descripcion_inicial, archivo_inicial, boton_eliminar_inicial, valor;
+        var tipos_archivo = [
+            'image/jpg',
+            'image/jpeg',
+            'image/png'
+        ];
 
         $(document).ready(function() {
             descripcion_inicial = $($(".descripcion")[0]).clone(false, true);
             archivo_inicial = $($(".archivo")[0]).clone(false, true);
             boton_eliminar_inicial = $($(".botones_eliminar")[0]).clone(false, true);
+            valor = "";
+
+            $(".file").change(function(){
+                alert("valor antiguo: " + valor);
+                for(var i = 0; i < tipos_archivo.length; i++) {
+                    if(this.files[0].type === tipos_archivo[i]) {
+                        valor = this.value;
+                        return;
+                    }
+                }
+                /*if(valor != "") {
+                    this.value = valor;
+                } else {
+                    this.value = "";
+                }*/
+                this.value = "";
+                alert("El archivo no tiene el formato correcto. Sólo se aceptan imágenes");
+            });
         });
 
         function agregarImagen() {

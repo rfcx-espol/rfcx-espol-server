@@ -31,19 +31,25 @@ using System.Text.RegularExpressions;
 
 namespace WebApplication
 {
+
+
+
     [Route("api/bpv/[controller]")]
     public class QuestionController : Controller
     {
         private readonly IQuestionRepository _QuestionRepository;
+        private readonly ISpecieRepository _SpecieRepository;
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
 
-        public QuestionController(IQuestionRepository QuestionRepository)
+        public QuestionController(IQuestionRepository QuestionRepository, ISpecieRepository SpecieRepository)
         {
             _QuestionRepository = QuestionRepository;
+            _SpecieRepository = SpecieRepository;
         }
 
         [HttpGet("create")]
         public IActionResult Index() {
+            ViewBag.especies = _SpecieRepository.Get();
             return View();
         }
 
@@ -75,7 +81,7 @@ namespace WebApplication
         public async Task<IActionResult> Post()
         {
             Question question = new Question();
-            question.SpecieId = Int32.Parse(Request.Form["id_especie"]);
+            question.SpecieId = Int32.Parse(Request.Form["especie"]);
             question.Text = Request.Form["pregunta"];
             question.Options = new List<string>();
             question.Options.Add(Request.Form["opcion_1"]);

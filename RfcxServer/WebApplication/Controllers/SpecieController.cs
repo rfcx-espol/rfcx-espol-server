@@ -49,14 +49,14 @@ namespace WebApplication
         }
 
         [HttpGet()]
-        public Task<string> Get()
+        public List<Specie> Get()
         {
-            return this.GetSpecie();
+            return _SpecieRepository.Get();
         }
 
         private async Task<string> GetSpecie()
         {
-            var Specie= await _SpecieRepository.Get();
+            var Specie= _SpecieRepository.Get();
             return JsonConvert.SerializeObject(Specie);
         }
 

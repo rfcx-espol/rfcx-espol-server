@@ -23,11 +23,11 @@ namespace WebApplication.Repository
             _context = new ObjectContext(settings);
         } 
 
-        public async Task<IEnumerable<Specie>> Get()
+        public List<Specie> Get()
         {
             try
             {
-                return await _context.Species.Find(_ => true).ToListAsync();
+                return _context.Species.Find(_ => true).ToList();
             }
             catch (Exception ex)
             {
