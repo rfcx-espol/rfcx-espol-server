@@ -91,11 +91,7 @@ namespace WebApplication
             question.Answer = Int32.Parse(Request.Form["respuesta"]);
             question.Feedback = Request.Form["retroalimentacion"];
             Task result = _QuestionRepository.Add(question);
-            if(result.Status == TaskStatus.RanToCompletion || result.Status == TaskStatus.Running ||
-                result.Status == TaskStatus.Created || result.Status == TaskStatus.WaitingToRun)
-                TempData["exito"] = 1;
-            else
-                TempData["exito"] = -1;
+            TempData["exito"] = 1;
             return Redirect("/api/bpv/question/create/");
         }
 
