@@ -38,6 +38,7 @@ namespace WebApplication
             Core.MakeSpeciesFolder();
             services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Core.FilesFolderPath));
             services.AddMvc();
+            services.AddSession();
 
             IFileProvider physicalProvider = new PhysicalFileProvider(Core.getServerDirectory());
             services.AddSingleton<IFileProvider>(physicalProvider);
@@ -80,9 +81,9 @@ namespace WebApplication
             }*/
 
             app.UseDeveloperExceptionPage();
-
             app.UseCors("AllowAllOrigins");
             app.UseMvcWithDefaultRoute();
+            app.UseCookiePolicy();
             app.UseStaticFiles();
 
             app.UseStaticFiles(new StaticFileOptions

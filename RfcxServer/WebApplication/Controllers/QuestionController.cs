@@ -32,8 +32,6 @@ using System.Text.RegularExpressions;
 namespace WebApplication
 {
 
-
-
     [Route("api/bpv/[controller]")]
     public class QuestionController : Controller
     {
@@ -50,6 +48,8 @@ namespace WebApplication
         [HttpGet("create")]
         public IActionResult Index() {
             ViewBag.especies = _SpecieRepository.Get();
+            if(TempData["exito"] == null)
+                TempData["exito"] = 0;
             return View();
         }
 
@@ -91,7 +91,10 @@ namespace WebApplication
             question.Answer = Int32.Parse(Request.Form["respuesta"]);
             question.Feedback = Request.Form["retroalimentacion"];
             Task result = _QuestionRepository.Add(question);
-
+            if(result.Status == TaskStatus.RanToCompletion || result.Status == TaskStatus.Running)
+                TempData["exito"] = 1;
+            else
+                TempData["exito"] = -1;
             return Redirect("/api/bpv/question/create/");
         }
 

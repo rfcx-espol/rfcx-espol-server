@@ -1,7 +1,6 @@
 @{
     Layout = "~/Pages/_Layout.cshtml";
 }
-
 @{
     ViewBag.Title = "Crear Especie";
 }
@@ -39,9 +38,25 @@
         .descripcion, .botones_eliminar, #boton_agregar {
             margin-bottom: 5px;
         }
+        #alerta {
+            margin: 20px 0 0 0;
+        }
     </style>
 }
 <div id="formulario" class="row">
+    @if(((int) TempData["exito"]) == 1) {
+        <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            La especie fue creada con éxito.
+        </div>
+    } else if(((int) TempData["exito"]) == -1) {
+        <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            Hubo un problema al crear la especie. Por favor, vuelva a intentarlo.
+        </div>
+    }
     <form id="form_crear_especie" method="post" enctype="multipart/form-data" action="/api/bpv/specie/">
         <div id="titulo" class="form-group col-lg-12 col-md-12">
             <h2>Creación de especie</h2>
@@ -110,9 +125,26 @@
                     this.value = "";
                 }*/
                 this.value = "";
-                alert("El archivo no tiene el formato correcto. Sólo se aceptan imágenes");
+                mostrarDialogo("El archivo no tiene el formato correcto. " +
+                                "Sólo se aceptan imágenes con extensión .jpg, .jpeg y .png");
             });
         });
+
+        function mostrarDialogo(mensaje) {
+            var dialogo = new BootstrapDialog();
+            BootstrapDialog.show({
+                title: 'ERROR',
+                message: mensaje,
+                type: BootstrapDialog.TYPE_DANGER,
+                buttons: [{
+                    label: 'Aceptar',
+                    cssClass: 'btn-danger',
+                    action: function(dialogItself){
+                        dialogItself.close();
+                    }
+                }]
+            });
+        }
 
         function agregarImagen() {
 		    $(descripcion_inicial).clone(false, true).appendTo("#imagenes");

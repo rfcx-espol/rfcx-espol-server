@@ -65,10 +65,19 @@ namespace WebApplication.Repository
             try
             {
                 var list=_context.Photos.Find(_ => true).ToList();
-                if(list.Count>0){
-                    item.Id=list[list.Count-1].Id+1;
+                if(item.Id==0){
+                    if(list.Count>0){
+                        list.Sort();
+                        item.Id=list[list.Count-1].Id+1;
+                    }else{
+                        item.Id=1;
+                    }
                 }else{
-                    item.Id=1;
+                    for (int i=0;i<list.Count;i++){
+                        if(item.Id==list[i].Id){
+                            return;
+                        }
+                    }
                 }
     
                  _context.Photos.InsertOne(item);

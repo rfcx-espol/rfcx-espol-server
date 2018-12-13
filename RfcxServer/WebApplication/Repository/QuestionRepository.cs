@@ -89,6 +89,9 @@ namespace WebApplication.Repository
             }
             catch (Exception ex)
             {
+                Console.Write(ex.Message);
+                Console.Write(ex.Source);
+                Console.Write(ex.StackTrace);
                 throw ex;
             }
         }

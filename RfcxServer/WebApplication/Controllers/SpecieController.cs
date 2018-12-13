@@ -45,6 +45,8 @@ namespace WebApplication
 
         [HttpGet("create")]
         public IActionResult Index() {
+            if(TempData["exito"] == null)
+                TempData["exito"] = 0;
             return View();
         }
 
@@ -103,7 +105,7 @@ namespace WebApplication
                 Photo photo = new Photo();
                 photo.Description = descripciones[i - 1];
                 _PhotoRepository.Add(photo);
-                result = _SpecieRepository.AddPhoto(spe.Id, photo);
+                _SpecieRepository.AddPhoto(spe.Id, photo);
                 filePath = Path.Combine(Core.SpecieFolderPath(spe.Id.ToString()), i.ToString() + ".jpg");
                 if (archivos[i - 1].Length > 0)
                 {
@@ -114,6 +116,11 @@ namespace WebApplication
                 }
             }
 
+            if(result.Status == TaskStatus.RanToCompletion || result.Status == TaskStatus.Running)
+                TempData["exito"] = 1;
+            else
+                TempData["exito"] = -1;           
+
             return Redirect("/api/bpv/specie/create/");
         }
 
@@ -122,7 +129,6 @@ namespace WebApplication
         {
             if (id==0) return false;
             return await _SpecieRepository.Remove(id);
-             
         }
 
     }

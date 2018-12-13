@@ -1,7 +1,6 @@
 @{
     Layout = "~/Pages/_Layout.cshtml";
 }
-
 @{
     ViewBag.Title = "Crear Pregunta";
 }
@@ -22,9 +21,25 @@
         textarea {
             resize: none;
         }
+        #alerta {
+            margin: 20px 0 0 0;
+        }
     </style>
 }
 <div id="formulario" class="row">
+    @if(((int) TempData["exito"]) == 1) {
+        <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            La pregunta fue creada con éxito.
+        </div>
+    } else if(((int) TempData["exito"]) == -1) {
+        <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            Hubo un problema al crear la pregunta. Por favor, vuelva a intentarlo.
+        </div>
+    }
     <form id="form_crear_pregunta" method="post" enctype="multipart/form-data" action="/api/bpv/question/">
         <div id="titulo" class="form-group col-lg-12 col-md-12">
             <h2>Creación de pregunta</h2>

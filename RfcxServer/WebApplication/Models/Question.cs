@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace WebApplication.Models
 {
     
-    public class Question
+    public class Question : IComparable
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -17,6 +17,22 @@ namespace WebApplication.Models
         public List<string> Options { get; set; }
         public int Answer { get; set; }
         public string Feedback { get; set; }
+
+        public int CompareTo(object obj)
+        {
+            Question question = obj as Question;
+            if(question == null) return 1;
+            if (question.Id < Id)
+            {
+                return 1;
+            }
+            if (question.Id > Id)
+            {
+                return -1;
+            }
+            return 0;
+        }
+
     }
     
 }
