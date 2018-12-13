@@ -110,8 +110,25 @@
             descripcion_inicial = $($(".descripcion")[0]).clone(false, true);
             archivo_inicial = $($(".archivo")[0]).clone(false, true);
             boton_eliminar_inicial = $($(".botones_eliminar")[0]).clone(false, true);
-            valor = "";
+            crearListener();
+        });
 
+        function mostrarDialogo(mensaje) {
+            BootstrapDialog.show({
+                title: 'ERROR',
+                message: mensaje,
+                type: BootstrapDialog.TYPE_DANGER,
+                buttons: [{
+                    label: 'Aceptar',
+                    cssClass: 'btn-danger',
+                    action: function(dialogItself){
+                        dialogItself.close();
+                    }
+                }]
+            });
+        }
+
+        function crearListener() {
             $(".file").change(function(){
                 for(var i = 0; i < tipos_archivo.length; i++) {
                     if(this.files[0].type === tipos_archivo[i]) {
@@ -125,24 +142,10 @@
                     this.value = "";
                 }*/
                 this.value = "";
+                
                 mostrarDialogo("El archivo no tiene el formato correcto. " +
-                                "Sólo se aceptan imágenes con extensión .jpg, .jpeg y .png");
-            });
-        });
-
-        function mostrarDialogo(mensaje) {
-            var dialogo = new BootstrapDialog();
-            BootstrapDialog.show({
-                title: 'ERROR',
-                message: mensaje,
-                type: BootstrapDialog.TYPE_DANGER,
-                buttons: [{
-                    label: 'Aceptar',
-                    cssClass: 'btn-danger',
-                    action: function(dialogItself){
-                        dialogItself.close();
-                    }
-                }]
+                                "Sólo se aceptan imágenes con extensión .jpg, .jpeg y .png. " + 
+                                "Por favor, vuelva a escoger un archivo.");
             });
         }
 
@@ -162,6 +165,7 @@
                 $($(botones_eliminar[i]).children()[0]).attr("id", "boton_eliminar_" + (i + 1));
                 $($(botones_eliminar[i]).children()[0]).attr("onclick", "eliminarImagen(" + (i + 1) + ");");
 			}
+            crearListener();
         }
 
         function eliminarImagen(indice) {
