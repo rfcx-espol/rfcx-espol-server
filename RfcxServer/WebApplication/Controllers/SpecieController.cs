@@ -105,7 +105,7 @@ namespace WebApplication
                 Photo photo = new Photo();
                 photo.Description = descripciones[i - 1];
                 _PhotoRepository.Add(photo);
-                _SpecieRepository.AddPhoto(spe.Id, photo);
+                await _SpecieRepository.AddPhoto(spe.Id, photo);
                 filePath = Path.Combine(Core.SpecieFolderPath(spe.Id.ToString()), i.ToString() + ".jpg");
                 if (archivos[i - 1].Length > 0)
                 {
@@ -116,7 +116,8 @@ namespace WebApplication
                 }
             }
 
-            if(result.Status == TaskStatus.RanToCompletion || result.Status == TaskStatus.Running)
+            if(result.Status == TaskStatus.RanToCompletion || result.Status == TaskStatus.Running ||
+                result.Status == TaskStatus.Created || result.Status == TaskStatus.WaitingToRun)
                 TempData["exito"] = 1;
             else
                 TempData["exito"] = -1;           
