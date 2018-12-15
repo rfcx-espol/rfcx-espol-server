@@ -86,6 +86,7 @@ namespace WebApplication
         }
 
         [HttpPost]
+        [DisableRequestSizeLimit]
         public async Task<IActionResult> Post(string nombre_especie, string familia, List<string> descripciones, 
                                                 List<IFormFile> archivos)
         {
