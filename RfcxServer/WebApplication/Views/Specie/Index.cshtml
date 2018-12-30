@@ -83,7 +83,7 @@
                 <textarea name="descripciones" class="form-control" rows="1" type="text" required></textarea>
             </div>
             <div class="form-group col-lg-4 col-md-4 archivo">
-                <input name="archivos" type="file" accept="image/*" class="file" required>
+                <input name="archivos" type="file" accept="image/*" data-max-size="3000000" class="file" required>
             </div>
             <div class="form-group botones_eliminar col-lg-1 col-md-1">
                 <input id="boton_eliminar_1" type="button" class="btn btn-danger" value="x" onclick="eliminarImagen(1)"/>
@@ -100,11 +100,6 @@
 @section Scripts {
     <script>
         var descripcion_inicial, archivo_inicial, boton_eliminar_inicial, valor;
-        var tipos_archivo = [
-            'image/jpg',
-            'image/jpeg',
-            'image/png'
-        ];
 
         $(document).ready(function() {
             descripcion_inicial = $($(".descripcion")[0]).clone(false, true);
@@ -130,22 +125,21 @@
 
         function crearListener() {
             $(".file").change(function(){
-                for(var i = 0; i < tipos_archivo.length; i++) {
-                    if(this.files[0].type === tipos_archivo[i]) {
-                        valor = this.value;
-                        return;
+                var tipo = this.files[0].type;
+                var tamanio = this.files[0].size;
+                if(tipo == 'image/jpg' || tipo == 'image/jpeg' || tipo == 'image/png') {
+                    if(tamanio > $(this).data('max-size')) {
+                        this.value = "";
+                        mostrarDialogo("El archivo es demasiado grande. " +
+                                        "Sólo se aceptan imágenes con un tamaño máximo de 3 Mb. " + 
+                                        "Por favor, vuelva a escoger un archivo.");
                     }
-                }
-                /*if(valor != "") {
-                    this.value = valor;
                 } else {
                     this.value = "";
-                }*/
-                this.value = "";
-                
-                mostrarDialogo("El archivo no tiene el formato correcto. " +
-                                "Sólo se aceptan imágenes con extensión .jpg, .jpeg y .png. " + 
-                                "Por favor, vuelva a escoger un archivo.");
+                    mostrarDialogo("El archivo no tiene el formato correcto. " +
+                                    "Sólo se aceptan imágenes con extensión .jpg, .jpeg y .png. " + 
+                                    "Por favor, vuelva a escoger un archivo.");
+                }
             });
         }
 

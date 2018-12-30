@@ -49,6 +49,20 @@ namespace WebApplication.Repository
             }
         }
 
+        public async Task<Specie> GetSpecie(string name)
+        {
+            var filter = Builders<Specie>.Filter.Eq("Name", name);
+
+            try
+            {
+                return await _context.Species.Find(filter).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<Specie> Get(int id)
         {
             var filter = Builders<Specie>.Filter.Eq("Id", id);

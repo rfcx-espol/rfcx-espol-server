@@ -50,7 +50,7 @@ namespace WebApplication
             return View();
         }
 
-        [HttpGet()]
+        [HttpGet("list")]
         public List<Specie> Get()
         {
             return _SpecieRepository.Get();
@@ -74,6 +74,18 @@ namespace WebApplication
             return JsonConvert.SerializeObject(Specie);
         }
 
+        [HttpGet()]
+        public Task<string> Get([FromQuery] string name)
+        {
+            return this.GetSpecieByName(name);
+        }
+
+        private async Task<string> GetSpecieByName(string name)
+        {
+            var Specie= await _SpecieRepository.GetSpecie(name) ?? new Specie();
+            return JsonConvert.SerializeObject(Specie);
+        }
+
         [HttpGet("{specieId:int}/gallery/{photoId:int}")]
         public ActionResult Get(int specieId, int photoId)
         {
@@ -86,7 +98,6 @@ namespace WebApplication
         }
 
         [HttpPost]
-        [DisableRequestSizeLimit]
         public async Task<IActionResult> Post(string nombre_especie, string familia, List<string> descripciones, 
                                                 List<IFormFile> archivos)
         {
