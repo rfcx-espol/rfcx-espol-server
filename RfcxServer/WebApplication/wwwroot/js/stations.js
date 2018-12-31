@@ -49,7 +49,7 @@ function getStationsList(data) {
     for(station of data_dic){
         var station_id = station['Id'];
         var station_name = station['Name'];
-        var content = '<div class="station col-lg-3 col-md-3 col-sm-4 col-xs-12"><div class="title row">'+
+        var content = '<div class="station col-lg-4 col-md-4 col-sm-4 col-xs-12"><div class="title row">'+
         '<div class="col-lg-8 col-md-7 col-sm-7 col-xs-7"><h4>'+station_name+'</h4></div>'+
         '<div class="col-lg-4 col-md-5 col-sm-5 col-xs-5 header"><a class="icon_station" href="/StationView?stationName='+station_name+'&stationId='+station_id+'">' + 
         '<i class="material-icons fa fa-line-chart" id="barra"></i></a>'+
