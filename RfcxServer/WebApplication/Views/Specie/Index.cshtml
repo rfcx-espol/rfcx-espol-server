@@ -40,6 +40,9 @@
         #alerta {
             margin: 20px 0 0 0;
         }
+        #mensaje {
+            color: red;
+        }
     </style>
 }
 <div id="formulario" class="row">
@@ -91,6 +94,9 @@
                 <input type="button" class="btn btn-primary" value="+" onclick="agregarImagen();"/>
             </div>
         </div>
+        <div class="col-lg-12 col-lg-offset-6 col-md-12 col-md-offset-6">
+            <p id="mensaje">* El tamaño máximo de las imágenes es de 3 MB</p>
+        </div>
         <div id="boton_especie" class="form-group col-lg-12 col-md-12">
             <button class="btn btn-primary" type="submit">Crear especie</button>
         </div>
@@ -130,7 +136,7 @@
                     if(tamanio > $(this).data('max-size')) {
                         this.value = "";
                         mostrarDialogo("El archivo es demasiado grande. " +
-                                        "Sólo se aceptan imágenes con un tamaño máximo de 3 Mb. " + 
+                                        "Sólo se aceptan imágenes con un tamaño máximo de 3 MB. " + 
                                         "Por favor, vuelva a escoger un archivo.");
                     }
                 } else {
