@@ -20,11 +20,11 @@ namespace WebApplication.Repository
             _context = new ObjectContext(settings);
         } 
 
-        public async Task<IEnumerable<Photo>> Get()
+        public List<Photo> Get()
         {
             try
             {
-                return await _context.Photos.Find(_ => true).ToListAsync();
+                return _context.Photos.Find(_ => true).ToList();
             }
             catch (Exception ex)
             {

@@ -26,7 +26,7 @@ namespace WebApplication.Controllers
 
         private async Task<string> GetPhoto()
         {
-            var Photo= await _PhotoRepository.Get();
+            var Photo= _PhotoRepository.Get();
             return JsonConvert.SerializeObject(Photo);
         }
 

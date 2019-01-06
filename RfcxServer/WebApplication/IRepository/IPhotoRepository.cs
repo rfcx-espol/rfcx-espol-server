@@ -7,7 +7,7 @@ namespace WebApplication.IRepository
 {
     public interface IPhotoRepository
     {
-        Task<IEnumerable<Photo>> Get();
+        List<Photo> Get();
         Task<Photo> Get(string id);
         Task<Photo> Get(int id);
         void Add(Photo item);

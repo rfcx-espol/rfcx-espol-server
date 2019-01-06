@@ -144,8 +144,9 @@ namespace WebApplication.Repository
             try
             {
                 var filtro_especie = Builders<Specie>.Filter.Eq("Id", id);
-                Specie specie = await _context.Species.Find(filtro_especie).FirstOrDefaultAsync();
-
+                Specie specie = _context.Species.Find(filtro_especie).FirstOrDefault();
+                if(specie == null)
+                    Console.Write("es null");
                 foreach(Photo photo in specie.Gallery) {
                     var filtro_foto = Builders<Photo>.Filter.Eq("Id", photo.Id);
                     _context.Photos.DeleteOne(filtro_foto);
@@ -156,12 +157,14 @@ namespace WebApplication.Repository
                 _context.Questions.DeleteMany(filtro_pregunta);
                 string specieDeletedPath = Core.SpecieFolderPath(id.ToString());
                 Directory.Delete(specieDeletedPath, true);              
-
+                    Console.Write("borrado");
                 return actionResult.IsAcknowledged 
                     && actionResult.DeletedCount > 0;
             }
             catch (Exception ex)
             {
+                Console.Write("error: " + ex.StackTrace + "\n");
+                Console.Write("error: " + ex.Message + "\n");
                 throw ex;
             }
         }

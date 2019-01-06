@@ -43,10 +43,20 @@ namespace WebApplication
             _PhotoRepository= PhotoRepository;
         }
 
-        [HttpGet("create")]
+        [HttpGet("index")]
         public IActionResult Index() {
-            if(TempData["exito"] == null)
-                TempData["exito"] = 0;
+            if(TempData["creacion"] == null)
+                TempData["creacion"] = 0;
+            if(TempData["eliminacion"] == null)
+                TempData["eliminacion"] = 0;
+            List<Specie> especies = _SpecieRepository.Get();
+            ViewBag.especies = especies;
+            Console.Write("eliminacion" + TempData["eliminacion"]);
+            return View();
+        }
+
+        [HttpGet("create")]
+        public IActionResult Create() {
             return View();
         }
 
@@ -118,7 +128,7 @@ namespace WebApplication
                 photo.Description = descripciones[i - 1];
                 _PhotoRepository.Add(photo);
                 await _SpecieRepository.AddPhoto(spe.Id, photo);
-                filePath = Path.Combine(Core.SpecieFolderPath(spe.Id.ToString()), i.ToString() + ".jpg");
+                filePath = Path.Combine(Core.SpecieFolderPath(spe.Id.ToString()), photo.Id.ToString() + ".jpg");
                 if (archivos[i - 1].Length > 0)
                 {
                     using (var stream = new FileStream(filePath, FileMode.Create))
@@ -130,18 +140,24 @@ namespace WebApplication
 
             if(result.Status == TaskStatus.RanToCompletion || result.Status == TaskStatus.Running ||
                 result.Status == TaskStatus.Created || result.Status == TaskStatus.WaitingToRun)
-                TempData["exito"] = 1;
+                TempData["creacion"] = 1;
             else
-                TempData["exito"] = -1;           
+                TempData["creacion"] = -1;           
 
-            return Redirect("/api/bpv/specie/create/");
+            return Redirect("/api/bpv/specie/index/");
         }
 
         [HttpDelete("{id}")]
-        public async Task<bool> Delete([FromRoute] int id)
+        public async Task<bool> Delete(int id)
         {
-            if (id==0) return false;
-            return await _SpecieRepository.Remove(id);
+            Task<bool> valor = _SpecieRepository.Remove(id);
+            if(valor != null) {
+                TempData["eliminacion"] = 1;
+            } else {
+                TempData["eliminacion"] = -1;
+            }
+            Console.Write("aqui" + TempData["eliminacion"]);
+            return true;
         }
 
     }
