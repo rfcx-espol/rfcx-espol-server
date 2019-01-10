@@ -2,7 +2,7 @@ type ffmpeg # ffmpeg is a dependency
 . ./config.sh
 
 mkdir $APP_DIR
-files_to_delete=`ls $APP_DIR | grep -v files`
+files_to_delete=`ls $APP_DIR | grep -v resources`
 for file in $files_to_delete; do
     rm -rv $APP_DIR/$file
 done;
@@ -18,8 +18,8 @@ systemctl enable rfcx-espol-server.service
 systemctl start rfcx-espol-server.service
 # systemctl status rfcx-espol-server.service
 
-chmod -R 755 $APP_DIR/files
-chown -R $ICE_USER $APP_DIR/files
+chmod -R 755 $APP_DIR/resources
+chown -R $ICE_USER $APP_DIR/resources
 
 # Icecast
 cd ./Icecast

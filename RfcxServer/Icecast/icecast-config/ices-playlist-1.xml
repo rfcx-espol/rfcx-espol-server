@@ -31,7 +31,7 @@
         <input>
             <module>playlist</module>
             <param name="type">basic</param>
-            <param name="file">/var/rfcx-espol-server/files/station1/playlist.txt</param>
+            <param name="file">/var/rfcx-espol-server/resources/bpv/audios/station1/playlist.txt</param>
             <!-- random play -->
             <param name="random">0</param>
             <!-- if the playlist get updated that start at the beginning -->
