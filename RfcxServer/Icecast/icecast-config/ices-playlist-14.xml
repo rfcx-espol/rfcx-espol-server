@@ -31,7 +31,7 @@
         <input>
             <module>playlist</module>
             <param name="type">basic</param>
-            <param name="file">/var/rfcx-espol-server/files/station14/playlist.txt</param>
+            <param name="file">/var/rfcx-espol-server/resources/bpv/audios/station14/playlist.txt</param>
             <!-- random play -->
             <param name="random">0</param>
             <!-- if the playlist get updated that start at the beginning -->
@@ -55,7 +55,7 @@
             <!-- Server details:
                 You define hostname and port for the server here, along with
                 the source password and mountpoint.  -->
-            <hostname>localhost</hostname>
+            <hostname>200.126.14.250</hostname>
             <port>8000</port>
             <password>rfcx1234</password>
             <mount>/station14.ogg</mount>
