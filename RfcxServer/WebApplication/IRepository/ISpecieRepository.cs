@@ -9,12 +9,12 @@ namespace WebApplication.IRepository
     {
         List<Specie> Get();
         Task<Specie> Get(string id);
-        Task<Specie> Get(int id);
+        Specie Get(int id);
         Task<Specie> GetSpecie(string name);
         Task<bool> Add(Specie item);
         Task<bool> Update(int SpecieId, Specie item);
         Task<bool> AddPhoto(int specieId, Photo photo); 
-        Task<bool> Remove(int id);
+        bool Remove(int id);
     }
 
 }

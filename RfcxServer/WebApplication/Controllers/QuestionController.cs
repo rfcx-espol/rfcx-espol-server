@@ -45,35 +45,58 @@ namespace WebApplication
             _SpecieRepository = SpecieRepository;
         }
 
-        [HttpGet("create")]
+        [HttpGet("index")]
         public IActionResult Index() {
+            if(TempData["creacion"] == null)
+                TempData["creacion"] = 0;
+            if(TempData["eliminacion"] == null)
+                TempData["eliminacion"] = 0;
+            if(TempData["edicion"] == null)
+                TempData["edicion"] = 0;
+            IDictionary<Question, Specie> diccionario = new Dictionary<Question, Specie>();
+            List<Question> preguntas = _QuestionRepository.Get();
+            foreach(Question pregunta in preguntas) {
+                Specie especie = _SpecieRepository.Get(pregunta.SpecieId);
+                diccionario.Add(pregunta, especie);
+            }
+            ViewBag.diccionario = diccionario;
+            return View();
+        }
+
+        [HttpGet("create")]
+        public IActionResult Create() {
             ViewBag.especies = _SpecieRepository.Get();
-            if(TempData["exito"] == null)
-                TempData["exito"] = 0;
+            return View();
+        }
+
+        [HttpGet("{id:int}/edit")]
+        public IActionResult Edit(int id) {
+            ViewBag.especies = _SpecieRepository.Get();
+            ViewBag.pregunta = _QuestionRepository.Get(id);
             return View();
         }
 
         [HttpGet()]
-        public Task<string> Get()
+        public string Get()
         {
             return this.GetQuestion();
         }
 
-        private async Task<string> GetQuestion()
+        private string GetQuestion()
         {
-            var Question = await _QuestionRepository.Get();
+            var Question = _QuestionRepository.Get();
             return JsonConvert.SerializeObject(Question);
         }
 
         [HttpGet("{id:int}")]
-        public Task<string> Get(int id)
+        public string Get(int id)
         {
             return this.GetQuestionByIdInt(id);
         }
 
-        private async Task<string> GetQuestionByIdInt(int id)
+        private string GetQuestionByIdInt(int id)
         {
-            var Question = await _QuestionRepository.Get(id) ?? new Question();
+            var Question = _QuestionRepository.Get(id) ?? new Question();
             return JsonConvert.SerializeObject(Question);
         }
 
@@ -91,8 +114,84 @@ namespace WebApplication
             question.Answer = Int32.Parse(Request.Form["respuesta"]);
             question.Feedback = Request.Form["retroalimentacion"];
             Task result = _QuestionRepository.Add(question);
-            TempData["exito"] = 1;
-            return Redirect("/api/bpv/question/create/");
+            if(result.Status == TaskStatus.RanToCompletion || result.Status == TaskStatus.Running ||
+                result.Status == TaskStatus.Created || result.Status == TaskStatus.WaitingToRun)
+                TempData["creacion"] = 1;
+            else
+                TempData["creacion"] = -1;
+            return Redirect("/api/bpv/question/index/");
+        }
+
+        [HttpDelete("{id}")]
+        public bool Delete(int id)
+        {
+            bool valor = _QuestionRepository.Remove(id);
+            if(valor == true) {
+                TempData["eliminacion"] = 1;
+            } else {
+                TempData["eliminacion"] = -1;
+            }
+            return true;
+        }
+
+        [HttpPatch("{id}/SpecieId")]
+        public async Task<IActionResult> PatchSpecieId(int id, [FromBody] Arrays json)
+        {
+            bool valor = _QuestionRepository.UpdateSpecieId(id, json.SpecieId);
+            if(valor == true) {
+                TempData["edicion"] = 1;
+            } else {
+                TempData["edicion"] = -1;
+            }
+            return Redirect("/api/bpv/question/index/");
+        }
+
+        [HttpPatch("{id}/Text")]
+        public async Task<IActionResult> PatchText(int id, [FromBody] Arrays json)
+        {
+            bool valor = _QuestionRepository.UpdateText(id, json.Text);
+            if(valor == true) {
+                TempData["edicion"] = 1;
+            } else {
+                TempData["edicion"] = -1;
+            }
+            return Redirect("/api/bpv/question/index/");
+        }
+
+        [HttpPatch("{id}/Option")]
+        public async Task<IActionResult> PatchOption(int id, [FromBody] Arrays json)
+        {
+            bool valor = _QuestionRepository.UpdateOption(id, json.Index, json.Option);
+            if(valor == true) {
+                TempData["edicion"] = 1;
+            } else {
+                TempData["edicion"] = -1;
+            }
+            return Redirect("/api/bpv/question/index/");
+        }
+
+        [HttpPatch("{id}/Answer")]
+        public async Task<IActionResult> PatchAnswer(int id, [FromBody] Arrays json)
+        {
+            bool valor = _QuestionRepository.UpdateAnswer(id, json.Answer);
+            if(valor == true) {
+                TempData["edicion"] = 1;
+            } else {
+                TempData["edicion"] = -1;
+            }
+            return Redirect("/api/bpv/question/index/");
+        }
+
+        [HttpPatch("{id}/Feedback")]
+        public async Task<IActionResult> PatchFeedback(int id, [FromBody] Arrays json)
+        {
+            bool valor = _QuestionRepository.UpdateFeedback(id, json.Feedback);
+            if(valor == true) {
+                TempData["edicion"] = 1;
+            } else {
+                TempData["edicion"] = -1;
+            }
+            return Redirect("/api/bpv/question/index/");
         }
 
     }

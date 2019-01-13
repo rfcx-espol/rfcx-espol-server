@@ -19,5 +19,11 @@ namespace WebApplication.Models
         public int Gamestation { get; set; }
         public string Family { get; set; }
         public string Description { get; set; }
+        public int SpecieId { get; set; }
+        public string Text { get; set; }
+        public int Index { get; set; }
+        public string Option { get; set; }
+        public int Answer { get; set; }
+        public string Feedback { get; set; }
         }
 }

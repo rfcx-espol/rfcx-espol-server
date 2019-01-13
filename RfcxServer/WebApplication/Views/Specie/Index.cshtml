@@ -21,6 +21,21 @@
         #div_boton_nuevo {
             margin: 20px 0;
         }
+        h4#modal_alert_label {
+            color: white;
+        }
+        .modal-header.alert-danger button.close{
+            color: white;
+            opacity: 1;
+        }
+        .modal-header.alert-danger {
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            background-color: #d9534f;
+        }
+        .modal-footer {
+            text-align: center !important;
+        }
     </style>
 }
 <div id="principal">
@@ -72,12 +87,34 @@
                     <td>@esp.Family</td>
                     <td style="text-align: center;">
                         <button class="btn btn-primary">Editar</button>
-                        <button class="btn btn-danger" onclick="eliminarEspecie(@esp.Id);">Eliminar</button>
+                        <button class="btn btn-danger" onclick="mostrarAlerta(@esp.Id);">Eliminar</button>
                     </td>
                 </tr>   
             }
             </tbody>
         </table>
+    </div>
+
+    <div class="modal fade" id="alert_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header alert-danger">
+                    <button type="button" class="close" style="margin-top: 1px" onclick="cerrarModal();">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="modal_alert_label">ADVERTENCIA</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Se borrará la especie, así como todas las imágenes y preguntas relacionadas a ella.
+                        Esta acción no puede revertirse. ¿Desea continuar?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button id="accept" class="btn btn-danger" onclick="">Aceptar</button>
+                    <button id="cancel" class="btn btn-default" onclick="cerrarModal();">Cancelar</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @section Scripts {
@@ -94,6 +131,15 @@
                 ]
             });
         } );
+
+        function mostrarAlerta(id) {
+            $("#accept").attr("onclick", "eliminarEspecie(" + id + ");");
+            $("#alert_modal").modal("show");
+        }
+
+        function cerrarModal() {
+            $("#alert_modal").modal("hide");
+        }
 
         function eliminarEspecie(id) {
             $.ajax({

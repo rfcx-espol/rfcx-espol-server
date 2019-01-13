@@ -1,0 +1,81 @@
+@{
+    Layout = "~/Pages/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Crear Pregunta";
+}
+@section Style {
+    <style>
+        #titulo {
+            text-align: center;
+        }
+        #boton_pregunta {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #formulario {
+            margin-left: 0;
+            margin-right: 270px;
+        }
+        textarea {
+            resize: none;
+        }
+        #alerta {
+            margin: 20px 0 0 0;
+        }
+    </style>
+}
+<div id="formulario" class="row">
+    <form id="form_crear_pregunta" method="post" enctype="multipart/form-data" action="/api/bpv/question/">
+        <div id="titulo" class="form-group col-lg-12 col-md-12">
+            <h2>Creación de pregunta</h2>
+        </div>
+        <div class="form-group col-lg-3 col-md-3">
+            <label>Especie: </label>
+            <select name="especie" class="form-control" required>
+                <option hidden value="">Escoja una opción</option>
+                @foreach (var especie in ViewBag.especies)
+                {
+                    <option value=@especie.Id>@especie.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-lg-9 col-md-9">
+            <label>Pregunta: </label>
+            <input id="pregunta" class="form-control" type="text" name="pregunta" required>            
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+            <label>Opción 1: </label>
+            <input id="opcion_1" class="form-control" type="text" name="opcion_1" required>
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+            <label>Opción 2: </label>
+            <input id="opcion_2" class="form-control" type="text" name="opcion_2" required>
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+            <label>Opción 3: </label>
+            <input id="opcion_3" class="form-control" type="text" name="opcion_3" required>
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+            <label>Opción 4: </label>
+            <input id="opcion_4" class="form-control" type="text" name="opcion_4" required>
+        </div>
+        <div class="form-group col-lg-3 col-md-3">
+            <label>Respuesta correcta: </label>
+            <select name="respuesta" class="form-control" required>
+                <option hidden value="">Escoja una opción</option>
+                <option value="0">Opción 1</option>
+                <option value="1">Opción 2</option>
+                <option value="2">Opción 3</option>
+                <option value="3">Opción 4</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-9 col-md-9">
+            <label>Retroalimentación: </label>
+            <input name="retroalimentacion" class="form-control" type="text" required>
+        </div>
+        <div id="boton_pregunta" class="form-group col-lg-12 col-md-12">
+            <button class="btn btn-primary" type="submit">Crear pregunta</button>
+        </div>
+    </form>
+</div>

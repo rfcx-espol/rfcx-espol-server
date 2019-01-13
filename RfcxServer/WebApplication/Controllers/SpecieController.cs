@@ -51,7 +51,6 @@ namespace WebApplication
                 TempData["eliminacion"] = 0;
             List<Specie> especies = _SpecieRepository.Get();
             ViewBag.especies = especies;
-            Console.Write("eliminacion" + TempData["eliminacion"]);
             return View();
         }
 
@@ -73,14 +72,14 @@ namespace WebApplication
         }
 
         [HttpGet("{id:int}")]
-        public Task<string> Get(int id)
+        public string Get(int id)
         {
             return this.GetSpecieByIdInt(id);
         }
 
-        private async Task<string> GetSpecieByIdInt(int id)
+        private string GetSpecieByIdInt(int id)
         {
-            var Specie= await _SpecieRepository.Get(id) ?? new Specie();
+            var Specie= _SpecieRepository.Get(id) ?? new Specie();
             return JsonConvert.SerializeObject(Specie);
         }
 
@@ -148,15 +147,14 @@ namespace WebApplication
         }
 
         [HttpDelete("{id}")]
-        public async Task<bool> Delete(int id)
+        public bool Delete(int id)
         {
-            Task<bool> valor = _SpecieRepository.Remove(id);
-            if(valor != null) {
+            bool valor = _SpecieRepository.Remove(id);
+            if(valor == true) {
                 TempData["eliminacion"] = 1;
             } else {
                 TempData["eliminacion"] = -1;
             }
-            Console.Write("aqui" + TempData["eliminacion"]);
             return true;
         }
 

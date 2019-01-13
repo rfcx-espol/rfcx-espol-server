@@ -1,0 +1,170 @@
+@{
+    Layout = "~/Pages/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Editar Pregunta";
+}
+@section Style {
+    <style>
+        #titulo {
+            text-align: center;
+        }
+        #boton_pregunta {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #formulario {
+            margin-left: 0;
+            margin-right: 270px;
+        }
+        textarea {
+            resize: none;
+        }
+        #alerta {
+            margin: 20px 0 0 0;
+        }
+    </style>
+}
+<div id="formulario" class="row">
+    <form id="form_editar_pregunta">
+        <div id="titulo" class="form-group col-lg-12 col-md-12">
+            <h2>Edición de pregunta</h2>
+        </div>
+        <div class="form-group col-lg-3 col-md-3">
+            <label>Especie: </label>
+            <select name="especie" class="form-control" required>
+                @foreach (var especie in ViewBag.especies)
+                {
+                    @if(ViewBag.pregunta.SpecieId == @especie.Id)
+                    {
+                        <option selected value=@especie.Id>@especie.Name</option>
+                    } else 
+                    {
+                        <option value=@especie.Id>@especie.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-group col-lg-9 col-md-9">
+            <label>Pregunta: </label>
+            <input id="pregunta" class="form-control" type="text" name="pregunta" value="@ViewBag.pregunta.Text" required>            
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+            <label>Opción 1: </label>
+            <input id="opcion_1" class="form-control" type="text" name="opcion_1" value="@ViewBag.pregunta.Options[0]" required>
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+            <label>Opción 2: </label>
+            <input id="opcion_2" class="form-control" type="text" name="opcion_2" value="@ViewBag.pregunta.Options[1]" required>
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+            <label>Opción 3: </label>
+            <input id="opcion_3" class="form-control" type="text" name="opcion_3" value="@ViewBag.pregunta.Options[2]" required>
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+            <label>Opción 4: </label>
+            <input id="opcion_4" class="form-control" type="text" name="opcion_4" value="@ViewBag.pregunta.Options[3]" required>
+        </div>
+        <div class="form-group col-lg-3 col-md-3">
+            <label>Respuesta correcta: </label>
+            <select name="respuesta" class="form-control" required>
+                @if(ViewBag.pregunta.Answer == 0)
+                {
+                    <option selected value="0">Opción 1</option>
+                } else 
+                {
+                    <option value="0">Opción 1</option>
+                }
+                @if(ViewBag.pregunta.Answer == 1)
+                {
+                    <option selected value="1">Opción 2</option>
+                } else 
+                {
+                    <option value="1">Opción 2</option>
+                }
+                @if(ViewBag.pregunta.Answer == 2)
+                {
+                    <option selected value="2">Opción 3</option>
+                } else 
+                {
+                    <option value="2">Opción 3</option>
+                }
+                @if(ViewBag.pregunta.Answer == 3)
+                {
+                    <option selected value="3">Opción 4</option>
+                } else 
+                {
+                    <option value="3">Opción 4</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-lg-9 col-md-9">
+            <label>Retroalimentación: </label>
+            <input name="retroalimentacion" class="form-control" type="text" value="@ViewBag.pregunta.Feedback" required>
+        </div>
+        <div id="boton_pregunta" class="form-group col-lg-12 col-md-12">
+            <button class="btn btn-primary" onclick="updateQuestion(@ViewBag.pregunta.Id);">Editar pregunta</button>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function(){
+            question_input_changed = [];
+        });
+
+        $("#formulario input.form-control").change(function () {
+            var input_id = $(this).attr("id");
+            if(!question_input_changed.includes(input_id)) {
+                question_input_changed.push(input_id);
+            }
+        });
+
+        function updateQuestion(id) {
+            for(q of question_input_changed) {
+                var obj = {};
+                var campo = getField(q);
+                var value = $("input#" + q).val();
+                obj[campo] = value;
+                switch(q) {
+                    case "opcion_1":
+                        obj["Index"] = 0;
+                    case "opcion_2":
+                        obj["Index"] = 1;
+                    case "opcion_3":
+                        obj["Index"] = 2;
+                    case "opcion_4":
+                        obj["Index"] = 3;
+                }
+                var data = JSON.stringify(obj);
+                console.log(data);
+                $.ajax({
+                    type: 'PATCH',
+                    url: '/api/bpv/question/' + id + '/' + campo + "/",
+                    dataType: 'json',
+                    async: false,
+                    data: data,
+                    contentType: 'application/json'
+                });
+            }
+        }
+
+        function getField(q) {
+            switch(q) {
+                case "especie":
+                    return "SpecieId";
+                case "pregunta":
+                    return "Text";
+                case "opcion_1":
+                case "opcion_2":
+                case "opcion_3":
+                case "opcion_4":
+                    return "Option";
+                case "respuesta":
+                    return "Answer";
+                case "retroalimentacion":
+                    return "Feedback";
+            }
+        }
+    </script>
+}

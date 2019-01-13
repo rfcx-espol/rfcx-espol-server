@@ -63,13 +63,13 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<Specie> Get(int id)
+        public Specie Get(int id)
         {
             var filter = Builders<Specie>.Filter.Eq("Id", id);
 
             try
             {
-                return await _context.Species.Find(filter).FirstOrDefaultAsync();
+                return _context.Species.Find(filter).FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -139,25 +139,21 @@ namespace WebApplication.Repository
             return specie;
         }
 
-        public async Task<bool> Remove(int id)
+        public bool Remove(int id)
         {
             try
             {
                 var filtro_especie = Builders<Specie>.Filter.Eq("Id", id);
                 Specie specie = _context.Species.Find(filtro_especie).FirstOrDefault();
-                if(specie == null)
-                    Console.Write("es null");
                 foreach(Photo photo in specie.Gallery) {
                     var filtro_foto = Builders<Photo>.Filter.Eq("Id", photo.Id);
                     _context.Photos.DeleteOne(filtro_foto);
                 }
-
-                DeleteResult actionResult = await _context.Species.DeleteOneAsync(filtro_especie);
+                DeleteResult actionResult = _context.Species.DeleteOne(filtro_especie);
                 var filtro_pregunta = Builders<Question>.Filter.Eq("SpecieId", id);
                 _context.Questions.DeleteMany(filtro_pregunta);
                 string specieDeletedPath = Core.SpecieFolderPath(id.ToString());
                 Directory.Delete(specieDeletedPath, true);              
-                    Console.Write("borrado");
                 return actionResult.IsAcknowledged 
                     && actionResult.DeletedCount > 0;
             }
