@@ -36,11 +36,11 @@ namespace WebApplication.Models
             Ruta = Constants.RUTA_ARCHIVOS + "images/" + this.IdEstacion + "/" + id + Extension;
             Estado = "PENDIENTE";
         }
-        public static void PostPicture(ImageRequest req){
+        public static async Task PostPicture(ImageRequest req){
             string extension = Path.GetExtension(req.ImageFile.FileName);
             Image img = new Image(req.IdEstacion, req.FechaCaptura, extension);
             using(FileStream stream = new FileStream(img.Ruta, FileMode.Create)){
-                req.ImageFile.CopyTo(stream);
+                await req.ImageFile.CopyToAsync(stream);
             }
             collection.InsertOne(img);
         }

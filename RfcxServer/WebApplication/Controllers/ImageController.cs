@@ -20,10 +20,9 @@ namespace WebApplication.Controllers
             return base.PhysicalFile(image.Ruta, "image/jpeg");
         }
         [HttpPost]
-        public ActionResult PostPicture(ImageRequest req)
+        public async Task<ActionResult> PostPicture(ImageRequest req)
         {
-            
-            Image.PostPicture(req);
+            await Image.PostPicture(req);
             return new OkResult();
         }
     }
