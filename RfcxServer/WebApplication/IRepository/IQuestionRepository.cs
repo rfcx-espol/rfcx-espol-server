@@ -10,7 +10,7 @@ namespace WebApplication.IRepository
         List<Question> Get();
         Task<Question> Get(string id);
         Question Get(int id);
-        Task<bool> Add(Question item);
+        bool Add(Question item);
         bool Update(int id, Question item);
         bool UpdateSpecieId(int id, int specie_id);
         bool UpdateText(int id, string text);

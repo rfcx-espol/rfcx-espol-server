@@ -101,7 +101,7 @@ namespace WebApplication
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post()
+        public IActionResult Post()
         {
             Question question = new Question();
             question.SpecieId = Int32.Parse(Request.Form["especie"]);
@@ -113,9 +113,8 @@ namespace WebApplication
             question.Options.Add(Request.Form["opcion_4"]);
             question.Answer = Int32.Parse(Request.Form["respuesta"]);
             question.Feedback = Request.Form["retroalimentacion"];
-            Task result = _QuestionRepository.Add(question);
-            if(result.Status == TaskStatus.RanToCompletion || result.Status == TaskStatus.Running ||
-                result.Status == TaskStatus.Created || result.Status == TaskStatus.WaitingToRun)
+            bool result = _QuestionRepository.Add(question);
+            if(result == true)
                 TempData["creacion"] = 1;
             else
                 TempData["creacion"] = -1;

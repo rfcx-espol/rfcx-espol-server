@@ -63,7 +63,7 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<bool> Add(Question item)
+        public bool Add(Question item)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace WebApplication.Repository
                     }
                 }
     
-                await _context.Questions.InsertOneAsync(item);
+                _context.Questions.InsertOne(item);
                 return true;
             }
             catch (Exception ex)
@@ -92,7 +92,7 @@ namespace WebApplication.Repository
                 Console.Write(ex.Message);
                 Console.Write(ex.Source);
                 Console.Write(ex.StackTrace);
-                throw ex;
+                return false;
             }
         }
 
