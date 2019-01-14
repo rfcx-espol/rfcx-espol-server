@@ -28,22 +28,19 @@ namespace WebApplication.Models
         }
 
         public Image(){}
-        public Image(int IdEstacion, string FechaCaptura)
+        public Image(int IdEstacion, string FechaCaptura, string Extension)
         {
             id = ObjectId.GenerateNewId();
             this.IdEstacion = IdEstacion;
             this.FechaCaptura = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(FechaCaptura)).DateTime;
-            Ruta = Constants.RUTA_ARCHIVOS + "images/" + this.IdEstacion + "/" + id + ".jpg";
+            Ruta = Constants.RUTA_ARCHIVOS + "images/" + this.IdEstacion + "/" + id + Extension;
             Estado = "PENDIENTE";
         }
-        public static void PostPicture(string FechaCaptura, int IdEstacion, string base64Image){
-            Image img = new Image(IdEstacion, FechaCaptura);
-            var bytes = Convert.FromBase64String(base64Image);
-            new FileInfo(img.Ruta).Directory.Create();
-            using (var imageFile = new FileStream(img.Ruta, FileMode.Create))
-            {
-                imageFile.Write(bytes ,0, bytes.Length);
-                imageFile.Flush();
+        public static void PostPicture(ImageRequest req){
+            string extension = Path.GetExtension(req.ImageFile.FileName);
+            Image img = new Image(req.IdEstacion, req.FechaCaptura, extension);
+            using(FileStream stream = new FileStream(img.Ruta, FileMode.Create)){
+                req.ImageFile.CopyTo(stream);
             }
             collection.InsertOne(img);
         }

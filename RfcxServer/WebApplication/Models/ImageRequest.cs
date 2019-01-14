@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
 using System.IO;
+using Microsoft.AspNetCore.Http;
 namespace WebApplication.Models
 {
     public class ImageRequest
@@ -11,7 +12,7 @@ namespace WebApplication.Models
         
         public string FechaCaptura {get;set;}
         public int IdEstacion{get;set;}
-        public string Base64Image{get;set;}
+        public IFormFile ImageFile{get;set;}
        
         
 
