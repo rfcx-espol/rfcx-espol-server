@@ -9,9 +9,23 @@ namespace WebApplication.Models
     [BsonIgnoreExtraElements]
     public class Image
     {
-        public static IMongoClient client = new MongoClient(Constants.MONGO_CONNECTION);
-        public static IMongoDatabase _database = client.GetDatabase(Constants.DEFAULT_DATABASE_NAME);
-        public static IMongoCollection<Image> collection = _database.GetCollection<Image>("Camera_Image");
+        public static IMongoClient client;
+        public static IMongoDatabase _database;
+        public static IMongoCollection<Image> collection;
+        static Image()
+        {
+            client = new MongoClient(Constants.MONGO_CONNECTION);
+            _database = client.GetDatabase(Constants.DEFAULT_DATABASE_NAME);
+            var collectionString = "Camera_Image";
+            BsonDefaults.GuidRepresentation = GuidRepresentation.CSharpLegacy;
+            if(!CollectionExists(collectionString))
+            {
+                _database.CreateCollection(collectionString);
+            }
+
+            collection = _database.GetCollection<Image>("Camera_Image");
+        }
+        
         
         [BsonId]
         public ObjectId id {get; set;}
@@ -45,6 +59,12 @@ namespace WebApplication.Models
             collection.InsertOne(img);
         }
 
+        public static bool CollectionExists(string collectionName)
+        {
+            var filter = new BsonDocument("name", collectionName);
+            var collections = _database.ListCollections(new ListCollectionsOptions { Filter = filter });
+            return collections.Any();
+        }
        
         
 
