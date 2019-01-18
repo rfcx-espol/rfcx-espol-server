@@ -142,7 +142,6 @@ namespace WebApplication.Repository
         {
             var filter = Builders<Question>.Filter.Eq("Id", id);
             Question question  = _context.Questions.Find(filter).FirstOrDefault();
-            
             question.Text = text;
             return Update(id, question);
         }

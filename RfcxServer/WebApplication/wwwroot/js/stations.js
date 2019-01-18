@@ -30,7 +30,6 @@ $(document).ready(function(){
     $('#station_modal').on('hidden.bs.modal', function (e) {
         $("form input").val("");
         $("h4#modal_label").html("Nueva Estación");
-        $("input#api_key").removeAttr("disabled");
         var inputs = $(".form-group");
         for(i of inputs) {
             $(i).removeClass("has-error"); 
@@ -230,6 +229,8 @@ function updateStation(id) {
 
 function getApiUrl(st) {
     switch(st) {
+        case "api_key":
+            return "APIKey";
         case "name":
             return "Name";
         case "game_station":
@@ -247,6 +248,8 @@ function getApiUrl(st) {
 
 function getDbName(st) {
     switch(st) {
+        case "api_key":
+            return "APIKey";
         case "name":
             return "Name";
         case "game_station":
@@ -293,7 +296,6 @@ function fillStationModal(id){
             $("input#services_version").val(data_dic["ServicesVersion"]);
             $("input#db_id").val(data_dic["Id"]);
             $("h4#modal_label").html("Editar Estación");
-            $("input#api_key").attr("disabled","disabled");
             $("#station_modal").modal("show");
         }
     })

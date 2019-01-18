@@ -236,12 +236,18 @@ namespace WebApplication.Repository
         }
     }
 
+    public Task<bool> UpdateAPIKey(int id, string apikey)
+    {
+        Station disp=getStation(id);
+        disp.APIKey=apikey;
+        return Update(disp.StationId, disp);
+    }
+    
     public Task<bool> UpdateAndroidVersion(int id, string androidV)
     {
         Station disp=getStation(id);
         disp.AndroidVersion=androidV;
         return Update(disp.StationId, disp);
-
     }
 
     public Task<bool> UpdateServicesVersion(int id, string servicesV)
