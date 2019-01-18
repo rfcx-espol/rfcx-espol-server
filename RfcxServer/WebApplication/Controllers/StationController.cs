@@ -94,6 +94,12 @@ namespace WebApplication.Controllers
              
         }
 
+        [HttpPatch("{id}/APIKey")]
+        public async Task<bool> PatchAPIKey(int id, [FromBody]  Arrays json)
+        {
+            if (id==0) return false;
+            return await _StationRepository.UpdateAPIKey(id, json.APIKey);
+        }
 
         [HttpPatch("{id}/AndroidV")]
         public async Task<bool> PatchVersionAndroid(int id, [FromBody]  Arrays json)

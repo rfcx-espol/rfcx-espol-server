@@ -134,7 +134,7 @@ namespace WebApplication
         }
 
         [HttpPatch("{id}/SpecieId")]
-        public async Task<IActionResult> PatchSpecieId(int id, [FromBody] Arrays json)
+        public bool PatchSpecieId(int id, [FromBody] Arrays json)
         {
             bool valor = _QuestionRepository.UpdateSpecieId(id, json.SpecieId);
             if(valor == true) {
@@ -142,11 +142,11 @@ namespace WebApplication
             } else {
                 TempData["edicion"] = -1;
             }
-            return Redirect("/api/bpv/question/index/");
+            return true;
         }
 
         [HttpPatch("{id}/Text")]
-        public async Task<IActionResult> PatchText(int id, [FromBody] Arrays json)
+        public bool PatchText(int id, [FromBody] Arrays json)
         {
             bool valor = _QuestionRepository.UpdateText(id, json.Text);
             if(valor == true) {
@@ -154,11 +154,11 @@ namespace WebApplication
             } else {
                 TempData["edicion"] = -1;
             }
-            return Redirect("/api/bpv/question/index/");
+            return true;
         }
 
         [HttpPatch("{id}/Option")]
-        public async Task<IActionResult> PatchOption(int id, [FromBody] Arrays json)
+        public bool PatchOption(int id, [FromBody] Arrays json)
         {
             bool valor = _QuestionRepository.UpdateOption(id, json.Index, json.Option);
             if(valor == true) {
@@ -166,11 +166,11 @@ namespace WebApplication
             } else {
                 TempData["edicion"] = -1;
             }
-            return Redirect("/api/bpv/question/index/");
+            return true;
         }
 
         [HttpPatch("{id}/Answer")]
-        public async Task<IActionResult> PatchAnswer(int id, [FromBody] Arrays json)
+        public bool PatchAnswer(int id, [FromBody] Arrays json)
         {
             bool valor = _QuestionRepository.UpdateAnswer(id, json.Answer);
             if(valor == true) {
@@ -178,11 +178,11 @@ namespace WebApplication
             } else {
                 TempData["edicion"] = -1;
             }
-            return Redirect("/api/bpv/question/index/");
+            return true;
         }
 
         [HttpPatch("{id}/Feedback")]
-        public async Task<IActionResult> PatchFeedback(int id, [FromBody] Arrays json)
+        public bool PatchFeedback(int id, [FromBody] Arrays json)
         {
             bool valor = _QuestionRepository.UpdateFeedback(id, json.Feedback);
             if(valor == true) {
@@ -190,7 +190,7 @@ namespace WebApplication
             } else {
                 TempData["edicion"] = -1;
             }
-            return Redirect("/api/bpv/question/index/");
+            return true;
         }
 
     }

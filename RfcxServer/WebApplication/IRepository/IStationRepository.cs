@@ -13,6 +13,7 @@ namespace WebApplication.IRepository
         int GetStationCount(string apiKey);
         Task<bool> Add(Station item);
         Task<bool> Update(string id, Station item);
+        Task<bool> UpdateAPIKey(int id, string apikey);
         Task<bool> UpdateAndroidVersion(int id, string androidV);
         Task<bool> UpdateServicesVersion(int id, string servicesV);
         Task<bool> UpdateName(int id, string name);
