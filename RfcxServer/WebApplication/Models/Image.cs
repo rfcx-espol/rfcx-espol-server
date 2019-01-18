@@ -52,11 +52,11 @@ namespace WebApplication.Models
             Estado = "PENDIENTE";
         }
         public static async Task PostPicture(ImageRequest req){
-            string extension = Path.GetExtension(req.ImageFile.FileName);
+            string extension = Path.GetExtension(req.Imagen.FileName);
             Image img = new Image(req.IdEstacion, req.FechaCaptura, extension);
             new FileInfo(img.Ruta).Directory.Create();
             using(FileStream stream = new FileStream(img.Ruta, FileMode.Create)){
-                await req.ImageFile.CopyToAsync(stream);
+                await req.Imagen.CopyToAsync(stream);
             }
             collection.InsertOne(img);
         }

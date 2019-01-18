@@ -12,7 +12,7 @@ namespace WebApplication.Models
         
         public string FechaCaptura {get;set;}
         public int IdEstacion{get;set;}
-        public IFormFile ImageFile{get;set;}
+        public IFormFile Imagen{get;set;}
        
         
 
