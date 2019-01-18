@@ -18,7 +18,8 @@ namespace WebApplication.Controllers
         public async Task<ActionResult> Show(string _id)
         {
             var image = await Image.Find(_id);
-            return base.PhysicalFile(image.Ruta, "image/"+Path.GetExtension(image.Ruta).Substring(1));
+            var imgPath = Constants.RUTA_ARCHIVOS_ANALISIS_IMAGENES + image.StationId + "/" +  image.Path;
+            return base.PhysicalFile(imgPath, "image/"+Path.GetExtension(image.Path).Substring(1));
         }
         [HttpPost]
         public async Task<ActionResult> PostPicture(ImageRequest req)

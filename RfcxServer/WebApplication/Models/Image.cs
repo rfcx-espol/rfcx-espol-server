@@ -30,11 +30,11 @@ namespace WebApplication.Models
         
         [BsonId]
         public ObjectId id {get; set;}
-        public int IdEstacion{ get; set; }
-        public DateTime FechaCaptura{ get; set; }
-        public string Ruta{ get; set; }
-        public string Estado{ get; set; }
-        public string[] Familia{ get; set; }
+        public int StationId{ get; set; }
+        public DateTime CaptureDate{ get; set; }
+        public string Path{ get; set; }
+        public string State{ get; set; }
+        public string[] Family{ get; set; }
         
         public static async Task<Image> Find(string _id){
             var filter = "{'_id':" +  "ObjectId('"+_id + "')}";
@@ -46,17 +46,18 @@ namespace WebApplication.Models
         public Image(int IdEstacion, string FechaCaptura, string Extension)
         {
             id = ObjectId.GenerateNewId();
-            this.IdEstacion = IdEstacion;
-            this.FechaCaptura = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(FechaCaptura)).DateTime;
-            Ruta = Constants.RUTA_ARCHIVOS_ANALISIS_IMAGENES + this.IdEstacion + "/" + id + Extension;
-            Estado = "PENDIENTE";
+            this.StationId = IdEstacion;
+            this.CaptureDate = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(FechaCaptura)).DateTime;
+            Path = id + Extension;
+            State = "PENDIENTE";
         }
         public static async Task PostPicture(ImageRequest req){
-            string extension = Path.GetExtension(req.Imagen.FileName);
-            Image img = new Image(req.IdEstacion, req.FechaCaptura, extension);
-            new FileInfo(img.Ruta).Directory.Create();
-            using(FileStream stream = new FileStream(img.Ruta, FileMode.Create)){
-                await req.Imagen.CopyToAsync(stream);
+            string extension = System.IO.Path.GetExtension(req.ImageFile.FileName);
+            Image img = new Image(req.StationId, req.CaptureDate, extension);
+            var imgPath = Constants.RUTA_ARCHIVOS_ANALISIS_IMAGENES + img.StationId + "/" + img.Path;
+            new FileInfo(imgPath).Directory.Create();
+            using(FileStream stream = new FileStream(imgPath, FileMode.Create)){
+                await req.ImageFile.CopyToAsync(stream);
             }
             collection.InsertOne(img);
         }

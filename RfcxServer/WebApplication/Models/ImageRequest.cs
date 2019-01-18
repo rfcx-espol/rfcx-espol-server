@@ -10,9 +10,9 @@ namespace WebApplication.Models
     public class ImageRequest
     {
         
-        public string FechaCaptura {get;set;}
-        public int IdEstacion{get;set;}
-        public IFormFile Imagen{get;set;}
+        public string CaptureDate {get;set;}
+        public int StationId{get;set;}
+        public IFormFile ImageFile{get;set;}
        
         
 
