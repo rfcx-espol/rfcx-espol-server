@@ -14,7 +14,7 @@ namespace WebApplication.Controllers
     public class ImageController : ControllerBase
     {
         [HttpGet("{id:int}")]
-        public async Task<ActionResult> Show(int id)
+        public async Task<ActionResult> Show(string id)
         {
             var image = await Image.Find(id);
             return base.PhysicalFile(image.Ruta, "image/jpeg");

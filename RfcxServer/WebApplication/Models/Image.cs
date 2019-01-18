@@ -36,7 +36,7 @@ namespace WebApplication.Models
         public string Estado{ get; set; }
         public string[] Familia{ get; set; }
         
-        public static async Task<Image> Find(int id){
+        public static async Task<Image> Find(string id){
             var filter = "{_id:" + id + "}";
             var imgDB = await collection.Find(filter).Limit(1).FirstOrDefaultAsync();
             return imgDB;
