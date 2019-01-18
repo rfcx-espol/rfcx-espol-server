@@ -14,6 +14,7 @@ namespace WebApplication.Models
         public static IMongoCollection<Image> collection;
         static Image()
         {
+            
             client = new MongoClient(Constants.MONGO_CONNECTION);
             _database = client.GetDatabase(Constants.DEFAULT_DATABASE_NAME);
             var collectionString = "Camera_Image";
@@ -47,12 +48,13 @@ namespace WebApplication.Models
             id = ObjectId.GenerateNewId();
             this.IdEstacion = IdEstacion;
             this.FechaCaptura = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(FechaCaptura)).DateTime;
-            Ruta = Constants.RUTA_ARCHIVOS + "images/" + this.IdEstacion + "/" + id + Extension;
+            Ruta = Constants.RUTA_ARCHIVOS_ANALISIS_IMAGENES + this.IdEstacion + "/" + id + Extension;
             Estado = "PENDIENTE";
         }
         public static async Task PostPicture(ImageRequest req){
             string extension = Path.GetExtension(req.ImageFile.FileName);
             Image img = new Image(req.IdEstacion, req.FechaCaptura, extension);
+            new FileInfo(img.Ruta).Directory.Create();
             using(FileStream stream = new FileStream(img.Ruta, FileMode.Create)){
                 await req.ImageFile.CopyToAsync(stream);
             }
