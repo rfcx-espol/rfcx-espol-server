@@ -13,7 +13,7 @@ namespace WebApplication.Controllers
     [Route("api/imgcapture")]
     public class ImageController : ControllerBase
     {
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:string}")]
         public async Task<ActionResult> Show(string id)
         {
             var image = await Image.Find(id);
