@@ -99,11 +99,22 @@ namespace WebApplication
         public ActionResult Get(int specieId, int photoId)
         {
             DirectoryInfo DI = new DirectoryInfo(Constants.RUTA_ARCHIVOS_IMAGENES_ESPECIES + specieId.ToString() + "/");
-            string fileAddress = DI.FullName + photoId.ToString() + ".jpg";
-            var net = new System.Net.WebClient();
-            var data = net.DownloadData(fileAddress);
-            var content = new System.IO.MemoryStream(data);
-            return File(content, "application/jpg", photoId.ToString() + ".jpg");
+            foreach (var file in DI.GetFiles())
+            {
+                string[] extension = (file.Name).Split('.');
+                if(extension[0] == photoId.ToString()) {
+                    string fileAddress = DI.FullName + file.Name;
+                    var net = new System.Net.WebClient();
+                    var data = net.DownloadData(fileAddress);
+                    var content = new System.IO.MemoryStream(data);
+                    if(extension[1] == "jpg" || extension[1] == "jpeg") {
+                        return File(content, "image/jpeg", file.Name);
+                    } else {
+                        return File(content, "image/png", file.Name);
+                    }
+                }
+            }     
+            return null;       
         }
 
         [HttpPost]
@@ -127,7 +138,8 @@ namespace WebApplication
                 photo.Description = descripciones[i - 1];
                 _PhotoRepository.Add(photo);
                 await _SpecieRepository.AddPhoto(spe.Id, photo);
-                filePath = Path.Combine(Core.SpecieFolderPath(spe.Id.ToString()), photo.Id.ToString() + ".jpg");
+                string[] extension = (archivos[i - 1].FileName).Split('.');
+                filePath = Path.Combine(Core.SpecieFolderPath(spe.Id.ToString()), photo.Id.ToString() + "." + extension[1]);
                 if (archivos[i - 1].Length > 0)
                 {
                     using (var stream = new FileStream(filePath, FileMode.Create))
