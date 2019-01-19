@@ -49,6 +49,8 @@ namespace WebApplication
                 TempData["creacion"] = 0;
             if(TempData["eliminacion"] == null)
                 TempData["eliminacion"] = 0;
+            if(TempData["edicion"] == null)
+                TempData["edicion"] = 0;
             List<Specie> especies = _SpecieRepository.Get();
             ViewBag.especies = especies;
             return View();
@@ -56,6 +58,12 @@ namespace WebApplication
 
         [HttpGet("create")]
         public IActionResult Create() {
+            return View();
+        }
+
+        [HttpGet("{id:int}/edit")]
+        public IActionResult Edit(int id) {
+            ViewBag.especie = _SpecieRepository.Get(id);
             return View();
         }
 
@@ -137,7 +145,7 @@ namespace WebApplication
                 Photo photo = new Photo();
                 photo.Description = descripciones[i - 1];
                 _PhotoRepository.Add(photo);
-                await _SpecieRepository.AddPhoto(spe.Id, photo);
+                _SpecieRepository.AddPhoto(spe.Id, photo);
                 string[] extension = (archivos[i - 1].FileName).Split('.');
                 filePath = Path.Combine(Core.SpecieFolderPath(spe.Id.ToString()), photo.Id.ToString() + "." + extension[1]);
                 if (archivos[i - 1].Length > 0)
@@ -166,6 +174,30 @@ namespace WebApplication
                 TempData["eliminacion"] = 1;
             } else {
                 TempData["eliminacion"] = -1;
+            }
+            return true;
+        }
+
+        [HttpPatch("{id}/Name")]
+        public bool PatchName(int id, [FromBody] Arrays json)
+        {
+            bool valor = _SpecieRepository.UpdateName(id, json.Name);
+            if(valor == true) {
+                TempData["edicion"] = 1;
+            } else {
+                TempData["edicion"] = -1;
+            }
+            return true;
+        }
+
+        [HttpPatch("{id}/Family")]
+        public bool PatchFamily(int id, [FromBody] Arrays json)
+        {
+            bool valor = _SpecieRepository.UpdateFamily(id, json.Family);
+            if(valor == true) {
+                TempData["edicion"] = 1;
+            } else {
+                TempData["edicion"] = -1;
             }
             return true;
         }

@@ -12,8 +12,11 @@ namespace WebApplication.IRepository
         Specie Get(int id);
         Task<Specie> GetSpecie(string name);
         Task<bool> Add(Specie item);
-        Task<bool> Update(int SpecieId, Specie item);
-        Task<bool> AddPhoto(int specieId, Photo photo); 
+        bool Update(int SpecieId, Specie item);
+        bool UpdateName(int id, string name);
+        bool UpdateFamily(int id, string family);
+        //bool UpdateGallery(int id, int index, string description);
+        bool AddPhoto(int specieId, Photo photo); 
         bool Remove(int id);
     }
 

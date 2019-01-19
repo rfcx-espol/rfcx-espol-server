@@ -1,0 +1,111 @@
+@{
+    Layout = "~/Pages/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Editar Especie";
+}
+@section Style {
+    <style>
+        #titulo {
+            text-align: center;
+        }
+        #boton_especie {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #formulario {
+            margin-left: 0;
+            margin-right: 270px;
+        }
+        textarea {
+            resize: none;
+        }
+        #alerta {
+            margin: 20px 0 0 0;
+        }
+    </style>
+}
+<div id="formulario" class="row">
+    <form id="form_editar_especie">
+        <div id="titulo" class="form-group col-lg-12 col-md-12">
+            <h2>Edición de especie</h2>
+        </div>
+        <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <label>Nombre: </label>
+            <input id="nombre" class="form-control" type="text" name="nombre" value="@ViewBag.especie.Name" required>            
+        </div>
+        <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <label>Familia: </label>
+            <input id="familia" class="form-control" type="text" name="familia" value="@ViewBag.especie.Family" required>
+        </div>
+        <div id="boton_especie" class="form-group col-lg-12 col-md-12">
+            <button class="btn btn-primary" onclick="return updateSpecie(@ViewBag.especie.Id);">Editar especie</button>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function(){
+            specie_input_changed = [];
+        });
+
+        $("#formulario input.form-control").change(function () {
+            var input_id = $(this).attr("id");
+            if(!specie_input_changed.includes(input_id)) {
+                specie_input_changed.push(input_id);
+            }
+        });
+
+        /*$("#formulario select.form-control").change(function () {
+            var select_id = $(this).attr("id");
+            if(!question_input_changed.includes(select_id)) {
+                question_input_changed.push(select_id);
+            }
+        });*/
+
+        function updateSpecie(id) {
+            for(esp of specie_input_changed) {
+                var obj = {};
+                var campo = getField(esp);
+                var value = $("input#" + esp).val();
+                /*if(value == undefined) {
+                    var value = $("select#" + esp).children("option:selected").val();
+                }*/
+                obj[campo] = value;
+                /*switch(esp) {
+                    case "opcion_1":
+                        obj["Index"] = 0;
+                        break;
+                    case "opcion_2":
+                        obj["Index"] = 1;
+                        break;
+                    case "opcion_3":
+                        obj["Index"] = 2;
+                        break;
+                    case "opcion_4":
+                        obj["Index"] = 3;
+                        break;
+                }*/
+                var data = JSON.stringify(obj);
+                $.ajax({
+                    url: "/api/bpv/specie/" + id + "/" + campo + "/",
+                    type: 'PATCH',
+                    async: false,
+                    data: data,
+                    contentType: 'application/json'
+                });              
+            }
+            window.location.href = '@Url.Action("Index","Specie")';
+            return false;
+        }
+
+        function getField(q) {
+            switch(q) {
+                case "nombre":
+                    return "Name";
+                case "familia":
+                    return "Family";
+            }
+        }
+    </script>
+}
