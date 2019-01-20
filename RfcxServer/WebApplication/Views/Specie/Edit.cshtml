@@ -48,6 +48,13 @@
             position: relative;
             display: inline-block;
             overflow: hidden;
+            width: 100%;
+            border: solid 1px rgb(221, 221, 221);
+            padding: 4px;
+            border-radius: 2%;
+        }
+        .img-responsive {
+            margin: auto;
         }
         .boton_eliminar {
             position: absolute;
@@ -65,10 +72,6 @@
             padding-left: 3px;
             padding-top: 3px;
             color: #CB4335;     
-        }
-        .img-thumbnail.img-responsive {
-            max-width: 100%;
-            max-height: 100%;
         }
         h4#modal_alert_label {
             color: white;
@@ -118,7 +121,7 @@
                     <span class="boton_eliminar">
                         <i class="material-icons" onclick="mostrarAlerta(@ViewBag.especie.Gallery[i].Id);">delete</i>
                     </span>  
-                    <img class="img-thumbnail img-responsive" 
+                    <img class="img-responsive" 
                     src="/resources/bpv/images/species/@ViewBag.especie.Id/@ViewBag.archivos[i]">
                 </div>
                 <div class="div_descripcion">
@@ -191,7 +194,36 @@
             archivo_inicial = $($(".archivo")[0]).clone(false, true);
             boton_eliminar_inicial = $($(".botones_eliminar")[0]).clone(false, true);
             crearListener();
+            $(".imagen").height($($(".imagen")[0]).width() * 0.7);
+            redimensionarImagenes();
         });
+
+        function redimensionarImagenes() {
+            var ancho_original_foto, altura_original_foto, ancho_original_div, altura_original_div;
+            ancho_original_div = $($(".imagen")[0]).width();
+            altura_original_div = $($(".imagen")[0]).height();
+            var imagenes = $(".imagen img");
+            
+            for(img of imagenes) {
+                ancho_original_foto = $(img).width();
+                altura_original_foto = $(img).height();
+                if(altura_original_foto < ancho_original_foto) {
+                    $(img).width($(img).parent().width());
+                    if($(img).height() > altura_original_div) {
+                        $(img).height(altura_original_div);
+                        $(img).width(ancho_original_foto);
+                    }
+                } else {
+                    $(img).height($(img).parent().height());
+                }
+                var espacio = altura_original_div - $(img).height();
+                if(espacio > 0) {
+                    var esp = (espacio / 2) + "px" ;
+                    $(img).css("margin-top", esp.toString());
+                    $(img).css("margin-bottom", esp.toString());
+                }
+            }
+        }
 
         function mostrarDialogo(mensaje) {
             BootstrapDialog.show({
