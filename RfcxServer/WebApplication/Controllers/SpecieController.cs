@@ -64,6 +64,13 @@ namespace WebApplication
         [HttpGet("{id:int}/edit")]
         public IActionResult Edit(int id) {
             ViewBag.especie = _SpecieRepository.Get(id);
+            DirectoryInfo DI = new DirectoryInfo(Constants.RUTA_ARCHIVOS_IMAGENES_ESPECIES + id.ToString() + "/");
+            List<string> archivos = new List<string>();
+            foreach (var file in DI.GetFiles())
+            {
+                archivos.Add(file.Name);
+            }
+            ViewBag.archivos = archivos;
             return View();
         }
 
@@ -200,6 +207,52 @@ namespace WebApplication
                 TempData["edicion"] = -1;
             }
             return true;
+        }
+
+        [HttpPatch("{id}/Gallery")]
+        public bool PatchGallery(int id, [FromBody] Arrays json)
+        {
+            bool valor = _SpecieRepository.UpdatePhoto(id, json.IdPhoto, json.Description);
+            valor = _PhotoRepository.UpdateDescription(json.IdPhoto, json.Description);
+            if(valor == true) {
+                TempData["edicion"] = 1;
+            } else {
+                TempData["edicion"] = -1;
+            }
+            return true;
+        }
+
+        [HttpPost("{id:int}/addPhotos")]
+        public async Task<IActionResult> addPhotos(int id, List<string> descripciones, List<IFormFile> archivos)
+        {
+            string filePath;
+            Task result = null;
+            Specie especie = _SpecieRepository.Get(id);
+
+            for(int i = 1; i < (archivos.Count + 1); i++)
+            {
+                Photo photo = new Photo();
+                photo.Description = descripciones[i - 1];
+                result = _PhotoRepository.Add(photo);
+                _SpecieRepository.AddPhoto(especie.Id, photo);
+                string[] extension = (archivos[i - 1].FileName).Split('.');
+                filePath = Path.Combine(Core.SpecieFolderPath(especie.Id.ToString()), photo.Id.ToString() + "." + extension[1]);
+                if (archivos[i - 1].Length > 0)
+                {
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await archivos[i - 1].CopyToAsync(stream);
+                    }
+                }
+            }
+
+            if(result.Status == TaskStatus.RanToCompletion || result.Status == TaskStatus.Running ||
+                result.Status == TaskStatus.Created || result.Status == TaskStatus.WaitingToRun)
+                TempData["edicion"] = 1;
+            else
+                TempData["edicion"] = -1;           
+
+            return Redirect("/api/bpv/specie/index/");
         }
 
     }

@@ -7,7 +7,7 @@ using System;
 
 namespace WebApplication.Controllers
 {
-    [Route("")]
+    [Route("api/bpv/[controller]")]
     public class PhotoController
     {
         
@@ -18,7 +18,7 @@ namespace WebApplication.Controllers
             _PhotoRepository=PhotoRepository;
         }
 
-        [HttpGet("api/bpv/[controller]")]
+        [HttpGet()]
         public Task<string> Get()
         {
             return this.GetPhoto();
@@ -30,7 +30,7 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Photo);
         }
 
-        [HttpGet("api/bpv/[controller]/{id:int}")]
+        [HttpGet("{id:int}")]
         public Task<string> Get(int id)
         {
             return this.GetPhotoByIdInt(id);
@@ -40,6 +40,13 @@ namespace WebApplication.Controllers
         {
             var Photo= await _PhotoRepository.Get(id) ?? new Photo();
             return JsonConvert.SerializeObject(Photo);
+        }
+
+        [HttpDelete("{id:int}")]
+        public bool Delete(int id)
+        {
+            bool valor = _PhotoRepository.Remove(id);
+            return true;
         }
 
     }

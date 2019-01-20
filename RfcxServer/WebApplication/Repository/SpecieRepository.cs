@@ -133,6 +133,7 @@ namespace WebApplication.Repository
             specie.Name = name;
             return Update(id, specie);
         }
+
         public bool UpdateFamily(int id, string family)
         {
             var filter = Builders<Specie>.Filter.Eq("Id", id);
@@ -141,13 +142,22 @@ namespace WebApplication.Repository
             return Update(id, specie);
         }
 
-        /*public bool UpdateGallery(int id, int index, string description)
+        public bool UpdateGallery(int id, List<Photo> gallery)
         {
             var filter = Builders<Specie>.Filter.Eq("Id", id);
             Specie specie  = _context.Species.Find(filter).FirstOrDefault();
-            specie.Family = family;
+            specie.Gallery = gallery;
             return Update(id, specie);
-        }*/
+        }
+
+        public bool UpdatePhoto(int id, int id_photo, string description)
+        {
+            var filter = Builders<Specie>.Filter.Eq("Id", id);
+            Specie specie  = _context.Species.Find(filter).FirstOrDefault();
+            int indice_foto = specie.Gallery.FindIndex(f => f.Id == id_photo);
+            specie.Gallery[indice_foto].Description = description;
+            return Update(id, specie);
+        }
 
         public bool AddPhoto(int specieId, Photo photo)
         {
