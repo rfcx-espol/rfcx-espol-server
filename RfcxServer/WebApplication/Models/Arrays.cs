@@ -9,6 +9,7 @@ namespace WebApplication.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public List<Data> Data { get; set; }
+        public int IdPhoto { get; set; }
         public string APIKey { get; set; }
         public string AndroidVersion { get; set; }
         public string ServicesVersion { get; set; }

@@ -10,7 +10,10 @@ namespace WebApplication.IRepository
         List<Photo> Get();
         Task<Photo> Get(string id);
         Task<Photo> Get(int id);
-        void Add(Photo item);
+        Task<bool> Add(Photo item);
+        bool Remove(int id);
+        bool Update(int PhotoId, Photo item);
+        bool UpdateDescription(int id, string description);
     }
 
 }

@@ -108,13 +108,13 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<bool> Update(int SpecieId, Specie item)
+        public bool Update(int SpecieId, Specie item)
         {
             try
             {
                 ReplaceOneResult actionResult 
-                    = await _context.Species
-                                    .ReplaceOneAsync(n => n.Id.Equals(SpecieId)
+                    = _context.Species
+                                    .ReplaceOne(n => n.Id.Equals(SpecieId)
                                             , item
                                             , new UpdateOptions { IsUpsert = true });
                 return actionResult.IsAcknowledged
@@ -126,7 +126,40 @@ namespace WebApplication.Repository
             }
         }
 
-        public Task<bool> AddPhoto(int specieId, Photo photo)
+        public bool UpdateName(int id, string name)
+        {
+            var filter = Builders<Specie>.Filter.Eq("Id", id);
+            Specie specie  = _context.Species.Find(filter).FirstOrDefault();
+            specie.Name = name;
+            return Update(id, specie);
+        }
+
+        public bool UpdateFamily(int id, string family)
+        {
+            var filter = Builders<Specie>.Filter.Eq("Id", id);
+            Specie specie  = _context.Species.Find(filter).FirstOrDefault();
+            specie.Family = family;
+            return Update(id, specie);
+        }
+
+        public bool UpdateGallery(int id, List<Photo> gallery)
+        {
+            var filter = Builders<Specie>.Filter.Eq("Id", id);
+            Specie specie  = _context.Species.Find(filter).FirstOrDefault();
+            specie.Gallery = gallery;
+            return Update(id, specie);
+        }
+
+        public bool UpdatePhoto(int id, int id_photo, string description)
+        {
+            var filter = Builders<Specie>.Filter.Eq("Id", id);
+            Specie specie  = _context.Species.Find(filter).FirstOrDefault();
+            int indice_foto = specie.Gallery.FindIndex(f => f.Id == id_photo);
+            specie.Gallery[indice_foto].Description = description;
+            return Update(id, specie);
+        }
+
+        public bool AddPhoto(int specieId, Photo photo)
         {
             Specie specie = getSpecie(specieId);
             specie.Gallery.Add(photo);

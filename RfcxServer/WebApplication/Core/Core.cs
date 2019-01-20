@@ -159,7 +159,7 @@ namespace WebApplication {
             var specieFolderPath = SpecieFolderPath(specieId);
             if (!Directory.Exists(specieFolderPath)) {
                 Directory.CreateDirectory(specieFolderPath);
-                GrantAccess(specieFolderPath);
+                /*GrantAccess(specieFolderPath);
                 string templateFile = Path.Combine(Constants.SERVER_ICECAST_CONFIG_DIRECTORY,Constants.TEMPLATE_ICECAST_CONFIG);
                 string filename = Constants.TEMPLATE_ICECAST_CONFIG_FILENAME.Replace("0", specieId);
                 string icecastConfigApp = Path.Combine(Constants.APP_ICECAST_CONFIG_DIRECTORY, filename);
@@ -173,7 +173,7 @@ namespace WebApplication {
                 string text1 = File.ReadAllText(icecastConfigServer);
                 text1 = text.Replace(Constants.BASE_LINK, Constants.BASE_LINK.Replace("0", specieId));
                 File.WriteAllText(icecastConfigServer, text1);
-                GrantAccess(icecastConfigServer);
+                GrantAccess(icecastConfigServer);*/
             }
         }
 

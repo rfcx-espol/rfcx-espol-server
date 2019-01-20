@@ -1,0 +1,342 @@
+@{
+    Layout = "~/Pages/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Editar Especie";
+}
+@section Style {
+    <style>
+        #titulo {
+            text-align: center;
+        }
+        #boton_especie {
+            text-align: left;
+            margin-top: 20px;
+            margin-bottom: 65px;
+        }
+        #formulario {
+            margin-left: 0;
+            margin-right: 270px;
+        }
+        textarea {
+            resize: none;
+        }
+        .botones_eliminar {
+            padding: 0;
+            text-align: right;
+            display: none;
+            margin-bottom: 5px;
+        }
+        #boton_agregar {
+            padding: 0;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .descripcion, .botones_eliminar, #boton_agregar {
+            margin-bottom: 5px;
+        }
+        #mensaje {
+            color: red;
+        }
+        #alerta {
+            margin: 20px 0 0 0;
+        }
+        .div_descripcion {
+            margin-top: 3px;
+        }
+        .imagen {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+        .boton_eliminar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 100;
+            background-color: #f9f9f9;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 1px 1px #888888;
+        }
+        .material-icons {
+            font-size: 25px;
+            padding-right: 3px;
+            padding-left: 3px;
+            padding-top: 3px;
+            color: #CB4335;     
+        }
+        .img-thumbnail.img-responsive {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        h4#modal_alert_label {
+            color: white;
+        }
+        .modal-header.alert-danger button.close{
+            color: white;
+            opacity: 1;
+        }
+        .modal-header.alert-danger {
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            background-color: #d9534f;
+        }
+        .modal-footer {
+            text-align: center !important;
+        }
+        #mensaje_imagenes {
+            display: none;
+        }
+        #mensaje_imagenes p {
+            margin-left: 30px;
+            margin-bottom: 15px;
+            color: red; 
+        }
+    </style>
+}
+<div id="formulario" class="row">
+    <form id="form_editar_especie">
+        <div id="titulo" class="form-group col-lg-12 col-md-12">
+            <h2>Edición de especie</h2>
+        </div>
+        <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <label>Nombre: </label>
+            <input id="nombre" class="form-control" type="text" name="nombre" value="@ViewBag.especie.Name" required>            
+        </div>
+        <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <label>Familia: </label>
+            <input id="familia" class="form-control" type="text" name="familia" value="@ViewBag.especie.Family" required>
+        </div>
+        <div id="subtitulo" class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h4>Imágenes</h4>
+        </div>
+        @for (var i = 0; i < @ViewBag.especie.Gallery.Count; i++)
+        {
+            <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12" id="div_imagen_@ViewBag.especie.Gallery[i].Id">
+                <div class="imagen">
+                    <span class="boton_eliminar">
+                        <i class="material-icons" onclick="mostrarAlerta(@ViewBag.especie.Gallery[i].Id);">delete</i>
+                    </span>  
+                    <img class="img-thumbnail img-responsive" 
+                    src="/resources/bpv/images/species/@ViewBag.especie.Id/@ViewBag.archivos[i]">
+                </div>
+                <div class="div_descripcion">
+                    <label>Descripción: </label>
+                    <textarea class="form-control" type="text" id="descripcion_@ViewBag.especie.Gallery[i].Id" 
+                    name="descripcion_@ViewBag.especie.Gallery[i].Id" rows="4" 
+                    required>@ViewBag.especie.Gallery[i].Description</textarea>
+                </div>
+            </div>
+        }
+        <div id="mensaje_imagenes" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <p>No hay imágenes guardadas en esta especie</p>
+        </div>
+        <input type="hidden" id="numero_imagenes" value="@ViewBag.especie.Gallery.Count">
+    </form>
+    <form id="form_agregar_imagenes" method="post" enctype="multipart/form-data" action="/api/bpv/specie/@ViewBag.especie.Id/addPhotos/">
+        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h4>Agregar imágenes</h4>
+        </div>
+        <div id="imagenes">
+            <div class="form-group col-lg-6 col-md-6 descripcion">
+                <textarea name="descripciones" class="form-control" rows="1" type="text" required></textarea>
+            </div>
+            <div class="form-group col-lg-4 col-md-4 archivo">
+                <input name="archivos" type="file" accept="image/*" data-max-size="3000000" class="file" required>
+            </div>
+            <div class="form-group botones_eliminar col-lg-1 col-md-1">
+                <input id="boton_eliminar_1" type="button" class="btn btn-danger" value="x" onclick="eliminarImagen(1)"/>
+            </div>
+            <div id="boton_agregar" class="form-group col-lg-1 col-md-1">
+                <input type="button" class="btn btn-primary" value="+" onclick="agregarImagen();"/>
+            </div>
+        </div>
+        <div class="col-lg-6 col-lg-offset-6 col-md-6 col-md-offset-6">
+            <p id="mensaje">* El tamaño máximo de las imágenes es de 3 MB</p>
+        </div>
+        <div id="boton_especie" class="form-group col-lg-12 col-md-12">
+            <button class="btn btn-primary" onclick="return updateSpecie(@ViewBag.especie.Id);">Editar especie</button>
+        </div>
+    </form>
+    <div class="modal fade" id="alert_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header alert-danger">
+                    <button type="button" class="close" style="margin-top: 1px" onclick="cerrarModal();">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="modal_alert_label">ADVERTENCIA</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Se borrará la imagen y su descripción. Esta acción no puede revertirse. ¿Desea continuar?</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="accept" class="btn btn-danger" onclick="">Aceptar</button>
+                    <button id="cancel" class="btn btn-default" onclick="cerrarModal();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section Scripts {
+    <script>
+        var descripcion_inicial, archivo_inicial, boton_eliminar_inicial, valor;
+
+        $(document).ready(function(){
+            specie_input_changed = [];
+            descripcion_inicial = $($(".descripcion")[0]).clone(false, true);
+            archivo_inicial = $($(".archivo")[0]).clone(false, true);
+            boton_eliminar_inicial = $($(".botones_eliminar")[0]).clone(false, true);
+            crearListener();
+        });
+
+        function mostrarDialogo(mensaje) {
+            BootstrapDialog.show({
+                title: 'ERROR',
+                message: mensaje,
+                type: BootstrapDialog.TYPE_DANGER,
+                buttons: [{
+                    label: 'Aceptar',
+                    cssClass: 'btn-danger',
+                    action: function(dialogItself){
+                        dialogItself.close();
+                    }
+                }]
+            });
+        }
+
+        function crearListener() {
+            $(".file").change(function(){
+                if(this.files[0] != undefined) {
+                    var tipo = this.files[0].type;
+                    var tamanio = this.files[0].size;
+                    if(tipo == 'image/jpg' || tipo == 'image/jpeg' || tipo == 'image/png') {
+                        if(tamanio > $(this).data('max-size')) {
+                            this.value = "";
+                            mostrarDialogo("El archivo es demasiado grande. " +
+                                            "Sólo se aceptan imágenes con un tamaño máximo de 3 MB. " + 
+                                            "Por favor, vuelva a escoger un archivo.");
+                        }
+                    } else {
+                        this.value = "";
+                        mostrarDialogo("El archivo no tiene el formato correcto. " +
+                                        "Sólo se aceptan imágenes con extensión .jpg, .jpeg y .png. " + 
+                                        "Por favor, vuelva a escoger un archivo.");
+                    }
+                }
+            });
+        }
+
+        function agregarImagen() {
+		    $(descripcion_inicial).clone(false, true).appendTo("#imagenes");
+            $(archivo_inicial).clone(false, true).appendTo("#imagenes");
+            $(boton_eliminar_inicial).css("display", "block").clone(false, true).appendTo("#imagenes");
+            $("#boton_agregar").appendTo("#imagenes");
+            if($(".descripcion").length > 1)
+                $($(".botones_eliminar")[0]).css("display", "block");
+            restablecerIds();
+		}
+
+        function restablecerIds() {
+            var botones_eliminar = $(".botones_eliminar");
+            for(var i = 0; i < botones_eliminar.length; i++) {
+                $($(botones_eliminar[i]).children()[0]).attr("id", "boton_eliminar_" + (i + 1));
+                $($(botones_eliminar[i]).children()[0]).attr("onclick", "eliminarImagen(" + (i + 1) + ");");
+			}
+            crearListener();
+        }
+
+        function eliminarImagen(indice) {
+            $($(".descripcion")[indice - 1]).remove();
+            $($(".archivo")[indice - 1]).remove();
+            $($(".botones_eliminar")[indice - 1]).remove();
+            restablecerIds();
+            if($(".descripcion").length === 1)
+                $($(".botones_eliminar")[0]).css('display', 'none');
+		}
+
+        $("#formulario input.form-control").change(function () {
+            var input_id = $(this).attr("id");
+            if(!specie_input_changed.includes(input_id)) {
+                specie_input_changed.push(input_id);
+            }
+        });
+
+        $("#formulario textarea.form-control").change(function () {
+            var input_id = $(this).attr("id");
+            if(!specie_input_changed.includes(input_id)) {
+                specie_input_changed.push(input_id);
+            }
+        });
+
+        function updateSpecie(id) {
+            for(esp of specie_input_changed) {
+                var obj = {};
+                var campo = getField(esp);
+                var value = $("input#" + esp).val();
+                if(value == undefined) {
+                    var value = $("textarea#" + esp).val();
+                    obj["Description"] = value;
+                } else {
+                    obj[campo] = value;
+                }
+                if(campo == "Gallery") {
+                    var array = esp.split("_");
+                    obj["IdPhoto"] = array[1];
+                }
+                var data = JSON.stringify(obj);
+                $.ajax({
+                    url: "/api/bpv/specie/" + id + "/" + campo + "/",
+                    type: 'PATCH',
+                    async: false,
+                    data: data,
+                    contentType: 'application/json'
+                });              
+            }
+            $("#form_agregar_imagenes").submit();
+            window.location.href = '@Url.Action("Index","Specie")';
+            return false;
+        }
+
+        function getField(q) {
+            if(q.startsWith("descripcion_")) {
+                return "Gallery";
+            }
+            switch(q) {
+                case "nombre":
+                    return "Name";
+                case "familia":
+                    return "Family";
+            }
+        }
+
+        function mostrarAlerta(id) {
+            $("#accept").attr("onclick", "eliminarFoto(" + id + ");");
+            $("#alert_modal").modal("show");
+        }
+
+        function cerrarModal() {
+            $("#alert_modal").modal("hide");
+        }
+
+        function eliminarFoto(id) {
+            $.ajax({
+                url: "/api/bpv/photo/" + id + "/",
+                type: 'DELETE',
+                async: false,
+                success: function() {
+                    cerrarModal();
+                    $("#div_imagen_" + id).fadeOut("slow", function(){
+                        $("#div_imagen_" + id).remove();
+                        $("#numero_imagenes").val($("#numero_imagenes").val() - 1);
+                        if($("#numero_imagenes").val() == 0) {
+                            $("#mensaje_imagenes").css("display", "initial");
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}
