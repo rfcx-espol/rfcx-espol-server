@@ -5,7 +5,7 @@
 #define HAVE_ALLOCA_H 1
 
 /* Define to compile in auth URL support code */
-#define HAVE_AUTH_URL 1
+/* #undef HAVE_AUTH_URL */
 
 /* Define to 1 if you have the `chown' function. */
 #define HAVE_CHOWN 1
@@ -14,13 +14,13 @@
 #define HAVE_CHROOT 1
 
 /* Define if you have libcurl. */
-#define HAVE_CURL 1
+/* #undef HAVE_CURL */
 
 /* Define to 1 if you have the <curl/curl.h> header file. */
-#define HAVE_CURL_CURL_H 1
+/* #undef HAVE_CURL_CURL_H */
 
 /* Define to 1 if you have the `curl_global_init' function. */
-#define HAVE_CURL_GLOBAL_INIT 1
+/* #undef HAVE_CURL_GLOBAL_INIT */
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
@@ -68,7 +68,7 @@
 #define HAVE_OGG 1
 
 /* Define if you have libopenssl. */
-#define HAVE_OPENSSL 1
+/* #undef HAVE_OPENSSL */
 
 /* Define to 1 if you have the `poll' function. */
 #define HAVE_POLL 1
@@ -181,7 +181,7 @@
 #define TIME_WITH_SYS_TIME 1
 
 /* Define to compile in YP support code */
-#define USE_YP 1
+/* #undef USE_YP */
 
 /* Version number of package */
 #define VERSION "2.4.3"

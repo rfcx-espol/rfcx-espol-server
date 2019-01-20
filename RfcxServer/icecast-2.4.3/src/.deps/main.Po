@@ -25,28 +25,28 @@ main.o: main.c /usr/include/stdc-predef.h ../config.h \
  /usr/include/unistd.h /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
  /usr/include/x86_64-linux-gnu/bits/environments.h \
  /usr/include/x86_64-linux-gnu/bits/confname.h /usr/include/getopt.h \
- /usr/include/x86_64-linux-gnu/bits/unistd.h /usr/include/curl/curl.h \
- /usr/include/curl/curlver.h /usr/include/curl/curlbuild.h \
- /usr/include/x86_64-linux-gnu/sys/types.h /usr/include/time.h \
+ /usr/include/x86_64-linux-gnu/bits/unistd.h thread/thread.h \
+ /usr/include/pthread.h /usr/include/sched.h /usr/include/time.h \
+ /usr/include/x86_64-linux-gnu/bits/sched.h \
+ /usr/include/x86_64-linux-gnu/bits/time.h \
+ /usr/include/x86_64-linux-gnu/bits/timex.h \
+ /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
+ /usr/include/x86_64-linux-gnu/bits/setjmp.h avl/avl.h thread/thread.h \
+ net/sock.h /usr/include/x86_64-linux-gnu/sys/uio.h \
+ /usr/include/x86_64-linux-gnu/sys/types.h \
  /usr/include/x86_64-linux-gnu/sys/select.h \
  /usr/include/x86_64-linux-gnu/bits/select.h \
  /usr/include/x86_64-linux-gnu/bits/sigset.h \
- /usr/include/x86_64-linux-gnu/bits/time.h \
  /usr/include/x86_64-linux-gnu/bits/select2.h \
  /usr/include/x86_64-linux-gnu/sys/sysmacros.h \
- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/sys/uio.h \
- /usr/include/x86_64-linux-gnu/bits/uio.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/socket2.h \
- /usr/include/curl/curlrules.h \
+ /usr/include/x86_64-linux-gnu/bits/uio.h net/resolver.h httpp/httpp.h \
+ avl/avl.h /usr/include/grp.h /usr/include/pwd.h cfgfile.h auth.h \
+ /usr/include/libxml2/libxml/xmlmemory.h \
+ /usr/include/libxml2/libxml/xmlversion.h \
+ /usr/include/libxml2/libxml/xmlexports.h \
+ /usr/include/libxml2/libxml/threads.h \
+ /usr/include/libxml2/libxml/globals.h \
+ /usr/include/libxml2/libxml/parser.h /usr/include/libxml2/libxml/tree.h \
  /usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/limits.h \
  /usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
@@ -54,20 +54,6 @@ main.o: main.c /usr/include/stdc-predef.h ../config.h \
  /usr/include/linux/limits.h \
  /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
- /usr/include/x86_64-linux-gnu/bits/timex.h \
- /usr/include/x86_64-linux-gnu/sys/time.h /usr/include/curl/easy.h \
- /usr/include/curl/multi.h /usr/include/curl/curl.h \
- /usr/include/curl/typecheck-gcc.h thread/thread.h /usr/include/pthread.h \
- /usr/include/sched.h /usr/include/x86_64-linux-gnu/bits/sched.h \
- /usr/include/x86_64-linux-gnu/bits/setjmp.h avl/avl.h thread/thread.h \
- net/sock.h net/resolver.h httpp/httpp.h avl/avl.h /usr/include/grp.h \
- /usr/include/pwd.h cfgfile.h auth.h \
- /usr/include/libxml2/libxml/xmlmemory.h \
- /usr/include/libxml2/libxml/xmlversion.h \
- /usr/include/libxml2/libxml/xmlexports.h \
- /usr/include/libxml2/libxml/threads.h \
- /usr/include/libxml2/libxml/globals.h \
- /usr/include/libxml2/libxml/parser.h /usr/include/libxml2/libxml/tree.h \
  /usr/include/libxml2/libxml/xmlstring.h \
  /usr/include/libxml2/libxml/xmlregexp.h \
  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
@@ -103,30 +89,9 @@ main.o: main.c /usr/include/stdc-predef.h ../config.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib.h \
  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
- client.h connection.h /usr/include/openssl/ssl.h \
- /usr/include/openssl/e_os2.h \
- /usr/include/x86_64-linux-gnu/openssl/opensslconf.h \
- /usr/include/openssl/comp.h /usr/include/openssl/crypto.h \
- /usr/include/openssl/stack.h /usr/include/openssl/safestack.h \
- /usr/include/openssl/opensslv.h /usr/include/openssl/ossl_typ.h \
- /usr/include/openssl/symhacks.h /usr/include/openssl/bio.h \
- /usr/include/openssl/x509.h /usr/include/openssl/buffer.h \
- /usr/include/openssl/evp.h /usr/include/openssl/objects.h \
- /usr/include/openssl/obj_mac.h /usr/include/openssl/asn1.h \
- /usr/include/openssl/bn.h /usr/include/openssl/ec.h \
- /usr/include/openssl/ecdsa.h /usr/include/openssl/ecdh.h \
- /usr/include/openssl/rsa.h /usr/include/openssl/dsa.h \
- /usr/include/openssl/dh.h /usr/include/openssl/sha.h \
- /usr/include/openssl/x509_vfy.h /usr/include/openssl/lhash.h \
- /usr/include/openssl/pkcs7.h /usr/include/openssl/pem.h \
- /usr/include/openssl/pem2.h /usr/include/openssl/hmac.h \
- /usr/include/openssl/kssl.h /usr/include/openssl/ssl2.h \
- /usr/include/openssl/ssl3.h /usr/include/openssl/tls1.h \
- /usr/include/openssl/dtls1.h /usr/include/openssl/pqueue.h \
- /usr/include/openssl/ssl23.h /usr/include/openssl/srtp.h \
- /usr/include/openssl/err.h compat.h /usr/include/inttypes.h refbuf.h \
- global.h slave.h sighandler.h stats.h logging.h log/log.h xslt.h \
- /usr/include/libxml2/libxml/debugXML.h \
+ client.h connection.h compat.h /usr/include/x86_64-linux-gnu/sys/time.h \
+ /usr/include/inttypes.h refbuf.h global.h slave.h sighandler.h stats.h \
+ logging.h log/log.h xslt.h /usr/include/libxml2/libxml/debugXML.h \
  /usr/include/libxml2/libxml/xpath.h \
  /usr/include/libxml2/libxml/HTMLtree.h \
  /usr/include/libxml2/libxml/HTMLparser.h /usr/include/libxslt/xslt.h \
@@ -218,89 +183,21 @@ main.o: main.c /usr/include/stdc-predef.h ../config.h \
 
 /usr/include/x86_64-linux-gnu/bits/unistd.h:
 
-/usr/include/curl/curl.h:
-
-/usr/include/curl/curlver.h:
-
-/usr/include/curl/curlbuild.h:
-
-/usr/include/x86_64-linux-gnu/sys/types.h:
-
-/usr/include/time.h:
-
-/usr/include/x86_64-linux-gnu/sys/select.h:
-
-/usr/include/x86_64-linux-gnu/bits/select.h:
-
-/usr/include/x86_64-linux-gnu/bits/sigset.h:
-
-/usr/include/x86_64-linux-gnu/bits/time.h:
-
-/usr/include/x86_64-linux-gnu/bits/select2.h:
-
-/usr/include/x86_64-linux-gnu/sys/sysmacros.h:
-
-/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
-
-/usr/include/x86_64-linux-gnu/sys/socket.h:
-
-/usr/include/x86_64-linux-gnu/sys/uio.h:
-
-/usr/include/x86_64-linux-gnu/bits/uio.h:
-
-/usr/include/x86_64-linux-gnu/bits/socket.h:
-
-/usr/include/x86_64-linux-gnu/bits/socket_type.h:
-
-/usr/include/x86_64-linux-gnu/bits/sockaddr.h:
-
-/usr/include/x86_64-linux-gnu/asm/socket.h:
-
-/usr/include/asm-generic/socket.h:
-
-/usr/include/x86_64-linux-gnu/asm/sockios.h:
-
-/usr/include/asm-generic/sockios.h:
-
-/usr/include/x86_64-linux-gnu/bits/socket2.h:
-
-/usr/include/curl/curlrules.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/limits.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/syslimits.h:
-
-/usr/include/limits.h:
-
-/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
-
-/usr/include/x86_64-linux-gnu/bits/local_lim.h:
-
-/usr/include/linux/limits.h:
-
-/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
-
-/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
-
-/usr/include/x86_64-linux-gnu/bits/timex.h:
-
-/usr/include/x86_64-linux-gnu/sys/time.h:
-
-/usr/include/curl/easy.h:
-
-/usr/include/curl/multi.h:
-
-/usr/include/curl/curl.h:
-
-/usr/include/curl/typecheck-gcc.h:
-
 thread/thread.h:
 
 /usr/include/pthread.h:
 
 /usr/include/sched.h:
 
+/usr/include/time.h:
+
 /usr/include/x86_64-linux-gnu/bits/sched.h:
+
+/usr/include/x86_64-linux-gnu/bits/time.h:
+
+/usr/include/x86_64-linux-gnu/bits/timex.h:
+
+/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
 
 /usr/include/x86_64-linux-gnu/bits/setjmp.h:
 
@@ -309,6 +206,22 @@ avl/avl.h:
 thread/thread.h:
 
 net/sock.h:
+
+/usr/include/x86_64-linux-gnu/sys/uio.h:
+
+/usr/include/x86_64-linux-gnu/sys/types.h:
+
+/usr/include/x86_64-linux-gnu/sys/select.h:
+
+/usr/include/x86_64-linux-gnu/bits/select.h:
+
+/usr/include/x86_64-linux-gnu/bits/sigset.h:
+
+/usr/include/x86_64-linux-gnu/bits/select2.h:
+
+/usr/include/x86_64-linux-gnu/sys/sysmacros.h:
+
+/usr/include/x86_64-linux-gnu/bits/uio.h:
 
 net/resolver.h:
 
@@ -337,6 +250,22 @@ auth.h:
 /usr/include/libxml2/libxml/parser.h:
 
 /usr/include/libxml2/libxml/tree.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/limits.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/syslimits.h:
+
+/usr/include/limits.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/local_lim.h:
+
+/usr/include/linux/limits.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
 
 /usr/include/libxml2/libxml/xmlstring.h:
 
@@ -424,87 +353,9 @@ client.h:
 
 connection.h:
 
-/usr/include/openssl/ssl.h:
-
-/usr/include/openssl/e_os2.h:
-
-/usr/include/x86_64-linux-gnu/openssl/opensslconf.h:
-
-/usr/include/openssl/comp.h:
-
-/usr/include/openssl/crypto.h:
-
-/usr/include/openssl/stack.h:
-
-/usr/include/openssl/safestack.h:
-
-/usr/include/openssl/opensslv.h:
-
-/usr/include/openssl/ossl_typ.h:
-
-/usr/include/openssl/symhacks.h:
-
-/usr/include/openssl/bio.h:
-
-/usr/include/openssl/x509.h:
-
-/usr/include/openssl/buffer.h:
-
-/usr/include/openssl/evp.h:
-
-/usr/include/openssl/objects.h:
-
-/usr/include/openssl/obj_mac.h:
-
-/usr/include/openssl/asn1.h:
-
-/usr/include/openssl/bn.h:
-
-/usr/include/openssl/ec.h:
-
-/usr/include/openssl/ecdsa.h:
-
-/usr/include/openssl/ecdh.h:
-
-/usr/include/openssl/rsa.h:
-
-/usr/include/openssl/dsa.h:
-
-/usr/include/openssl/dh.h:
-
-/usr/include/openssl/sha.h:
-
-/usr/include/openssl/x509_vfy.h:
-
-/usr/include/openssl/lhash.h:
-
-/usr/include/openssl/pkcs7.h:
-
-/usr/include/openssl/pem.h:
-
-/usr/include/openssl/pem2.h:
-
-/usr/include/openssl/hmac.h:
-
-/usr/include/openssl/kssl.h:
-
-/usr/include/openssl/ssl2.h:
-
-/usr/include/openssl/ssl3.h:
-
-/usr/include/openssl/tls1.h:
-
-/usr/include/openssl/dtls1.h:
-
-/usr/include/openssl/pqueue.h:
-
-/usr/include/openssl/ssl23.h:
-
-/usr/include/openssl/srtp.h:
-
-/usr/include/openssl/err.h:
-
 compat.h:
+
+/usr/include/x86_64-linux-gnu/sys/time.h:
 
 /usr/include/inttypes.h:
 

@@ -55,7 +55,7 @@
             <!-- Server details:
                 You define hostname and port for the server here, along with
                 the source password and mountpoint.  -->
-            <hostname>localhost</hostname>
+            <hostname>200.126.14.250</hostname>
             <port>8000</port>
             <password>rfcx1234</password>
             <mount>/station1.ogg</mount>
