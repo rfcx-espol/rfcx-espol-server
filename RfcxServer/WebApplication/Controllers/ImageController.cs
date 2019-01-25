@@ -24,8 +24,8 @@ namespace WebApplication.Controllers
         [HttpPost]
         public async Task<ActionResult> PostPicture(ImageRequest req)
         {
-            await Image.PostPicture(req);
-            return new OkResult();
+            return await Image.PostPicture(req);
+            
         }
     }
 }

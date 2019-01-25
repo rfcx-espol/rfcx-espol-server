@@ -14,7 +14,7 @@ namespace WebApplication.Models
         public int StationId{get;set;}
         public IFormFile ImageFile{get;set;}
        
-        
+        public string APIKey{get;set;}
 
     }
     

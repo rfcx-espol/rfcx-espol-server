@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
 using System.IO;
+using Microsoft.AspNetCore.Mvc;
 namespace WebApplication.Models
 {
     [BsonIgnoreExtraElements]
@@ -51,15 +52,24 @@ namespace WebApplication.Models
             Path = id + Extension;
             State = "PENDIENTE";
         }
-        public static async Task PostPicture(ImageRequest req){
-            string extension = System.IO.Path.GetExtension(req.ImageFile.FileName);
-            Image img = new Image(req.StationId, req.CaptureDate, extension);
-            var imgPath = Constants.RUTA_ARCHIVOS_ANALISIS_IMAGENES + img.StationId + "/" + img.Path;
-            new FileInfo(imgPath).Directory.Create();
-            using(FileStream stream = new FileStream(imgPath, FileMode.Create)){
-                await req.ImageFile.CopyToAsync(stream);
+        public static async Task<ActionResult> PostPicture(ImageRequest req){
+            if(IsApiKeyCorrect(req.APIKey)){
+                string extension = System.IO.Path.GetExtension(req.ImageFile.FileName);
+                Image img = new Image(req.StationId, req.CaptureDate, extension);
+                var imgPath = Constants.RUTA_ARCHIVOS_ANALISIS_IMAGENES + img.StationId + "/" + img.Path;
+                new FileInfo(imgPath).Directory.Create();
+                using(FileStream stream = new FileStream(imgPath, FileMode.Create)){
+                    await req.ImageFile.CopyToAsync(stream);
+                }
+                collection.InsertOne(img);
+                return new ContentResult()
+                {
+                    Content = "{\"_id\": \"" + img.id + "\"}",
+                    ContentType="application/json"
+                };
+            }else{
+                return new StatusCodeResult(500);
             }
-            collection.InsertOne(img);
         }
 
         public static bool CollectionExists(string collectionName)
@@ -69,7 +79,11 @@ namespace WebApplication.Models
             return collections.Any();
         }
        
-        
+        private static bool IsApiKeyCorrect(string ApiKey){
+            var StationCollection = _database.GetCollection<Station>("Station");
+            var filter = Builders<Station>.Filter.Eq("APIKey", ApiKey);
+            return StationCollection.Find(filter).Any();
+        }
 
     }
     
