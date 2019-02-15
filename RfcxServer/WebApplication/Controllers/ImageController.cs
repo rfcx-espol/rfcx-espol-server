@@ -27,7 +27,7 @@ namespace WebApplication.Controllers
             
         }
         [HttpGet("list")]
-        public async Task<ActionResult> List([FromQueryAttribute]long starttime, [FromQueryAttribute]long endtime, [FromQueryAttribute]int page, [FromQueryAttribute]int rows)
+        public async Task<ActionResult> List([FromQueryAttribute]long starttime, [FromQueryAttribute]long endtime, [FromQueryAttribute]int page=1, [FromQueryAttribute]int rows=1)
         {
             DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             DateTime start = epoch.AddSeconds(starttime);
