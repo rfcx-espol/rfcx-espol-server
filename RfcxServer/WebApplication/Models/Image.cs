@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 namespace WebApplication.Models
 {
     [BsonIgnoreExtraElements]
@@ -32,6 +33,7 @@ namespace WebApplication.Models
         [BsonId]
         public ObjectId id {get; set;}
         public int StationId{ get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime CaptureDate{ get; set; }
         public string Path{ get; set; }
         public string State{ get; set; }
@@ -85,6 +87,20 @@ namespace WebApplication.Models
             return StationCollection.Find(filter).Any();
         }
 
+        public static async Task<List<Image>> ListImages(DateTime starttime, DateTime endtime, int page, int rows)
+        {
+            var filterBuilder = Builders<Image>.Filter;
+            var start = starttime;
+            var end = endtime;
+            var filter = filterBuilder.Gte(x => x.CaptureDate, new BsonDateTime(start)) & filterBuilder.Lte(x => x.CaptureDate, new BsonDateTime(end));
+            var arr = new List<Image>();
+            await collection.Find(filter).Limit(rows).ForEachAsync(
+                img =>
+                {
+                    arr.Add(img);
+                });
+            return arr;
+        }
     }
     
 }

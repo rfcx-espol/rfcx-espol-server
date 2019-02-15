@@ -8,7 +8,6 @@ using System.Web;
 using System.IO;
 using System.Threading.Tasks;
 
-
 namespace WebApplication.Controllers
 {
     [Route("api/imgcapture")]
@@ -26,6 +25,15 @@ namespace WebApplication.Controllers
         {
             return await Image.PostPicture(req);
             
+        }
+        [HttpGet("list")]
+        public async Task<ActionResult> List([FromQueryAttribute]long starttime, [FromQueryAttribute]long endtime, [FromQueryAttribute]int page, [FromQueryAttribute]int rows)
+        {
+            DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            DateTime start = epoch.AddSeconds(starttime);
+            DateTime end = epoch.AddSeconds(endtime);
+            var arr = await Image.ListImages(start, end, page, rows);
+            return new ContentResult(){ Content = JsonConvert.SerializeObject(arr)};
         }
     }
 }
