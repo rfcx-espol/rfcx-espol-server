@@ -112,6 +112,13 @@ namespace WebApplication.DbModels
             }
         }
 
+        public IMongoCollection<Image> Image
+        {
+            get
+            {
+                return _database.GetCollection<Image>("Camera_Image");
+            }
+        }
 
     } 
 }
