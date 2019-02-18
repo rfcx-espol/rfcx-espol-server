@@ -17,6 +17,8 @@ namespace WebApplication.Models
         public List<string> Options { get; set; }
         public int Answer { get; set; }
         public string Feedback { get; set; }
+        public List<Station> Stations { get; set; }
+        public string Category { get; set; }
 
         public int CompareTo(object obj)
         {

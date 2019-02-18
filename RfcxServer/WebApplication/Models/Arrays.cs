@@ -27,5 +27,7 @@ namespace WebApplication.Models
         public string Option { get; set; }
         public int Answer { get; set; }
         public string Feedback { get; set; }
+        public string Category { get; set; }
+        public string Stations { get; set; }
         }
 }

@@ -17,6 +17,8 @@ namespace WebApplication.IRepository
         bool UpdateOption(int id, int index, string option);
         bool UpdateAnswer(int id, int answer);
         bool UpdateFeedback(int id, string feedback);
+        bool UpdateCategory(int id, string category);
+        bool UpdateStations(int id, List<Station> stations);
         bool Remove(int id);
     }
 

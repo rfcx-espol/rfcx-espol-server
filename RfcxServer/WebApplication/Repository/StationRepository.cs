@@ -23,11 +23,11 @@ namespace WebApplication.Repository
         } 
 
 
-        public async Task<IEnumerable<Station>> Get()
+        public List<Station> Get()
         {
             try
             {
-                return await _context.Stations.Find(_ => true).ToListAsync();
+                return _context.Stations.Find(_ => true).ToList();
             }
             catch (Exception ex)
             {
@@ -60,13 +60,13 @@ namespace WebApplication.Repository
         return count;
     }
 
-    public async Task<Station> Get(int id)
+    public Station Get(int id)
     {
         var filter = Builders<Station>.Filter.Eq("Id", id);
 
         try
         {
-            return await _context.Stations.Find(filter).FirstOrDefaultAsync();
+            return _context.Stations.Find(filter).FirstOrDefault();
         }
         catch (Exception ex)
         {
