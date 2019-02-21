@@ -167,6 +167,20 @@ namespace WebApplication.Repository
             return Update(id, question);
         }
 
+        public bool UpdateCategory(int id, string category)
+        {
+            Question question = Get(id);
+            question.Category = category;
+            return Update(id, question);
+        }
+
+        public bool UpdateStations(int id, List<Station> stations)
+        {
+            Question question = Get(id);
+            question.Stations = stations;
+            return Update(id, question);
+        }
+
     }
 
 }

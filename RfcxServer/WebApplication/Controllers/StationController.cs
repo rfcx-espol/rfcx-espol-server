@@ -33,7 +33,7 @@ namespace WebApplication.Controllers
 
         private async Task<string> GetStation()
         {
-            var Stations= await _StationRepository.Get();
+            var Stations= _StationRepository.Get();
             return JsonConvert.SerializeObject(Stations);
         }
 
@@ -60,7 +60,7 @@ namespace WebApplication.Controllers
 
         private async Task<string> GetStationById(int id)
         {
-            var Station= await _StationRepository.Get(id) ?? new Station();
+            var Station= _StationRepository.Get(id) ?? new Station();
             return JsonConvert.SerializeObject(Station);
         }
 

@@ -24,6 +24,21 @@
         #alerta {
             margin: 20px 0 0 0;
         }
+        span.select2-selection.select2-selection--multiple {
+            height: 34px;
+            padding: 0px 12px;
+            color: rgb(85,85,85);
+            font-weight: 400;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            margin: 0;
+            font: inherit;
+            overflow: visible;
+        }
     </style>
 }
 <div id="formulario" class="row">
@@ -46,7 +61,26 @@
                 }
             </select>
         </div>
-        <div class="form-group col-lg-9 col-md-9">
+        <div class="form-group col-lg-3 col-md-3">
+            <label>Categoría: </label>
+            <input id="categoria" class="form-control" type="text" name="categoria" value="@ViewBag.pregunta.Category" required>            
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+            <label>Estaciones: </label>
+            <select name="estaciones" class="form-control" id="estaciones" multiple="multiple" required>
+                @foreach (var estacion in ViewBag.estaciones)
+                {
+                    <option value=@estacion.Id>@estacion.Name</option>
+                }
+            </select>
+            <select name="temporal" id="temporal" required>
+                @foreach (var est in ViewBag.pregunta.Stations)
+                {
+                    <option value=@est.Id>@est.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-lg-12 col-md-12">
             <label>Pregunta: </label>
             <input id="pregunta" class="form-control" type="text" name="pregunta" value="@ViewBag.pregunta.Text" required>            
         </div>
@@ -112,6 +146,11 @@
     <script>
         $(document).ready(function(){
             question_input_changed = [];
+            ordenarSelect();
+            $('#estaciones').select2({
+                placeholder: "Escoja una opción",
+                language: "es"
+            });
         });
 
         $("#formulario input.form-control").change(function () {
@@ -128,6 +167,19 @@
             }
         });
 
+        function ordenarSelect() {
+            $("#temporal option").each(function(){
+                var temp = this;
+                $("#estaciones option").each(function(){
+                    var est = this;
+                    if($(temp).val() == $(est).val()) {
+                        $(est).prop("selected", true);
+                    }
+                })
+            })
+            $("#temporal").remove();
+        }
+
         function updateQuestion(id) {
             for(q of question_input_changed) {
                 var obj = {};
@@ -135,6 +187,21 @@
                 var value = $("input#" + q).val();
                 if(value == undefined) {
                     var value = $("select#" + q).children("option:selected").val();
+                    if(q == "estaciones") {
+                        var estaciones = "";
+                        $("#estaciones option:selected").each(function(){
+                            if(estaciones.length == 0) {
+                                estaciones = $(this).val();
+                            } else {
+                                estaciones = estaciones + "," + $(this).val();
+                            }
+                        })
+                        var value = estaciones;
+                        if(value.length == 0) {
+                            alert("Debe escoger al menos una estación para la pregunta");
+                            return false;
+                        }
+                    }
                 }
                 obj[campo] = value;
                 switch(q) {
@@ -179,6 +246,10 @@
                     return "Answer";
                 case "retroalimentacion":
                     return "Feedback";
+                case "categoria":
+                    return "Category";
+                case "estaciones":
+                    return "Stations";
             }
         }
     </script>

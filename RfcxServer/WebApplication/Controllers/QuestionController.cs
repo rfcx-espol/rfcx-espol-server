@@ -37,12 +37,15 @@ namespace WebApplication
     {
         private readonly IQuestionRepository _QuestionRepository;
         private readonly ISpecieRepository _SpecieRepository;
+        private readonly IStationRepository _StationRepository;
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
 
-        public QuestionController(IQuestionRepository QuestionRepository, ISpecieRepository SpecieRepository)
+        public QuestionController(IQuestionRepository QuestionRepository, ISpecieRepository SpecieRepository,
+                                    IStationRepository StationRepository)
         {
             _QuestionRepository = QuestionRepository;
             _SpecieRepository = SpecieRepository;
+            _StationRepository = StationRepository;
         }
 
         [HttpGet("index")]
@@ -66,6 +69,8 @@ namespace WebApplication
         [HttpGet("create")]
         public IActionResult Create() {
             ViewBag.especies = _SpecieRepository.Get();
+            List<Station> estaciones = _StationRepository.Get();
+            ViewBag.estaciones = estaciones;
             return View();
         }
 
@@ -73,6 +78,8 @@ namespace WebApplication
         public IActionResult Edit(int id) {
             ViewBag.especies = _SpecieRepository.Get();
             ViewBag.pregunta = _QuestionRepository.Get(id);
+            List<Station> estaciones = _StationRepository.Get();
+            ViewBag.estaciones = estaciones;
             return View();
         }
 
@@ -104,6 +111,7 @@ namespace WebApplication
         public IActionResult Post()
         {
             Question question = new Question();
+            List<Station> lista_estaciones = new List<Station>();
             question.SpecieId = Int32.Parse(Request.Form["especie"]);
             question.Text = Request.Form["pregunta"];
             question.Options = new List<string>();
@@ -113,6 +121,14 @@ namespace WebApplication
             question.Options.Add(Request.Form["opcion_4"]);
             question.Answer = Int32.Parse(Request.Form["respuesta"]);
             question.Feedback = Request.Form["retroalimentacion"];
+            question.Category = Request.Form["categoria"];
+            string estaciones = Request.Form["estaciones"];
+            string[] ids = estaciones.Split(",");
+            foreach(string id in ids) {
+                Station estacion = _StationRepository.Get(Int32.Parse(id));
+                lista_estaciones.Add(estacion);
+            }
+            question.Stations = lista_estaciones;
             bool result = _QuestionRepository.Add(question);
             if(result == true)
                 TempData["creacion"] = 1;
@@ -185,6 +201,37 @@ namespace WebApplication
         public bool PatchFeedback(int id, [FromBody] Arrays json)
         {
             bool valor = _QuestionRepository.UpdateFeedback(id, json.Feedback);
+            if(valor == true) {
+                TempData["edicion"] = 1;
+            } else {
+                TempData["edicion"] = -1;
+            }
+            return true;
+        }
+
+        [HttpPatch("{id}/Category")]
+        public bool PatchCategory(int id, [FromBody] Arrays json)
+        {
+            bool valor = _QuestionRepository.UpdateCategory(id, json.Category);
+            if(valor == true) {
+                TempData["edicion"] = 1;
+            } else {
+                TempData["edicion"] = -1;
+            }
+            return true;
+        }
+
+        [HttpPatch("{id_pregunta}/Stations")]
+        public bool PatchStations(int id_pregunta, [FromBody] Arrays json)
+        {
+            List<Station> stations = new List<Station>();
+            string estaciones = json.Stations;
+            string[] ids = estaciones.Split(",");
+            foreach(string id in ids) {
+                Station estacion = _StationRepository.Get(Int32.Parse(id));
+                stations.Add(estacion);
+            }
+            bool valor = _QuestionRepository.UpdateStations(id_pregunta, stations);
             if(valor == true) {
                 TempData["edicion"] = 1;
             } else {
