@@ -53,12 +53,13 @@ public class ImageRepository : IImageRepository
         }
     }
 
-    public async Task<List<Image>> ListImages(DateTime starttime, DateTime endtime, int page, int rows)
+    public async Task<List<Image>> ListImages(DateTime starttime, DateTime endtime, int page, int rows, int stationid)
     {
         var filterBuilder = Builders<Image>.Filter;
         var start = starttime;
         var end = endtime;
-        var filter = filterBuilder.Gte(x => x.CaptureDate, new BsonDateTime(start)) & filterBuilder.Lte(x => x.CaptureDate, new BsonDateTime(end));
+        var filter = filterBuilder.Gte(x => x.CaptureDate, new BsonDateTime(start)) & filterBuilder.Lte(x => x.CaptureDate, new BsonDateTime(end)) &
+        filterBuilder.Eq(x => x.StationId, stationid);
         var arr = new List<Image>();
         await _context.Image.Find(filter).ForEachAsync(
             img =>
