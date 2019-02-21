@@ -36,12 +36,12 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult> List([FromQuery]long starttime, [FromQuery]long endtime, [FromQuery]int page=1, [FromQuery]int rows=25)
+        public async Task<ActionResult> List([FromQuery]int stationid,[FromQuery]long starttime, [FromQuery]long endtime, [FromQuery]int page=1, [FromQuery]int rows=25)
         {
             DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             DateTime start = starttime == 0? DateTime.Today : epoch.AddSeconds(starttime);
             DateTime end = endtime == 0? DateTime.Today.AddDays(1) : epoch.AddSeconds(endtime);
-            var arr = await _ImageRepository.ListImages(start, end, page, rows);
+            var arr = await _ImageRepository.ListImages(start, end, page, rows, stationid);
             return new ContentResult(){ Content = JsonConvert.SerializeObject(arr)};
         }
     }
