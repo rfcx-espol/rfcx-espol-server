@@ -13,11 +13,12 @@ namespace WebApplication.IRepository
         Task<ActionResult> PostPicture(ImageRequest req);
         Task<IEnumerable<Image>> GetAllProducts();
         Task<List<Image>> ListImages(DateTime starttime, DateTime endtime, int page, int rows, int stationid);
-<<<<<<< HEAD
-    }   
-=======
         void ChangeFamily(Image image, ImageRequest request);
-    }
->>>>>>> 3b1a969f842095cdc231c3ac0af56ecc19f3554d
+
+    }   
+
+       /* */
+    
+
         
 }

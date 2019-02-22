@@ -96,17 +96,19 @@ namespace WebApplication.Repository
 
 
         }
-    }
 
-    public void ChangeFamily(Image image, ImageRequest request)
-    {
-        image.Family = new string[request.Family.Count];
-        for (int i  = 0; i < request.Family.Count; i++)
+        public void ChangeFamily(Image image, ImageRequest request)
         {
-            image.Family[i] = request.Family[i];
+            image.Family = new string[request.Family.Count];
+            for (int i = 0; i < request.Family.Count; i++)
+            {
+                image.Family[i] = request.Family[i];
+            }
+            var filter = Builders<Image>.Filter.Eq("_id", image.id);
+            var updateDef = Builders<Image>.Update.Set("family", image.Family);
+            var result = _context.Images.UpdateOne(filter, updateDef);
         }
-        var filter = Builders<Image>.Filter.Eq("_id", image.id);
-        var updateDef = Builders<Image>.Update.Set("family", image.Family);
-        var result = _context.Image.UpdateOne(filter, updateDef);
     }
+    /*
+    */
 }
