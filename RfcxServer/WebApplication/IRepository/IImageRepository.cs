@@ -11,7 +11,8 @@ namespace WebApplication.IRepository
     {
         Task<Image> Find(string _id);
         Task<ActionResult> PostPicture(ImageRequest req);
+        Task<IEnumerable<Image>> GetAllProducts();
         Task<List<Image>> ListImages(DateTime starttime, DateTime endtime, int page, int rows, int stationid);
-    }
+    }   
         
 }

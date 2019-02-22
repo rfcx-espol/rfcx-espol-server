@@ -6,11 +6,12 @@ using Newtonsoft.Json;
 using System;
 using System.Web;
 using System.IO;
+using System.Collections.Generic;
 
 namespace WebApplication.Controllers
 {
     [Route("api/imgcapture")]
-    public class ImageController : ControllerBase
+    public class ImageController : Controller
     {
         private readonly IImageRepository _ImageRepository;
 
@@ -18,6 +19,13 @@ namespace WebApplication.Controllers
         {
             _ImageRepository=ImageRepository;
 
+        }
+
+        [HttpGet]
+        public IActionResult Index()
+        {
+            IEnumerable<Image> model = _ImageRepository.GetAllProducts().Result;
+            return View("Index", model);
         }
 
         [HttpGet("{_id}")]

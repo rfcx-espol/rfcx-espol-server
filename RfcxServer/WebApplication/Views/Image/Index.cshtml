@@ -1,0 +1,118 @@
+@using Microsoft.Extensions.FileProviders
+@model IEnumerable<WebApplication.Models.Image>
+@using WebApplication.Models
+
+@{
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "Imagenes";
+}
+
+<!-- Favicon -->
+<link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+
+
+<!-- Main style sheet -->
+<link href="~/css/site.css" rel="stylesheet">
+
+<!-- Google Fonts -->
+<!-- Prata for body  -->
+<link href='https://fonts.googleapis.com/css?family=Prata' rel='stylesheet' type='text/css'>
+<!-- Tangerine for small title -->
+<link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>
+<!-- Open Sans for title -->
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
+
+
+<!-- Start About us -->
+<section id="mu-about-us">
+
+    <div class="container">
+        <div class="row" style="margin-right: 270px;">
+            <div class="col-md-12">
+                <div class="mu-about-us-area">
+
+                    <div class="mu-title">
+                        <h2> Descarga de Imagenes </h2>
+                    </div>
+
+
+                    <form method="post" id="form1" action="/Download">
+                        <div class="form-group">
+                            <table class="table table-bordered" id="vertical-table">
+
+                                <tr>
+                                    <th><label for="ddl"> Estación </label></th>
+                                    <td></td>
+                                </tr>
+
+                                <tr>
+                                    <th><label id="ReportBeginDate">Fecha Inicial </label></th>
+                                    <td>
+                                        <input class="form-control col-sm-8" type="date" id="start" name="start" value="" />
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th><label id="ReportEndDate">Fecha Final</label></th>
+                                    <td>
+                                        <input class="form-control col-sm-8" type="date" id="end" name="end" value="" />
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                            <br />
+                            <button id="search" type="submit" class="out">Buscar</button><br /><br /><br />
+                        </div>
+                    </form>
+
+
+
+                    <div class="top-buffer"></div>
+                    <table class="table table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th width="25%">Foto</th>
+                                <th width="25%">Fecha</th>
+                                <th width="25%">Familia</th>
+                                <th width="25%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td><img class="img-responsive" src="(modelItem => item.id)"></td>
+                                    
+                                    <td>@Html.DisplayFor(modelItem => item.CaptureDate)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Family)</td>
+                                    <td>
+                                        <a id="editProductModal" data-toggle="modal" asp-action="AddEditProduct" asp-route-id="@item.id" data-target="#modal-action-product"
+                                           class="btn btn-info">
+                                            <i class="glyphicon glyphicon-pencil"></i> Edit
+                                        </a>
+                                        <a id="deleteProductModal" data-toggle="modal" asp-action="DeleteProduct" asp-route-id="@item.id" data-target="#modal-action-product" class="btn btn-danger">
+                                            <i class="glyphicon glyphicon-trash"></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+@section scripts
+    {
+    <script src="~/js/product-index.js" asp-append-version="true"></script>
+}

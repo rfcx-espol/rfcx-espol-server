@@ -112,7 +112,7 @@ namespace WebApplication.DbModels
             }
         }
 
-        public IMongoCollection<Image> Image
+        public IMongoCollection<Image> Images
         {
             get
             {
