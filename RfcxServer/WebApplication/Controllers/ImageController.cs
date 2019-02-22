@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Web;
 using System.IO;
+using System.Collections.Generic;
 
 namespace WebApplication.Controllers
 {
@@ -43,6 +44,14 @@ namespace WebApplication.Controllers
             DateTime end = endtime == 0? DateTime.Today.AddDays(1) : epoch.AddSeconds(endtime);
             var arr = await _ImageRepository.ListImages(start, end, page, rows, stationid);
             return new ContentResult(){ Content = JsonConvert.SerializeObject(arr)};
+        }
+
+        [HttpPatch("family")]
+        public async Task<ActionResult> ChangeFamily(string id, [FromBody] ImageRequest request)
+        {
+            var image = await _ImageRepository.Find(id);
+            _ImageRepository.ChangeFamily(image, request);
+            return new ContentResult();
         }
     }
 }
