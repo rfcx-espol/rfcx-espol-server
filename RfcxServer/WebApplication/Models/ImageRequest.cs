@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 namespace WebApplication.Models
 {
     public class ImageRequest
@@ -16,6 +17,7 @@ namespace WebApplication.Models
        
         public string APIKey{get;set;}
 
+        public List<string> Family{get;set;}
     }
     
 }

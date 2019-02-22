@@ -52,5 +52,13 @@ namespace WebApplication.Controllers
             var arr = await _ImageRepository.ListImages(start, end, page, rows, stationid);
             return new ContentResult(){ Content = JsonConvert.SerializeObject(arr)};
         }
+
+        [HttpPatch("family")]
+        public async Task<ActionResult> ChangeFamily(string id, [FromBody] ImageRequest request)
+        {
+            var image = await _ImageRepository.Find(id);
+            _ImageRepository.ChangeFamily(image, request);
+            return new ContentResult();
+        }
     }
 }
