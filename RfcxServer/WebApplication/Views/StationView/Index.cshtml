@@ -1,0 +1,45 @@
+@using Microsoft.Extensions.FileProviders
+@model WebApplication.IndexModel
+@{
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "StationView";
+}
+<link rel="stylesheet" type="text/css" href="~/css/deviceView.css">
+@section Style {
+  <style>
+    #monitor {
+      margin-right: 270px;
+      width: 60%;
+    }
+    div[id^="tab_"] {
+      width: 60%;
+    }
+  </style>
+}
+
+<div class="tab" id="tab">
+  <button class="tablinks" name="monitor" onclick="openDevice(event, 'monitor')" id="defaultOpen"><i class="material-icons tabL">&#xe30c;</i> <p class="tabMonitor">Monitor</p></button>
+  <!--New tabs-->
+</div> 
+<!--MONITOR-->
+<div id="monitor" class="tabcontent" onload="display(this)">
+      <h3 id="stationName" style="text-align: center; color: #e4b836; font-weight: bold;">@ViewData["stationName"].ToString()</h3>
+      <p id="stationId" style="display:none">@ViewData["stationId"].ToString()</p>
+</div>
+<div id="individual" >
+  <!--INDIVIDUAL SENSORS -->
+</div>
+
+
+@section Scripts {
+  <!--jscript charts-->
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/canvasjs.min.js"></script>
+  <script src="js/moment.js"></script>
+  <script type="text/javascript" src="js/monitor.js"></script> 
+  <script type="text/javascript" src="js/individualCharts.js"></script> 
+  
+ }
