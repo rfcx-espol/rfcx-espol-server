@@ -14,18 +14,21 @@ namespace WebApplication.Controllers
     public class ImageController : Controller
     {
         private readonly IImageRepository _ImageRepository;
+        private readonly IStationRepository _StationRepository;
 
-        public ImageController(IImageRepository ImageRepository)
+        public ImageController(IImageRepository ImageRepository, IStationRepository StationRepository)
         {
             _ImageRepository=ImageRepository;
+            _StationRepository = StationRepository;
 
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            IEnumerable<Image> model = _ImageRepository.GetAllProducts().Result;
-            return View("Index", model);
+            List<Station> estaciones = _StationRepository.Get();
+            ViewBag.estaciones = estaciones;
+            return View();
         }
 
         [HttpGet("{_id}")]

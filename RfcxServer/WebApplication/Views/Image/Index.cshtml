@@ -45,15 +45,20 @@
                             <table class="table table-bordered input-group" id="vertical-table">
 
                                 <tr>
+                                    
                                     <th><label > Estación </label></th>
-
+                                    <td>
+                                        
                                         <select name="estaciones" class="form-control" id="estaciones" multiple="multiple" required>
-                                        @foreach (var estacion in ViewBag.estaciones)
-                                        {
+                                            @foreach (var estacion in ViewBag.estaciones)
+                {
                                             <option value=@estacion.Id>@estacion.Name</option>
-                                        }
+                }
                                         </select>
+                                        
 
+                                    </td>                                      
+                                    
                                 </tr>
 
                                 <tr>
@@ -103,9 +108,7 @@
                                            class="btn btn-info">
                                             <i class="glyphicon glyphicon-pencil"></i> Edit
                                         </a>
-                                        <a id="deleteProductModal" data-toggle="modal" asp-action="DeleteProduct" asp-route-id="@item.id" data-target="#modal-action-product" class="btn btn-danger">
-                                            <i class="glyphicon glyphicon-trash"></i> Delete
-                                        </a>
+                                        
                                     </td>
                                 </tr>
                             }
@@ -122,4 +125,12 @@
 @section scripts
     {
     <script src="~/js/product-index.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function() {
+            $('#estaciones').select2({
+                placeholder: "Escoja una opción",
+                language: "es"
+            });
+        });
+    </script>
 }
