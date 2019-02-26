@@ -40,15 +40,20 @@
                     </div>
 
 
-                   <form method="post" id="form1" action="/Download">
+                   <form method="post" id="form1" action="/Image">
                         <div class="form-group">
                             <table class="table table-bordered input-group" id="vertical-table">
 
                                 <tr>
-                                    <th><label for="ddl"> Estación </label></th>
-                                    <td>
+                                    <th><label > Estación </label></th>
 
-                                    </td>
+                                        <select name="estaciones" class="form-control" id="estaciones" multiple="multiple" required>
+                                        @foreach (var estacion in ViewBag.estaciones)
+                                        {
+                                            <option value=@estacion.Id>@estacion.Name</option>
+                                        }
+                                        </select>
+
                                 </tr>
 
                                 <tr>
