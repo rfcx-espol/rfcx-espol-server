@@ -51,11 +51,11 @@
 
                                             <select name="estaciones" class="form-control" id="estaciones" multiple="multiple" required>
                                                 @foreach (var item in Model)
-                {
+                                                 {
                                                 <option value=@Html.DisplayFor(modelItem => item.StationId)>@Html.DisplayFor(modelItem => item.StationId)</option>
-                }
+                                                 }
                                             </select>
-
+                                            
 
                                         </td>
 
@@ -99,7 +99,7 @@
                                 @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td><img class="img-responsive" src="(modelItem => item.id)"></td>
+                                    <td><img class="img-responsive" src="/resources/bpv/images/species/@Html.DisplayFor(modelItem => item.StationId)/@Html.DisplayFor(modelItem => item.Path)"></td>
 
                                     <td>@Html.DisplayFor(modelItem => item.CaptureDate)</td>
                                     <td>@Html.DisplayFor(modelItem => item.Family)</td>
