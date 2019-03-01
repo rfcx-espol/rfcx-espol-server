@@ -54,7 +54,7 @@ namespace WebApplication {
         }}
 
         public static string FilesFolderPath { get { 
-            return Path.Combine(getServerDirectory() , FilesFolderName);
+            return Path.Combine(getBPVAudioDirectory() , FilesFolderName);
         }}
 
         public static string SpeciesFolderPath { get {
@@ -84,7 +84,7 @@ namespace WebApplication {
         }
 
         public static string StationFolderPath(string stationId) {
-            return Path.Combine(FilesFolderPath, "station" + stationId);
+            return Path.Combine(getBPVAudioDirectory(), "station" + stationId);
         }
 
         public static string SpecieFolderPath(string specieId) {
@@ -186,8 +186,14 @@ namespace WebApplication {
             }
         }
 
+        // /var/rfcx-espol-server/
         public static string getServerDirectory(){
             return Constants.SERVER_DIRECTORY;
+        }
+
+        // /var/rfcx-espol-server/resources/bpv/audios/
+        public static string getBPVAudioDirectory() {
+            return Constants.RUTA_ARCHIVOS_AUDIOS;
         }
 
         private static void GrantAccess(string fullPath) {
