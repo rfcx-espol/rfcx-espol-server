@@ -1,6 +1,6 @@
 @model IEnumerable<WebApplication.Models.Image>
 
-    @using WebApplication.Models
+
 
     @{
     Layout = "~/Pages/_Layout.cshtml";
@@ -8,6 +8,24 @@
 
     @{
     ViewBag.Title = "Imagenes";
+    }
+
+    @section Style {
+        <style>
+            #mu-about-us {
+                padding: 15px;
+                margin-right: 270px;
+            }
+
+            #div_tabla_especies {
+                margin-top: 20px;
+                margin-bottom: 50px;
+            }
+
+            .modal-footer {
+                text-align: center !important;
+            }
+        </style>
     }
 
     <!-- Favicon -->
@@ -25,6 +43,8 @@
     <!-- Open Sans for title -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css"><font></font>
+    <font></font>
 
 
     <!-- Start About us -->
@@ -50,12 +70,13 @@
                                         <td>
 
                                             <select name="estaciones" class="form-control" id="estaciones" multiple="multiple" required>
-                                                @foreach (var item in Model)
-                                                 {
+                                                @foreach (var item in Model){
+
                                                 <option value=@Html.DisplayFor(modelItem => item.StationId)>@Html.DisplayFor(modelItem => item.StationId)</option>
-                                                 }
+
+                                                }
                                             </select>
-                                            
+
 
                                         </td>
 
@@ -84,47 +105,44 @@
 
 
 
-                        <div class="top-buffer"></div>
-                        <table class="table table-bordered table-striped table-condensed">
-                            <thead>
-                                <tr>
-                                    <th width="25%">Foto</th>
-                                    <th width="25%">Fecha</th>
-                                    <th width="25%">Familia</th>
-                                    <th width="25%">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <div id="div_tabla_especies">
+                            <table class="table table-bordered table-striped table-condensed cell-border display compact" id="tabla_image">
+                                <thead>
+                                    <tr>
+                                        <th width="25%">Foto</th>
+                                        <th width="25%">Fecha</th>
+                                        <th width="25%">Familia</th>
+                                        <th width="25%">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                                @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td><img class="img-responsive" src="/resources/images/@Html.DisplayFor(modelItem => item.StationId)/@Html.DisplayFor(modelItem => item.Path)"></td>
+                                    @foreach (var item in Model)
+                                    {
+                                    <tr>
+                                        <td><img class="img-responsive" src="/resources/images/@Html.DisplayFor(modelItem => item.StationId)/@Html.DisplayFor(modelItem => item.Path)" style=" height="10px"></td>
 
-                                    <td>@Html.DisplayFor(modelItem => item.CaptureDate)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.Family)</td>
-                                    <td>
-                                        <a id="editProductModal" data-toggle="modal" asp-action="AddEditProduct" asp-route-id="@item.id" data-target="#modal-action-product"
-                                           class="btn btn-info">
-                                            <i class="glyphicon glyphicon-pencil"></i> Edit
-                                        </a>
+                                        <td style="text-align: center;">@Html.DisplayFor(modelItem => item.CaptureDate)</td>
+                                        <td style="text-align: center;">@Html.DisplayFor(modelItem => item.Family)</td>
+                                        <td style="text-align: center;">
+                                            <button class="btn btn-primary" onclick="">Editar</button>
 
-                                    </td>
-                                </tr>
-                            }
-                            </tbody>
-                        </table>
+                                        </td>
+                                    </tr>
+                                     }
+                                </tbody>
+                            </table>
+                        </div>
+
                     </div>
 
                 </div>
-
             </div>
-        </div>
     </section>
 
     @section scripts
     {
-        <script src="~/js/product-index.js" asp-append-version="true"></script>
+
         <script>
             $(document).ready(function () {
                 $('#estaciones').select2({
@@ -132,5 +150,22 @@
                     language: "es"
                 });
             });
+
+
+            $(document).ready(function () {
+                $('#tabla_image').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                    },
+                    "columns": [
+                        { "width": "40%" },
+                        { "width": "40%" },
+                        { "width": "20%" }
+                    ]
+                });
+            });
+
         </script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script><font></font>
+
     }
