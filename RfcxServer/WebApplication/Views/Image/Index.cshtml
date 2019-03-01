@@ -2,177 +2,181 @@
 
 
 
-    @{
+
+        @{
     Layout = "~/Pages/_Layout.cshtml";
-    }
+        }
 
-    @{
+        @{
     ViewBag.Title = "Imagenes";
-    }
+        }
 
-    @section Style {
-        <style>
-            #mu-about-us {
-                padding: 15px;
-                margin-right: 270px;
-            }
+        @section Style {
+            <style>
+                #mu-about-us {
+                    padding: 15px;
+                    margin-right: 270px;
+                }
 
-            #div_tabla_especies {
-                margin-top: 20px;
-                margin-bottom: 50px;
-            }
+                #div_tabla_especies {
+                    margin-top: 20px;
+                    margin-bottom: 50px;
+                }
 
-            .modal-footer {
-                text-align: center !important;
-            }
-            #imagen {
-                display: block;
-                margin: auto;
-                width: 200px;
-            }
-        </style>
-    }
+                .modal-footer {
+                    text-align: center !important;
+                }
 
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+                #imagen {
+                    display: block;
+                    margin: auto;
+                    width: 60%;
+                }
+            </style>
+        }
 
-
-    <!-- Main style sheet -->
-    <link href="~/css/site.css" rel="stylesheet">
-
-    <!-- Google Fonts -->
-    <!-- Prata for body  -->
-    <link href='https://fonts.googleapis.com/css?family=Prata' rel='stylesheet' type='text/css'>
-    <!-- Tangerine for small title -->
-    <link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>
-    <!-- Open Sans for title -->
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css"><font></font>
-    <font></font>
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
 
 
-    <!-- Start About us -->
-    <section id="mu-about-us">
+        <!-- Main style sheet -->
+        <link href="~/css/site.css" rel="stylesheet">
 
-        <div class="container">
-            <div class="row" style="margin-right: 270px;">
-                <div class="col-md-12">
-                    <div class="mu-about-us-area">
-
-                        <div class="mu-title">
-                            <h2> Descarga de Imagenes </h2>
-                        </div>
-
-                        <form asp-controller="Image" asp-action="List" method="get">
-
-                            <div class="form-group">
-                                <table class="table table-bordered input-group" id="vertical-table">
-
-                                    <tr>
-
-                                        <th><label> Estación </label></th>
-                                        <td>
-
-                                            <select name="estaciones" class="form-control" id="estaciones" multiple="multiple" required>
-
-                                                @foreach (var item in Model){
-
-                                                <option value=@Html.DisplayFor(modelItem => item.StationId)>@Html.DisplayFor(modelItem => item.StationId)</option>
-
-                                                }
-                                            </select>
+        <!-- Google Fonts -->
+        <!-- Prata for body  -->
+        <link href='https://fonts.googleapis.com/css?family=Prata' rel='stylesheet' type='text/css'>
+        <!-- Tangerine for small title -->
+        <link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>
+        <!-- Open Sans for title -->
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css"><font></font>
+        <font></font>
 
 
-                                        </td>
+        <!-- Start About us -->
+        <section id="mu-about-us">
 
-                                    </tr>
+            <div class="container">
+                <div class="row" style="margin-right: 270px;">
+                    <div class="col-md-12">
+                        <div class="mu-about-us-area">
 
-                                    <tr>
-                                        <th><label id="ReportBeginDate">Fecha Inicial </label></th>
-                                        <td>
-                                            <input class="form-control col-sm-8" type="date" id="start" name="start" value="" />
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <th><label id="ReportEndDate">Fecha Final</label></th>
-                                        <td>
-                                            <input class="form-control col-sm-8" type="date" id="end" name="end" value="" />
-                                        </td>
-                                    </tr>
-
-                                </table>
-
-                                <br />
-                                <button id="search" type="submit" class="out">Buscar</button><br /><br /><br />
+                            <div class="mu-title">
+                                <h2> Descarga de Imagenes </h2>
                             </div>
-                        </form>
+
+                            <form asp-controller="Image" asp-action="List" method="get">
+
+                                <div class="form-group">
+                                    <table class="table table-bordered input-group" id="vertical-table">
+
+                                        <tr>
+
+                                            <th><label> Estación </label></th>
+                                            <td>
+
+                                                <select name="estaciones" class="form-control" id="estaciones" multiple="multiple" required>
+
+                                                    var temp= 0;
+                                                    @foreach (var item in Model){
+
+                                                        
+                                                        <option value=@Html.DisplayFor(modelItem => item.StationId)>@Html.DisplayFor(modelItem => item.StationId)</option>
+                                                        
+                                                    }
+                                                </select>
+
+
+                                            </td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <th><label id="ReportBeginDate">Fecha Inicial </label></th>
+                                            <td>
+                                                <input class="form-control col-sm-8" type="date" id="start" name="start" value="" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th><label id="ReportEndDate">Fecha Final</label></th>
+                                            <td>
+                                                <input class="form-control col-sm-8" type="date" id="end" name="end" value="" />
+                                            </td>
+                                        </tr>
+
+                                    </table>
+
+                                    <br />
+                                    <button id="search" type="submit" class="out">Buscar</button><br /><br /><br />
+                                </div>
+                            </form>
 
 
 
-                        <div id="div_tabla_especies">
-                            <table class="table table-bordered table-striped table-condensed cell-border display compact" id="tabla_image">
-                                <thead>
-                                    <tr>
-                                        <th style="text-align: center;" width="25%">Foto</th>
-                                        <th style="text-align: center;" width="25%">Fecha</th>
-                                        <th style="text-align: center;" width="25%">Familia</th>
-                                        <th style="text-align: center;" width="25%">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                            <div id="div_tabla_especies">
+                                <table class="table table-bordered table-striped table-condensed cell-border display compact" id="tabla_image">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center;" width="25%">Foto</th>
+                                            <th style="text-align: center;" width="25%">Fecha</th>
+                                            <th style="text-align: center;" width="25%">Familia</th>
+                                            <th style="text-align: center;" width="25%">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
 
-                                    @foreach (var item in Model)
+                                        @foreach (var item in Model)
                                     {
-                                    <tr>
-                                        <td><img id="imagen" class="img-responsive" src="/resources/images/@Html.DisplayFor(modelItem => item.StationId)/@Html.DisplayFor(modelItem => item.Path)" style=" height="10px"></td>
+                                        <tr>
+                                            <td><img id="imagen" class="img-responsive" src="/resources/images/@Html.DisplayFor(modelItem => item.StationId)/@Html.DisplayFor(modelItem => item.Path)" style=" height="10px"></td>
 
-                                        <td style="text-align: center;">@Html.DisplayFor(modelItem => item.CaptureDate)</td>
-                                        <td style="text-align: center;">@Html.DisplayFor(modelItem => item.Family)</td>
-                                        <td style="text-align: center;">
-                                            <button class="btn btn-primary" onclick="">Editar</button>
+                                            <td style="text-align: center;">@Html.DisplayFor(modelItem => item.CaptureDate)</td>
+                                            <td style="text-align: center;">@Html.DisplayFor(modelItem => item.Family)</td>
+                                            <td style="text-align: center;">
+                                                <button class="btn btn-primary" onclick="">Editar</button>
 
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                      }
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
+
                         </div>
 
                     </div>
-
                 </div>
-            </div>
-    </section>
+        </section>
 
-    @section scripts
+        @section scripts
     {
 
-        <script>
-            $(document).ready(function () {
-                $('#estaciones').select2({
-                    placeholder: "Escoja una opción",
-                    language: "es"
+            <script>
+                $(document).ready(function () {
+                    $('#estaciones').select2({
+                        placeholder: "Escoja una opción",
+                        language: "es"
+                    });
                 });
-            });
 
 
-            $(document).ready(function () {
-                $('#tabla_image').DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-                    },
-                    "columns": [
-                        { "width": "40%" },
-                        { "width": "20%" },
-                        { "width": "20%" },
-                        { "width": "20%" }
-                    ]
+                $(document).ready(function () {
+                    $('#tabla_image').DataTable({
+                        "language": {
+                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                        },
+                        "columns": [
+                            { "width": "30%" },
+                            { "width": "20%" },
+                            { "width": "30%" },
+                            { "width": "20%" }
+                        ]
+                    });
                 });
-            });
 
-        </script>
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script><font></font>
+            </script>
+            <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script><font></font>
 
-    }
+        }
