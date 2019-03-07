@@ -11,6 +11,8 @@ using System.Linq;
 using Ionic.Zip;
 using System.Text;
 using System.Text.RegularExpressions;
+using WebApplication.ViewModel;
+using WebApplication.IRepository;
 
 namespace WebApplication
 {
@@ -32,9 +34,13 @@ namespace WebApplication
     public class DownloadController : Controller {
 
         private readonly IFileProvider _fileProvider;
+        private readonly IStationRepository _stationRepository;
+        private readonly IAudioRepository _audioRepository;
 
-        public DownloadController(IFileProvider fileProvider) {
+        public DownloadController(IFileProvider fileProvider, IStationRepository stationRepository, IAudioRepository audioRepository) {
             _fileProvider = fileProvider;
+            _stationRepository = stationRepository;
+            _audioRepository = audioRepository;
         }
 
         public static DateTime FromString(string offsetString)
@@ -57,6 +63,7 @@ namespace WebApplication
             return date.ToString();
         }
 
+        
         public IActionResult Index(string dd1)
         {
             
@@ -114,6 +121,25 @@ namespace WebApplication
            
             return View(content);
         }
+
+        public IActionResult List(int page = 1)
+        {
+            var audioVM = new AudioViewModel()
+                {
+                    Stations = _stationRepository.Get()
+                };
+            return View(audioVM);
+        }
+
+        [HttpPost]
+        public IActionResult List(AudioViewModel audioVM)
+        {
+            var audios = _audioRepository.GetByStationAndDate(audioVM.StationId, audioVM.Start, audioVM.End);
+            audioVM.Stations = _stationRepository.Get();
+            audioVM.Audios = audios;
+            return View(audioVM);
+        }
+
         public String getFile(String station, String audio){
             String file = Core.StationFolder(station)+"/"+audio;
             return file;

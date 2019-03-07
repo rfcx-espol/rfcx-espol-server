@@ -35,33 +35,33 @@ namespace WebApplication.Repository
             }
         }
 
-    public async Task<Audio> Get(string id)
-    {
-        var filter = Builders<Audio>.Filter.Eq("AudioId", id);
+        public async Task<Audio> Get(string id)
+        {
+            var filter = Builders<Audio>.Filter.Eq("AudioId", id);
 
-        try
-        {
-            return await _context.Audios.Find(filter).FirstOrDefaultAsync();
+            try
+            {
+                return await _context.Audios.Find(filter).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
 
-    public async Task<Audio> Get(int id)
-    {
-        var filter = Builders<Audio>.Filter.Eq("Id", id);
+        public async Task<Audio> Get(int id)
+        {
+            var filter = Builders<Audio>.Filter.Eq("Id", id);
 
-        try
-        {
-            return await _context.Audios.Find(filter).FirstOrDefaultAsync();
+            try
+            {
+                return await _context.Audios.Find(filter).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
 
         public async Task<IEnumerable<Audio>> GetByStation(int StationId)
         {
@@ -152,6 +152,21 @@ namespace WebApplication.Repository
 
                 return actionResult.IsAcknowledged
                     && actionResult.DeletedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public IEnumerable<Audio> GetByStationAndDate(int StationId, DateTime Start, DateTime End)
+        {
+            var filter = Builders<Audio>.Filter.Eq("StationId", StationId) & 
+                            Builders<Audio>.Filter.Gte("RecordingDate", Start) &
+                            Builders<Audio>.Filter.Lte("RecordingDate", End);
+            try
+            {
+                return _context.Audios.Find(filter).ToList();
             }
             catch (Exception ex)
             {
