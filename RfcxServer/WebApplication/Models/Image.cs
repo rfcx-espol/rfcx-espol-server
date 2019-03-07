@@ -19,6 +19,7 @@ namespace WebApplication.Models
         public string Path{ get; set; }
         public string State{ get; set; }
         public string[] Family{ get; set; }
+        public List<Station> Stations { get; set; }
         
 
         public Image(){}

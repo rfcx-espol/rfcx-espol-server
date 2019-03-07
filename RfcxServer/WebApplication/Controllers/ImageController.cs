@@ -28,6 +28,7 @@ namespace WebApplication.Controllers
         public IActionResult Index()
         {
             //ViewBag.estaciones = _StationRepository.Get();
+            // List<Station> estaciones = _StationRepository.Get();
             IEnumerable<Image> model = _ImageRepository.GetAllProducts().Result;
             return View("Index", model);
         }
