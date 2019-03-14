@@ -1,11 +1,11 @@
-@using WebApplication.ViewModel
+@using WebApplication.ViewModel;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Mvc.Common;
+@using X.PagedList;
 @model AudioViewModel
 @{
-    ViewBag.Title = "Download";
+    ViewBag.Title = "Audios";
 }
-
-<!-- Favicon -->
-<link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
 
 <!-- Main style sheet -->
 <link href="~/css/site.css" rel="stylesheet">    
@@ -47,7 +47,7 @@
                                         <label>Fecha Inicial</label>
                                     </th>
                                     <td>
-                                        <input asp-for="Start" class="form-control col-sm-8">
+                                        <input asp-for="Start" class="form-control col-sm-8" type="date">
                                         <span asp-validation-for="Start" class="text-danger"></span>
                                     </td>
                                 </tr>
@@ -70,11 +70,12 @@
                     <div class="table-responsive">
                         <table class="table table-bordered" id="horizontal-table">
                             <thead>
-                                <th><input type="checkbox" id="selectAll"></th>
+                                <th><input type="checkbox" id="selectAll">ID</th>
                                 <th>Nombre de Archivo</th>
                                 <th>Fecha de Creación</th>
                                 <th>Reproducir</th>
                                 <th>Etiqueta</th>
+                                <th>Acciones</th>
                             </thead>
                             <tbody>
                                 @if (Model.Audios != null)
@@ -83,15 +84,29 @@
                                     {
                                         <tr>
                                             <td><input type="checkbox" class="check" value="@audio.Id">@audio.Id</td>
-                                            <td>Nombre del archivo</td>
+                                            <td>@audio.Id.@audio.Format</td>
                                             <td>@audio.RecordingDate</td>
                                             <td>@audio.Format</td>
                                             <td>Etiqueta</td>
+                                            <td><button class="out">Eliminar</button></td>
                                         </tr>
                                     }
                                 }
                             </tbody>
                         </table>
+                        <form id="hidden" asp-controller="Download" asp-action="List" method="post" role="form">
+                            @Html.HiddenFor(m => m.StationId)
+                            @Html.HiddenFor(m => m.Start)
+                            @Html.HiddenFor(m => m.End)
+                            @Html.HiddenFor(m => m.Pnumber)
+                        @if (Model.Audios != null)
+                        {
+                            @Html.PagedListPager(Model.Audios, page => Url.Action("List", new { page = page }),
+                                new PagedListRenderOptions {
+                                    PageClasses = new string[] { "pages" },
+                                });
+                        }
+                        </form>
                         <br>
                         <button type="button" class="out">Descargar</button>
                     </div>
@@ -100,3 +115,34 @@
         </div>
     </div>
 </section>
+
+@section Scripts
+{
+    <script src="~/js/download.js"></script> 
+    <script>
+        $(".pages").bind('click', function(e){
+            e.preventDefault();
+            var value = this.text;
+            switch(value) {
+                case '>':
+                    value = parseInt($(".active span").text()) + 1;
+                    break;
+                case '<':
+                    value = parseInt($(".active span").text()) - 1;
+                    break;
+                case '<<':
+                    value = 1;
+                    break;
+                case '>>':
+                    value = @Model.Audios.PageCount;
+                    break;
+                default:
+                    value = this.text;
+            }
+            if (value == '>' || value == '<') {
+            }
+            $("#Pnumber").val(parseInt(value));
+            $("#hidden").submit();
+        });
+    </script>
+}

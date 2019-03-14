@@ -5,11 +5,10 @@ using WebApplication.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
-using MongoDB.Driver;
-
-
+using System.Linq;
 
 namespace WebApplication.Repository
 {
@@ -159,14 +158,25 @@ namespace WebApplication.Repository
             }
         }
 
-        public IEnumerable<Audio> GetByStationAndDate(int StationId, DateTime Start, DateTime End)
+        public IQueryable<Audio> GetByStationAndDate(int StationId, DateTime Start, DateTime End)
         {
-            var filter = Builders<Audio>.Filter.Eq("StationId", StationId) & 
-                            Builders<Audio>.Filter.Gte("RecordingDate", Start) &
-                            Builders<Audio>.Filter.Lte("RecordingDate", End);
             try
             {
-                return _context.Audios.Find(filter).ToList();
+                return _context.Audios.AsQueryable().Where(a => a.RecordingDate >= Start).Where(a => a.RecordingDate <= End).Where(a => a.StationId == StationId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<Audio> GetLastAudio()
+        {
+            try
+            {
+                var filter = Builders<Audio>.Filter.Exists("Id");
+                var sort = Builders<Audio>.Sort.Descending("Id");
+                return await _context.Audios.Find(filter).Sort(sort).FirstAsync();
             }
             catch (Exception ex)
             {

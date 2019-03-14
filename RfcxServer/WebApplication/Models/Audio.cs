@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 
 namespace WebApplication.Models
@@ -12,7 +13,8 @@ namespace WebApplication.Models
         public string AudioId { get; set; }
         public int Id { get; set; }
         public int StationId { get; set; }
-        public string RecordingDate { get; set; }
+        public DateTime RecordingDate { get; set; }
+        public DateTime ArriveDate { get; set; }
         public string Duration { get; set; }
         public string Format { get; set; }
         public int BitRate { get; set; }

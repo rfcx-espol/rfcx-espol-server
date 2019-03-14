@@ -13,23 +13,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using WebApplication.ViewModel;
 using WebApplication.IRepository;
+using WebApplication.Models;
+using X.PagedList.Mvc.Core;
+using X.PagedList;
 
 namespace WebApplication
 {
-
-    public class IndexModel
-    {
-        public IDirectoryContents Stations { get; set; }
-        public IDirectoryContents Files { get; set; }
-        public String selected { get; set; }
-        public String start { get; set; }
-        public String end { get; set; }
-        public DateTime start_d { get; set; }
-        public DateTime end_d { get; set; }
-
-        public List<string> stationFolders { get; set; }
-        public IFileInfo[] filesSorted { get; set; }
-    }
 
     public class DownloadController : Controller {
 
@@ -63,66 +52,7 @@ namespace WebApplication
             return date.ToString();
         }
 
-        
-        public IActionResult Index(string dd1)
-        {
-            
-            string station = "";
-            string selected = "";
-            string start = null;
-            string end = null;
-            DateTime start_d, end_d;
-            if (Request.Method == "POST")
-            {
-                
-                station = Request.Form["ddl"];
-                selected = station;
-                start = Request.Form["start"];
-                end = Request.Form["end"];
-                if(start.Length >0 && end.Length > 0)
-                {
-                    start_d = FromString(start);
-                    end_d = FromString(end);
-                }
-            }
-
-            start_d = FromString(start);
-            end_d = FromString(end);
-
-            IndexModel content = new IndexModel();
-            content.Files = _fileProvider.GetDirectoryContents("/files/" + station + "/audios");
-            content.Stations = _fileProvider.GetDirectoryContents("/files/");
-
-            IFileInfo[] files = _fileProvider.GetDirectoryContents("/files/" + station + "/audios").OrderBy(p => p.LastModified).ToArray();
-
-            content.filesSorted = files;
-
-            string pattern = @"^(station)[(0-9)]";
-            List<string> df = new List<string>();
-            foreach (var item in content.Stations)
-            {
-                if (Regex.IsMatch(item.Name.ToString(), pattern, RegexOptions.IgnoreCase))
-                {
-                    df.Add(item.Name.ToString());
-                }
-            }
-
-            content.stationFolders = df;
-
-            content.selected = selected;
-            content.start = start;
-            content.end = end;
-            if (start_d != null && end_d != null)
-            {
-                content.start_d = start_d;
-                content.end_d = end_d;
-            }
-
-           
-            return View(content);
-        }
-
-        public IActionResult List(int page = 1)
+        public IActionResult Index()
         {
             var audioVM = new AudioViewModel()
                 {
@@ -134,8 +64,10 @@ namespace WebApplication
         [HttpPost]
         public IActionResult List(AudioViewModel audioVM)
         {
-            var audios = _audioRepository.GetByStationAndDate(audioVM.StationId, audioVM.Start, audioVM.End);
+            var pageNumber = (audioVM.Pnumber == 0) ? 1 : audioVM.Pnumber;
+            var pageSize = 10;
             audioVM.Stations = _stationRepository.Get();
+            var audios = _audioRepository.GetByStationAndDate(audioVM.StationId, audioVM.Start, audioVM.End).ToPagedList(pageNumber, pageSize);
             audioVM.Audios = audios;
             return View(audioVM);
         }
@@ -203,6 +135,5 @@ namespace WebApplication
 
             return File(content, "APPLICATION/octet-stream", namefile);
         }
-
     }
 }

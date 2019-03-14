@@ -19,7 +19,6 @@ using WebApplication.Repository;
 using Serilog;
 using Microsoft.Extensions.Logging;
 
-
 namespace WebApplication
 {
     public class Startup

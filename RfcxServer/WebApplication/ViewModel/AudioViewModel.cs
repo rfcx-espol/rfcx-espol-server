@@ -2,20 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebApplication.Models;
+using X.PagedList.Mvc;
+using X.PagedList;
 
 namespace WebApplication.ViewModel
 {
     public class AudioViewModel
     {
-        public IEnumerable<Audio> Audios { get; set; }
-        public int StationId { get; set; }
+        public IPagedList<Audio> Audios { get; set; }
         public IEnumerable<Station> Stations { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = @"{0:dd\/MM\/yyyy}", ApplyFormatInEditMode = true)]
+        public int StationId { get; set; }
+
+        [DisplayFormat(DataFormatString = @"{0:DD\/MM\/YYYY}", ApplyFormatInEditMode = true)]
         public DateTime Start { get; set; }
         
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = @"{0:dd\/MM\/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = @"{0:DD\/MM\/YYYY}", ApplyFormatInEditMode = true)]
         public DateTime End { get; set; }
+        public int Pnumber { get; set; }
     }
 }

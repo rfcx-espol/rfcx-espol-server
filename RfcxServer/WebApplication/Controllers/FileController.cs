@@ -183,25 +183,26 @@ namespace WebApplication {
                     if (!ok) {
                         return BadRequest("Expected Format key");
                     }
-                    
-                    string strfilename = filename.ToString();
+
+                    var audio =new Audio();
+                    audio.ArriveDate = DateTime.Now;
+                    audio.StationId = id;
+                    audio.RecordingDate = Convert.ToDateTime(recordingDate);
+                    audio.Duration = duration;
+                    audio.Format = format;
+                    //audio.BitRate=bitRate;
+                    await _AudioRepository.Add(audio);
+                    var new_audio = await _AudioRepository.GetLastAudio();
+
+                    string strfilename = "" + new_audio.Id + "." + new_audio.Format;
+
                     var filePath="";
                     if(strStationId!=null){
                         Core.MakeStationFolder(strStationId);
                         filePath = Path.Combine(Core.StationAudiosFolderPath(strStationId),
                                                     strfilename);
                         Console.Write(filePath);
-                    }   
-
-                    var audio =new Audio();
-                    //audio.FechaLlegada=fechaLlegada;
-                    audio.StationId=id;
-                    audio.RecordingDate=recordingDate;
-                    audio.Duration=duration;
-                    audio.Format=format;
-                    //audio.BitRate=bitRate;
-                    Task result;
-                    result=_AudioRepository.Add(audio);
+                    }
 
                     using (var stream = new FileStream(filePath, FileMode.Create)) {
                         await stationFile.memoryStream.CopyToAsync(stream);
