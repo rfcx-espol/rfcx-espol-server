@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Linq;
+using System.IO;
 
 namespace WebApplication.Repository
 {
@@ -113,7 +114,39 @@ namespace WebApplication.Repository
             try
             {
                 DeleteResult actionResult = await _context.Audios.DeleteOneAsync(
-                        Builders<Audio>.Filter.Eq("AudioId", AudioId));
+                        Builders<Audio>.Filter.Eq("Id", AudioId));
+
+                string[] audios;
+
+                string audioNameToDelete = AudioId + ".m4a";
+                string audioNameOggToDelete = AudioId + ".ogg";
+
+                string audiosDeletePath = Core.StationAudiosFolderPath(StationId.ToString());
+                string audiosOggDeletePaht = Core.StationOggFolderPath(StationId.ToString());
+
+                if (Directory.Exists(audiosDeletePath))
+                {
+                    audios = Directory.GetFiles(audiosDeletePath);
+
+                    foreach (string audio in audios)
+                    {
+                        string audioName = Path.GetFileName(audio);
+                        if (audioNameToDelete == audioName)
+                            File.Delete(audio);
+                    }
+                }
+
+                if (Directory.Exists(audiosOggDeletePaht))
+                {
+                    audios = Directory.GetFiles(audiosOggDeletePaht);
+
+                    foreach (string audio in audios)
+                    {
+                        string audioName = Path.GetFileName(audio);
+                        if (audioNameOggToDelete == audioName)
+                            File.Delete(audio);
+                    }
+                }
 
                 return actionResult.IsAcknowledged 
                     && actionResult.DeletedCount > 0;

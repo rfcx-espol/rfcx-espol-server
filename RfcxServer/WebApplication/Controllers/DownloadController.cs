@@ -121,19 +121,53 @@ namespace WebApplication
             return File(content, "APPLICATION/octet-stream", date);
         }
 
-
+        /* 
         // Download a unique file by clicking the file in the showed list.
-        public ActionResult DownloadUniqueFile(string namefile, string station)
+        public FileResult DownloadFile(string namefile, string station)
         {
-            DirectoryInfo DI = new DirectoryInfo("files/" + station + "/audios/");
-
+            //DirectoryInfo DI = new DirectoryInfo("files/" + station + "/audios/");
+            DirectoryInfo DI = new DirectoryInfo(Core.StationAudiosFolderPath(station));
             // DOWNLOADING FILE
-            string fileAddress = DI.FullName + namefile;
+            string fileAddress = DI.FullName + '/' + namefile;
             var net = new System.Net.WebClient();
             var data = net.DownloadData(fileAddress);
             var content = new System.IO.MemoryStream(data);
 
             return File(content, "APPLICATION/octet-stream", namefile);
+        }*/
+
+        public FileResult DownloadFile(string namefile, string station)
+        {
+            string[] files = namefile.Split(',');
+            if (files.Length == 1){
+                DirectoryInfo DI = new DirectoryInfo(Core.StationAudiosFolderPath(station));
+                string fileAddress = DI.FullName + '/' + namefile;
+                var net = new System.Net.WebClient();
+                var data = net.DownloadData(fileAddress);
+                var content = new System.IO.MemoryStream(data);
+
+                return File(content, "audio/mp4", namefile);
+            } else {
+                var directory = Core.StationAudiosFolderPath(station);
+                string archive = Path.Combine(Core.getBPVAudioDirectory() + "files", "audios.zip");
+                var temp = Core.TemporaryFolderPath();
+
+                if (System.IO.File.Exists(archive))
+                {
+                    System.IO.File.Delete(archive);
+                }
+
+                Directory.EnumerateFiles(temp).ToList().ForEach(f => System.IO.File.Delete(f));
+
+                foreach (var f in files)
+                {
+                    System.IO.File.Copy(Path.Combine(directory, f), Path.Combine(temp, f));
+                }
+
+                System.IO.Compression.ZipFile.CreateFromDirectory(temp, archive);
+
+                return PhysicalFile(archive, "application/zip", "audios.zip");
+            }
         }
     }
 }

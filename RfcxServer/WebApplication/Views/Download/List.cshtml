@@ -7,8 +7,9 @@
     ViewBag.Title = "Audios";
 }
 
-<!-- Main style sheet -->
-<link href="~/css/site.css" rel="stylesheet">    
+@section Style {
+    <link rel="stylesheet" href="~/css/audios.css">
+}
 
 <!-- Google Fonts -->
 
@@ -19,6 +20,30 @@
 <!-- Open Sans for title -->
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
+
+<!-- Modal alert-->
+<div class="modal fade" id="alert_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header alert-danger">
+				<button type="button" class="close" style="margin-top: 1px" onclick="closeModal(2)">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="modal_alert_label">ADVERTENCIA</h4>
+			</div>
+			<div class="modal-body">
+				<p>Se eliminará el archivo del servidor y de la base de datos. Esta operación es irreversible.
+                    ¿Desea continuar?
+				</p>
+				<input id="st_id" type="hidden"/>
+			</div>
+			<div class="modal-footer">
+				<button id="accept" class="btn btn-danger" onclick="deleteStation()">Aceptar</button>
+				<button id="cancel" class="btn btn-default" onclick="closeModal(2)">Cancelar</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 <section id="mu-about-us">
     <div class="container">
@@ -70,7 +95,7 @@
                     <div class="table-responsive">
                         <table class="table table-bordered" id="horizontal-table">
                             <thead>
-                                <th><input type="checkbox" id="selectAll">ID</th>
+                                <th><input type="checkbox" id="selectAll"><label>ID</label></th>
                                 <th>Nombre de Archivo</th>
                                 <th>Fecha de Creación</th>
                                 <th>Reproducir</th>
@@ -86,9 +111,13 @@
                                             <td><input type="checkbox" class="check" value="@audio.Id">@audio.Id</td>
                                             <td>@audio.Id.@audio.Format</td>
                                             <td>@audio.RecordingDate</td>
-                                            <td>@audio.Format</td>
+                                            <td>
+                                                <audio runat="server" controls>
+                                                    <source src="/resources/bpv/audios/station@(audio.StationId)/audios/@(audio.Id + "." + audio.Format)" type="audio/mp4">
+                                                </audio>
+                                            </td>
                                             <td>Etiqueta</td>
-                                            <td><button class="out">Eliminar</button></td>
+                                            <td><button class="out" onclick="showAlertModal(@audio.Id)">Eliminar</button></td>
                                         </tr>
                                     }
                                 }
@@ -105,10 +134,9 @@
                                 new PagedListRenderOptions {
                                     PageClasses = new string[] { "pages" },
                                 });
+                            <button type="button" class="out" onclick="downloadAudios()">Descargar</button>
                         }
                         </form>
-                        <br>
-                        <button type="button" class="out">Descargar</button>
                     </div>
                 </div>
             </div>
@@ -119,6 +147,7 @@
 @section Scripts
 {
     <script src="~/js/download.js"></script> 
+    <script src="~/js/audios.js"></script>
     <script>
         $(".pages").bind('click', function(e){
             e.preventDefault();

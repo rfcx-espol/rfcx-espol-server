@@ -83,6 +83,10 @@ namespace WebApplication {
             return Path.Combine(FilesFolderPath, "recycler");
         }
 
+        public static string TemporaryFolderPath() {
+            return Path.Combine(FilesFolderPath, "temp");
+        }
+
         public static string StationFolderPath(string stationId) {
             return Path.Combine(getBPVAudioDirectory(), "station" + stationId);
         }

@@ -91,7 +91,6 @@ namespace WebApplication.Controllers
         {
             if (id==0) return false;
             return await _StationRepository.Remove(id);
-             
         }
 
         [HttpPatch("{id}/APIKey")]

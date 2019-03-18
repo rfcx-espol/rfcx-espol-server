@@ -19,5 +19,6 @@ namespace WebApplication.ViewModel
         [DisplayFormat(DataFormatString = @"{0:DD\/MM\/YYYY}", ApplyFormatInEditMode = true)]
         public DateTime End { get; set; }
         public int Pnumber { get; set; }
+        public string FilePath = Core.getBPVAudioDirectory();
     }
 }
