@@ -20,5 +20,6 @@ namespace WebApplication.IRepository
         Task<bool> RemoveAll();
         IQueryable<Audio> GetByStationAndDate(int StationId, DateTime Start, DateTime End);
         Task<Audio> GetLastAudio();
+        Task<bool> AddTag(int AudioId, string Tag);
     }
 }

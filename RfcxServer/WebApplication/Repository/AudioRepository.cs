@@ -216,5 +216,22 @@ namespace WebApplication.Repository
                 throw ex;
             }
         }
+
+        public async Task<bool> AddTag(int AudioId, string Tag)
+        {
+            try
+            {
+                var filter = Builders<Audio>.Filter.Eq("Id", AudioId);
+                var update = Builders<Audio>.Update.Push("LabelList", Tag);
+
+                UpdateResult updateResult = await _context.Audios.UpdateOneAsync(filter, update);
+
+                return updateResult.IsAcknowledged;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

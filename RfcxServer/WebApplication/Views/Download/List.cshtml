@@ -116,8 +116,24 @@
                                                     <source src="/resources/bpv/audios/station@(audio.StationId)/audios/@(audio.Id + "." + audio.Format)" type="audio/mp4">
                                                 </audio>
                                             </td>
-                                            <td>Etiqueta</td>
-                                            <td><button class="out" onclick="showAlertModal(@audio.Id)">Eliminar</button></td>
+                                            <td>
+                                                @if (audio.LabelList.Count() != 0)
+                                                {
+                                                    @foreach (var tag in audio.LabelList)
+                                                    {
+                                                        <span>@tag</span>
+                                                    }
+                                                } 
+                                                else 
+                                                {
+                                                    <span class="no-tags">No hay etiquetas.</span>
+                                                }
+                                                
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" onclick="showAlertModal(@audio.Id)" title="Eliminar audio"><i class="fa fa-times" aria-hidden="true" style="font-size:20px;"></i></button>
+                                                <button class="btn btn-primary btn-sm" onclick="newTag(this, @audio.Id)" title="Añadir etiqueta"><i class="fa fa-tags" aria-hidden="true" style="font-size:20px"></i></button>
+                                            </td>
                                         </tr>
                                     }
                                 }
@@ -134,7 +150,7 @@
                                 new PagedListRenderOptions {
                                     PageClasses = new string[] { "pages" },
                                 });
-                            <button type="button" class="out" onclick="downloadAudios()">Descargar</button>
+                            <button type="button" class="download out" onclick="downloadAudios()">Descargar Audios</button>
                         }
                         </form>
                     </div>

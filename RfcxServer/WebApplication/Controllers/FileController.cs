@@ -19,6 +19,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Extensions.Primitives;
+using System.Globalization;
 
 namespace WebApplication {
 
@@ -185,12 +186,18 @@ namespace WebApplication {
                     }
 
                     var audio =new Audio();
+                    try {
+                        audio.RecordingDate = DateTime.ParseExact(recordingDate, "d/M/yyyy HH:mm", CultureInfo.InvariantCulture);
+                    } 
+                    catch (Exception ex)
+                    {
+                        return BadRequest("Expected date to be in format 'dd/mm/yyyy hh:mm'");
+                    }
                     audio.ArriveDate = DateTime.Now;
                     audio.StationId = id;
-                    audio.RecordingDate = Convert.ToDateTime(recordingDate);
                     audio.Duration = duration;
                     audio.Format = format;
-                    //audio.BitRate=bitRate;
+                    audio.LabelList = new List<String>();
                     await _AudioRepository.Add(audio);
                     var new_audio = await _AudioRepository.GetLastAudio();
 

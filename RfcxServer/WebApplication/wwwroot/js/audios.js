@@ -24,22 +24,36 @@ function downloadAudios() {
         var currentRow = $(this).closest('tr');
         return currentRow.find("td:eq(1)").text();
     }).get().join(',');
-    /*$.ajax({
-        url: '/DownloadFile',
-        type: 'GET',
-        data: {
-            'namefile': audios,
-            'station': station_id
-        },
-        error: function (xhr, err) {
-            alert("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
-            alert("responseText: " + xhr.responseText)
-        },
-        success: function (data) {
-            console.log(data);
-            console.log("Descarga");
-        },
-        async: true
-    });*/
-    window.location = 'DownloadFile?namefile=' + audios + '&station=' + station_id;
+    if (audios == "") {
+        alert("Por favor, Seleccione los audios que desea descargar.");
+    } else {
+        window.location = 'DownloadFile?namefile=' + audios + '&station=' + station_id;
+    }
+}
+
+function newTag(t, id) {
+    var tag = prompt("Ingrese una nueva etiqueta:");
+    if (tag !== null && tag !== "") {
+        $.ajax({
+            type: 'PUT',
+            url: 'AddTag',
+            data: {
+                "AudioId": id,
+                "Tag": tag
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+            },
+            success: function() {
+                alert("Se ha agregado una nueva etiqueta");
+            }
+        });
+        var tr = $(t).closest('tr');
+        var td = tr.find("td:eq(4)");
+        if ($(td).find('.no-tags').length) {
+            $(td).children().remove();
+        }
+        td.append('<span>' + tag + '</span>');
+        $(td).append(" ");
+    }
 }

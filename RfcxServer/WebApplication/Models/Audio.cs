@@ -18,7 +18,7 @@ namespace WebApplication.Models
         public string Duration { get; set; }
         public string Format { get; set; }
         public int BitRate { get; set; }
-        public List<Label> LabelList { get; set; }
+        public List<String> LabelList { get; set; }
     }
     
 }
