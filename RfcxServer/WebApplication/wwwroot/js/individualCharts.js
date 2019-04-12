@@ -236,7 +236,6 @@ function filterByRange(start, finish, selectedValue){
         //filterByMonth(start, finish);
         var query = "api/Station/"+stationId+"/Sensor/"+idSensor+"/DataTimestamp/Filter?StartTimestamp="+start.unix()+"&EndTimestamp="+finish.unix()+"&Filter=Months&FilterValue=1";
         $.get(query, addDataDays);
-        
     }
 }
 

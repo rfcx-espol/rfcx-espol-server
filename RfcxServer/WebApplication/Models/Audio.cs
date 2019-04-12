@@ -13,7 +13,9 @@ namespace WebApplication.Models
         public string AudioId { get; set; }
         public int Id { get; set; }
         public int StationId { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime RecordingDate { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime ArriveDate { get; set; }
         public string Duration { get; set; }
         public string Format { get; set; }

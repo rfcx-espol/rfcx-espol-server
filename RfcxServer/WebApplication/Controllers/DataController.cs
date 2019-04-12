@@ -137,7 +137,7 @@ namespace WebApplication.Controllers
             return this.GetDataByStationSensorTimeStamp(StationId, SensorId, StartTimestamp, EndTimestamp);
         }
 
-         private async Task<string> GetDataByStationSensorTimeStamp(int StationId, int SensorId, long StartTimestamp, long EndTimeStamp)
+        private async Task<string> GetDataByStationSensorTimeStamp(int StationId, int SensorId, long StartTimestamp, long EndTimeStamp)
         {
             var Datas= await _DataRepository.GetByStationSensorTimestamp(StationId, SensorId, StartTimestamp, EndTimeStamp);
             return JsonConvert.SerializeObject(Datas);

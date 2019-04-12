@@ -126,13 +126,10 @@ namespace WebApplication.Repository
             long EndTimestamp)
         {
             try{
-                
                 var filter =Builders<Data>.Filter.Eq("StationId", StationId) & 
                 Builders<Data>.Filter.Eq("SensorId", SensorId) & 
                 Builders<Data>.Filter.Gte("Timestamp", StartTimestamp) &
                 Builders<Data>.Filter.Lte("Timestamp", EndTimestamp);
-                
-
                 return await _context.Datas.Find(filter).ToListAsync();
 
             }
