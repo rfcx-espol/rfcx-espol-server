@@ -18,6 +18,7 @@ namespace WebApplication.Models
         public string APIKey{get;set;}
 
         public List<string> Family{get;set;}
+        public string Base64Image{get;set;}
     }
     
 }

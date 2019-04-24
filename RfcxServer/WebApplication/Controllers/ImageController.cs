@@ -16,6 +16,7 @@ using WebApplication.ViewModel;
 
 namespace WebApplication.Controllers
 {
+    [Route("api/imgcapture")]
     public class ImageController : Controller
     {
         private readonly IImageRepository _ImageRepository;
@@ -33,7 +34,14 @@ namespace WebApplication.Controllers
 
         }
 
-        [HttpGet]
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult> Show(int id)
+        {
+            var image = await Image.Find(id);
+            return base.PhysicalFile(image.Path, "image/jpeg");
+        }
+
+        
         public IActionResult Index()
         {
             //ViewBag.estaciones = _StationRepository.Get();
@@ -45,8 +53,15 @@ namespace WebApplication.Controllers
             };
             return View(ivm);
         }
-
         [HttpPost]
+        public ActionResult PostPicture([FromBody] ImageRequest req)
+        {
+
+            Image.PostPicture(req.CaptureDate, req.StationId, req.Base64Image);
+            return new OkResult();
+        }
+
+       
         public IActionResult List(ImageViewModel imageVM)
         {
             var pageNumber = (imageVM.Pnumber == 0) ? 1 : imageVM.Pnumber;
