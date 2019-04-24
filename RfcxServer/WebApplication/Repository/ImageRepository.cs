@@ -26,6 +26,13 @@ namespace WebApplication.Repository
             _context = new ObjectContext(settings);
         }
 
+        public async Task<Image> Find(string _id)
+        {
+            var filter = "{'_id':" +  "ObjectId('"+_id + "')}";
+            var imgDB = await _context.Images.Find(filter).Limit(1).FirstOrDefaultAsync();
+            return imgDB;
+        }
+
 
        public async Task<IEnumerable<Image>> Get()
         {
@@ -236,6 +243,56 @@ namespace WebApplication.Repository
             {
                 throw ex;
             }
+        }
+
+         
+        private bool IsApiKeyCorrect(string ApiKey)
+        {
+            var filter = Builders<Station>.Filter.Eq("APIKey", ApiKey);
+            return _context.Stations.Find(filter).Any();
+        }
+        public async Task<ActionResult> PostPicture(ImageRequest req)
+        {
+            if(IsApiKeyCorrect(req.APIKey)){
+                string extension = System.IO.Path.GetExtension(req.ImageFile.FileName);
+                Image img = new Image(req.StationId, req.CaptureDate, extension);
+                var imgPath = Constants.RUTA_ARCHIVOS_ANALISIS_IMAGENES + img.StationId + "/" + img.Path;
+                new FileInfo(imgPath).Directory.Create();
+                using(FileStream stream = new FileStream(imgPath, FileMode.Create)){
+                    await req.ImageFile.CopyToAsync(stream);
+                }
+                _context.Images.InsertOne(img);
+                return new ContentResult()
+                {
+                    Content = "{\"_id\": \"" + img.id + "\"}",
+                    ContentType="application/json"
+                };
+            }else{
+                return new StatusCodeResult(500);
+            }
+        }
+
+        public async Task<List<Image>> ListImages(DateTime starttime, DateTime endtime, int page, int rows)
+        {
+            var filterBuilder = Builders<Image>.Filter;
+            var start = starttime;
+            var end = endtime;
+            var filter = filterBuilder.Gte(x => x.CaptureDate, new BsonDateTime(start)) & filterBuilder.Lte(x => x.CaptureDate, new BsonDateTime(end));
+            var arr = new List<Image>();
+            await _context.Images.Find(filter).ForEachAsync(
+                img =>
+                {
+                    arr.Add(img);
+                });
+            var lower = rows * (page - 1);
+            if (lower >= arr.Count)
+                return new List<Image>();
+            var upper = lower + rows;
+            if(upper > arr.Count)
+                upper = arr.Count;  
+            return arr.GetRange(lower, upper-lower);
+
+
         }
     }
     /*

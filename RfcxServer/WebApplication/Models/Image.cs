@@ -36,32 +36,14 @@ namespace WebApplication.Models
         public List<Station> Stations { get; set; }
         public List<String> LabelList { get; set; }
         
-
-        public static async Task<Image> Find(int id){
-            var filter = "{_id:" + id + "}";
-            var imgDB = await collection.Find(filter).Limit(1).FirstOrDefaultAsync();
-            return imgDB;
-        }
-
         public Image(){}
-        public Image(int IdEstacion, string FechaCaptura)
+        public Image(int IdEstacion, string FechaCaptura, string Extension)
         {
             id = ObjectId.GenerateNewId();
             this.StationId = IdEstacion;
             this.CaptureDate = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(FechaCaptura)).DateTime;
-            Path = Constants.RUTA_ARCHIVOS + "images/" + this.StationId + "/" + id + ".jpg";
+            Path = id + Extension;
             State = "PENDIENTE";
-        }
-        public static void PostPicture(string FechaCaptura, int IdEstacion, string base64Image){
-            Image img = new Image(IdEstacion, FechaCaptura);
-            var bytes = Convert.FromBase64String(base64Image);
-            new FileInfo(img.Path).Directory.Create();
-            using (var imageFile = new FileStream(img.Path, FileMode.Create))
-            {
-                imageFile.Write(bytes ,0, bytes.Length);
-                imageFile.Flush();
-            }
-            collection.InsertOne(img);
         }
         
     }

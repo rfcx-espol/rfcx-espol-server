@@ -35,10 +35,11 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult> Show(int id)
+        public async Task<ActionResult> Show(string id)
         {
-            var image = await Image.Find(id);
-            return base.PhysicalFile(image.Path, "image/jpeg");
+            var image = await _ImageRepository.Find(id);
+            var imgPath = Constants.RUTA_ARCHIVOS_ANALISIS_IMAGENES + image.StationId + "/" +  image.Path;
+            return base.PhysicalFile(imgPath, "image/"+Path.GetExtension(image.Path).Substring(1));
         }
 
         
@@ -54,12 +55,22 @@ namespace WebApplication.Controllers
             return View(ivm);
         }
         [HttpPost]
-        public ActionResult PostPicture([FromBody] ImageRequest req)
+        public async Task<ActionResult> PostPicture(ImageRequest req)
         {
+            return await _ImageRepository.PostPicture(req);
 
-            Image.PostPicture(req.CaptureDate, req.StationId, req.Base64Image);
-            return new OkResult();
         }
+
+        [HttpGet("list")]
+        public async Task<ActionResult> List([FromQuery]long starttime, [FromQuery]long endtime, [FromQuery]int page=1, [FromQuery]int rows=25)
+        {
+            DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            DateTime start = epoch.AddSeconds(starttime);
+            DateTime end = epoch.AddSeconds(endtime);
+            var arr = await _ImageRepository.ListImages(start, end, page, rows);
+            return new ContentResult(){ Content = JsonConvert.SerializeObject(arr)};
+        }
+
 
        
         public IActionResult List(ImageViewModel imageVM)

@@ -38,7 +38,7 @@ function newTag(t, id) {
             type: 'PUT',
             url: 'AddTag',
             data: {
-                "AudioId": id,
+                "ImageId": id,
                 "Tag": tag
             },
             error: function(xhr, ajaxOptions, thrownError) {

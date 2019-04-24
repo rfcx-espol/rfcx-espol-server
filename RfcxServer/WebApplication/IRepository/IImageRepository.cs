@@ -37,6 +37,12 @@ namespace WebApplication.IRepository
         Task<Image> GetLastImage();
         
        Task<bool> AddTag(int ImageId, string Tag);
+
+       Task<Image> Find(string _id);
+       
+        Task<ActionResult> PostPicture(ImageRequest req);
+        Task<List<Image>> ListImages(DateTime starttime, DateTime endtime, int page, int rows);
+
         
     }   
 

@@ -124,8 +124,8 @@ namespace WebApplication.DbModels
         {
             get
             {
-                //return _database.GetCollection<Image>("Camera_Image");
-                return _database.GetCollection<Image>("image");
+                return _database.GetCollection<Image>("Camera_Image");
+                //return _database.GetCollection<Image>("image");
             }
         }
 
