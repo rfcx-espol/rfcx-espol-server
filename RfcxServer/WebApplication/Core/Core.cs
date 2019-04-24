@@ -91,6 +91,10 @@ namespace WebApplication {
             return Path.Combine(getBPVAudioDirectory(), "station" + stationId);
         }
 
+         public static string StationFolderPathImage(string stationId) {
+            return Path.Combine(getBPVImagesDirectory(), "station" + stationId);
+        }
+
         public static string SpecieFolderPath(string specieId) {
             return Path.Combine(Constants.RUTA_ARCHIVOS_IMAGENES, "species/" + specieId + "/");
         }
@@ -107,9 +111,18 @@ namespace WebApplication {
             return Path.Combine(StationFolderPath(stationId), "audios");
         }
 
+         public static string StationImagesFolderPath(string stationId) {
+            return Path.Combine(StationFolderPathImage(stationId), "images");
+        }
+
         public static string StationOggFolderPath(string stationId) {
             return Path.Combine(StationFolderPath(stationId), "ogg");
         }
+
+        public static string StationOggFolderPathImage(string stationId) {
+            return Path.Combine(StationFolderPathImage(stationId), "ogg");
+        }
+
 
         public static string StationAudiosFolderPathName(string name) {
             return Path.Combine(StationFolderPathName(name), "audios");
@@ -199,6 +212,12 @@ namespace WebApplication {
         public static string getBPVAudioDirectory() {
             return Constants.RUTA_ARCHIVOS_AUDIOS;
         }
+
+        // /var/rfcx-espol-server/resources/bpv/images/
+        public static string getBPVImagesDirectory() {
+            return Constants.RUTA_ARCHIVOS_IMAGENES;
+        }
+
 
         private static void GrantAccess(string fullPath) {
             Syscall.chown(fullPath, Constants.USER_ID, Constants.GROUP_ID);//1000 es el UID y GID de estudiante (file, UID, GID)

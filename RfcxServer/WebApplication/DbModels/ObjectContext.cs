@@ -4,6 +4,14 @@ using MongoDB.Driver;
 using WebApplication.Models;
 using System.Collections.Generic;
 using WebApplication.IRepository;
+using Microsoft.EntityFrameworkCore;
+
+
+using System;
+
+using System.Linq;
+
+using System.Threading.Tasks;
 
 
 
@@ -116,7 +124,8 @@ namespace WebApplication.DbModels
         {
             get
             {
-                return _database.GetCollection<Image>("Camera_Image");
+                //return _database.GetCollection<Image>("Camera_Image");
+                return _database.GetCollection<Image>("image");
             }
         }
 
