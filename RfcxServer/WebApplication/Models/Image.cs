@@ -27,7 +27,8 @@ namespace WebApplication.Models
         public int StationId{ get; set; }
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime CaptureDate{ get; set; }
-
+        
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime ArriveDate{ get; set; }
         
         public string Path{ get; set; }
