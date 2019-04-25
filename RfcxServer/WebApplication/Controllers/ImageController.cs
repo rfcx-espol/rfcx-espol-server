@@ -30,7 +30,6 @@ using System.Drawing;
 using System.Net.Http;
 
 
-
 namespace WebApplication.Controllers
 {
     [Route("api/imgcapture")]
@@ -52,10 +51,10 @@ namespace WebApplication.Controllers
         }
 
         
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult> Show(int id)
+        [HttpGet("{_id}")]
+        public async Task<ActionResult> Show(string _id)
         {
-            var image = await _ImageRepository.Find(id);
+            var image = await _ImageRepository.Find(_id);
             var imgPath = Constants.RUTA_ARCHIVOS_ANALISIS_IMAGENES + image.StationId + "/" +  image.Path;
             return base.PhysicalFile(imgPath, "image/"+Path.GetExtension(image.Path).Substring(1));
         }
@@ -80,7 +79,7 @@ namespace WebApplication.Controllers
 
         }
 
-        [HttpGet("List")]
+        [HttpGet("list")]
         public async Task<ActionResult> List([FromQuery]long starttime, [FromQuery]long endtime, [FromQuery]int page=1, [FromQuery]int rows=25)
         {
             DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -101,39 +100,7 @@ namespace WebApplication.Controllers
             return View(imageVM);
         }
 
-        public FileResult DownloadFile(string namefile, string station)
-        {
-            string[] files = namefile.Split(',');
-            if (files.Length == 1){
-                DirectoryInfo DI = new DirectoryInfo(Core.StationFolderPathImage(station));
-                string fileAddress = DI.FullName + '/' + namefile;
-                var net = new System.Net.WebClient();
-                var data = net.DownloadData(fileAddress);
-                var content = new System.IO.MemoryStream(data);
-
-                return File(content, "image/jpg", namefile);
-            } else {
-                var directory = Core.StationImagesFolderPath(station);
-                string archive = Path.Combine(Core.getBPVImagesDirectory() + "files", "audios.zip");
-                var temp = Core.TemporaryFolderPath();
-
-                if (System.IO.File.Exists(archive))
-                {
-                    System.IO.File.Delete(archive);
-                }
-
-                Directory.EnumerateFiles(temp).ToList().ForEach(f => System.IO.File.Delete(f));
-
-                foreach (var f in files)
-                {
-                    System.IO.File.Copy(Path.Combine(directory, f), Path.Combine(temp, f));
-                }
-
-                System.IO.Compression.ZipFile.CreateFromDirectory(temp, archive);
-
-                return PhysicalFile(archive, "application/zip", "images.zip");
-            }
-        }
+        
 
         [HttpPut]
         public async Task<ActionResult> AddTag(int ImageId, string Tag)
