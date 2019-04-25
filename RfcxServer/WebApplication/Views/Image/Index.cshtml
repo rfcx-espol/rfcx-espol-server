@@ -58,7 +58,7 @@
                         <h2> Descarga de Imagenes </h2>
                     </div>
 
-                    <form asp-controller="Image" asp-action="List" method="post" role="form">
+                    <form asp-controller="Image" asp-action="Search" method="get" role="form">
 
                         <div class="form-group">
                             <table class="table table-bordered input-group" id="vertical-table">
@@ -99,7 +99,7 @@
                             </table>
 
                             <br />
-                            <button id="search" type="submit" class="out">Buscar</button><br /><br /><br />
+                            <button id="search" type="submit" class="out" >Buscar</button><br /><br /><br />
                         </div>
                     </form>
 
@@ -114,7 +114,7 @@
     </div>
 </section>
 
-@section scripts
+@section Scripts
 {
 
     <script>
@@ -125,7 +125,7 @@
             });
         });
 
-
+        
         $(document).ready(function () {
             $('#tabla_image').DataTable({
                 "language": {

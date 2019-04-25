@@ -78,7 +78,6 @@ namespace WebApplication.Controllers
             return await _ImageRepository.PostPicture(req);
 
         }
-
         [HttpGet("list")]
         public async Task<ActionResult> List([FromQuery]long starttime, [FromQuery]long endtime, [FromQuery]int page=1, [FromQuery]int rows=25)
         {
@@ -89,8 +88,9 @@ namespace WebApplication.Controllers
             return new ContentResult(){ Content = JsonConvert.SerializeObject(arr)};
         }
 
-        [HttpPost]
-        public IActionResult List(ImageViewModel imageVM)
+       
+        
+        public IActionResult Search(ImageViewModel imageVM)
         {
             var pageNumber = (imageVM.Pnumber == 0) ? 1 : imageVM.Pnumber;
             var pageSize = 10;

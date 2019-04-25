@@ -72,7 +72,7 @@
                     <div class="mu-title">
                         <h2>Descarga de Imagenes</h2>
                     </div>
-                    <form asp-controller="Image" asp-action="List" method="post" role="form">
+                    <form asp-controller="Image" asp-action="Search" method="get" role="form">
                         <div class="form-group">
                             <table class="table table-bordered" id="vertical-table">
                                 <tr>
@@ -127,14 +127,14 @@
                                     @foreach (var image in Model.Images)
                                     {
                                         <tr>
-                                            <td><input type="checkbox" class="check" value="@image.Id">@image.Id</td>
+                                            <td><input type="checkbox" class="check" value="@image.Id">@image.id</td>
                                             <td><img id="imagen" class="img-responsive" src="/resources/images/@image.StationId/@image.Path" ></td>
                                             <td>@image.CaptureDate</td>
                                             <td>@image.ArriveDate</td>
                                             <td>
-                                                @if (image.LabelList.Count() != 0)
+                                                @if (image.Family.Count() != 0)
                                                 {
-                                                    @foreach (var tag in image.LabelList)
+                                                    @foreach (var tag in image.Family)
                                                     {
                                                         <span>@tag</span>
                                                     }
