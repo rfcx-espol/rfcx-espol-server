@@ -12,6 +12,23 @@ using X.PagedList.Mvc.Core;
 using X.PagedList;
 using System.Linq;
 using WebApplication.ViewModel;
+using Newtonsoft.Json.Bson;
+using System.Net;
+using Microsoft.AspNetCore.Http;
+using System.Text.Encodings.Web;
+using System.IO.Compression;
+using System.Diagnostics;
+using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Net.Http.Headers;
+using WebApplication.Controllers;
+using WebApplication.Repository;
+using System.Collections;
+using Microsoft.Extensions.Primitives;
+using System.Drawing;
+using System.Net.Http;
+
 
 
 namespace WebApplication.Controllers
@@ -34,15 +51,16 @@ namespace WebApplication.Controllers
 
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult> Show(string id)
+        
+         [HttpGet("{_id}")]
+        public async Task<ActionResult> Show(string _id)
         {
-            var image = await _ImageRepository.Find(id);
+            var image = await _ImageRepository.Find(_id);
             var imgPath = Constants.RUTA_ARCHIVOS_ANALISIS_IMAGENES + image.StationId + "/" +  image.Path;
             return base.PhysicalFile(imgPath, "image/"+Path.GetExtension(image.Path).Substring(1));
         }
 
-        
+        [HttpGet("index")]
         public IActionResult Index()
         {
             //ViewBag.estaciones = _StationRepository.Get();
@@ -54,6 +72,7 @@ namespace WebApplication.Controllers
             };
             return View(ivm);
         }
+
         [HttpPost]
         public async Task<ActionResult> PostPicture(ImageRequest req)
         {
@@ -69,10 +88,9 @@ namespace WebApplication.Controllers
             DateTime end = epoch.AddSeconds(endtime);
             var arr = await _ImageRepository.ListImages(start, end, page, rows);
             return new ContentResult(){ Content = JsonConvert.SerializeObject(arr)};
-        }
+        } 
 
-
-       
+        [HttpPost("List")]
         public IActionResult List(ImageViewModel imageVM)
         {
             var pageNumber = (imageVM.Pnumber == 0) ? 1 : imageVM.Pnumber;
@@ -169,7 +187,7 @@ namespace WebApplication.Controllers
         {
             return this.GetImageById(StationId, ImageId);
         }
-
+        
         private async Task<string> GetImageById(int StationId, int ImageId)
         {
             var Image= await _ImageRepository.Get(StationId, ImageId) ?? new Image();
