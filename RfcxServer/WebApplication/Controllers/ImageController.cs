@@ -52,10 +52,10 @@ namespace WebApplication.Controllers
         }
 
         
-         [HttpGet("{_id}")]
-        public async Task<ActionResult> Show(string _id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult> Show(int id)
         {
-            var image = await _ImageRepository.Find(_id);
+            var image = await _ImageRepository.Find(id);
             var imgPath = Constants.RUTA_ARCHIVOS_ANALISIS_IMAGENES + image.StationId + "/" +  image.Path;
             return base.PhysicalFile(imgPath, "image/"+Path.GetExtension(image.Path).Substring(1));
         }
@@ -80,7 +80,7 @@ namespace WebApplication.Controllers
 
         }
 
-        [HttpGet("list")]
+        [HttpGet("List")]
         public async Task<ActionResult> List([FromQuery]long starttime, [FromQuery]long endtime, [FromQuery]int page=1, [FromQuery]int rows=25)
         {
             DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -88,9 +88,9 @@ namespace WebApplication.Controllers
             DateTime end = epoch.AddSeconds(endtime);
             var arr = await _ImageRepository.ListImages(start, end, page, rows);
             return new ContentResult(){ Content = JsonConvert.SerializeObject(arr)};
-        } 
+        }
 
-        [HttpPost("List")]
+        [HttpPost]
         public IActionResult List(ImageViewModel imageVM)
         {
             var pageNumber = (imageVM.Pnumber == 0) ? 1 : imageVM.Pnumber;
