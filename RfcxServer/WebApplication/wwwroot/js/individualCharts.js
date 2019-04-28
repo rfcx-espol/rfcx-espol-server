@@ -20,7 +20,6 @@ function getDataSensor(idSensor){
 }
 //get the dates from inputs and make the query
 function getDates(id){
-    console.log(id);s
     var idButton = id.substring(7,id.length);
     var nameStart = "start"+idButton;
     var nameFinish = "finish"+idButton;

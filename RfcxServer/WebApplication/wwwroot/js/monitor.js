@@ -117,6 +117,7 @@ function displayMonitor() {
 }
 //Add data to list dataL
 function addData(data) {
+    var data_array = [];
     var unit;
     var station_id, sensor_id;
     //Initialize ind
@@ -170,14 +171,14 @@ function addData(data) {
             }
             var date = new Date(timestamp*1000);
             var hours = date.getHours()+":"+(date.getMinutes()<10?'0':'') + date.getMinutes();
-            dataL.push({
+            data_array.push({
                 x: new Date(timestamp*1000),
                 y: value,
                 hour: hours,
                 color: colorP
             });
         }
-        var lengthChart = dataL.length;
+        var lengthChart = data_array.length;
         var avgValue=(sumValue/lengthChart).toFixed(2);
         
     }else{
@@ -187,7 +188,7 @@ function addData(data) {
     $("#"+idMin).text(minValue);
     $("#"+idMax).text(maxValue);
     $("#"+idAvg).text(avgValue);
-    displayChart(station_id, sensor_id, divIdChart, titleVertical, colorP, dataL, unit, "DDD/D HH:mm");
+    displayChart(station_id, sensor_id, divIdChart, titleVertical, colorP, data_array, unit, "DDD/D HH:mm");
 }
 
 //Display individual chart
@@ -224,30 +225,29 @@ function displayChart(station, sensor, divId, titleVertical, colorL, data, unit,
         }else{
             charts["monitor"].push(chartMon);
         }
-        setInterval(updateChart, 10000, chartMon, data, station, sensor);
+        setInterval(updateChart, 10000, chartMon, station, sensor);
     }
     else{
         charts["tab_"+typeS+"_"+locationS]=chartMon;
     }
-
-    dataL=[];
-    dataPoints = [];
 }
 
-function updateChart(chartId, data_points, stationId, sensorId) {
+function updateChart(chartId, stationId, sensorId) {
     console.log("Updating chart");
+    var chart_datapoints = chartId.options.data[0].dataPoints;
     $.getJSON('api/Station/' + stationId + '/Sensor/' + sensorId + '/Data/lastData', function(response){
         var timeStamp = parseInt(response.Timestamp);
-        var value = parseInt(response.Value);
+        var value = parseFloat(response.Value);
         var date = new Date(timeStamp * 1000);
         var hours = date.getHours() + ":" + (date.getMinutes() < 10? '0' : '') + date.getMinutes();
 
-        data_points.push({
+        chart_datapoints.unshift({
             x: date,
             y: value,
             hour: hours,
             color: "#424084"
         });
+
         chartId.render();
     });
 }
@@ -293,15 +293,7 @@ function individualChart(nameChart){
                     '<label id="fin"> Fin   </label>'+
                     '<input type="date" name="finish'+idDiv+'" class="finish" >'+
                     '<input type="hidden" id="id'+idDiv+'" value='+idSensorDic[idDiv]+' >'+
-                    '<select id="selectBox'+idDiv+'2" class="selectDiv" onchange="changeFunc(this.id);">'+
-                    '<option disabled selected value> -- Escoge una opción -- </option>'+
-                    '<option value="hora">Hora</option>'+
-                    '<option value="12horas">12 horas</option>'+
-                    '<option value="dia">Día</option>'+
-                    '<option value="semana">Semana</option>'+
-                    '<option value="mes">Mes</option>'+
-                    '</select>'+
-                    '<button id="filter_'+idDiv+'" disabled onclick="getDates(this.id)" class="filter">Filtrar</button>'+
+                    '<button id="filter_'+idDiv+'" onclick="getDates(this.id)" class="filter">Filtrar</button>'+
                 '</div>'+
             '</div>'+
         '</div>'+
@@ -347,15 +339,7 @@ function indvChart(ChartDivId, stationName) {
                     '<label id="fin"> Fin   </label>'+
                     '<input type="date" name="finish" class="finish" >'+
                     '<input type="hidden" id="id'+idTab+'" value='+idSensorDic[idTab]+' >'+
-                    '<select id="selectBox" class="selectDiv" onchange="changeFunc(this.id);">'+
-                    '<option disabled selected value> -- Escoge una opción -- </option>'+
-                    '<option value="hora">Hora</option>'+
-                    '<option value="12horas">12 horas</option>'+
-                    '<option value="dia">Día</option>'+
-                    '<option value="semana">Semana</option>'+
-                    '<option value="mes">Mes</option>'+
-                    '</select>'+
-                    '<button id="filter_'+idTab+'" disabled onclick="getDates(this.id)" class="filter">Filtrar</button>'+
+                    '<button id="filter_'+idTab+'" onclick="getDates(this.id)" class="filter">Filtrar</button>'+
                 '</div>'+
             '</div>'+
         '</div>'+
@@ -441,9 +425,10 @@ function getDataFromSensors() {
             $.each(result, function(i, field) {
                 sensor_datapoints.push({
                     x: new Date(field.Timestamp * 1000),
-                    y: parseInt(field.Value)
+                    y: parseFloat(field.Value)
                 });
             });
+
             sensors_series.push({
                 type: "line",
                 dataPoints: sensor_datapoints
@@ -578,5 +563,47 @@ function displayDataSeries(checkbox) {
 }
 
 function getDataByDates() {
-    console.log(idSensorDic);
+    var start = moment($(".start").val());
+    var finish = moment($("finish").val());
+    var updated_axis = [];
+    var new_dataseries = [];
+
+    for (key in idSensorDic) {
+        var query = "api/Station/" + stationId + "/Sensor/" + idSensorDic[key] + "/DataTimestamp/Filter?StartTimestamp=" + start.unix() + "&EndTimestamp=" + finish.unix() + "&Filter=Hours&FilterValue=1";
+        var sensor_type = sensor['type'];
+        var sensor_location = sensor['location'];
+        var nameDataSeries = sensor_type + ' ' + sensor_location;
+
+        updated_axis.push({
+            visible: true,
+            title: nameDataSeries,
+            lineThickness: 2
+        })
+
+        $.getJSON(query, function(data) {
+            var new_datapoints = [];
+
+            $.each(data, function(i, field) {
+                var timestamp = parseInt(field.Timestamp);
+                var value = parseFloat(field.Value);
+                var date = new Date(timestamp * 1000);
+                var hours = date.getHours() + ":" + (date.getMinutes() < 10? '0' : '') + date.getMinutes();
+                
+                new_datapoints.push({
+                    x: date,
+                    y: value,
+                    hour: hours,
+                });
+            });
+
+            new_dataseries.push({
+                type: "line",
+                dataPoints: new_datapoints
+            });
+        });
+
+        charts['individual'].options.data[idSensorDic[key] - 1] = new_dataseries;
+    }
+    charts['individual'].render();
+    console.log(charts['individual']);
 }
