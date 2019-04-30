@@ -247,9 +247,8 @@ function updateChart(chartId, stationId, sensorId) {
             hour: hours,
             color: "#424084"
         });
-
-        chartId.render();
     });
+    chartId.render();
 }
 
 // Get the element with id="defaultOpen" and click on it
@@ -339,7 +338,7 @@ function indvChart(ChartDivId, stationName) {
                     '<label id="fin"> Fin   </label>'+
                     '<input type="date" name="finish" class="finish" >'+
                     '<input type="hidden" id="id'+idTab+'" value='+idSensorDic[idTab]+' >'+
-                    '<button id="filter_'+idTab+'" onclick="getDates(this.id)" class="filter">Filtrar</button>'+
+                    '<button id="filter_'+idTab+'" onclick="getDataByDates(event)" class="filter">Filtrar</button>'+
                 '</div>'+
             '</div>'+
         '</div>'+
@@ -402,7 +401,8 @@ function startDisplayEachChart(id) {
 
 function getDataFromSensors() {
     var sensors_series = [];
-    var sensors_axis = [];
+    var sensors_axis_1 = [];
+    var sensors_axis_2 = [];
 
     for (sensor of sensorsList) {
         var station_id = sensor['stationid'];
@@ -411,12 +411,21 @@ function getDataFromSensors() {
         var sensor_location = sensor['location'];
 
         var nameDataSeries = sensor_type + ' ' + sensor_location;
-
-        sensors_axis.push({
-            visible: true,
-            title: nameDataSeries,
-            lineThickness: 2
-        })
+        var unit = "";
+        var axis_type = "";
+        if (sensor_type == "Temperature") {
+            sensors_axis_1.push({
+                visible: true,
+                title: nameDataSeries,
+                lineThickness: 2
+            });
+        } else if (sensor_type == "Humidity") {
+            sensors_axis_2.push({
+                visible: true,
+                title: nameDataSeries,
+                lineThickness: 2
+            })
+        }
 
         var query = 'api/Station/' + station_id + '/Sensor/' + sensor_id + '/Data/';
         $.getJSON(query, function(result) {
@@ -429,23 +438,36 @@ function getDataFromSensors() {
                 });
             });
 
+            if (result[0].Type == "Temperature") {
+                unit = "°C";
+                axis_type = "primary";
+            } else {
+                unit = "%";
+                axis_type = "secondary";
+            }
+
             sensors_series.push({
+                showInLegend: true,
+                name: result[0].Type + " " + result[0].Location,
+                axisYType: axis_type,
                 type: "line",
+                toolTipContent: "<strong>{x}</strong>: {y}" + unit,
                 dataPoints: sensor_datapoints
             });
         });
     }
 
-    displayStatsChart(sensors_series, sensors_axis);
+    displayStatsChart(sensors_series, sensors_axis_1, sensors_axis_2);
 }
 
-function displayStatsChart(data_series, data_axis) {
+function displayStatsChart(data_series, data_axis_1, data_axis_2) {
     var chartStat = new CanvasJS.Chart("chart_statsTab", {
         animationEnabled: true,
         zoomEnabled: true,
         height: 320,
         theme: "light2",
-        axisY: data_axis,
+        axisY: data_axis_1,
+        axisY2: data_axis_2,
         data: data_series
     });
 
@@ -562,7 +584,7 @@ function displayDataSeries(checkbox) {
     individual_chart.render();
 }
 
-function getDataByDates() {
+function getDataByDates(event) {
     var start = moment($(".start").val());
     var finish = moment($("finish").val());
     var updated_axis = [];
@@ -573,6 +595,9 @@ function getDataByDates() {
         var sensor_type = sensor['type'];
         var sensor_location = sensor['location'];
         var nameDataSeries = sensor_type + ' ' + sensor_location;
+        var unit = "";
+        var axis_type = "";
+        console.log(query);
 
         updated_axis.push({
             visible: true,
@@ -595,15 +620,25 @@ function getDataByDates() {
                     hour: hours,
                 });
             });
+            
+            if (data[0].Type == "Temperature") {
+                unit = "°C";
+                axis_type = "primary";
+            } else if (data[0].Type == "Humidity") {
+                unit = "%";
+                axis_type = "secondary";
+            }
 
             new_dataseries.push({
+                showInLegend: true,
+                name: data[0].Type + ' ' + data[0].Location,
+                axisYType: axis_type,
                 type: "line",
+                toolTipContent: "<strong>{x}</strong>: {y} " + unit,
                 dataPoints: new_datapoints
             });
+            charts['individual'].options.data = new_dataseries;
+            charts['individual'].render();
         });
-
-        charts['individual'].options.data[idSensorDic[key] - 1] = new_dataseries;
     }
-    charts['individual'].render();
-    console.log(charts['individual']);
 }
