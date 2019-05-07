@@ -5,8 +5,8 @@ window.onload = function() {
     var randomValues = function () {
         var actual = moment();
         var xVal = actual.unix();
-        var yValTemp = yVal = Math.round(5 + Math.random() * (0 - 100));
-        var yValHum = yVal = Math.round(5 + Math.random() * (0 - 50));
+        var yValTemp = yVal = Math.random() * 101.00;
+        var yValHum = yVal = Math.random() * 51.00;
 
         var data = 
             {
