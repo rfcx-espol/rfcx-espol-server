@@ -1,5 +1,5 @@
 function showAlertModal(id) {
-    $("input#st_id").valval(id);
+    $("input#st_id").val(id);
     $("#alert_modal").modal("show");
 }
 

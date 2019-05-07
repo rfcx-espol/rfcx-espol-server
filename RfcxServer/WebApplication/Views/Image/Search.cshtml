@@ -127,10 +127,10 @@
                                     @foreach (var image in Model.Images)
                                     {
                                         <tr>
-                                            <td><input type="checkbox" class="check" value="@image.Id">@image.id</td>
+                                            <td><input type="checkbox" class="check" value="@image.Id">@image.Path</td>
                                             <td><img id="imagen" class="img-responsive" src="/resources/images/@image.StationId/@image.Path" ></td>
                                             <td>@image.CaptureDate</td>
-                                            
+                                            <td>@image.ArriveDate</td>
                                             <td>
                                                 @if (image.Family.Count() != 0)
                                                 {
@@ -155,7 +155,8 @@
                                 }
                             </tbody>
                         </table>
-                        <form id="hidden" asp-controller="Audios" asp-action="List" method="post" role="form">
+                        <form id="hidden" asp-controller="Image" asp-action="Search" method="get" role="form">
+                            
                             @Html.HiddenFor(m => m.StationId)
                             @Html.HiddenFor(m => m.Start)
                             @Html.HiddenFor(m => m.End)
