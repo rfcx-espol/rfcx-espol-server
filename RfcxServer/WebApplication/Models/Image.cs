@@ -33,6 +33,7 @@ namespace WebApplication.Models
         public string Path{ get; set; }
         public string State{ get; set; }
         public List<String> Family{ get; set; }
+        
         //public List<String> LabelList { get; set; }
         
         public Image(){}
