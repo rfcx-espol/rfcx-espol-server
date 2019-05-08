@@ -19,6 +19,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Extensions.Primitives;
+using System.Globalization;
 
 namespace WebApplication {
 
@@ -183,25 +184,32 @@ namespace WebApplication {
                     if (!ok) {
                         return BadRequest("Expected Format key");
                     }
-                    
-                    string strfilename = filename.ToString();
+
+                    var audio =new Audio();
+                    try {
+                        audio.RecordingDate = DateTime.ParseExact(recordingDate, "d/M/yyyy HH:mm", CultureInfo.InvariantCulture);
+                    } 
+                    catch (Exception ex)
+                    {
+                        return BadRequest("Expected date to be in format 'dd/mm/yyyy hh:mm'");
+                    }
+                    audio.ArriveDate = DateTime.Now;
+                    audio.StationId = id;
+                    audio.Duration = duration;
+                    audio.Format = format;
+                    audio.LabelList = new List<String>();
+                    await _AudioRepository.Add(audio);
+                    var new_audio = await _AudioRepository.GetLastAudio();
+
+                    string strfilename = "" + new_audio.Id + "." + new_audio.Format;
+
                     var filePath="";
                     if(strStationId!=null){
                         Core.MakeStationFolder(strStationId);
                         filePath = Path.Combine(Core.StationAudiosFolderPath(strStationId),
                                                     strfilename);
                         Console.Write(filePath);
-                    }   
-
-                    var audio =new Audio();
-                    //audio.FechaLlegada=fechaLlegada;
-                    audio.StationId=id;
-                    audio.RecordingDate=recordingDate;
-                    audio.Duration=duration;
-                    audio.Format=format;
-                    //audio.BitRate=bitRate;
-                    Task result;
-                    result=_AudioRepository.Add(audio);
+                    }
 
                     using (var stream = new FileStream(filePath, FileMode.Create)) {
                         await stationFile.memoryStream.CopyToAsync(stream);

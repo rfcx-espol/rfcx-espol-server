@@ -1,0 +1,71 @@
+@model AudioViewModel
+@{
+  ViewBag.Title = "Audios";
+}
+<!-- Favicon -->
+<link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+
+<!-- Main style sheet -->
+<link href="~/css/site.css" rel="stylesheet">    
+
+<!-- Google Fonts -->
+
+<!-- Prata for body  -->
+<link href='https://fonts.googleapis.com/css?family=Prata' rel='stylesheet' type='text/css'>
+<!-- Tangerine for small title -->
+<link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>   
+<!-- Open Sans for title -->
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
+<section id="mu-about-us">
+    <div class="container">
+        <div class="row" style="margin-right: 270px;">
+            <div class="col-md-12">
+                <div class="mu-about-us-area">
+                    <div class="mu-title">
+                        <h2>Descarga de Audios</h2>
+                    </div>
+                    <form asp-controller="Audios" asp-action="List" method="post" role="form">
+                        <div class="form-group">
+                            <table class="table table-bordered" id="vertical-table">
+                                <tr>
+                                    <th>
+                                        <label>Estación</label>
+                                    </th>
+                                    <td>
+                                        @Html.DropDownListFor(m => m.StationId,
+                                                                new SelectList(Model.Stations.Select(x => new { Value = x.Id, Text = x.Name}), "Value", "Text"),
+                                                                "Estación", htmlAttributes: new { @class = "from-control border-input" })
+                                        <span asp-validation-for="StationId" class="text-danger"></span>                       
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <label>Fecha Inicial</label>
+                                    </th>
+                                    <td>
+                                        <input asp-for="Start" class="form-control col-sm-8" type="date">
+                                        <span asp-validation-for="Start" class="text-danger"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <label>Fecha Final</label>
+                                    </th>
+                                    <td>
+                                        <input asp-for="End" class="form-control col-sm-8" type="date">
+                                        <span asp-validation-for="End" class="text-danger"></span>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <br>
+                            <button id="search" type="submit" class="out">Buscar</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,7 +1,10 @@
 using MongoDB.Driver;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using WebApplication.Models;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 
 namespace WebApplication.IRepository
 {
@@ -16,6 +19,8 @@ namespace WebApplication.IRepository
         Task<bool> Update(int StationId, int AudioId, Audio item);
         Task<bool> Remove(int StationId, int AudioId);
         Task<bool> RemoveAll();
-        
+        IQueryable<Audio> GetByStationAndDate(int StationId, DateTime Start, DateTime End);
+        Task<Audio> GetLastAudio();
+        Task<bool> AddTag(int AudioId, string Tag);
     }
 }

@@ -10,8 +10,8 @@ charts = [];
 //Individual
 dataPoints = [];
 window.addEventListener("load", getData);
+//setInterval(displayMonitor, 300000);
 
-setInterval(displayMonitor, 300000);
 //get sensors from one station
 function getData(){
     $.get('api/Station/'+parseInt(stationId)+'/Sensor/',getSensors);
@@ -24,7 +24,9 @@ function getSensors(data){
         var idSensor = parseInt(sensor['Id']);
         var type = sensor['Type'];
         var location = sensor['Location'];
+        var idStation = sensor['StationId'];
 
+        sensorsInf['stationid'] = idStation;
         sensorsInf['id']= idSensor;
         sensorsInf['type']=type;
         sensorsInf['location']=location;
@@ -35,26 +37,28 @@ function getSensors(data){
         var divIdChart = "chartMonitor"+type+"_"+location;
         var nameDivTab = "tab_"+type+"_"+location;
         if(type.toUpperCase().includes("HUM") && (location.toUpperCase().includes("AMB") || location.toUpperCase().includes("ENV"))) {
-            var iconTab = '<i class="fa fa-tint tabL"></i> <p class="nameHum">'+type+'-'+location+'</p>';
+            // var iconTab = '<i class="fa fa-tint tabL"></i> <p class="nameHum">'+type+'-'+location+'</p>';
             var iconTitle = '<i class="fa fa-tint"></i> '+type+'-'+location;
             idSensorDic[type+"_"+location]=idSensor;
         }else if(type.toUpperCase().includes("TEMP") && (location.toUpperCase().includes( "DEV") || location.toUpperCase().includes("STA"))){
-            var iconTab='<i class="fa" id="mobil">&#xf10b;</i><i class="fa fa-thermometer tabL" ></i> <p class="nameTempDisp">'+type+'-'+location+'</p>';
+            // var iconTab='<i class="fa" id="mobil">&#xf10b;</i><i class="fa fa-thermometer tabL" ></i> <p class="nameTempDisp">'+type+'-'+location+'</p>';
             var iconTitle = '<i class="fa fa-thermometer"></i> '+type+'-'+location;
             idSensorDic[type+"_"+location]=idSensor;
             
         }else if(type.toUpperCase().includes("TEMP") && (location.toUpperCase().includes("AMB") || location.toUpperCase().includes("ENV"))){
-            var iconTab = '<i class="fa fa-thermometer tabL"></i> <p class="nameTempAmb">'+type+'-'+location+'</p>';
+            // var iconTab = '<i class="fa fa-thermometer tabL"></i> <p class="nameTempAmb">'+type+'-'+location+'</p>';
             var iconTitle = '<i class="fa fa-thermometer"></i> '+type+'-'+location;
             idSensorDic[type+"_"+location]=idSensor;
         }
         //Create divs
         createDivsMonitor(iconTitle, divIdChart, idMin, idMax, idAvg);
-        createTabs(idSensor, iconTab, nameDivTab);
-        individualChart(type+" - "+location);
-        startDisplayEachChart(idSensor);
+        //createTabs(idSensor, iconTab, nameDivTab);
+        //startDisplayEachChart(idSensor);
 
     }
+    createTab();
+    indvChart("statsTab", stationName);
+    getDataFromSensors();
     displayMonitor();
 }
 
@@ -62,6 +66,12 @@ function getSensors(data){
 function createTabs(idSensor, iconTab, nameDivTab){
     name = "'"+nameDivTab+"'";
     var divTab = '<button class="tablinks" name='+nameDivTab+' id='+idSensor+' onclick="getDataSensor(this.id)" onfocus="openDevice(event, '+name+')">'+iconTab+'</button>';
+    $("#tab").append(divTab);
+}
+
+function createTab() {
+    name = "'individual'";
+    var divTab = '<button class="tablinks" name="statsTab" id="stats" onfocus="openDevice(event,' + name + ')"><i class="fa fa-bar-chart tabL" aria-hidden="true"></i><p class="tabMonitor">Estadisticas</p></button>'; 
     $("#tab").append(divTab);
 }
 
@@ -86,17 +96,30 @@ function displayMonitor() {
         //Collect data
         var idSensor = sensors['id'];
 
+        /*
         var actual = moment();
         var actualTimestamp = actual.unix();
         var lastTimestamp = actual.clone().subtract(2,'hours').unix();
+        */
 
-        var query = '/DataTimestamp?startTimestamp='+lastTimestamp+'&endTimestamp='+actualTimestamp;
-        $.getJSON('api/Station/'+stationId+'/Sensor/'+idSensor+query, addData);
+        var firstHour = new Date();
+        firstHour.setHours(0,0,0);
+        var lastHour = new Date();
+        lastHour.setHours(23,59,59);
+        
+        var startTimestamp = moment(firstHour).unix();
+        var lastTimestamp = moment(lastHour).unix();
+
+        var query = '/DataTimestamp?startTimestamp='+startTimestamp+'&endTimestamp='+lastTimestamp;
+        $.getJSON('api/Station/' + stationId + '/Sensor/' + idSensor + query, addData);
     }
 
 }
 //Add data to list dataL
 function addData(data) {
+    var data_array = [];
+    var unit;
+    var station_id, sensor_id;
     //Initialize ind
     if(ind>=sensorsList.length){
         ind= 0;
@@ -105,22 +128,29 @@ function addData(data) {
     if(data != null && data.length != 0){
         var typeS = data[0]['Type'];
         var locationS = data[0]['Location'];
+        station_id = data[0]['StationId'];
+        sensor_id = data[0]['SensorId'];
     }else{
         var typeS = sensorsList[ind]['type'];
         var locationS = sensorsList[ind]['location'];
+        station_id = sensorsList[ind]['stationid'];
+        sensor_id = sensorsList[ind]['id'];
     }
     var titleVertical = "Temperatura °C";
     var idMin = "minMon"+typeS+"_"+locationS;
     var idMax = "maxMon"+typeS+"_"+locationS;
     var idAvg = "avgMon"+typeS+"_"+locationS;
     var divIdChart = "chartMonitor"+typeS+"_"+locationS;
-    if(typeS.includes("TEMP") && (locationS.includes("DEV") || locationS.includes("STA"))){
+    if(typeS.toUpperCase().includes("TEMP") && (locationS.includes("DEV") || locationS.includes("STA"))){
         var colorP = "#424084";
+        unit = "°C";
     }else if(typeS.toUpperCase().includes("TEMP") && (locationS.toUpperCase().includes("AMB") || locationS.toUpperCase().includes("ENV"))){
         var colorP = "orange";
+        unit = "°C";
     }else if(typeS.toUpperCase().includes("HUM") && (locationS.toUpperCase().includes("AMB") || locationS.toUpperCase().includes("ENV"))){
         var colorP = "LightSeaGreen";
         var titleVertical = "Humedad %";
+        unit = "%";
     }
 
     ind = ind+1;
@@ -141,14 +171,14 @@ function addData(data) {
             }
             var date = new Date(timestamp*1000);
             var hours = date.getHours()+":"+(date.getMinutes()<10?'0':'') + date.getMinutes();
-            dataL.push({
+            data_array.push({
                 x: new Date(timestamp*1000),
                 y: value,
                 hour: hours,
                 color: colorP
             });
         }
-        var lengthChart = dataL.length;
+        var lengthChart = data_array.length;
         var avgValue=(sumValue/lengthChart).toFixed(2);
         
     }else{
@@ -158,19 +188,18 @@ function addData(data) {
     $("#"+idMin).text(minValue);
     $("#"+idMax).text(maxValue);
     $("#"+idAvg).text(avgValue);
-
-    displayChart(divIdChart, titleVertical, colorP, dataL, "DDD/D HH:mm", "<strong> {hour}</strong>: {y}");
+    displayChart(station_id, sensor_id, divIdChart, titleVertical, colorP, data_array, unit, "DDD/D HH:mm");
 }
 
 //Display individual chart
-function displayChart(divId, titleVertical, colorL, data, format, contentTool){
+function displayChart(station, sensor, divId, titleVertical, colorL, data, unit, format){
     var chartMon = new CanvasJS.Chart(divId, {
         animationEnabled: true,
         zoomEnabled: true,
         height: 320,
         theme: "light2",
         toolTip:{   
-			content: contentTool   
+			content: "<strong>{x}</strong>: {y} " + unit
 		},
         axisX:{      
             valueFormatString: format
@@ -196,15 +225,30 @@ function displayChart(divId, titleVertical, colorL, data, format, contentTool){
         }else{
             charts["monitor"].push(chartMon);
         }
+        setInterval(updateChart, 10000, chartMon, station, sensor);
     }
     else{
         charts["tab_"+typeS+"_"+locationS]=chartMon;
     }
+}
 
-    //chartMon.render();
-    dataL=[];
-    dataPoints = [];
-    
+function updateChart(chartId, stationId, sensorId) {
+    console.log("Updating chart");
+    var chart_datapoints = chartId.options.data[0].dataPoints;
+    $.getJSON('api/Station/' + stationId + '/Sensor/' + sensorId + '/Data/lastData', function(response){
+        var timeStamp = parseInt(response.Timestamp);
+        var value = parseFloat(response.Value);
+        var date = new Date(timeStamp * 1000);
+        var hours = date.getHours() + ":" + (date.getMinutes() < 10? '0' : '') + date.getMinutes();
+
+        chart_datapoints.unshift({
+            x: date,
+            y: value,
+            hour: hours,
+            color: "#424084"
+        });
+    });
+    chartId.render();
 }
 
 // Get the element with id="defaultOpen" and click on it
@@ -223,8 +267,8 @@ function individualChart(nameChart){
     var idChart = "chart_"+idDiv;
     
     var divEachChart = 
-    '<div id='+idTab+' class="col-sm-12 col-md-12 col-lg-12 tabcontent" style="display: none;">'+
-        '<div id='+idDiv+'>'+
+    '<div id='+idTab+' class="col-sm-12 col-md-12 col-lg-12 sensores_monitor" style="display: none;">'+
+        '<div id='+idDiv+' style="height: 320px">'+
         '<h4 class="chart-title"> '+stationName+"/ "+name+' </h4>'+
         '<div class="Dates col-lg-12 col-md-12 col-sm-12">'+
             '<a class="exportcsv" id="export_'+idDiv+'" href="#" onclick="downloadCSV(this.id);">EXPORTAR</a>'+
@@ -248,15 +292,7 @@ function individualChart(nameChart){
                     '<label id="fin"> Fin   </label>'+
                     '<input type="date" name="finish'+idDiv+'" class="finish" >'+
                     '<input type="hidden" id="id'+idDiv+'" value='+idSensorDic[idDiv]+' >'+
-                    '<select id="selectBox'+idDiv+'2" class="selectDiv" onchange="changeFunc(this.id);">'+
-                    '<option disabled selected value> -- Escoge una opción -- </option>'+
-                    '<option value="hora">Hora</option>'+
-                    '<option value="12horas">12 horas</option>'+
-                    '<option value="dia">Día</option>'+
-                    '<option value="semana">Semana</option>'+
-                    '<option value="mes">Mes</option>'+
-                    '</select>'+
-                    '<button id="filter_'+idDiv+'" disabled onclick="getDates(this.id)" class="filter">Filtrar</button>'+
+                    '<button id="filter_'+idDiv+'" onclick="getDates(this.id)" class="filter">Filtrar</button>'+
                 '</div>'+
             '</div>'+
         '</div>'+
@@ -270,6 +306,51 @@ function individualChart(nameChart){
     '</div>';
 
     $("#individual").append(divEachChart); 
+    setInputDates();
+}
+
+function indvChart(ChartDivId, stationName) {
+    var checkboxes = '';
+    for (var [sensor, id] of Object.entries(idSensorDic)) {
+        checkboxes +=
+        '<input checked type="checkbox" value="'+ id + '" onchange="displayDataSeries(this)">'+
+        '<label>' + sensor + '</label>'
+    }
+    var idTab = "tab_" + ChartDivId;
+    var idChart = "chart_" + ChartDivId;
+    var divEachChart = 
+    '<div id="'+ idTab +'" class="col-sm-12 col-md-12 col-lg-12">'+
+        '<div id='+ ChartDivId +' style="height: 320px;">'+
+        '<h3 class="titulo_sensor">Estadísticas diarias de '+ stationName +'</h3>'+
+        '<div class="Dates col-lg-12 col-md-12 col-sm-12">'+
+            '<a class="exportcsv" id="export_'+ ChartDivId +'" href="#" onclick="downloadCSV(this.id);">EXPORTAR</a>'+
+            '<ul class="nav nav-tabs">'+
+                '<li class="active"><a data-toggle="tab" href="#data-act-'+ ChartDivId +'">Datos actuales</a></li>'+
+                '<li><a data-toggle="tab" href="#date-range-'+ ChartDivId +'">Rango de fechas</a></li>'+
+            '</ul>'+
+            '<div class="tab-content">'+
+                '<div id="data-act-' + ChartDivId + '" class="tab-pane fade in active">'+
+                    checkboxes+
+                '</div>'+
+                '<div id="date-range-'+ ChartDivId +'" class="tab-pane fade">'+
+                    '<label>Inicio</label>'+
+                    '<input type="date" name="start" class="start" min="1899-01-01" max="2000-13-13">'+
+                    '<label id="fin"> Fin   </label>'+
+                    '<input type="date" name="finish" class="finish" >'+
+                    '<input type="hidden" id="id'+idTab+'" value='+idSensorDic[idTab]+' >'+
+                    '<button id="filter_'+idTab+'" onclick="getDataByDates(event)" class="filter">Filtrar</button>'+
+                '</div>'+
+            '</div>'+
+        '</div>'+
+        '<div id='+idChart+' class="col-lg-12 col-md-12 col-sm-12" style="height: 320px; clear: right; margin-top: 20px;"></div>'+
+        '<div class="boxInfoValues">'+
+            '<p class="boxLetters  initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minVal"></p>'+
+            '<p class="boxLetters middle"><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id="maxVal"></p>'+
+            '<p class="boxLetters last"><i class="fa iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id="avgVal" ></p>'+
+            '</div>'+
+        '</div>'+
+    '</div>';
+    $("#individual").append(divEachChart);
     setInputDates();
 }
 
@@ -316,6 +397,81 @@ function startDisplayEachChart(id) {
     //var query = 'api/Station/'+stationId+'/Sensor/'+id+'/DataTimestamp/Filter?StartTimestamp='+lastTimestamp+'&endTimestamp='+actualTimestamp+"&Filter=Days&FilterValue=1";
     var query = "api/Station/"+stationId+"/Sensor/"+id+"/DataTimestamp?StartTimestamp="+lastTimestamp+"&EndTimestamp="+actualTimestamp;
     $.getJSON(query, addDataEachChart);
+}
+
+function getDataFromSensors() {
+    var sensors_series = [];
+    var sensors_axis_1 = [];
+    var sensors_axis_2 = [];
+
+    for (sensor of sensorsList) {
+        var station_id = sensor['stationid'];
+        var sensor_id = sensor['id'];
+        var sensor_type = sensor['type'];
+        var sensor_location = sensor['location'];
+
+        var nameDataSeries = sensor_type + ' ' + sensor_location;
+        var unit = "";
+        var axis_type = "";
+        if (sensor_type == "Temperature") {
+            sensors_axis_1.push({
+                visible: true,
+                title: nameDataSeries,
+                lineThickness: 2
+            });
+        } else if (sensor_type == "Humidity") {
+            sensors_axis_2.push({
+                visible: true,
+                title: nameDataSeries,
+                lineThickness: 2
+            })
+        }
+
+        var query = 'api/Station/' + station_id + '/Sensor/' + sensor_id + '/Data/';
+        $.getJSON(query, function(result) {
+            var sensor_datapoints = [];
+
+            $.each(result, function(i, field) {
+                sensor_datapoints.push({
+                    x: new Date(field.Timestamp * 1000),
+                    y: parseFloat(field.Value)
+                });
+            });
+
+            if (result[0].Type == "Temperature") {
+                unit = "°C";
+                axis_type = "primary";
+            } else {
+                unit = "%";
+                axis_type = "secondary";
+            }
+
+            sensors_series.push({
+                showInLegend: true,
+                name: result[0].Type + " " + result[0].Location,
+                axisYType: axis_type,
+                type: "line",
+                toolTipContent: "<strong>{x}</strong>: {y}" + unit,
+                dataPoints: sensor_datapoints
+            });
+        });
+    }
+
+    displayStatsChart(sensors_series, sensors_axis_1, sensors_axis_2);
+}
+
+function displayStatsChart(data_series, data_axis_1, data_axis_2) {
+    var chartStat = new CanvasJS.Chart("chart_statsTab", {
+        animationEnabled: true,
+        zoomEnabled: true,
+        height: 320,
+        theme: "light2",
+        axisY: data_axis_1,
+        axisY2: data_axis_2,
+        data: data_series
+    });
+
+    charts['individual'] = chartStat;
 }
 
 //Add the data for the graph
@@ -387,6 +543,7 @@ function addDataEachChart(data){
 
 //Open tab selected
 function openDevice(evt, sensor) {
+    console.log("Opending device");
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
@@ -402,6 +559,7 @@ function openDevice(evt, sensor) {
     var idC=document.getElementById(sensor).getAttribute("id");
     var chartToRender = charts[idC];
 
+    
     if(chartToRender !== undefined){
         if(idC=="monitor"){
             for(chart of chartToRender){
@@ -412,5 +570,75 @@ function openDevice(evt, sensor) {
         }
         
     }
-    
+
+}
+
+function displayDataSeries(checkbox) {
+    var sensor = checkbox.value;
+    var individual_chart = charts['individual'];
+    if (checkbox.checked) {
+        individual_chart.data[sensor - 1].options.visible = true;
+    } else { 
+        individual_chart.data[sensor - 1].options.visible = false;
+    }
+    individual_chart.render();
+}
+
+function getDataByDates(event) {
+    var start = moment($(".start").val());
+    var finish = moment($("finish").val());
+    var updated_axis = [];
+    var new_dataseries = [];
+
+    for (key in idSensorDic) {
+        var query = "api/Station/" + stationId + "/Sensor/" + idSensorDic[key] + "/DataTimestamp/Filter?StartTimestamp=" + start.unix() + "&EndTimestamp=" + finish.unix() + "&Filter=Hours&FilterValue=1";
+        var sensor_type = sensor['type'];
+        var sensor_location = sensor['location'];
+        var nameDataSeries = sensor_type + ' ' + sensor_location;
+        var unit = "";
+        var axis_type = "";
+        console.log(query);
+
+        updated_axis.push({
+            visible: true,
+            title: nameDataSeries,
+            lineThickness: 2
+        })
+
+        $.getJSON(query, function(data) {
+            var new_datapoints = [];
+
+            $.each(data, function(i, field) {
+                var timestamp = parseInt(field.Timestamp);
+                var value = parseFloat(field.Value);
+                var date = new Date(timestamp * 1000);
+                var hours = date.getHours() + ":" + (date.getMinutes() < 10? '0' : '') + date.getMinutes();
+                
+                new_datapoints.push({
+                    x: date,
+                    y: value,
+                    hour: hours,
+                });
+            });
+            
+            if (data[0].Type == "Temperature") {
+                unit = "°C";
+                axis_type = "primary";
+            } else if (data[0].Type == "Humidity") {
+                unit = "%";
+                axis_type = "secondary";
+            }
+
+            new_dataseries.push({
+                showInLegend: true,
+                name: data[0].Type + ' ' + data[0].Location,
+                axisYType: axis_type,
+                type: "line",
+                toolTipContent: "<strong>{x}</strong>: {y} " + unit,
+                dataPoints: new_datapoints
+            });
+            charts['individual'].options.data = new_dataseries;
+            charts['individual'].render();
+        });
+    }
 }

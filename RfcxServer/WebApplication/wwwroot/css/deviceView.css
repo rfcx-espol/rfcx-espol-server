@@ -21,17 +21,15 @@ body {font-family: "Lato", sans-serif;}
 
 /* Style the tab */
 .tab {
-    float: left;
     /*border: 1px solid #ccc;*/
     background-color: #007f42;    
-    width: 20%;
     /*height: 400px;*/
 }
 .tabcontent{
   background-color: white;
 }
 .nameHum, .nameTempDisp, .nameTempAmb, .tabMonitor{
-    margin-left: 20px;
+    margin-left: 30px;
     font-size: 15px;
 }
 .tabL{
@@ -53,11 +51,9 @@ hr{
   }
 /* Style the buttons inside the tab */
 .tab button {
-    display: block;
     background-color: inherit;
     color: white;
     padding: 22px 16px;
-    width: 100%;
     border: none;
     outline: none;
     text-align: left;
@@ -209,6 +205,18 @@ label{
 
 .selectDiv{
     margin: 20px 0px 20px 20px;
+}
+
+#data-act-statsTab, #date-range-statsTab {
+    margin: 20px 0px 20px 20px;
+}
+
+#data-act-statsTab input {
+    margin-right: 5px;
+}
+
+#data-act-statsTab label {
+    margin-right: 20px;
 }
 
 /*-----Date-------------------*/

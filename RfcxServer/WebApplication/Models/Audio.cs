@@ -1,6 +1,8 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
+
 
 namespace WebApplication.Models
 {
@@ -12,11 +14,14 @@ namespace WebApplication.Models
         public string AudioId { get; set; }
         public int Id { get; set; }
         public int StationId { get; set; }
-        public string RecordingDate { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime RecordingDate { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime ArriveDate { get; set; }
         public string Duration { get; set; }
         public string Format { get; set; }
         public int BitRate { get; set; }
-        public List<Label> LabelList { get; set; }
+        public List<String> LabelList { get; set; }
     }
     
 }

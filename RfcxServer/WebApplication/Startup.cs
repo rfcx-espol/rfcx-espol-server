@@ -19,7 +19,6 @@ using WebApplication.Repository;
 using Serilog;
 using Microsoft.Extensions.Logging;
 
-
 namespace WebApplication
 {
     public class Startup
@@ -49,6 +48,7 @@ namespace WebApplication
                 });
             services.AddTransient<IAlertRepository, AlertRepository>();
             services.AddTransient<IAlertsConfigurationRepository, AlertsConfigurationRepository>();
+            services.AddTransient<IImageRepository, ImageRepository>();
             services.AddTransient<IAudioRepository, AudioRepository>();
             services.AddTransient<IStationRepository, StationRepository>();
             services.AddTransient<ILabelRepository, LabelRepository>();
@@ -58,7 +58,7 @@ namespace WebApplication
             services.AddTransient<ISpecieRepository, SpecieRepository>();
             services.AddTransient<IPhotoRepository, PhotoRepository>();
             services.AddTransient<IQuestionRepository, QuestionRepository>();
-            services.AddTransient<IImageRepository, ImageRepository>();
+            
             services.AddCors(options =>
                 {
                     options.AddPolicy("AllowAllOrigins",
@@ -86,13 +86,7 @@ namespace WebApplication
             app.UseMvcWithDefaultRoute();
             app.UseCookiePolicy();
             app.UseStaticFiles();
-
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                Path.Combine(Core.getServerDirectory(), "files")),
-                RequestPath = "/files"
-            });
+            //app.UseMvc();
 
             app.UseStaticFiles(new StaticFileOptions
             {
