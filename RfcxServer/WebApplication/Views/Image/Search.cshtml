@@ -132,17 +132,12 @@
                                             <td>@image.CaptureDate</td>
                                             <td>@image.ArriveDate</td>
                                             <td>
-                                                @if (image.Family.Count != 0)
-                                                {
+                                                
                                                     @foreach (var tag in image.Family)
                                                     {
                                                         <span>@tag</span>
                                                     }
-                                                } 
-                                                else 
-                                                {
-                                                    <span class="no-tags">No hay etiquetas.</span>
-                                                }
+                                                
                                                 
                                             </td>
                                             
