@@ -91,7 +91,7 @@ function getLastData() {
             for(data of data_dic){
                 var station_id = data['StationId'];
                 var sensor_id = data['SensorId'];
-                var value = data['Value'];
+                var value = parseFloat(data['Value']).toFixed(2);
                 var unit = getUnit(data['Type']);
                 var s = $("div.station_body#station"+station_id+" p#sensor"+sensor_id);
                 s.html(value + " " + unit);
