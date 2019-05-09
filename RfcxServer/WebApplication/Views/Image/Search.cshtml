@@ -129,8 +129,8 @@
                                         <tr>
                                             <td><input type="checkbox" class="check" value="@image.Id">@image.id</td>
                                             <td><img id="imagen" class="img-responsive" src="/resources/images/@image.StationId/@image.Path" ></td>
-                                            <td>@image.CaptureDate</td>
-                                            <td>@image.ArriveDate</td>
+                                            <td>@image.CaptureDate.AddHours(-5)</td>
+                                            <td>@image.ArriveDate.AddHours(-5)</td>
                                             <td>@image.Family</td>
                                             
                                             <td>
