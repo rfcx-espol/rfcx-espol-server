@@ -131,7 +131,20 @@
                                             <td><img id="imagen" class="img-responsive" src="/resources/images/@image.StationId/@image.Path" ></td>
                                             <td>@image.CaptureDate</td>
                                             <td>@image.ArriveDate</td>
-                                            <td>@image.Family</td>
+                                            <td>
+                                                @if (image.Family != null)
+                                                {
+                                                    @foreach (var tag in image.Family)
+                                                    {
+                                                        <span>@tag</span>
+                                                    }
+                                                } 
+                                                else 
+                                                {
+                                                    <span class="no-tags">No hay etiquetas.</span>
+                                                }
+                                                
+                                            </td>
                                             
                                             <td>
                                                 <button class="btn btn-danger btn-sm" onclick="showAlertModal(@image.Id)" title="Eliminar imagen"><i class="fa fa-times" aria-hidden="true" style="font-size:20px;"></i></button>

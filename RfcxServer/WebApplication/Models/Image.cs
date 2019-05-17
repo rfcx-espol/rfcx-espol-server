@@ -42,7 +42,7 @@ namespace WebApplication.Models
             id = ObjectId.GenerateNewId();
             this.StationId = IdEstacion;
             this.CaptureDate = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(FechaCaptura)).DateTime;
-           // this.ArriveDate = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(FechaCaptura)).DateTime;
+            this.ArriveDate = DateTime.UtcNow;
             Path = id + Extension;
             State = "PENDIENTE";
         }
