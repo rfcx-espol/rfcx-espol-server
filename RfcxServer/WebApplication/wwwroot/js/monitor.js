@@ -325,7 +325,7 @@ function indvChart(ChartDivId, stationName) {
         '<div class="Dates col-lg-12 col-md-12 col-sm-12">'+
             '<a class="exportcsv" id="export_'+ ChartDivId +'" href="#" onclick="downloadCSV(this.id);">EXPORTAR</a>'+
             '<ul class="nav nav-tabs">'+
-                '<li class="active"><a data-toggle="tab" href="#data-act-'+ ChartDivId +'">Datos actuales</a></li>'+
+                '<li class="active"><a data-toggle="tab" href="#data-act-'+ ChartDivId +'" onclick="reloadChart()">Datos actuales</a></li>'+
                 '<li><a data-toggle="tab" href="#date-range-'+ ChartDivId +'">Rango de fechas</a></li>'+
             '</ul>'+
             '<div class="tab-content">'+
@@ -629,6 +629,54 @@ function getDataByDates(event) {
                 axis_type = "secondary";
             }
 
+            new_dataseries.push({
+                showInLegend: true,
+                name: data[0].Type + ' ' + data[0].Location,
+                axisYType: axis_type,
+                type: "line",
+                toolTipContent: "<strong>{x}</strong>: {y} " + unit,
+                dataPoints: new_datapoints
+            });
+            charts['individual'].options.data = new_dataseries;
+            charts['individual'].render();
+        });
+    }
+}
+
+function reloadChart() {
+    for (sensor of sensorsList) {
+        var station_id = sensor['stationid'];
+        var sensor_id = sensor['id'];
+        var new_dataseries = [];
+
+        console.log(sensorsList);
+
+        var query = 'api/Station/' + station_id + '/Sensor/' + sensor_id + '/Data/';
+
+        $.getJSON(query, function(data) {
+            var new_datapoints = [];
+    
+            $.each(data, function(i, field) {
+                var timestamp = parseInt(field.Timestamp);
+                var value = parseFloat(field.Value);
+                var date = new Date(timestamp * 1000);
+                var hours = date.getHours() + ":" + (date.getMinutes() < 10? '0' : '') + date.getMinutes();
+                
+                new_datapoints.push({
+                    x: date,
+                    y: value,
+                    hour: hours,
+                });
+            });
+            
+            if (data[0].Type == "Temperature") {
+                unit = "°C";
+                axis_type = "primary";
+            } else if (data[0].Type == "Humidity") {
+                unit = "%";
+                axis_type = "secondary";
+            }
+    
             new_dataseries.push({
                 showInLegend: true,
                 name: data[0].Type + ' ' + data[0].Location,
