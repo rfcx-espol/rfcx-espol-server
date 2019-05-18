@@ -7,7 +7,7 @@ function closeModal() {
     $("#alert_modal").modal("hide");
 }
 
-function deleteStation() {
+function deleteAudio() {
     var audio_id = $("input#st_id").val();
     var station_id = $("#StationId").find(":selected").val();
     $.ajax({

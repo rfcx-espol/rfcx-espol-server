@@ -19,6 +19,14 @@ function getData(){
 //keep data on sensorsList
 function getSensors(data){
     var sensors = JSON.parse(data);
+
+    var current_date = moment();
+    var current_timestamp = current_date.unix();
+    var last_timestamp = current_date.clone().subtract(30,'days').unix();
+    
+    var idChartStat = "chart_statsTab";
+    var idChartFilter = "chart_filter_statsTab";
+
     for( sensor of sensors){
         var sensorsInf = {};
         var idSensor = parseInt(sensor['Id']);
@@ -58,7 +66,8 @@ function getSensors(data){
     }
     createTab();
     indvChart("statsTab", stationName);
-    getDataFromSensors();
+    getDataFromSensors(idChartStat, last_timestamp, current_timestamp);
+    getDataFromSensors(idChartFilter, last_timestamp, current_timestamp);
     displayMonitor();
 }
 
@@ -318,6 +327,7 @@ function indvChart(ChartDivId, stationName) {
     }
     var idTab = "tab_" + ChartDivId;
     var idChart = "chart_" + ChartDivId;
+    var idChartFilter = "chart_filter_" + ChartDivId;
     var divEachChart = 
     '<div id="'+ idTab +'" class="col-sm-12 col-md-12 col-lg-12">'+
         '<div id='+ ChartDivId +' style="height: 320px;">'+
@@ -325,8 +335,8 @@ function indvChart(ChartDivId, stationName) {
         '<div class="Dates col-lg-12 col-md-12 col-sm-12">'+
             '<a class="exportcsv" id="export_'+ ChartDivId +'" href="#" onclick="downloadCSV(this.id);">EXPORTAR</a>'+
             '<ul class="nav nav-tabs">'+
-                '<li class="active"><a data-toggle="tab" href="#data-act-'+ ChartDivId +'" onclick="reloadChart()">Datos actuales</a></li>'+
-                '<li><a data-toggle="tab" href="#date-range-'+ ChartDivId +'">Rango de fechas</a></li>'+
+                '<li class="active"><a id="current_tab" data-toggle="tab" href="#data-act-'+ ChartDivId +'" onclick="showChart('+"'"+idChart+"_wrapper'"+','+"'"+idChartFilter+"_wrapper'"+')">Datos actuales</a></li>'+
+                '<li><a id="filter_tab" data-toggle="tab" href="#date-range-'+ ChartDivId +'" onclick="showChart('+"'"+idChartFilter+"_wrapper'"+','+"'"+idChart+"_wrapper'"+')">Rango de fechas</a></li>'+
             '</ul>'+
             '<div class="tab-content">'+
                 '<div id="data-act-' + ChartDivId + '" class="tab-pane fade in active">'+
@@ -342,7 +352,12 @@ function indvChart(ChartDivId, stationName) {
                 '</div>'+
             '</div>'+
         '</div>'+
-        '<div id='+idChart+' class="col-lg-12 col-md-12 col-sm-12" style="height: 320px; clear: right; margin-top: 20px;"></div>'+
+        '<div id="'+idChart+'_wrapper">'+
+            '<div id='+idChart+' class="col-lg-12 col-md-12 col-sm-12 statChart" style="height: 320px; clear: right; margin-top: 20px;"></div>'+
+        '</div>'+
+        '<div id="'+idChartFilter+'_wrapper">'+
+            '<div id='+idChartFilter+' class="col-lg-12 col-md-12 col-sm-12 statChart" style="height: 320px; clear: right; margin-top: 20px;"></div>'+
+        '</div>'+
         '<div class="boxInfoValues">'+
             '<p class="boxLetters  initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minVal"></p>'+
             '<p class="boxLetters middle"><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id="maxVal"></p>'+
@@ -399,7 +414,8 @@ function startDisplayEachChart(id) {
     $.getJSON(query, addDataEachChart);
 }
 
-function getDataFromSensors() {
+// Pone data en el chart principal de la pestaña de datos actuales 
+function getDataFromSensors(idDiv, start, finish) {
     var sensors_series = [];
     var sensors_axis_1 = [];
     var sensors_axis_2 = [];
@@ -427,7 +443,8 @@ function getDataFromSensors() {
             })
         }
 
-        var query = 'api/Station/' + station_id + '/Sensor/' + sensor_id + '/Data/';
+        var query = 'api/Station/' + station_id + '/Sensor/' + sensor_id + '/DataTimestamp?StartTimestamp=' + start + "&EndTimestamp=" + finish;
+        console.log(query);
         $.getJSON(query, function(result) {
             var sensor_datapoints = [];
 
@@ -457,11 +474,11 @@ function getDataFromSensors() {
         });
     }
 
-    displayStatsChart(sensors_series, sensors_axis_1, sensors_axis_2);
+    displayStatsChart(idDiv, sensors_series, sensors_axis_1, sensors_axis_2);
 }
 
-function displayStatsChart(data_series, data_axis_1, data_axis_2) {
-    var chartStat = new CanvasJS.Chart("chart_statsTab", {
+function displayStatsChart(div, data_series, data_axis_1, data_axis_2) {
+    var chartStat = new CanvasJS.Chart(div, {
         animationEnabled: true,
         zoomEnabled: true,
         height: 320,
@@ -471,7 +488,11 @@ function displayStatsChart(data_series, data_axis_1, data_axis_2) {
         data: data_series
     });
 
-    charts['individual'] = chartStat;
+    if (div.includes("filter")) {
+        charts['filtered'] = chartStat
+    } else {
+        charts['individual'] = chartStat;
+    }
 }
 
 //Add the data for the graph
@@ -543,7 +564,6 @@ function addDataEachChart(data){
 
 //Open tab selected
 function openDevice(evt, sensor) {
-    console.log("Opending device");
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
@@ -567,6 +587,8 @@ function openDevice(evt, sensor) {
             }
         }else{
             chartToRender.render();
+            charts['filtered'].render();
+            $("#current_tab").trigger('click');
         }
         
     }
@@ -584,6 +606,7 @@ function displayDataSeries(checkbox) {
     individual_chart.render();
 }
 
+// Pone data en el chart de la peseña rango de fechas
 function getDataByDates(event) {
     var start = moment($(".start").val());
     var finish = moment($("finish").val());
@@ -591,7 +614,7 @@ function getDataByDates(event) {
     var new_dataseries = [];
 
     for (key in idSensorDic) {
-        var query = "api/Station/" + stationId + "/Sensor/" + idSensorDic[key] + "/DataTimestamp/Filter?StartTimestamp=" + start.unix() + "&EndTimestamp=" + finish.unix() + "&Filter=Hours&FilterValue=1";
+        var query = "api/Station/" + stationId + "/Sensor/" + idSensorDic[key] + "/DataTimestamp?StartTimestamp=" + start.unix() + "&EndTimestamp=" + finish.unix();
         var sensor_type = sensor['type'];
         var sensor_location = sensor['location'];
         var nameDataSeries = sensor_type + ' ' + sensor_location;
@@ -637,56 +660,13 @@ function getDataByDates(event) {
                 toolTipContent: "<strong>{x}</strong>: {y} " + unit,
                 dataPoints: new_datapoints
             });
-            charts['individual'].options.data = new_dataseries;
-            charts['individual'].render();
+            charts['filtered'].options.data = new_dataseries;
+            charts['filtered'].render();
         });
     }
 }
 
-function reloadChart() {
-    for (sensor of sensorsList) {
-        var station_id = sensor['stationid'];
-        var sensor_id = sensor['id'];
-        var new_dataseries = [];
-
-        console.log(sensorsList);
-
-        var query = 'api/Station/' + station_id + '/Sensor/' + sensor_id + '/Data/';
-
-        $.getJSON(query, function(data) {
-            var new_datapoints = [];
-    
-            $.each(data, function(i, field) {
-                var timestamp = parseInt(field.Timestamp);
-                var value = parseFloat(field.Value);
-                var date = new Date(timestamp * 1000);
-                var hours = date.getHours() + ":" + (date.getMinutes() < 10? '0' : '') + date.getMinutes();
-                
-                new_datapoints.push({
-                    x: date,
-                    y: value,
-                    hour: hours,
-                });
-            });
-            
-            if (data[0].Type == "Temperature") {
-                unit = "°C";
-                axis_type = "primary";
-            } else if (data[0].Type == "Humidity") {
-                unit = "%";
-                axis_type = "secondary";
-            }
-    
-            new_dataseries.push({
-                showInLegend: true,
-                name: data[0].Type + ' ' + data[0].Location,
-                axisYType: axis_type,
-                type: "line",
-                toolTipContent: "<strong>{x}</strong>: {y} " + unit,
-                dataPoints: new_datapoints
-            });
-            charts['individual'].options.data = new_dataseries;
-            charts['individual'].render();
-        });
-    }
+function showChart(show, hide) {
+    document.getElementById(show).style.display = "block";
+    document.getElementById(hide).style.display = "none";
 }

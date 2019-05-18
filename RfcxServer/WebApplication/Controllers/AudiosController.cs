@@ -150,7 +150,7 @@ namespace WebApplication.Controllers
 
         //[HttpDelete("{id}")]
         [HttpDelete]
-        [Route("Download/api/Station/{StationId:int}/[controller]/{AudioId:int}")]
+        [Route("[controller]/api/Station/{StationId:int}/Audio/{AudioId:int}")]
         public async Task<bool> Delete([FromRoute]int StationId, [FromRoute]int AudioId)
         {
             if (AudioId==0) return false;
