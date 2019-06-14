@@ -14,15 +14,15 @@ namespace WebApplication.Repository
 {
     public class AlertRepository : IAlertRepository
     {
-        private readonly ObjectContext _context =null; 
+        private readonly ObjectContext _context = null;
 
         public AlertRepository(IOptions<Settings> settings)
         {
             _context = new ObjectContext(settings);
-        } 
+        }
 
 
-        public async Task<IEnumerable<Alert>> Get()
+        public async Task<IEnumerable<Alert>> GetAllAlerts()
         {
             try
             {
@@ -34,9 +34,9 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<Alert> Get(string id)
+        public async Task<Alert> GetAlert(string id)
         {
-            var filter = Builders<Alert>.Filter.Eq("AlertId", id);
+            var filter = Builders<Alert>.Filter.Eq("Id", id);
 
             try
             {
@@ -48,17 +48,20 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task Add(Alert item)
+        public async Task AddAlert(Alert item)
         {
             try
             {
-                var list=_context.Alerts.Find(_ => true).ToList();
-                if(list.Count>0){
-                    item.Id=list[list.Count-1].Id+1;
-                }else{
-                    item.Id=1;
-                }
-                
+                // var list = _context.Alerts.Find(_ => true).ToList();
+                // if (list.Count > 0)
+                // {
+                //     item.AlertId = list[list.Count - 1].AlertId + 1;
+                // }
+                // else
+                // {
+                //     item.AlertId = 1;
+                // }
+
                 await _context.Alerts.InsertOneAsync(item);
             }
             catch (Exception ex)
@@ -67,14 +70,14 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<bool> Remove(string id)
+        public async Task<bool> RemoveAlert(string id)
         {
             try
             {
                 DeleteResult actionResult = await _context.Alerts.DeleteOneAsync(
-                        Builders<Alert>.Filter.Eq("AlertId", id));
+                        Builders<Alert>.Filter.Eq("Id", id));
 
-                return actionResult.IsAcknowledged 
+                return actionResult.IsAcknowledged
                     && actionResult.DeletedCount > 0;
             }
             catch (Exception ex)
@@ -83,14 +86,14 @@ namespace WebApplication.Repository
             }
         }
 
-        
-        public async Task<bool> Update(string id, Alert item)
+
+        public async Task<bool> UpdateAlert(string id, Alert item)
         {
             try
             {
-                ReplaceOneResult actionResult 
+                ReplaceOneResult actionResult
                     = await _context.Alerts
-                                    .ReplaceOneAsync(n => n.AlertId.Equals(id)
+                                    .ReplaceOneAsync(n => n.Id.Equals(id)
                                             , item
                                             , new UpdateOptions { IsUpsert = true });
                 return actionResult.IsAcknowledged
@@ -102,42 +105,15 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<bool> RemoveAll()
-        {
-            try
-            {
-                DeleteResult actionResult 
-                    = await _context.Alerts.DeleteManyAsync(new BsonDocument());
 
-                return actionResult.IsAcknowledged
-                    && actionResult.DeletedCount > 0;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-        public Task<bool> UpdateLastNotification(int id, string lastNotification)
+        public Alert getAlertObject(int id)
         {
-            Alert alert=getAlert(id);
-            alert.LastNotification= lastNotification;
-            return Update(alert.AlertId, alert);
+            var filter = Builders<Alert>.Filter.Eq("Id", id);
+            Alert alert = _context.Alerts.Find(filter).FirstOrDefaultAsync().Result;
+            return alert;
         }
-
-        public Task<bool> UpdateStatus(int id, string status)
-        {
-            Alert alert=getAlert(id);
-            alert.Status= status;
-            return Update(alert.AlertId, alert);
-        }
-
-        public Alert getAlert(int id){
-        var filter = Builders<Alert>.Filter.Eq("Id", id);
-        Alert alert=_context.Alerts.Find(filter).FirstOrDefaultAsync().Result;
-        return alert;
-    }
 
     }
 
-    
+
 }

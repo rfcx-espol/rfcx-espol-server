@@ -10,17 +10,17 @@ using System;
 namespace WebApplication.Controllers
 {
     [Route("api/[controller]")]
-    public class AlertController
+    public class AlertController : Controller
     {
-        
+
         private readonly IAlertRepository _AlertRepository;
 
         public AlertController(IAlertRepository AlertRepository)
         {
-            _AlertRepository=AlertRepository;
+            _AlertRepository = AlertRepository;
         }
 
-        [HttpGet]
+        [HttpGet("list")]
         public Task<string> Get()
         {
             return this.GetAlert();
@@ -28,7 +28,7 @@ namespace WebApplication.Controllers
 
         private async Task<string> GetAlert()
         {
-            var Alerts= await _AlertRepository.Get();
+            var Alerts = await _AlertRepository.GetAllAlerts();
             return JsonConvert.SerializeObject(Alerts);
         }
 
@@ -41,14 +41,14 @@ namespace WebApplication.Controllers
 
         private async Task<string> GetAlertById(string id)
         {
-            var Alert= await _AlertRepository.Get(id) ?? new Alert();
+            var Alert = await _AlertRepository.GetAlert(id) ?? new Alert();
             return JsonConvert.SerializeObject(Alert);
         }
 
         [HttpPost]
         public async Task<string> Post([FromBody] Alert Alert)
         {
-            await _AlertRepository.Add(Alert);
+            await _AlertRepository.AddAlert(Alert);
             return "";
         }
 
@@ -56,28 +56,23 @@ namespace WebApplication.Controllers
         public async Task<bool> Put(string id, [FromBody] Alert Alert)
         {
             if (string.IsNullOrEmpty(id)) return false;
-            return await _AlertRepository.Update(id, Alert);
+            return await _AlertRepository.UpdateAlert(id, Alert);
         }
 
         [HttpDelete("{id}")]
         public async Task<bool> Delete(string id)
         {
             if (string.IsNullOrEmpty(id)) return false;
-            return await _AlertRepository.Remove(id);
+            return await _AlertRepository.RemoveAlert(id);
         }
 
-        [HttpPatch("{id}/LastNotification")]
-        public async Task<bool> PatchLastNotification(int id, [FromBody]  Arrays json)
+        [HttpGet("index")]
+        public IActionResult Index()
         {
-            if (id==0) return false;
-            return await _AlertRepository.UpdateLastNotification(id, json.LastNotification);
+
+            return View();
         }
 
-        [HttpPatch("{id}/Status")]
-        public async Task<bool> PatchStatus(int id, [FromBody]  Arrays json)
-        {
-            if (id==0) return false;
-            return await _AlertRepository.UpdateStatus(id, json.Status);
-        }
+
     }
 }
