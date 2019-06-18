@@ -1,22 +1,17 @@
 using System.Collections.Generic;
-//using static WebApplication.Models.Condition;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace WebApplication.Models
 {
-    public class Alert
+    public class Condition
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string AlertId { get; set; }
+        public string ConditionId { get; set; }
         public int Id { get; set; }
-        public int StationId { get; set; }
-        public string Name { get; set; }
-        public string AlertType { get; set; }
-        public List<string> Mailto { get; set; }
-        public string Message { get; set; }
-        //public List<Condition> Conditions { get; set; }
+        public double Threshold { get; set; }
+        public string Comparison{ get; set;}
         /*Status:
         CREATED: When Alert is just created because a rule is being breaking.
         SEND: When Alert is just send to Receiver

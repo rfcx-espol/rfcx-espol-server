@@ -1,0 +1,134 @@
+@{
+    ViewBag.Title = "Editar Alerta";
+}
+@section Style {
+    <style>
+        #titulo {
+            text-align: center;
+        }
+        #boton_especie {
+            text-align: left;
+            margin-top: 20px;
+            margin-bottom: 65px;
+        }
+        #formulario {
+            margin-left: 0;
+            margin-right: 270px;
+        }
+        textarea {
+            resize: none;
+        }
+        .botones_eliminar {
+            padding: 0;
+            text-align: right;
+            display: none;
+            margin-bottom: 5px;
+        }
+        #boton_agregar {
+            padding: 0;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .descripcion, .botones_eliminar, #boton_agregar {
+            margin-bottom: 5px;
+        }
+        #mensaje {
+            color: red;
+        }
+        #alerta {
+            margin: 20px 0 0 0;
+        }
+        .div_descripcion {
+            margin-top: 3px;
+        }
+        .imagen {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            width: 100%;
+            border: solid 1px rgb(221, 221, 221);
+            padding: 4px;
+            border-radius: 2%;
+        }
+        .img-responsive {
+            margin: auto;
+        }
+        .boton_eliminar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 100;
+            background-color: #f9f9f9;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 1px 1px #888888;
+        }
+        .material-icons {
+            font-size: 25px;
+            padding-right: 3px;
+            padding-left: 3px;
+            padding-top: 3px;
+            color: #CB4335;     
+        }
+        h4#modal_alert_label {
+            color: white;
+        }
+        .modal-header.alert-danger button.close{
+            color: white;
+            opacity: 1;
+        }
+        .modal-header.alert-danger {
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            background-color: #d9534f;
+        }
+        .modal-footer {
+            text-align: center !important;
+        }
+
+    </style>
+}
+
+<div id="formulario" class="row">
+    <form id="form_editar_pregunta">
+        <div id="titulo" class="form-group col-lg-12 col-md-12">
+            <h2>Edición de alerta</h2>
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+            <label>Nombre: </label>
+            <input id="nombre_alerta" class="form-control" type="text" name="nombre_alerta" required>
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+            <label>Tipo: </label>
+            <select name="tipo_alerta" class="form-control" required="">
+                <option value="" hidden="">Escoja una opción</option>
+                    <option value="1">Técnico</option>
+                    <option value="2">Amenaza</option>
+                    <option value="3">Investigación</option>
+            </select>
+        </div>
+
+        <div id="boton_pregunta" class="form-group col-lg-12 col-md-12">
+                <button class="btn btn-primary" onclick="return updateAlert(@ViewBag.alert.Id);">Editar Alerta</button>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function(){
+            alert_input_changed = [];
+        });
+        
+        $("#formulario input.form-control").change(function () {
+            var input_id = $(this).attr("id");
+            if(!alert_input_changed.includes(input_id)) {
+                alert_input_changed.push(input_id);
+            }
+        })
+        function updateAlert(id) {
+            console.log("On development")
+        };
+
+
+    </script>
+}

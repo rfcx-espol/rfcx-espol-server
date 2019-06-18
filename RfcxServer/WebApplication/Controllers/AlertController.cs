@@ -69,8 +69,8 @@ namespace WebApplication.Controllers
         [HttpGet("index")]
         public IActionResult Index()
         {
-
-            return View();
+            var Alerts = _AlertRepository.GetAllAlerts();
+            return View(Alerts);
         }
 
 

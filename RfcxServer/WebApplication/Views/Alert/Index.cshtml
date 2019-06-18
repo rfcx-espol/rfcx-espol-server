@@ -1,0 +1,127 @@
+@model System.Collections.Generic.IEnumerable<Alert>
+@{
+    ViewBag.Title = "Alertas";
+}
+@section Style {
+    <style>
+       #principal {
+            padding: 15px;
+            margin-right: 270px;
+        }
+        h2 {
+            margin-top: 10px;
+            text-align: center;
+        }
+        #div_tabla_preguntas {
+            margin-top: 20px;
+            margin-bottom: 50px;
+        }
+        #div_boton_nuevo {
+            margin: 20px 0;
+        }
+        h4#modal_alert_label {
+            color: white;
+        }
+        .modal-header.alert-danger button.close{
+            color: white;
+            opacity: 1;
+        }
+        .modal-header.alert-danger {
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            background-color: #d9534f;
+        }
+        .modal-footer {
+            text-align: center !important;
+        } 
+    </style>
+}
+<div id="principal">
+    <h2>Alarmas</h2>
+    <div id="div_boton_nuevo">
+        <input class="btn btn-primary" type="button" onclick="location.href='@Url.Action("Create","Alert")'" 
+            value="Nueva alerta">
+    </div>
+
+    <!-- Pop ups with return messages-->
+
+    <div id="div_tabla_alertas">
+        <table id="tabla_alertas" class="cell-border display compact">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Activo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var alert in Model)
+                {
+                    <tr>
+                        <td>@alert.Name</td>
+                        <td>@alert.AlertType</td>
+                        <td style="text-align: center;">
+                            <input id="checkbox-activo" type="checkbox">
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="btn btn-primary" onclick="editarAlerta(@alert.Id);">Editar</button>
+                            <button class="btn btn-danger" onclick="mostrarAdvertencia(@alert.Id);">Eliminar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+    </div>
+    <div class="modal fade" id="alert_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header alert-danger">
+                    <button type="button" class="close" style="margin-top: 1px" onclick="cerrarModal();">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="modal_alert_label">ADVERTENCIA</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Se borrará la alerta. Esta acción no puede revertirse. ¿Desea continuar?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button id="accept" class="btn btn-danger" onclick="">Aceptar</button>
+                    <button id="cancel" class="btn btn-default" onclick="cerrarModal();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        function mostrarAdvertencia(id) {
+            $("#accept").attr("onclick", "eliminarAlerta(" + id + ");");
+            $("#alert_modal").modal("show");
+        }    
+
+        function cerrarModal() {
+            $("#alert_modal").modal("hide");
+        }
+
+        function eliminarAlerta(id) {
+            $.ajax({
+                url: "/api/bpv/alert/" + id + "/",
+                type: 'DELETE',
+                async: false,
+                success: function() {
+                    window.location.href = '@Url.Action("Index","Alert")';
+                }
+            });
+        }
+
+        function editarAlerta(id) {
+            window.location.href = '/api/bpv/alert/' + id + '/edit/';
+        }
+    </script>
+}
