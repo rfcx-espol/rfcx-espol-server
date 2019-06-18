@@ -113,6 +113,15 @@ namespace WebApplication.Repository
             return alert;
         }
 
+        public List<Alert> Get(){
+            try {
+                return _context.Alerts.Find(_ => true).ToList();
+            }
+            catch (Exception ex){
+                throw ex;
+            }
+        }
+
     }
 
 

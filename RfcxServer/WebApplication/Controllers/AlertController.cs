@@ -3,8 +3,7 @@ using WebApplication.IRepository;
 using System.Threading.Tasks;
 using WebApplication.Models;
 using Newtonsoft.Json;
-using System;
-
+using System.Collections.Generic;
 
 
 namespace WebApplication.Controllers
@@ -69,8 +68,8 @@ namespace WebApplication.Controllers
         [HttpGet("index")]
         public IActionResult Index()
         {
-            var Alerts = _AlertRepository.GetAllAlerts();
-            return View(Alerts);
+            IEnumerable<Alert> alerts = _AlertRepository.Get();
+            return View(alerts);
         }
 
 
