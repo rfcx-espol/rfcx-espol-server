@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DotNetZip" Version="1.10.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.MongoDB" Version="1.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.0.2" />
@@ -30,6 +31,7 @@
     <PackageReference Include="X.PagedList.Mvc.Core" Version="7.5.0" />
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="WindowsBase">
@@ -42,5 +44,6 @@
     <Folder Include="Controllers\" />
     <Folder Include="Repository\" />
     <Folder Include="IRepository\" />
+    <Folder Include="Entities\" />
   </ItemGroup>
 </Project>

@@ -89,6 +89,14 @@ namespace WebApplication.DbModels
             }
         }
 
+        public IMongoCollection<User> Users
+        {
+            get
+            {
+                return _database.GetCollection<User>("Users");
+            }
+        }
+
         public IMongoCollection<Label> Labels
         {
             get

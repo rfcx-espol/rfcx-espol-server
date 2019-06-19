@@ -1,0 +1,62 @@
+﻿@model WebApplication.Models.User
+
+@section Style {
+    <style>
+
+        #div_update {
+            margin-top: 20px;
+            margin-bottom: 50px;
+            margin-left: 20px;
+        }
+
+        input {
+            margin: 2px;
+            padding: 4px;
+        }
+    </style>
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+</head>
+<body>
+    <div id="div_login">
+        <form asp-controller="Users" asp-action="Create" method="post" role="form">
+            <label>Username:</label> <input asp-for="Username" required /> <br />
+            <label>Password:</label> <input id="password" type="password" asp-for="Password" required /> <br />
+            <label>Role:</label> <input asp-for="Role" required /> <br />
+            <button type="submit">Register</button>
+        </form>
+        <label id="passLabel"></label>
+    </div>
+
+</body>
+</html>
+
+
+<script src="~/js/jquery-3.3.1.min.js" type="text/javascript"></script>
+<script src="~/js/bootstrap.js"></script>
+<script src="~/js/bootstrap-dialog.min.js" type="text/javascript"></script>
+<script src="~/js/jquery.dataTables.min.js" type="text/javascript"></script>
+<script src="~/js/select2.min.js" type="text/javascript"></script>
+<script src="~/js/es.js" type="text/javascript"></script>
+<script>
+    $("#password").keyup(function () {
+        var VAL = this.value;
+
+        var email = new RegExp("^(?=.*?[a-z])(?=.*?[0-9]).{8,}$");
+
+        if (!email.test(VAL)) {
+            $("#passLabel").text("La contraseña debe ser de 8 caracteres y contener al menos un valor numérico.");
+            $("button").prop("disabled", true);
+        }
+        else {
+            $("#passLabel").text("");
+            $("button").prop("disabled", false);
+        }
+    });
+</script>

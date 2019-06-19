@@ -1,0 +1,37 @@
+@model WebApplication.Models.User
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Style {
+    <style>
+
+        h2 {
+            margin-left: 10px;
+        }
+
+        #div_login{
+            margin-top: 20px;
+            margin-bottom: 50px;
+            margin-left: 20px;
+        }
+
+        input {
+            margin: 10px;
+            padding: 4px;
+        }
+    </style>
+}
+
+<div class="mu-title">
+    <h2> Log In </h2>
+</div>
+
+<div id="div_login">
+    <form asp-controller="Authentication" asp-action="authenticate" method="post" role="form">
+        <label>Username:</label> <input asp-for="Username" /> <br />
+        <label>Password:</label> <input type="password" asp-for="Password" /> <br />
+        <button type="submit">Ingresar</button>
+    </form>
+</div>
