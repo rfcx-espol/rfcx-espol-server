@@ -57,10 +57,10 @@ namespace WebApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(string Username, string Password, string Role) 
+        public IActionResult Create(string Username, string Password, string Role, string Name) 
         {
             var user = new User();
-            user.Username = Username; user.Password = Password; user.Role = Role;
+            user.Username = Username; user.Password = Password; user.Role = Role; user.Name = Name;
             _userRepository.AddAsync(user);
             return Redirect("/users/index");
         }

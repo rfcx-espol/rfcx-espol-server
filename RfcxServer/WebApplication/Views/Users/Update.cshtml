@@ -26,6 +26,7 @@
 <body>
     <div id="div_update">
         <label>Username:</label> <input id="username" value=@ViewBag.UserToEdit.Username required /> <br />
+        <label>Name:</label> <input id="name" value=@ViewBag.UserToEdit.Name required /> <br />
         <label>New Password:</label> <input id="newPassword" type="password" required /> <br />
         <label>Confirm Password:</label> <input id="confirmPassword" type="password" required /> <br />
         <label>Role:</label> <input id="role" value=@ViewBag.UserToEdit.Role required /> <br />
@@ -72,6 +73,7 @@
                 type: 'POST',
                 data: JSON.stringify({
                     Username: $("#username").val(),
+                    Name: $("#name").val(),
                     Password: $("#newPassword").val(),
                     Token: null,
                     Role: $("#role").val()

@@ -28,6 +28,7 @@
         <form asp-controller="Users" asp-action="Create" method="post" role="form">
             <label>Username:</label> <input asp-for="Username" required /> <br />
             <label>Password:</label> <input id="password" type="password" asp-for="Password" required /> <br />
+            <label>Nombre:</label> <input asp-for="Name" required /> <br />
             <label>Role:</label> <input asp-for="Role" required /> <br />
             <button type="submit">Register</button>
         </form>
