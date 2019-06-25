@@ -16,13 +16,7 @@ namespace WebApplication.Models
         public string AlertType { get; set; }
         public List<string> Mailto { get; set; }
         public string Message { get; set; }
-        //public List<Condition> Conditions { get; set; }
-        /*Status:
-        CREATED: When Alert is just created because a rule is being breaking.
-        SEND: When Alert is just send to Receiver
-        VERIFIED: When Alert is already VERIFIED by Receiver
-        CORRECT: When alert is already verified. Then server can create new alert to this station
-        */
+        public List<Condition> Conditions { get; set; }
         public bool Status { get; set; }
 
 

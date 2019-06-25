@@ -52,15 +52,15 @@ namespace WebApplication.Repository
         {
             try
             {
-                // var list = _context.Alerts.Find(_ => true).ToList();
-                // if (list.Count > 0)
-                // {
-                //     item.AlertId = list[list.Count - 1].AlertId + 1;
-                // }
-                // else
-                // {
-                //     item.AlertId = 1;
-                // }
+                var list = _context.Alerts.Find(_ => true).ToList();
+                if (list.Count > 0)
+                {
+                    item.Id = list[list.Count - 1].Id + 1;
+                }
+                else
+                {
+                    item.Id = 1;
+                }
 
                 await _context.Alerts.InsertOneAsync(item);
             }
@@ -109,15 +109,40 @@ namespace WebApplication.Repository
         public Alert getAlertObject(int id)
         {
             var filter = Builders<Alert>.Filter.Eq("Id", id);
-            Alert alert = _context.Alerts.Find(filter).FirstOrDefaultAsync().Result;
-            return alert;
+            try
+            {
+                Alert alert = _context.Alerts.Find(filter).FirstOrDefaultAsync().Result;
+                return alert;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
-        public List<Alert> Get(){
-            try {
+        public Condition getConditionObject(int alertId, int conditionId)
+        {
+            Alert alert = getAlertObject(alertId);
+            Condition condition = null;
+            foreach (Condition c in alert.Conditions)
+            {
+                if (c.Id == conditionId)
+                {
+                    condition = c;
+                }
+            }
+            return condition;
+        }
+
+        public List<Alert> Get()
+        {
+            try
+            {
                 return _context.Alerts.Find(_ => true).ToList();
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 throw ex;
             }
         }

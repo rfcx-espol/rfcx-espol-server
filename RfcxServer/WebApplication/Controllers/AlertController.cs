@@ -65,6 +65,56 @@ namespace WebApplication.Controllers
             return await _AlertRepository.RemoveAlert(id);
         }
 
+        [HttpGet("{alertId}/condition/list")]
+        public async Task<string> GetConditions(string alertId)
+        {
+            var Alert = await _AlertRepository.GetAlert(alertId) ?? new Alert();
+            return JsonConvert.SerializeObject(Alert.Conditions);
+
+        }
+        [HttpGet("{alertId}/condition/{conditionId}")]
+        public string GetCondition(int alertId, int conditionId)
+        {
+            Condition condition = _AlertRepository.getConditionObject(alertId, conditionId);
+
+            return JsonConvert.SerializeObject(condition);
+
+        }
+
+        [HttpPatch("{alertId}/condition")]
+        public async Task<bool> AddCondition(string alertId, [FromBody] Condition condition)
+        {
+
+            var Alert = await _AlertRepository.GetAlert(alertId) ?? new Alert();
+            Alert.Conditions.Add(condition);
+            return await _AlertRepository.UpdateAlert(alertId, Alert);
+        }
+
+
+        // [HttpPatch("{alertId}/condition/{conditionId}")]
+        // public async Task<bool> EditCondition(int alertId, int conditionId, [FromBody] Condition condition)
+        // {
+
+        //     var Alert = await _AlertRepository.GetAlert(alertId.ToString()) ?? new Alert();
+        //     Condition c = _AlertRepository.getConditionObject(alertId, conditionId);
+        //     Alert.Conditions
+        // }
+
+        [HttpDelete("{alertId}/condition/{conditionId}")]
+        public async Task<bool> DeleteCondition(string alertId, int conditionId)
+        {
+            if (string.IsNullOrEmpty(alertId))
+            {
+                return false;
+            }
+            var Alert = await _AlertRepository.GetAlert(alertId) ?? new Alert();
+            int index = Alert.Conditions.FindIndex(x => x.Id == conditionId);
+            Alert.Conditions.RemoveAt(index);
+
+            return await _AlertRepository.UpdateAlert(alertId, Alert);
+
+        }
+
         [HttpGet("index")]
         public IActionResult Index()
         {
