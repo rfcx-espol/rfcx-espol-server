@@ -11,7 +11,6 @@ using WebApplication.Services;
 
 namespace WebApplication.Controllers
 {
-    [Authorize]
         [Route("")]
         public class DataController
         {

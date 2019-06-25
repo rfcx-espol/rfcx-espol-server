@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication.Controllers
 {
-    [Authorize]
     public class AudiosController : Controller
     {
         

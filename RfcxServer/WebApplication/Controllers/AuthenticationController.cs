@@ -16,6 +16,7 @@ namespace WebApplication.Controllers
         public class AuthenticationController : Controller
         {
             [AllowAnonymous]
+
             public IActionResult Index()
             {
                 return View();
