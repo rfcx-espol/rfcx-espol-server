@@ -8,6 +8,8 @@ namespace WebApplication.IRepository
     public interface IAlertRepository
     {
         List<Alert> Get();
+        Alert Get(int id);
+        bool Add(Alert item);
         Task<IEnumerable<Alert>> GetAllAlerts();
         Task<Alert> GetAlert(string id);
         Task AddAlert(Alert item);
