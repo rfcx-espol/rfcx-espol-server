@@ -131,7 +131,12 @@ namespace WebApplication
                 .AllowAnyHeader());
 
             app.UseAuthentication();
-            app.UseMvcWithDefaultRoute();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=authentication}/{action=Index}");
+            });
             app.UseCookiePolicy();
             app.UseStaticFiles();
             //app.UseMvc();

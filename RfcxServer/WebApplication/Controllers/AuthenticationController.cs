@@ -16,7 +16,6 @@ namespace WebApplication.Controllers
         public class AuthenticationController : Controller
         {
             [AllowAnonymous]
-
             public IActionResult Index()
             {
                 return View();
@@ -42,7 +41,7 @@ namespace WebApplication.Controllers
                 option.Expires = System.DateTime.Now.AddMinutes(20);
                 Response.Cookies.Append("token", user.Token, option);
 
-                return Redirect("/");
+                return Redirect("/Home");
             }
 
             [AllowAnonymous]
