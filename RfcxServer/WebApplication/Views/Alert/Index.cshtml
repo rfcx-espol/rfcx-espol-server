@@ -12,7 +12,7 @@
             margin-top: 10px;
             text-align: center;
         }
-        #div_tabla_preguntas {
+        #div_tabla_alertas {
             margin-top: 20px;
             margin-bottom: 50px;
         }
@@ -65,8 +65,8 @@
                             <input id="checkbox-activo" type="checkbox">
                         </td>
                         <td style="text-align: center;">
-                            <button class="btn btn-primary" onclick="editarAlerta(@alert.AlertId);">Editar</button>
-                            <button class="btn btn-danger" onclick="mostrarAdvertencia(@alert.AlertId);">Eliminar</button>
+                            <button class="btn btn-primary" onclick="editarAlerta(@alert.Id);">Editar</button>
+                            <button class="btn btn-danger" onclick="mostrarAdvertencia(@alert.Id);">Eliminar</button>
                         </td>
                     </tr>
                 }
@@ -100,6 +100,20 @@
 
 @section Scripts {
     <script>
+        $(document).ready( function () {
+            $('#tabla_alertas').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "columns": [
+                    { "width": "40%" },
+                    { "width": "20%" },
+                    { "width": "20%" },
+                    { "width": "20%" }
+                ]
+            });
+        } );
+
         function mostrarAdvertencia(id) {
             $("#accept").attr("onclick", "eliminarAlerta(" + id + ");");
             $("#alert_modal").modal("show");
@@ -111,7 +125,7 @@
 
         function eliminarAlerta(id) {
             $.ajax({
-                url: "/api/bpv/alert/" + id + "/",
+                url: "/api/alert/" + id + "/",
                 type: 'DELETE',
                 async: false,
                 success: function() {
@@ -121,7 +135,7 @@
         }
 
         function editarAlerta(id) {
-            window.location.href = '/api/bpv/alert/' + id + '/edit/';
+            window.location.href = '/api/alert/' + id + '/edit/';
         }
     </script>
 }

@@ -122,6 +122,16 @@ namespace WebApplication.Controllers
             return View(alerts);
         }
 
+        [HttpGet("create")]
+        public IActionResult Create()
+        {
+            return View();
+        }
 
+        [HttpGet("{id:int}/edit")]
+        public IActionResult Edit(int id) {
+            IEnumerable<Alert> alerts = _AlertRepository.Get();
+            return View();
+        }
     }
 }

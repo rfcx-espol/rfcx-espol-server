@@ -147,6 +147,50 @@ namespace WebApplication.Repository
             }
         }
 
+        public Alert Get(int id){
+            var filter = Builders<Alert>.Filter.Eq("Id", id);
+
+            try
+            {
+                return _context.Alerts.Find(filter).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool Add(Alert item){
+            try
+            {
+                var list=_context.Alerts.Find(_ => true).ToList();
+                if(item.Id==0){
+                    if(list.Count>0){
+                        list.Sort();
+                        item.Id=list[list.Count-1].Id+1;
+                    }
+                    else{
+                        item.Id=1;
+                    } 
+                }else{
+                    for (int i=0;i<list.Count;i++){
+                        if(item.Id==list[i].Id){
+                            return false;
+                        }
+                    }
+                }
+    
+                _context.Alerts.InsertOne(item);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                Console.Write(ex.Source);
+                Console.Write(ex.StackTrace);
+                return false;
+            }
+        }
     }
 
 
