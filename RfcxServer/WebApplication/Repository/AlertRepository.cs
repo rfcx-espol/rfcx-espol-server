@@ -36,7 +36,7 @@ namespace WebApplication.Repository
 
         public async Task<Alert> GetAlert(string id)
         {
-            var filter = Builders<Alert>.Filter.Eq("Id", id);
+            var filter = Builders<Alert>.Filter.Eq("_id", ObjectId.Parse(id));
 
             try
             {
@@ -53,14 +53,14 @@ namespace WebApplication.Repository
             try
             {
                 var list = _context.Alerts.Find(_ => true).ToList();
-                if (list.Count > 0)
-                {
-                    item.Id = list[list.Count - 1].Id + 1;
-                }
-                else
-                {
-                    item.Id = 1;
-                }
+                // if (list.Count > 0)
+                // {
+                //     item.Id = list[list.Count - 1].Id + 1;
+                // }
+                // else
+                // {
+                //     item.Id = 1;
+                // }
 
                 await _context.Alerts.InsertOneAsync(item);
             }
@@ -75,7 +75,7 @@ namespace WebApplication.Repository
             try
             {
                 DeleteResult actionResult = await _context.Alerts.DeleteOneAsync(
-                        Builders<Alert>.Filter.Eq("Id", id));
+                        Builders<Alert>.Filter.Eq("_id", ObjectId.Parse(id)));
 
                 return actionResult.IsAcknowledged
                     && actionResult.DeletedCount > 0;
@@ -93,7 +93,7 @@ namespace WebApplication.Repository
             {
                 ReplaceOneResult actionResult
                     = await _context.Alerts
-                                    .ReplaceOneAsync(n => n.Id.Equals(id)
+                                    .ReplaceOneAsync(n => n.AlertId.Equals(id)
                                             , item
                                             , new UpdateOptions { IsUpsert = true });
                 return actionResult.IsAcknowledged
@@ -106,9 +106,9 @@ namespace WebApplication.Repository
         }
 
 
-        public Alert getAlertObject(int id)
+        public Alert getAlertObject(string id)
         {
-            var filter = Builders<Alert>.Filter.Eq("Id", id);
+            var filter = Builders<Alert>.Filter.Eq("_id", ObjectId.Parse(id));
             try
             {
                 Alert alert = _context.Alerts.Find(filter).FirstOrDefaultAsync().Result;
@@ -121,13 +121,13 @@ namespace WebApplication.Repository
 
         }
 
-        public Condition getConditionObject(int alertId, int conditionId)
+        public Condition getConditionObject(string alertId, string conditionId)
         {
             Alert alert = getAlertObject(alertId);
             Condition condition = null;
             foreach (Condition c in alert.Conditions)
             {
-                if (c.Id == conditionId)
+                if (c._id == ObjectId.Parse(conditionId))
                 {
                     condition = c;
                 }
@@ -147,8 +147,9 @@ namespace WebApplication.Repository
             }
         }
 
-        public Alert Get(int id){
-            var filter = Builders<Alert>.Filter.Eq("Id", id);
+        public Alert Get(string id)
+        {
+            var filter = Builders<Alert>.Filter.Eq("_id", ObjectId.Parse(id));
 
             try
             {
@@ -160,26 +161,34 @@ namespace WebApplication.Repository
             }
         }
 
-        public bool Add(Alert item){
+        public bool Add(Alert item)
+        {
             try
             {
-                var list=_context.Alerts.Find(_ => true).ToList();
-                if(item.Id==0){
-                    if(list.Count>0){
-                        list.Sort();
-                        item.Id=list[list.Count-1].Id+1;
-                    }
-                    else{
-                        item.Id=1;
-                    } 
-                }else{
-                    for (int i=0;i<list.Count;i++){
-                        if(item.Id==list[i].Id){
-                            return false;
-                        }
-                    }
-                }
-    
+                var list = _context.Alerts.Find(_ => true).ToList();
+                // if (item.Id == 0)
+                // {
+                //     if (list.Count > 0)
+                //     {
+                //         list.Sort();
+                //         item.Id = list[list.Count - 1].Id + 1;
+                //     }
+                //     else
+                //     {
+                //         item.Id = 1;
+                //     }
+                // }
+                // else
+                // {
+                //     for (int i = 0; i < list.Count; i++)
+                //     {
+                //         if (item.Id == list[i].Id)
+                //         {
+                //             return false;
+                //         }
+                //     }
+                // }
+
                 _context.Alerts.InsertOne(item);
                 return true;
             }
@@ -191,7 +200,63 @@ namespace WebApplication.Repository
                 return false;
             }
         }
+
+        public async Task<bool> editCondition(string alertId, string conditionId, Condition condition)
+        {
+            var filter = Builders<Alert>.Filter;
+            var AlertIdAndConditionIdFilter = filter.And(
+                filter.Eq(x => x.AlertId, alertId),
+                filter.ElemMatch(x => x.Conditions, c => c._id == ObjectId.Parse(conditionId)));
+            var update = Builders<Alert>.Update;
+            var conditionSetter = update.Set("Conditions.$", condition);
+            UpdateResult actionResult = await _context.Alerts.UpdateOneAsync(AlertIdAndConditionIdFilter, conditionSetter);
+            return actionResult.IsAcknowledged && actionResult.ModifiedCount > 0;
+        }
+
+        // public async Task<Condition> getCondition(string alertId, string conditionId)
+        // {
+        //     var filter = Builders<Alert>.Filter.Eq("_id", ObjectId.Parse(alertId));
+        //     var subFilter = Builders<Condition>.Filter.Eq("_id", ObjectId.Parse(conditionId));
+        //     filter &= Builders<Alert>.Filter.ElemMatch("Conditions", subFilter);
+
+        //     try
+        //     {
+        //         var task1 = await _context.Alerts
+        //         .Find(filter)
+        //         .Project<BsonDocument>(Builders<Alert>.Projection.Exclude("_id").Include("Conditions.0"))
+        //         .FirstOrDefaultAsync();
+        //         Console.WriteLine(task1.ToString());
+        //         var task2 = await _context.Alerts
+        //         .Find(filter)
+        //         .Project<Condition>(Builders<Alert>.Projection.Exclude("_id").Include("Conditions.0"))
+        //         .FirstOrDefaultAsync();
+
+        //         return task2;
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         throw ex;
+        //     }
+        // }
+
+        // public async Task<IEnumerable<Condition>> GetConditions(string alertId)
+        // {
+        //     var filter = Builders<Alert>.Filter.Eq("_id", ObjectId.Parse(alertId));
+        //     try
+        //     {
+        //         return await _context.Alerts
+        //         .Find(filter)
+        //         .Project<Condition>(Builders<Alert>.Projection.Exclude("_id").Include("Conditions"))
+        //         .ToListAsync();
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         throw ex;
+        //     }
+        // }
     }
+
+
 
 
 }

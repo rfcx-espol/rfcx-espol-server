@@ -10,12 +10,12 @@ namespace WebApplication.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string AlertId { get; set; }
-        public int Id { get; set; }
         public int StationId { get; set; }
         public string Name { get; set; }
         public string AlertType { get; set; }
         public List<string> Mailto { get; set; }
         public string Message { get; set; }
+        [BsonElementAttribute("Conditions")]
         public List<Condition> Conditions { get; set; }
         public bool Status { get; set; }
 

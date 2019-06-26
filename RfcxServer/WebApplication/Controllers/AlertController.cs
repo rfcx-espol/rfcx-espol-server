@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using WebApplication.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-
+using MongoDB.Bson;
+using System.Linq;
+using System;
 
 namespace WebApplication.Controllers
 {
@@ -45,10 +47,25 @@ namespace WebApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<string> Post([FromBody] Alert Alert)
+        public IActionResult Post()
         {
-            await _AlertRepository.AddAlert(Alert);
-            return "";
+            Alert alert = new Alert();
+            List<Condition> condition_list = new List<Condition>();
+            Condition condition = new Condition();
+            alert.Name = Request.Form["nombre_alerta"];
+            alert.AlertType = Request.Form["tipo_alerta"];
+            string mails = Request.Form["correos_notificacion"];
+            alert.Mailto = mails.Split(";").ToList();
+            alert.Message = Request.Form["mensaje_alerta"];
+            alert.StationId = Int32.Parse(Request.Form["estacion_alerta"]);
+            condition.SensorId = Int32.Parse(Request.Form["sensor_alerta"]);
+            condition.Comparison = Request.Form["tipo_condicion"];
+            condition.Threshold = Int32.Parse(Request.Form["threshold_alerta"]);
+            alert.Status = true;
+            condition_list.Add(condition);
+            alert.Conditions = condition_list;
+            _AlertRepository.AddAlert(alert);
+            return Redirect("index");
         }
 
         [HttpPut("{id}")]
@@ -73,7 +90,7 @@ namespace WebApplication.Controllers
 
         }
         [HttpGet("{alertId}/condition/{conditionId}")]
-        public string GetCondition(int alertId, int conditionId)
+        public string GetCondition(string alertId, string conditionId)
         {
             Condition condition = _AlertRepository.getConditionObject(alertId, conditionId);
 
@@ -101,18 +118,25 @@ namespace WebApplication.Controllers
         // }
 
         [HttpDelete("{alertId}/condition/{conditionId}")]
-        public async Task<bool> DeleteCondition(string alertId, int conditionId)
+        public async Task<bool> DeleteCondition(string alertId, string conditionId)
         {
             if (string.IsNullOrEmpty(alertId))
             {
                 return false;
             }
             var Alert = await _AlertRepository.GetAlert(alertId) ?? new Alert();
-            int index = Alert.Conditions.FindIndex(x => x.Id == conditionId);
+            int index = Alert.Conditions.FindIndex(x => x._id == ObjectId.Parse(conditionId));
             Alert.Conditions.RemoveAt(index);
 
             return await _AlertRepository.UpdateAlert(alertId, Alert);
 
+        }
+
+        [HttpPatch("{alertId}/condition/{conditionId}")]
+
+        public async Task<bool> UpdateCondition(string alertId, string conditionId, [FromBody] Condition condition)
+        {
+            return await _AlertRepository.editCondition(alertId, conditionId, condition);
         }
 
         [HttpGet("index")]
@@ -129,7 +153,8 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet("{id:int}/edit")]
-        public IActionResult Edit(int id) {
+        public IActionResult Edit(int id)
+        {
             IEnumerable<Alert> alerts = _AlertRepository.Get();
             return View();
         }
