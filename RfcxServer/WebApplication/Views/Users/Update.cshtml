@@ -4,15 +4,24 @@
 @section Style {
     <style>
 
-        #div_update {
-            margin-top: 20px;
-            margin-bottom: 50px;
-            margin-left: 20px;
+        .simple-container {
+            width: 300px;
+            max-width: 100%;
+            margin: 50px;
         }
 
-        input {
-            margin: 2px;
-            padding: 4px;
+        .simple-container h2 {
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .simple-container .btn-login {
+            background-color: #007f42;
+            color: #fff;
+        }
+
+        a {
+            color: #fff;
         }
     </style>
 }
@@ -24,13 +33,37 @@
     <title>Update</title>
 </head>
 <body>
-    <div id="div_update">
-        <label>Username:</label> <input id="username" value=@ViewBag.UserToEdit.Username required /> <br />
-        <label>Name:</label> <input id="name" value=@ViewBag.UserToEdit.Name required /> <br />
-        <label>New Password:</label> <input id="newPassword" type="password" required /> <br />
-        <label>Confirm Password:</label> <input id="confirmPassword" type="password" required /> <br />
-        <label>Role:</label> <input id="role" value=@ViewBag.UserToEdit.Role required /> <br />
-        <button type="button">Modify</button>
+    <div class="simple-container">
+        <div class="row">
+            <div class="col-md-12 form-group">
+                <input id="username" type="text" class="form-control" placeholder="uario" value=@ViewBag.UserToEdit.Username required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 form-group">
+                <input id="name" type="text" class="form-control" placeholder="Nombre" value=@ViewBag.UserToEdit.Name required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 form-group">
+                <input type="password" id="newPassword" placeholder="Nueva Contraseña" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 form-group">
+                <input type="password" id="confirmPassword" placeholder="Confirme su Nueva Contraseña" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 form-group">
+                <input id="role" type="text" class="form-control" placeholder="Rol" value=@ViewBag.UserToEdit.Role required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 form-group">
+                <button type="button" class="btn btn-block btn-login">Modificar</button>
+            </div>
+        </div>
         <label id="passLabel"></label>
     </div>
 </body>

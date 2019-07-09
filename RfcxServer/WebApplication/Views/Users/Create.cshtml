@@ -3,15 +3,24 @@
 @section Style {
     <style>
 
-        #div_update {
-            margin-top: 20px;
-            margin-bottom: 50px;
-            margin-left: 20px;
+        .simple-container {
+            width: 300px;
+            max-width: 100%;
+            margin: 50px;
         }
 
-        input {
-            margin: 2px;
-            padding: 4px;
+        .simple-container h2 {
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .simple-container .btn-login {
+            background-color: #007f42;
+            color: #fff;
+        }
+
+        a {
+            color: #fff;
         }
     </style>
 }
@@ -24,13 +33,34 @@
     <title>Create</title>
 </head>
 <body>
-    <div id="div_login">
+    <div class="simple-container">
         <form asp-controller="Users" asp-action="Create" method="post" role="form">
-            <label>Username:</label> <input asp-for="Username" required /> <br />
-            <label>Password:</label> <input id="password" type="password" asp-for="Password" required /> <br />
-            <label>Nombre:</label> <input asp-for="Name" required /> <br />
-            <label>Role:</label> <input asp-for="Role" required /> <br />
-            <button type="submit">Register</button>
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    <input asp-for="Username" type="text" class="form-control" placeholder="Usuario" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    <input type="password" asp-for="Password" placeholder="Enter your Password" class="form-control" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    <input asp-for="Name" type="text" class="form-control" placeholder="Nombre" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    <input asp-for="Role" type="text" class="form-control" placeholder="Rol" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    <button type="submit" class="btn btn-block btn-login">Crear</button>
+                </div>
+            </div>
+      
         </form>
         <label id="passLabel"></label>
     </div>
