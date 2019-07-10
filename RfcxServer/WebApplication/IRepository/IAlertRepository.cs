@@ -1,4 +1,5 @@
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApplication.Models;
@@ -21,6 +22,7 @@ namespace WebApplication.IRepository
         Task<bool> editCondition(string alertId, string conditionId, Condition condition);
         // Task <bool> deleteCondition(string alertId, string conditionId);
         Condition getConditionObject(string alertId, string conditionId);
+        Task<bool> updateAlertStatus(string alertId, Boolean Status);
 
     }
 }
