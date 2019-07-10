@@ -50,7 +50,7 @@
             <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>Tipo</th>
+                    <th>Nivel</th>
                     <th>Activo</th>
                     <th>Acciones</th>
                 </tr>
@@ -62,11 +62,11 @@
                         <td>@alert.Name</td>
                         <td>@alert.AlertType</td>
                         <td style="text-align: center;">
-                            <input id="checkbox-activo" type="checkbox">
+                            <input id="checkbox-activo" type="checkbox" checked>
                         </td>
                         <td style="text-align: center;">
-                            <button class="btn btn-primary" onclick="editarAlerta(@alert.Id);">Editar</button>
-                            <button class="btn btn-danger" onclick="mostrarAdvertencia(@alert.Id);">Eliminar</button>
+                            <button class="btn btn-primary" onclick="editarAlerta(@alert.AlertId);">Editar</button>
+                            <button class="btn btn-danger" onclick="mostrarAdvertencia(@alert.AlertId);">Eliminar</button>
                         </td>
                     </tr>
                 }
@@ -137,5 +137,10 @@
         function editarAlerta(id) {
             window.location.href = '/api/alert/' + id + '/edit/';
         }
+/*
+        function mostrarActivo(){
+            $(#checkbox-activo).
+        }
+        */
     </script>
 }
