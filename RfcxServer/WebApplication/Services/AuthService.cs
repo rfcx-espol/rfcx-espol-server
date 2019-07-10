@@ -53,7 +53,8 @@ namespace WebApplication.Services
             {
                 Subject = new ClaimsIdentity(new Claim[] 
                 {
-                    new Claim(ClaimTypes.Name, user.Username.ToString())
+                    new Claim(ClaimTypes.Name, user.Username.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(20),
                 // IssuedAt = DateTime.UtcNow probablemente sirva para setear el expiry. Revisar SecurityTokenDescriptor

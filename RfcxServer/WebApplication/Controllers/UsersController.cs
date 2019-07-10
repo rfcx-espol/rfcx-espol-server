@@ -8,7 +8,6 @@ using System;
 
 namespace WebApplication.Controllers
 {
-  [Authorize]
     //[ApiController]
     public class UsersController : Controller
     {
@@ -19,6 +18,7 @@ namespace WebApplication.Controllers
             _userRepository = userRepository;
         }
 
+        [Authorize(Policy = RolePolicy.PoliticaRoleTodos)]
         [HttpGet("[controller]/index")]
         public IActionResult Index()
         {
@@ -26,12 +26,14 @@ namespace WebApplication.Controllers
             return View();
         }
 
+        [Authorize(Policy = RolePolicy.PoliticaRoleAdministrador)]
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize(Policy = RolePolicy.PoliticaRoleAdministrador)]
         [HttpGet("[controller]/update/{userId}")]
         public IActionResult Update(string userId)
         {
@@ -39,6 +41,7 @@ namespace WebApplication.Controllers
             return View();
         }
 
+        [Authorize(Policy = RolePolicy.PoliticaRoleAdministrador)]
         [HttpPost("api/[controller]/update/{userId}")]
         public IActionResult Update(string userId, [FromBody]User user)
         {
@@ -56,6 +59,7 @@ namespace WebApplication.Controllers
             return Ok(user);
         }
 
+        [Authorize(Policy = RolePolicy.PoliticaRoleAdministrador)]
         [HttpPost]
         public IActionResult Create(string Username, string Password, string Role, string Name) 
         {
@@ -65,6 +69,7 @@ namespace WebApplication.Controllers
             return Redirect("/users/index");
         }
 
+        [Authorize(Policy = RolePolicy.PoliticaRoleAdministrador)]
         [HttpPost("api/[controller]/new")]
         public IActionResult New([FromBody]User user)
         {
@@ -72,7 +77,7 @@ namespace WebApplication.Controllers
             return Ok(_userRepository.AddAsync(user));
         }
 
-
+        [Authorize(Policy = RolePolicy.PoliticaRoleAdministrador)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -80,6 +85,7 @@ namespace WebApplication.Controllers
             return Ok(users);
         }
 
+        [Authorize(Policy = RolePolicy.PoliticaRoleAdministrador)]
         [HttpDelete("api/[controller]/{userId}")]
         public bool Delete(string userId)
         {

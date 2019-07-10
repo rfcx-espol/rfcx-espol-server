@@ -39,7 +39,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="DbModels\" />
     <Folder Include="Controllers\" />
     <Folder Include="Repository\" />

@@ -70,6 +70,17 @@ namespace WebApplication
                 };
             });
 
+            services.AddAuthorization(options => {
+                options.AddPolicy(RolePolicy.PoliticaRoleAdministrador, 
+                    policy => policy.RequireRole(Role.Admin));
+
+                options.AddPolicy(RolePolicy.PoliticaRoleInvitado,
+                    policy => policy.RequireRole(Role.Invitado));
+
+                options.AddPolicy(RolePolicy.PoliticaRoleTodos,
+                    policy => policy.RequireRole(Role.Invitado, Role.Admin));
+            });
+
             // configure DI for application services
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserRepository, UserRepository>();
