@@ -55,6 +55,7 @@
                     <th class="userId">User Id</th>
                     <th>Username</th>
                     <th>Name</th>
+                    <th>Email</th>
                     <th>Role</th>
                     <th>Acciones</th>
                 </tr>
@@ -66,6 +67,7 @@
                         <td class="userId">@par.UserId</td>
                         <td>@par.Username</td>
                         <td>@par.Name</td>
+                        <td>@par.Email</td>
                         <td>@par.Role</td>
                         <td> 
                             <a class="btn btn-primary" href="/users/update/@par.UserId">Editar</a> 
@@ -112,10 +114,11 @@
                         "width": "0%",
                         "searchable": false
                     },
-                    { "width": "27%" },
-                    { "width": "27%" },
-                    { "width": "26%" },
-                    { "width": "20%" }
+                    { "width": "21%" },
+                    { "width": "21%" },
+                    { "width": "21%" },
+                    { "width": "21%" },
+                    { "width": "16%" }
                 ]
             });
         } );

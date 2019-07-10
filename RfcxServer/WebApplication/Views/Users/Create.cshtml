@@ -52,6 +52,11 @@
             </div>
             <div class="row">
                 <div class="col-md-12 form-group">
+                    <input asp-for="Email" type="email" class="form-control" placeholder="user@example.com" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group">
                     <input asp-for="Role" type="text" class="form-control" placeholder="Rol" required>
                 </div>
             </div>
@@ -60,7 +65,7 @@
                     <button type="submit" class="btn btn-block btn-login">Crear</button>
                 </div>
             </div>
-      
+
         </form>
         <label id="passLabel"></label>
     </div>

@@ -61,6 +61,11 @@
         </div>
         <div class="row">
             <div class="col-md-12 form-group">
+                <input id="email" type="email" class="form-control" placeholder="usuario@example.com" value=@ViewBag.UserToEdit.Email required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 form-group">
                 <button type="button" class="btn btn-block btn-login">Modificar</button>
             </div>
         </div>
@@ -109,6 +114,7 @@
                     Name: $("#name").val(),
                     Password: $("#newPassword").val(),
                     Token: null,
+                    Email: $("#email").val(),
                     Role: $("#role").val()
                 }),
                 success: function (response, textStatus, jqXhr) {

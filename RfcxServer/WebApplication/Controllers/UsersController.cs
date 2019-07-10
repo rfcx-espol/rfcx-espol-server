@@ -61,10 +61,10 @@ namespace WebApplication.Controllers
 
         [Authorize(Policy = RolePolicy.PoliticaRoleAdministrador)]
         [HttpPost]
-        public IActionResult Create(string Username, string Password, string Role, string Name) 
+        public IActionResult Create(string Username, string Password, string Role, string Name, string Email) 
         {
             var user = new User();
-            user.Username = Username; user.Password = Password; user.Role = Role; user.Name = Name;
+            user.Username = Username; user.Password = Password; user.Role = Role; user.Name = Name; user.Email = Email;
             _userRepository.AddAsync(user);
             return Redirect("/users/index");
         }

@@ -9,5 +9,6 @@ namespace WebApplication.Models
     {
         public const string Admin = "Admin";
         public const string Invitado = "Invitado";
+        public const string Desarrollador = "Desarrollador";
     }
 }
