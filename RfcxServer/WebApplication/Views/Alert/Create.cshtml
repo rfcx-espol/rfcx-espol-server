@@ -79,12 +79,12 @@
         </div>
         <div class="col-lg-2 col-md-2">
             <label>Estación: </label>
-            <select id="estacion_alerta" class="form-control">
+            <select id="estacion_alerta" class="form-control" name="estacion_alerta">
             </select>
         </div>
         <div class="col-lg-2 col-md-2">
             <label>Sensor: </label>
-            <select id="sensor_alerta" class="form-control">
+            <select id="sensor_alerta" class="form-control" name="sensor_alerta">
             </select>
         </div>
         <div class="col-lg-2 col-md-2">
@@ -118,7 +118,6 @@
                         option.text(station.Name);
                         option.attr("id",station.Id)
                         option.attr("value",station.Id)
-                        $("#estacion_alerta").append()
                         $("#estacion_alerta").append(option);
                     });
                 }

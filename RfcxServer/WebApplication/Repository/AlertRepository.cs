@@ -207,48 +207,6 @@ namespace WebApplication.Repository
             }
 
         }
-
-        // public async Task<Condition> getCondition(string alertId, string conditionId)
-        // {
-        //     var filter = Builders<Alert>.Filter.Eq("_id", ObjectId.Parse(alertId));
-        //     var subFilter = Builders<Condition>.Filter.Eq("_id", ObjectId.Parse(conditionId));
-        //     filter &= Builders<Alert>.Filter.ElemMatch("Conditions", subFilter);
-
-        //     try
-        //     {
-        //         var task1 = await _context.Alerts
-        //         .Find(filter)
-        //         .Project<BsonDocument>(Builders<Alert>.Projection.Exclude("_id").Include("Conditions.0"))
-        //         .FirstOrDefaultAsync();
-        //         Console.WriteLine(task1.ToString());
-        //         var task2 = await _context.Alerts
-        //         .Find(filter)
-        //         .Project<Condition>(Builders<Alert>.Projection.Exclude("_id").Include("Conditions.0"))
-        //         .FirstOrDefaultAsync();
-
-        //         return task2;
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         throw ex;
-        //     }
-        // }
-
-        // public async Task<IEnumerable<Condition>> GetConditions(string alertId)
-        // {
-        //     var filter = Builders<Alert>.Filter.Eq("_id", ObjectId.Parse(alertId));
-        //     try
-        //     {
-        //         return await _context.Alerts
-        //         .Find(filter)
-        //         .Project<Condition>(Builders<Alert>.Projection.Exclude("_id").Include("Conditions"))
-        //         .ToListAsync();
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         throw ex;
-        //     }
-        // }
     }
 
 
