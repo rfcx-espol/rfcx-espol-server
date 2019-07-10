@@ -46,6 +46,7 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Alert);
         }
 
+
         [HttpPost]
         public IActionResult Post()
         {
@@ -57,8 +58,8 @@ namespace WebApplication.Controllers
             string mails = Request.Form["correos_notificacion"];
             alert.Mailto = mails.Split(";").ToList();
             alert.Message = Request.Form["mensaje_alerta"];
-            alert.StationId = Int32.Parse(Request.Form["estacion_alerta"]);
-            condition.SensorId = Int32.Parse(Request.Form["sensor_alerta"]);
+            alert.StationId = Request.Form["estacion_alerta"];
+            condition.SensorId = Request.Form["sensor_alerta"];
             condition.Comparison = Request.Form["tipo_condicion"];
             condition.Threshold = Int32.Parse(Request.Form["threshold_alerta"]);
             alert.Status = true;
