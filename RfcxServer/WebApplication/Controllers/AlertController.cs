@@ -98,6 +98,14 @@ namespace WebApplication.Controllers
 
         }
 
+        [HttpPatch("{alertId}/Status")]
+        public async Task<bool> UpdateStatus(string alertId, [FromBody] Boolean Status)
+        {
+
+            return await _AlertRepository.updateAlertStatus(alertId, Status);
+        }
+
+
         [HttpPatch("{alertId}/condition")]
         public async Task<bool> AddCondition(string alertId, [FromBody] Condition condition)
         {

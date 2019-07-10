@@ -166,29 +166,6 @@ namespace WebApplication.Repository
             try
             {
                 var list = _context.Alerts.Find(_ => true).ToList();
-                // if (item.Id == 0)
-                // {
-                //     if (list.Count > 0)
-                //     {
-                //         list.Sort();
-                //         item.Id = list[list.Count - 1].Id + 1;
-                //     }
-                //     else
-                //     {
-                //         item.Id = 1;
-                //     }
-                // }
-                // else
-                // {
-                //     for (int i = 0; i < list.Count; i++)
-                //     {
-                //         if (item.Id == list[i].Id)
-                //         {
-                //             return false;
-                //         }
-                //     }
-                // }
-
                 _context.Alerts.InsertOne(item);
                 return true;
             }
@@ -211,6 +188,24 @@ namespace WebApplication.Repository
             var conditionSetter = update.Set("Conditions.$", condition);
             UpdateResult actionResult = await _context.Alerts.UpdateOneAsync(AlertIdAndConditionIdFilter, conditionSetter);
             return actionResult.IsAcknowledged && actionResult.ModifiedCount > 0;
+        }
+
+        public async Task<bool> updateAlertStatus(string alertId, Boolean status)
+        {
+            var filter = Builders<Alert>.Filter.Eq("_id", ObjectId.Parse(alertId));
+            var update = Builders<Alert>.Update.Set("Status", status);
+
+            try
+            {
+                UpdateResult actionResult = await _context.Alerts.UpdateOneAsync(filter, update);
+                return actionResult.IsAcknowledged
+                    && actionResult.ModifiedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
         // public async Task<Condition> getCondition(string alertId, string conditionId)
