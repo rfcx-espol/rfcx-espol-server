@@ -1,5 +1,11 @@
 * {box-sizing: border-box}
 body {font-family: "Lato", sans-serif;}
+
+/*makes element inside .container occupy all width*/
+.body-content {
+	width:auto;
+}
+
 /*Style exportar*/
 .exportcsv {
     background-color: #ffff;
@@ -75,10 +81,7 @@ hr{
 
 /* Style the tab content */
 .tabcontent {
-    float: left;
-    padding: 0px 12px;
-    border: 1px solid #ccc;
-    width: 80%;
+    margin: 0px 50px;
     border: 1px solid #ccc;
 }
 

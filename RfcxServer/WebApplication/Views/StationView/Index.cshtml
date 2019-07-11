@@ -3,13 +3,10 @@
 @{
     ViewBag.Title = "Estadísticas";
 }
-<link rel="stylesheet" type="text/css" href="~/css/deviceView.css">
+
 @section Style {
-  <style>
-    #monitor, #individual {
-      margin-right: 270px;
-      width: 60%;
-    }
+  <link rel="stylesheet" type="text/css" href="~/css/deviceView.css">
+  <style>   
     /*
     div[id^="tab_"] {
       width: 60%;
@@ -19,13 +16,16 @@
 
 <div class="tab" id="tab">
   <button class="tablinks" name="monitor" onclick="openDevice(event, 'monitor')" id="defaultOpen"><i class="fa fa-television tabL" aria-hidden="true"></i><p class="tabMonitor">Consulta de Datos</p></button>
+  <button class="tablinks" name="statsTab" id="stats" onfocus="openDevice(event,'individual')"><i class="fa fa-bar-chart tabL" aria-hidden="true"></i><p class="tabMonitor">Estadisticas</p></button>
   <!--New tabs-->
-</div> 
+</div>
+
 <!--MONITOR-->
 <div id="monitor" class="tabcontent" onload="display(this)">
       <h3 id="stationName" style="text-align: center; color: #e4b836; font-weight: bold;">@ViewData["stationName"].ToString()</h3>
       <p id="stationId" style="display:none">@ViewData["stationId"].ToString()</p>
 </div>
+
 <div id="individual" class="tabcontent">
   <h3 id="stationName" style="text-align: center; color: #e4b836; font-weight: bold;">@ViewData["stationName"].ToString()</h3>
   <!--INDIVIDUAL SENSORS -->
