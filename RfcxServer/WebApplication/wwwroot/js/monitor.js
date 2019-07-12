@@ -1,6 +1,6 @@
 var sensorsList = [] //[{'id':1,'type':'Temperature','location':'Environment'},{....}];
 var idSensorDic = {};
-var dataL=[];
+//var dataL=[];
 var ind=0, ind2=0;
 var stationName=$("#stationName").text();
 var stationId = parseInt($("#stationId").text());
@@ -27,7 +27,11 @@ function getSensors(data){
     var idChartStat = "chart_statsTab";
     var idChartFilter = "chart_filter_statsTab";
 
+
+
     for( sensor of sensors){
+        console.log("sensor parsed:");
+        console.log(sensor);        
         var sensorsInf = {};
         var idSensor = parseInt(sensor['Id']);
         var type = sensor['Type'];
@@ -38,28 +42,20 @@ function getSensors(data){
         sensorsInf['id']= idSensor;
         sensorsInf['type']=type;
         sensorsInf['location']=location;
+        console.log("sensor built?:");
+        console.log(sensorsInf);
         sensorsList.push(sensorsInf);
         var idMin = "minMon"+type+"_"+location;
         var idMax = "maxMon"+type+"_"+location;
         var idAvg = "avgMon"+type+"_"+location;
         var divIdChart = "chartMonitor"+type+"_"+location;
-        var nameDivTab = "tab_"+type+"_"+location;
-        if(type.toUpperCase().includes("HUM") && (location.toUpperCase().includes("AMB") || location.toUpperCase().includes("ENV"))) {
-            // var iconTab = '<i class="fa fa-tint tabL"></i> <p class="nameHum">'+type+'-'+location+'</p>';
-            var iconTitle = '<i class="fa fa-tint"></i> '+type+'-'+location;
-            idSensorDic[type+"_"+location]=idSensor;
-        }else if(type.toUpperCase().includes("TEMP") && (location.toUpperCase().includes( "DEV") || location.toUpperCase().includes("STA"))){
-            // var iconTab='<i class="fa" id="mobil">&#xf10b;</i><i class="fa fa-thermometer tabL" ></i> <p class="nameTempDisp">'+type+'-'+location+'</p>';
-            var iconTitle = '<i class="fa fa-thermometer"></i> '+type+'-'+location;
-            idSensorDic[type+"_"+location]=idSensor;
-            
-        }else if(type.toUpperCase().includes("TEMP") && (location.toUpperCase().includes("AMB") || location.toUpperCase().includes("ENV"))){
-            // var iconTab = '<i class="fa fa-thermometer tabL"></i> <p class="nameTempAmb">'+type+'-'+location+'</p>';
-            var iconTitle = '<i class="fa fa-thermometer"></i> '+type+'-'+location;
-            idSensorDic[type+"_"+location]=idSensor;
-        }
+        var nameDivTab = "tab_"+type+"_"+location;        
+        iconTitle = '<i class="fa"></i> '+type+'-'+location;
+        idSensorDic[type+"_"+location]=idSensor;
+
         //Create divs
-        createDivsMonitor(iconTitle, divIdChart, idMin, idMax, idAvg);
+        createDivsMonitor(iconTitle, divIdChart);
+        //createDivsMonitor_(iconTitle, divIdChart, idMin, idMax, idAvg);
         //createTabs(idSensor, iconTab, nameDivTab);
         //startDisplayEachChart(idSensor);
 
@@ -72,17 +68,10 @@ function getSensors(data){
 }
 
 //Divs of monitor
-function createDivsMonitor(iconTab, divIdChart, idMin,  idMax,  idAvg) {
+function createDivsMonitor(iconTab, divIdChart) {
     var div = "<div class='col-sm-12 col-md-12 col-lg-12 sensores_monitor'>"+
                 "<h4 class='titulo_sensor'>"+iconTab+"</h4>"+
-                "<div id='"+divIdChart+"' style='height: 320px'></div>"+
-                "<div class='boxInfoValues'>"+
-                "<p class='boxLetters initialMon'><i class='material-icons iconsMinMax'>&#xe15d;</i> Min </p><p class='boxLetters initialValue'  id="+idMin+"></p>"+
-                "<p class='boxLetters middle' ><i class='material-icons iconsMinMax'>&#xe148;</i> Max </p><p class='boxLetters middleValue' id="+idMax+"></p>"+
-                "<p class='boxLetters last'><i class='fa  iconsAvg'>&#xf10c;</i> Avg</p><p class='boxLetters lastValue' id="+idAvg+"></p>"+
-                "</div>"+
-                "<hr>"+
-            "</div>"
+                "<div id='"+divIdChart+"' style='height: 320px'></div>";    
     $("#monitor").append(div);
 } 
 
@@ -137,17 +126,9 @@ function addData(data) {
     var idMax = "maxMon"+typeS+"_"+locationS;
     var idAvg = "avgMon"+typeS+"_"+locationS;
     var divIdChart = "chartMonitor"+typeS+"_"+locationS;
-    if(typeS.toUpperCase().includes("TEMP") && (locationS.includes("DEV") || locationS.includes("STA"))){
-        var colorP = "#424084";
-        unit = "°C";
-    }else if(typeS.toUpperCase().includes("TEMP") && (locationS.toUpperCase().includes("AMB") || locationS.toUpperCase().includes("ENV"))){
-        var colorP = "orange";
-        unit = "°C";
-    }else if(typeS.toUpperCase().includes("HUM") && (locationS.toUpperCase().includes("AMB") || locationS.toUpperCase().includes("ENV"))){
-        var colorP = "LightSeaGreen";
-        var titleVertical = "Humedad %";
-        unit = "%";
-    }
+    colorP="green";
+    unit="";
+    titleVertical="vertical content";
 
     ind = ind+1;
     var minValue = 50000;
@@ -289,14 +270,7 @@ function indvChart(ChartDivId, stationName) {
         '</div>'+
         '<div id="'+idChartFilter+'_wrapper">'+
             '<div id='+idChartFilter+' class="col-lg-12 col-md-12 col-sm-12 statChart" style="height: 320px; clear: right; margin-top: 20px;"></div>'+
-        '</div>'+
-        '<div class="boxInfoValues">'+
-            '<p class="boxLetters  initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minVal"></p>'+
-            '<p class="boxLetters middle"><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id="maxVal"></p>'+
-            '<p class="boxLetters last"><i class="fa iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id="avgVal" ></p>'+
-            '</div>'+
-        '</div>'+
-    '</div>';
+        '</div>'; 
     $("#individual").append(divEachChart);
     setInputDates();
 }
@@ -526,6 +500,64 @@ function showChart(show, hide) {
     document.getElementById(hide).style.display = "none";
 }
 
+
+   /*
+    let boxInfoValues  =  '<div class="boxInfoValues">'+
+            '<p class="boxLetters  initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minVal"></p>'+
+            '<p class="boxLetters middle"><i class="material-icons iconsMinMax">&#xe148;</i> Max </p><p class="boxLetters middleValue" id="maxVal"></p>'+
+            '<p class="boxLetters last"><i class="fa iconsAvg">&#xf10c;</i> Avg</p><p class="boxLetters lastValue" id="avgVal" ></p>'+
+            '</div>'+
+        '</div>'+
+    '</div>';
+    */
+   
+    //parameters should be easy to follow up and if constructed, they should be placed in functions
+    /*
+    if(typeS.toUpperCase().includes("TEMP") && (locationS.includes("DEV") || locationS.includes("STA"))){
+        var colorP = "#424084";
+        unit = "°C";
+    }else if(typeS.toUpperCase().includes("TEMP") && (locationS.toUpperCase().includes("AMB") || locationS.toUpperCase().includes("ENV"))){
+        var colorP = "orange";
+        unit = "°C";
+    }else if(typeS.toUpperCase().includes("HUM") && (locationS.toUpperCase().includes("AMB") || locationS.toUpperCase().includes("ENV"))){
+        var colorP = "LightSeaGreen";
+        var titleVertical = "Humedad %";
+        unit = "%";
+    }
+    */   
+//after creation class fa-tint or fa-thermometer could be added through jquery instead of making these long validations
+        /*
+        if(type.toUpperCase().includes("HUM") && (location.toUpperCase().includes("AMB") || location.toUpperCase().includes("ENV"))) {
+            // var iconTab = '<i class="fa fa-tint tabL"></i> <p class="nameHum">'+type+'-'+location+'</p>';
+            var iconTitle = '<i class="fa fa-tint"></i> '+type+'-'+location;
+            //idSensorDic[type+"_"+location]=idSensor;
+        }else if(type.toUpperCase().includes("TEMP") && (location.toUpperCase().includes( "DEV") || location.toUpperCase().includes("STA"))){
+            // var iconTab='<i class="fa" id="mobil">&#xf10b;</i><i class="fa fa-thermometer tabL" ></i> <p class="nameTempDisp">'+type+'-'+location+'</p>';
+            var iconTitle = '<i class="fa fa-thermometer"></i> '+type+'-'+location;
+            //idSensorDic[type+"_"+location]=idSensor;
+            
+        }else if(type.toUpperCase().includes("TEMP") && (location.toUpperCase().includes("AMB") || location.toUpperCase().includes("ENV"))){
+            // var iconTab = '<i class="fa fa-thermometer tabL"></i> <p class="nameTempAmb">'+type+'-'+location+'</p>';
+            var iconTitle = '<i class="fa fa-thermometer"></i> '+type+'-'+location;            
+        }*/
+
+/*
+function createDivsMonitor_(iconTab, divIdChart, idMin,  idMax,  idAvg) {
+    var div = "<div class='col-sm-12 col-md-12 col-lg-12 sensores_monitor'>"+
+                "<h4 class='titulo_sensor'>"+iconTab+"</h4>"+
+                "<div id='"+divIdChart+"' style='height: 320px'></div>";
+    
+    var boxInfoValues= "<div class='boxInfoValues'>"+
+                        "<p class='boxLetters initialMon'><i class='material-icons iconsMinMax'>&#xe15d;</i> Min </p><p class='boxLetters initialValue'  id="+idMin+"></p>"+
+                        "<p class='boxLetters middle' ><i class='material-icons iconsMinMax'>&#xe148;</i> Max </p><p class='boxLetters middleValue' id="+idMax+"></p>"+
+                        "<p class='boxLetters last'><i class='fa  iconsAvg'>&#xf10c;</i> Avg</p><p class='boxLetters lastValue' id="+idAvg+"></p>"+
+                        "</div>"+
+                        "<hr>"+
+                        "</div>";
+    
+    $("#monitor").append(div);
+} 
+*/
 //Create divs of tabs
 /*
 function createTabs(idSensor, iconTab, nameDivTab){
