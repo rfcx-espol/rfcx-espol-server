@@ -164,7 +164,9 @@ namespace WebApplication.Controllers
         [HttpGet("{id:string}/edit")]
         public IActionResult Edit(string id)
         {
-            return View();
+            Alert alert = _AlertRepository.Get(id);
+            string i = alert.AlertId;
+            return View(alert);
         }
     }
 }

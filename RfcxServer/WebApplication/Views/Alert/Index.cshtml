@@ -125,8 +125,8 @@
                         <td>@alert.AlertType</td>
                         <td style="text-align: center;">
                             <label class="switch">
-                                @if (alert.Status) {<input id="checkbox-status" type="checkbox" checked>}
-                                else {<input id="checkbox-status" type="checkbox">}
+                                @if (alert.Status) {<input id="checkbox-status" type="checkbox" onclick="mostrarAdvertenciaStatus('@alert.AlertId',@alert.Status);" checked>}
+                                else {<input id="checkbox-status" type="checkbox" onclick="mostrarAdvertenciaStatus('@alert.AlertId',@alert.Status);"> }
                                 <span class="slider round"></span>
                             </label>
                         </td>
@@ -162,6 +162,27 @@
         </div>
     </div>
 
+    <div class="modal fade" id="alert_modal_status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header alert-danger">
+                    <button type="button" class="close" style="margin-top: 1px" onclick="cerrarModalStatus();">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="modal_alert_label">ADVERTENCIA</h4>
+                </div>
+                <div class="modal-body">
+                    <p>La alerta dejará de estar activa. ¿Desea continuar?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button id="accept" class="btn btn-danger" onclick="">Aceptar</button>
+                    <button id="cancel" class="btn btn-default" onclick="cerrarModalStatus();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @section Scripts {
@@ -189,6 +210,15 @@
             $("#alert_modal").modal("hide");
         }
 
+        function mostrarAdvertenciaStatus(id,status) {
+            $("#accept").attr("onclick", "editarStatus('" + id + "'," + status.ToString().ToLower() + ");");
+            $("#alert_modal_status").modal("show");
+        }    
+
+        function cerrarModalStatus() {
+            $("#alert_modal_status").modal("hide");
+        }
+
         function eliminarAlerta(id) {
             $.ajax({
                 url: "/api/alert/" + id + "/",
@@ -204,9 +234,22 @@
             window.location.href = '/api/alert/' + id + '/edit/';
         }
 
-        $("#checkbox-status").click(function(){
-            
-        });
+        function editarStatus(id, status) {
+            $.ajax({
+                    url: "/api/alert/" + id + "/" + status,
+                    type: 'PATCH',
+                    async: false,
+                    success: function() {
+                        window.location.href = '@Url.Action("Index","Alert")';
+                    }
+            });
+        }
+
+
+        function editarAlerta(id) {
+            window.location.href = '/api/alert/' + id + '/edit/';
+        }
+
 
     </script>
 }
