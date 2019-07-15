@@ -44,32 +44,17 @@ function getSensors(data){
             location :sensor.Location,
         }
         sensorsList.push(s);
-        let divIdChart = `chartMonitor${s.type}_${s.location}`;
-        let iconTitle = `<i class="fa"></i> ${s.type}-${s.location}`;
         idSensorDic[`${s.type}_${s.location}`]=s.id;
-
         //var idMin = "minMon"+type+"_"+location;
         //var idMax = "maxMon"+type+"_"+location;
         //var idAvg = "avgMon"+type+"_"+location;
         //var nameDivTab = "tab_"+type+"_"+location;    
-
-        //Create divs
-        createDivsMonitor(iconTitle, divIdChart); 
     });
-    
-    indvChart("statsTab", stationName);
+
     getDataFromSensors(idChartStat, last_timestamp, current_timestamp);
     getDataFromSensors(idChartFilter, last_timestamp, current_timestamp);
     displayMonitor();
 }
-
-//Divs of monitor
-function createDivsMonitor(iconTab, divIdChart) {
-    var div = "<div class='col-sm-12 col-md-12 col-lg-12 sensores_monitor'>"+
-                "<h4 class='titulo_sensor'>"+iconTab+"</h4>"+
-                "<div id='"+divIdChart+"' style='height: 320px'></div>";    
-    $("#monitor").append(div);
-} 
 
 //Display the monitor
 function displayMonitor() {
@@ -98,7 +83,7 @@ function addData(data) {
     //Initialize ind
     if(ind>=sensorsList.length){
         ind= 0;
-    }
+    }    
     //If there isn't data, take the names from sensorsList
     if(data != null && data.length != 0){
         var typeS = data[0]['Type'];
@@ -221,49 +206,7 @@ function updateChart(chartId, stationId, sensorId) {
 // Get the element with id="defaultOpen" and click on it
 document.getElementById("defaultOpen").click();
 
-function indvChart(ChartDivId, stationName) {
-    var checkboxes = '';
-    for (var [sensor, id] of Object.entries(idSensorDic)) {
-        checkboxes +=
-        '<input checked type="checkbox" value="'+ id + '" onchange="displayDataSeries(this)">'+
-        '<label>' + sensor + '</label>'
-    }
-    var idTab = "tab_" + ChartDivId;
-    var idChart = "chart_" + ChartDivId;
-    var idChartFilter = "chart_filter_" + ChartDivId;
-    var divEachChart = 
-    '<div id="'+ idTab +'" class="col-sm-12 col-md-12 col-lg-12">'+
-        '<div id='+ ChartDivId +' style="height: 320px;">'+
-        '<h3 class="titulo_sensor">Estadísticas diarias de '+ stationName +'</h3>'+
-        '<div class="Dates col-lg-12 col-md-12 col-sm-12">'+
-            '<a class="exportcsv" id="export_'+ ChartDivId +'" href="#" onclick="downloadCSV(this.id);">EXPORTAR</a>'+
-            '<ul class="nav nav-tabs">'+
-                '<li class="active"><a id="current_tab" data-toggle="tab" href="#data-act-'+ ChartDivId +'" onclick="showChart('+"'"+idChart+"_wrapper'"+','+"'"+idChartFilter+"_wrapper'"+')">Datos actuales</a></li>'+
-                '<li><a id="filter_tab" data-toggle="tab" href="#date-range-'+ ChartDivId +'" onclick="showChart('+"'"+idChartFilter+"_wrapper'"+','+"'"+idChart+"_wrapper'"+')">Rango de fechas</a></li>'+
-            '</ul>'+
-            '<div class="tab-content">'+
-                '<div id="data-act-' + ChartDivId + '" class="tab-pane fade in active">'+
-                    checkboxes+
-                '</div>'+
-                '<div id="date-range-'+ ChartDivId +'" class="tab-pane fade">'+
-                    '<label>Inicio</label>'+
-                    '<input type="date" name="start" class="start" min="1899-01-01" max="2000-13-13">'+
-                    '<label id="fin"> Fin   </label>'+
-                    '<input type="date" name="finish" class="finish" >'+
-                    '<input type="hidden" id="id'+idTab+'" value='+idSensorDic[idTab]+' >'+
-                    '<button id="filter_'+idTab+'" onclick="getDataByDates(event)" class="filter">Filtrar</button>'+
-                '</div>'+
-            '</div>'+
-        '</div>'+
-        '<div id="'+idChart+'_wrapper">'+
-            '<div id='+idChart+' class="col-lg-12 col-md-12 col-sm-12 statChart" style="height: 320px; clear: right; margin-top: 20px;"></div>'+
-        '</div>'+
-        '<div id="'+idChartFilter+'_wrapper">'+
-            '<div id='+idChartFilter+' class="col-lg-12 col-md-12 col-sm-12 statChart" style="height: 320px; clear: right; margin-top: 20px;"></div>'+
-        '</div>'; 
-    $("#individual").append(divEachChart);
-    setInputDates();
-}
+setTimeout(function(){setInputDates()},5000);//wait for page to be rendered before apply this function
 
 //------------------------------------DATES----------------------------------------------
 
@@ -299,7 +242,6 @@ function formatDate(date) {
 }
 //---------------------------------INDIVIDUAL CHARTS--------------------------------------
 
-
 // Pone data en el chart principal de la pestaña de datos actuales 
 function getDataFromSensors(idDiv, start, finish) {
     var sensors_series = [];
@@ -309,7 +251,7 @@ function getDataFromSensors(idDiv, start, finish) {
         var station_id = sensor['stationid'];
         var sensor_id = sensor['id'];
 
-        var query = `api/Station/${station_id}/Sensor/${sensor_id}/DataTimestamp?StartTimestamp=${start}&EndTimestamp=${finish}`;     
+        var query = `api/Station/${station_id}/Sensor/${sensor_id}/DataTimestamp?StartTimestamp=${start}&EndTimestamp=${finish}`;
         //request values by filtering with timestamp, from a specific sensor
         $.getJSON(query, function(result) {
             var sensor_datapoints = [];
@@ -381,17 +323,6 @@ function openDevice(evt, sensor) {
 
 }
 
-function displayDataSeries(checkbox) {
-    var sensor = checkbox.value;
-    var individual_chart = charts['individual'];
-    if (checkbox.checked) {
-        individual_chart.data[sensor - 1].options.visible = true;
-    } else { 
-        individual_chart.data[sensor - 1].options.visible = false;
-    }
-    individual_chart.render();
-}
-
 // Pone data en el chart de la peseña rango de fechas
 function getDataByDates(event) {
     var start = moment($(".start").val());
@@ -403,16 +334,16 @@ function getDataByDates(event) {
         var query = "api/Station/" + stationId + "/Sensor/" + idSensorDic[key] + "/DataTimestamp?StartTimestamp=" + start.unix() + "&EndTimestamp=" + finish.unix();
         var sensor_type = sensor['type'];
         var sensor_location = sensor['location'];
-        var nameDataSeries = sensor_type + ' ' + sensor_location;
+        //var nameDataSeries = sensor_type + ' ' + sensor_location;
         var unit = "";
         var axis_type = "";
         //console.log(query);
-
+        /*
         updated_axis.push({
             visible: true,
             title: nameDataSeries,
             lineThickness: 2
-        })
+        })*/
 
         $.getJSON(query, function(data) {
             var new_datapoints = [];
@@ -457,6 +388,18 @@ function showChart(show, hide) {
     document.getElementById(hide).style.display = "none";
 }
 
+/*
+function displayDataSeries(checkbox) {
+    var sensor = checkbox.value;
+    var individual_chart = charts['individual'];
+    if (checkbox.checked) {
+        individual_chart.data[sensor - 1].options.visible = true;
+    } else { 
+        individual_chart.data[sensor - 1].options.visible = false;
+    }
+    individual_chart.render();
+}*/
+
    /*
     let boxInfoValues  =  '<div class="boxInfoValues">'+
             '<p class="boxLetters  initialMon"><i class="material-icons iconsMinMax">&#xe15d;</i> Min </p><p class="boxLetters initialValue"  id="minVal"></p>'+
@@ -497,23 +440,6 @@ function showChart(show, hide) {
             var iconTitle = '<i class="fa fa-thermometer"></i> '+type+'-'+location;            
         }*/
 
-/*
-function createDivsMonitor_(iconTab, divIdChart, idMin,  idMax,  idAvg) {
-    var div = "<div class='col-sm-12 col-md-12 col-lg-12 sensores_monitor'>"+
-                "<h4 class='titulo_sensor'>"+iconTab+"</h4>"+
-                "<div id='"+divIdChart+"' style='height: 320px'></div>";
-    
-    var boxInfoValues= "<div class='boxInfoValues'>"+
-                        "<p class='boxLetters initialMon'><i class='material-icons iconsMinMax'>&#xe15d;</i> Min </p><p class='boxLetters initialValue'  id="+idMin+"></p>"+
-                        "<p class='boxLetters middle' ><i class='material-icons iconsMinMax'>&#xe148;</i> Max </p><p class='boxLetters middleValue' id="+idMax+"></p>"+
-                        "<p class='boxLetters last'><i class='fa  iconsAvg'>&#xf10c;</i> Avg</p><p class='boxLetters lastValue' id="+idAvg+"></p>"+
-                        "</div>"+
-                        "<hr>"+
-                        "</div>";
-    
-    $("#monitor").append(div);
-} 
-*/
 
 //Divs of individual charts
 /*
