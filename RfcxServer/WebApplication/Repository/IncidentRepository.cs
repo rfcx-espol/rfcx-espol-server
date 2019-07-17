@@ -23,7 +23,7 @@ namespace WebApplication.Repository
         {
             try
             {
-                await _context.Incident.InsertOneAsync(item);
+                await _context.Incidents.InsertOneAsync(item);
             }
             catch (Exception ex)
             {
@@ -35,7 +35,7 @@ namespace WebApplication.Repository
         {
             try
             {
-                return await _context.Incident.Find(_ => true).ToListAsync();
+                return await _context.Incidents.Find(_ => true).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -49,7 +49,7 @@ namespace WebApplication.Repository
 
             try
             {
-                return await _context.Incident.Find(filter).FirstOrDefaultAsync();
+                return await _context.Incidents.Find(filter).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -62,7 +62,7 @@ namespace WebApplication.Repository
             var filter = Builders<Incident>.Filter.Eq("_id", ObjectId.Parse(id));
             try
             {
-                DeleteResult actionResult = await _context.Incident.DeleteOneAsync(filter);
+                DeleteResult actionResult = await _context.Incidents.DeleteOneAsync(filter);
 
                 return actionResult.IsAcknowledged
                     && actionResult.DeletedCount > 0;
@@ -79,7 +79,7 @@ namespace WebApplication.Repository
             try
             {
                 ReplaceOneResult actionResult
-                    = await _context.Incident.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true });
+                    = await _context.Incidents.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true });
                 return actionResult.IsAcknowledged
                     && actionResult.ModifiedCount > 0;
             }
@@ -88,6 +88,22 @@ namespace WebApplication.Repository
                 throw ex;
             }
 
+        }
+        public async Task<bool> UpdateIncidentStatus(string id, Boolean status)
+        {
+            var filter = Builders<Incident>.Filter.Eq("_id", ObjectId.Parse(id));
+            var update = Builders<Incident>.Update.Set("Status", status);
+
+            try
+            {
+                UpdateResult actionResult = await _context.Incidents.UpdateOneAsync(filter, update);
+                return actionResult.IsAcknowledged
+                    && actionResult.ModifiedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

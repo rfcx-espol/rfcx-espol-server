@@ -35,7 +35,7 @@ namespace WebApplication.DbModels
             }
         }
 
-        public IMongoCollection<Incident> Incident
+        public IMongoCollection<Incident> Incidents
         {
             get
             {

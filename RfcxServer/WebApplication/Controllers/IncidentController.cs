@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -48,6 +49,12 @@ namespace WebApplication.Controllers
         {
             if (string.IsNullOrEmpty(id)) return false;
             return await _IncidentRepository.RemoveIncident(id);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<bool> UpdateStatus(string id, [FromBody] Boolean status)
+        {
+            return await _IncidentRepository.UpdateIncidentStatus(id, status);
         }
     }
 }
