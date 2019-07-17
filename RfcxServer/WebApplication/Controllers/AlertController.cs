@@ -161,11 +161,12 @@ namespace WebApplication.Controllers
             return View();
         }
 
-        [HttpGet("{id:int}/edit")]
-        public IActionResult Edit(int id)
+        [HttpGet("{id:string}/edit")]
+        public IActionResult Edit(string id)
         {
-            IEnumerable<Alert> alerts = _AlertRepository.Get();
-            return View();
+            Alert alert = _AlertRepository.Get(id);
+            string i = alert.AlertId;
+            return View(alert);
         }
     }
 }

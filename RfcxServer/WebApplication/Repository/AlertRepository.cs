@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 
 
@@ -153,6 +152,7 @@ namespace WebApplication.Repository
 
             try
             {
+                Console.WriteLine(_context.Alerts.Find(filter).FirstOrDefault().AlertId);
                 return _context.Alerts.Find(filter).FirstOrDefault();
             }
             catch (Exception ex)
