@@ -8,12 +8,19 @@ namespace WebApplication.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string IncidentId { set; get; }
+        public String IncidentId { set; get; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime IncidentTime { get; set; }
         public String RaisedAlertName { get; set; }
         public String RaisedCondition { get; set; }
+        public Boolean Solved { get; set; }
+
+        public Incident()
+        {
+            IncidentTime = DateTime.Now;
+            Solved = false;
+        }
 
 
 

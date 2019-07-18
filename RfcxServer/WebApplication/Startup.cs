@@ -46,6 +46,7 @@ namespace WebApplication
                 {
                     options.iConfigurationRoot=Configuration;
                 });
+            services.AddTransient<IIncidentRepository, IncidentRepository>();
             services.AddTransient<IAlertRepository, AlertRepository>();
             services.AddTransient<IAlertsConfigurationRepository, AlertsConfigurationRepository>();
             services.AddTransient<IImageRepository, ImageRepository>();
@@ -58,7 +59,7 @@ namespace WebApplication
             services.AddTransient<ISpecieRepository, SpecieRepository>();
             services.AddTransient<IPhotoRepository, PhotoRepository>();
             services.AddTransient<IQuestionRepository, QuestionRepository>();
-            
+
             services.AddCors(options =>
                 {
                     options.AddPolicy("AllowAllOrigins",
@@ -95,14 +96,14 @@ namespace WebApplication
                 RequestPath = "/resources"
             });
 
-            
+
             // app.Map("/hello", HandleHello);
             // app.Map("/sendgz", GZReceiver.HandleGZFile);
             // app.Map("/getzip", GZReceiver.HandleSendZipFile);
             // app.Run(async (context) => {
             //     await context.Response.WriteAsync("Rfcx Server is running");
             // });
-            
+
             loggerFactory.AddSerilog();
 
             StaticFileOptions option = new StaticFileOptions();
