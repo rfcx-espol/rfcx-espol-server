@@ -22,6 +22,14 @@ namespace WebApplication {
             ViewData["stationId"]= stationId;           
             return View(sensors);
         }
+        
+        [Route("/ByDateRange")]
+        public IActionResult ByDateRange(string stationName, int stationId) {            
+            ViewData["stationName"] =stationName;
+            ViewData["stationId"]= stationId;
+            //retrieve sensors by station id                     
+            return View();
+        }
     }
 
     

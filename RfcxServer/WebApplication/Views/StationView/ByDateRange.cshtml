@@ -1,0 +1,43 @@
+@model IndexModel
+@{
+    ViewData["Title"] = "Bosque Protector";
+}
+@section Style{
+  <link href='https://fonts.googleapis.com/css?family=Prata' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>     
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>  
+  <link rel="stylesheet" type="text/css" href="~/css/deviceView.css">
+}
+
+<div class="tab">  
+  <!--button class="tablinks" name="monitor" onclick="openDevice(event, 'monitor')" id="defaultOpen">
+    <i class="fa fa-television tabL" aria-hidden="true"></i>
+    <p class="tabMonitor">Consulta de Datos</p>
+  </button-->
+
+  <!--button class="tablinks" name="myTab" onfocus="openDevice(event,'individual')">
+    <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
+    <p class="tabMonitor">My Tab</p>
+  </button>  
+
+  <button class="tablinks" name="myTab" onfocus="">
+    <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
+    <p class="tabMonitor">My Tab2</p>
+  </button-->  
+
+  <button class="tablinks" name="monitor" id="defaultOpen" url='@Url.Action("Index","StationView", new{ stationName = @ViewData["stationName"] , stationId = @ViewData["stationId"] })'>
+    <i class="fa fa-television tabL" aria-hidden="true"></i>
+    <p class="tabMonitor">Consulta de Datos</p>
+  </button>
+  <button class="tablinks" name="statsTab" id="stats" url='@Url.Action("ByDateRange","StationView", new{ stationName = @ViewData["stationName"] , stationId = @ViewData["stationId"] })'>
+    <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
+    <p class="tabMonitor">Estadisticas</p>
+  </button>
+  <!--New tabs-->
+</div>
+
+<p>Place content @ViewBag.message</p>
+@section ScriptsIndex {
+  <script src="~/js/stations.js"></script>
+  <script src="~/js/monitor.js"></script>
+}

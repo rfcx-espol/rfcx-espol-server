@@ -14,11 +14,11 @@
   </style>
 }
 
-<div class="tab" id="tab">
-  <button class="tablinks" name="monitor" onclick="openDevice(event, 'monitor')" id="defaultOpen">
+<div class="tab">  
+  <!--button class="tablinks" name="monitor" onclick="openDevice(event, 'monitor')" id="defaultOpen">
     <i class="fa fa-television tabL" aria-hidden="true"></i>
     <p class="tabMonitor">Consulta de Datos</p>
-  </button>
+  </button-->
 
   <!--button class="tablinks" name="myTab" onfocus="openDevice(event,'individual')">
     <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
@@ -29,19 +29,28 @@
     <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
     <p class="tabMonitor">My Tab2</p>
   </button-->  
-  <button class="tablinks" name="statsTab" id="stats" onfocus="openDevice(event,'individual')"><i class="fa fa-bar-chart tabL" aria-hidden="true"></i><p class="tabMonitor">Estadisticas</p></button>
+
+  <button class="tablinks" name="monitor" id="defaultOpen" url='@Url.Action("Index","StationView", new{ stationName = @ViewData["stationName"] , stationId = @ViewData["stationId"] })'>
+    <i class="fa fa-television tabL" aria-hidden="true"></i>
+    <p class="tabMonitor">Consulta de Datos</p>
+  </button>
+  <button class="tablinks" name="statsTab" id="stats" url='@Url.Action("ByDateRange","StationView", new{ stationName = @ViewData["stationName"] , stationId = @ViewData["stationId"] })'>
+    <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
+    <p class="tabMonitor">Estadisticas</p>
+  </button>
   <!--New tabs-->
 </div>
 
 <!--MONITOR-->
 <div id="monitor" class="tabcontent" onload="display(this)">
   <h3 id="stationName" style="text-align: center; color: #e4b836; font-weight: bold;">@ViewData["stationName"].ToString()</h3>
-  <p id="stationId" style="display:none">@ViewData["stationId"].ToString()</p>     
+  <p id="stationId" style="display:none">@ViewData["stationId"].ToString()</p>
 
   @foreach (Sensor sensor in @Model) {
       <div class='col-sm-12 col-md-12 col-lg-12 sensores_monitor'>
-        <h4 class='titulo_sensor'><i class="fa"></i> @sensor.Type-@sensor.Location</h4>
-        <div id='chartMonitor@(sensor.Type)_@(sensor.Location)' style='height: 320px' class='chartContainer'></div>      
+        <h4 class='titulo_sensor'><i class="fa"></i> @(sensor.Type)-@(sensor.Location)</h4>        
+        <div id='chartMonitor@(sensor.Type)_@(sensor.Location)' style='height: 320px' class='chartContainer'></div>        
+        <div class="sensor" id="@(sensor.Id)" style="display:none"></div>
       </div>
       <!--div class='boxInfoValues'>"+
                         "<p class='boxLetters initialMon'><i class='material-icons iconsMinMax'>&#xe15d;</i> Min </p><p class='boxLetters initialValue'  id="+idMin+"></p>"+
@@ -53,7 +62,7 @@
   }
 
 </div>
-
+@{ /*
 <div id="individual" class="tabcontent">
   <h3 id="stationName" style="text-align: center; color: #e4b836; font-weight: bold;">@ViewData["stationName"].ToString()</h3>
   <!--INDIVIDUAL SENSORS --> 
@@ -102,6 +111,7 @@
       </div>
 
 </div>
+*/}
 
 @section Scripts {  
   <script src="js/axios.min.js"></script>
@@ -110,6 +120,6 @@
   <script src="js/canvasjs.min.js"></script>
   <script src="js/moment.js"></script>
   <script type="text/javascript" src="js/monitor.js"></script> 
-  <script type="text/javascript" src="js/individualCharts.js"></script>    
+  <!--script type="text/javascript" src="js/individualCharts.js"></script-->    
   <script type="text/javascript" src="js/simulator.js"></script>
 }
