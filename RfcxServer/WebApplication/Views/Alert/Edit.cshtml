@@ -94,11 +94,11 @@
         </div>
         <div class="form-group col-lg-12 col-md-12">
             <label>Nombre: </label>
-            <input id="nombre_alerta" class="form-control" type="text" name="nombre_alerta" required>
+            <input id="nombre_alerta" class="form-control" type="text" name="nombre_alerta" value="@Model.Name" required>
         </div>
         <div class="form-group col-lg-12 col-md-12">
             <label>Nivel: </label>
-            <select name="tipo_alerta" class="form-control" required="">
+            <select id="tipo_alerta" name="tipo_alerta" class="form-control" alerttype="@Model.AlertType" required="">
                 <option value="" hidden="">Escoja una opción</option>
                     <option value="3">3 - Incidente Crítico</option>
                     <option value="2">2 - Emergencia Situacional</option>
@@ -120,14 +120,14 @@
         </div>
         <div class="col-lg-12 col-md-12">
             <label>Correos a Notificar: </label>
-            <input id="correos_notificacion" class="form-control" type="text" name="correos_notificacion" required>
+            <input id="correos_notificacion" class="form-control" type="text" name="correos_notificacion" value="@String.Join(';',Model.Mailto.ToArray())" required>
         </div>
         <div class="col-lg-12 col-md-12">
             <p class="text-muted">Ingrese cada correo separado por ;</p>
         </div>
         <div class="col-lg-12 col-md-12">
             <label>Mensaje: </label>
-            <textarea id="mensaje_alerta" class="form-control" type="text" name="mensaje_alerta" rows="3" required></textarea>
+            <textarea id="mensaje_alerta" class="form-control" type="text" name="mensaje_alerta" rows="3" required>@Model.Message</textarea>
         </div>
         <div id="subtitulo" class="form-group col-lg-12 col-md-12">
             <h4>Notificar cuando: </h4>
@@ -144,7 +144,7 @@
         </div>
         <div class="col-lg-2 col-md-2">
             <label>Condición: </label>
-            <select name="tipo_condicion" class="form-control">
+            <select id="tipo_condicion" name="tipo_condicion" class="form-control">
                 <option value="" hidden="">Escoja una opción</option>
                     <option value="MAYOR QUE">mayor que</option>
                     <option value="MENOR QUE">menor que</option>
@@ -163,6 +163,7 @@
 @section Scripts {
     <script>
         $(document).ready(function(){
+            addSelected();
             alert_input_changed = [];
         });
         
@@ -173,9 +174,13 @@
             }
         })
         function updateAlert(id) {
-            console.log("On development")
+            console.log("On development");
         };
 
+        function addSelected(){
+            alerttype = $('#tipo_alerta').attr('alerttype');
+            $("#tipo_alerta option[value="+alerttype+"]").prop('selected', true);
+        }
 
     </script>
 }

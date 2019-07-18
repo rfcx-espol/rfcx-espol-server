@@ -168,7 +168,6 @@ namespace WebApplication.Controllers
         public IActionResult Edit(string id)
         {
             Alert alert = _AlertRepository.Get(id);
-            string i = alert.AlertId;
             return View(alert);
         }
     }
