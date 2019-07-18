@@ -57,22 +57,16 @@ namespace WebApplication.Controllers
             string mails = Request.Form["correos_notificacion"];
             alert.Mailto = mails.Split(";").ToList();
             alert.Message = Request.Form["mensaje_alerta"];
-<<<<<<< HEAD
-            for (int i = 0; i < Int32.Parse(Request.Form["conditions_number"]); i++){
+            for (int i = 0; i < Int32.Parse(Request.Form["conditions_number"]); i++)
+            {
                 Condition condition = new Condition();
-                condition.StationId = Request.Form["estacion_alerta"+i.ToString()];
-                condition.SensorId = Request.Form["sensor_alerta"+i.ToString()];
-                condition.Comparison = Request.Form["condicion_alerta"+i.ToString()];
-                condition.Threshold = Int32.Parse(Request.Form["threshold_alerta"+i.ToString()]);
+                condition.StationId = Request.Form["estacion_alerta" + i.ToString()];
+                condition.SensorId = Request.Form["sensor_alerta" + i.ToString()];
+                condition.Comparison = Request.Form["condicion_alerta" + i.ToString()];
+                condition.Threshold = Int32.Parse(Request.Form["threshold_alerta" + i.ToString()]);
                 condition_list.Add(condition);
             }
-            
-=======
-            condition.StationId = Request.Form["estacion_alerta"];
-            condition.SensorId = Request.Form["sensor_alerta"];
-            condition.Comparison = Request.Form["tipo_condicion"];
-            condition.Threshold = Int32.Parse(Request.Form["threshold_alerta"]);
->>>>>>> 2e3824e8a5f8058ea4eba02b45d0b330189b30f0
+
             alert.Status = true;
             alert.Conditions = condition_list;
             _AlertRepository.AddAlert(alert);

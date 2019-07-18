@@ -19,6 +19,7 @@ namespace WebApplication
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseApplicationInsights()
                 .UseStartup<Startup>()
                 //.UseUrls("http://0.0.0.0:5001/")
                 .Build();

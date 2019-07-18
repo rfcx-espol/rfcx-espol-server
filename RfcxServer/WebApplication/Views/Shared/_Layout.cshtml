@@ -53,31 +53,56 @@
                         <a href='@Url.Action("Index","Incidentes")'><i class="fa fa-exclamation-triangle"></i> Incidentes </a>
                     </li>
                 </ul>
-            </div>
-        </div>
-
-        <nav class="navbar navbar-default navbar-fixed-top">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><i class="fa fa-user fa-lg"></i> Ingresar</a></li>
+                <li data-toggle="collapse" data-target="#administracion" class="collapsed">
+                    <a href="#"><i class="fa fa-wrench fa-lg"></i> Administración <span class="arrow"></span></a>
+                </li>
+                <ul class="sub-menu collapse" id="administracion">
+                    <li><a href='@Url.Action("Index","Users")'>Usuarios</a></li>
+                </ul>
+                <li>
+                    <a href="#"><i class="fa fa-bell fa-lg"></i> Alertas </a>
+                </li>
             </ul>
-        </nav>
-
-        <div class="container body-content" style="margin-top: 67px;">
-            @RenderBody()
         </div>
-        
-        <script src="~/js/jquery-3.3.1.min.js" type="text/javascript"></script>
-        <script src="~/js/bootstrap.js"></script>
-        <script src="~/js/bootstrap-dialog.min.js" type="text/javascript"></script>
-        <script src="~/js/jquery.dataTables.min.js" type="text/javascript"></script>
-        <script src="~/js/select2.min.js" type="text/javascript"></script>
-        <script src="~/js/es.js" type="text/javascript"></script>
-        @RenderSection("Scripts", required: false) 
-        
-        @RenderSection("ScriptsIndex", required: false)
-        <div style="clear: both;"></div>
-        <footer>
-            <p id="pie_pagina" style="margin: 0">Bosque Protector Prosperina</p>
-        </footer>
-    </body>
+    </div>
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <ul class="nav navbar-nav navbar-right">
+            <li id="login"></li>
+        </ul>
+    </nav>
+
+    <div class="container body-content" style="margin-top: 67px;">
+        @RenderBody()
+    </div>
+
+    <script src="~/js/jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/js/bootstrap-dialog.min.js" type="text/javascript"></script>
+    <script src="~/js/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="~/js/select2.min.js" type="text/javascript"></script>
+    <script src="~/js/es.js" type="text/javascript"></script>
+    <script src="~/js/jquery.cookie.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function () {
+            if (typeof $.cookie('token') === 'undefined') {
+                console.log("no cookie");
+                $("#login").html("<a href='/Authentication'><i class='fa fa-user fa-lg'></i> Ingresar</a>")
+            } else {
+                $("#login").html("<a href='/'><i class='fa fa-user fa-lg'></i> Log Out</a>")
+                $("#login").click(function (e) {
+                    $.removeCookie("token", { path: '/' })
+                });
+            }
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+
+    @RenderSection("ScriptsIndex", required: false)
+    <div style="clear: both;"></div>
+    <footer>
+        <p id="pie_pagina" style="margin: 0">Bosque Protector Prosperina</p>
+    </footer>
+</body>
 </html>
+

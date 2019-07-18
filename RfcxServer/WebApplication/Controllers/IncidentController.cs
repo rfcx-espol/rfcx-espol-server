@@ -51,7 +51,7 @@ namespace WebApplication.Controllers
             return await _IncidentRepository.RemoveIncident(id);
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id}/status")]
         public async Task<bool> UpdateStatus(string id, [FromBody] Boolean status)
         {
             return await _IncidentRepository.UpdateIncidentStatus(id, status);

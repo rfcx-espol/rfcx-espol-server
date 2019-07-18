@@ -10,6 +10,7 @@ using System.IO;
 using X.PagedList.Mvc.Core;
 using X.PagedList;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication.Controllers
 {

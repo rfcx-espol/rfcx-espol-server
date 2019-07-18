@@ -18,6 +18,12 @@ using WebApplication.IRepository;
 using WebApplication.Repository;
 using Serilog;
 using Microsoft.Extensions.Logging;
+using WebApplication.Helpers;
+using WebApplication.Services;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication
 {
@@ -25,7 +31,7 @@ namespace WebApplication
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = (IConfigurationRoot) configuration;
+            Configuration = (IConfigurationRoot)configuration;
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -39,12 +45,53 @@ namespace WebApplication
             services.AddMvc();
             services.AddSession();
 
+            // configure strongly typed settings objects
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(RolePolicy.PoliticaRoleAdministrador,
+                    policy => policy.RequireRole(Role.Admin));
+
+                options.AddPolicy(RolePolicy.PoliticaRoleInvitado,
+                    policy => policy.RequireRole(Role.Invitado));
+
+                options.AddPolicy(RolePolicy.PoliticaRoleTodos,
+                    policy => policy.RequireRole(Role.Invitado, Role.Admin));
+            });
+
+            // configure DI for application services
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
             IFileProvider physicalProvider = new PhysicalFileProvider(Core.getServerDirectory());
             services.AddSingleton<IFileProvider>(physicalProvider);
             services.Configure<Settings>(
             options =>
                 {
-                    options.iConfigurationRoot=Configuration;
+                    options.iConfigurationRoot = Configuration;
                 });
             services.AddTransient<IIncidentRepository, IncidentRepository>();
             services.AddTransient<IAlertRepository, AlertRepository>();
@@ -59,6 +106,10 @@ namespace WebApplication
             services.AddTransient<ISpecieRepository, SpecieRepository>();
             services.AddTransient<IPhotoRepository, PhotoRepository>();
             services.AddTransient<IQuestionRepository, QuestionRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+
+            services.AddSingleton<AuthService>();
+            //services.AddSingleton<UserRepository>();
 
             services.AddCors(options =>
                 {
@@ -73,6 +124,9 @@ namespace WebApplication
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+
+            app.UseMiddleware<PreRequestModifications>();
+
             /*if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -83,8 +137,19 @@ namespace WebApplication
             }*/
 
             app.UseDeveloperExceptionPage();
-            app.UseCors("AllowAllOrigins");
-            app.UseMvcWithDefaultRoute();
+            // global cors policy
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
+            app.UseAuthentication();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=authentication}/{action=Index}");
+            });
             app.UseCookiePolicy();
             app.UseStaticFiles();
             //app.UseMvc();
@@ -96,7 +161,6 @@ namespace WebApplication
                 RequestPath = "/resources"
             });
 
-
             // app.Map("/hello", HandleHello);
             // app.Map("/sendgz", GZReceiver.HandleGZFile);
             // app.Map("/getzip", GZReceiver.HandleSendZipFile);
@@ -106,12 +170,14 @@ namespace WebApplication
 
             loggerFactory.AddSerilog();
 
+            //app.UseMiddleware<PreRequestModifications>();
+
+
             StaticFileOptions option = new StaticFileOptions();
             FileExtensionContentTypeProvider contentTypeProvider = (FileExtensionContentTypeProvider)option.ContentTypeProvider ?? new FileExtensionContentTypeProvider();
             contentTypeProvider.Mappings.Add(".unityweb", "application/octet-stream");
             option.ContentTypeProvider = contentTypeProvider;
             app.UseStaticFiles(option);
-
         }
     }
 }
