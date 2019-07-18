@@ -124,9 +124,9 @@
                         <td>@alert.Name</td>
                         <td>@alert.AlertType</td>
                         <td style="text-align: center;">
-                            <label class="switch">
-                                @if (alert.Status) {<input id="checkbox-status" type="checkbox" onclick="mostrarAdvertenciaStatus('@alert.AlertId',@alert.Status);" checked>}
-                                else {<input id="checkbox-status" type="checkbox" onclick="mostrarAdvertenciaStatus('@alert.AlertId',@alert.Status);"> }
+                            <label class="switch" id='switch_@alert.AlertId'>
+                                @if (alert.Status) {<input id="checkbox-status_@alert.AlertId" type="checkbox" onclick="mostrarAdvertenciaStatus('@alert.AlertId','@alert.Status');" checked>}
+                                else {<input id="checkbox-status_@alert.AlertId" type="checkbox" onclick="editarStatus('@alert.AlertId','@alert.Status');"> }
                                 <span class="slider round"></span>
                             </label>
                         </td>
@@ -176,8 +176,8 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button id="accept" class="btn btn-danger" onclick="">Aceptar</button>
-                    <button id="cancel" class="btn btn-default" onclick="cerrarModalStatus();">Cancelar</button>
+                    <button id="acceptStatus" class="btn btn-danger" onclick="">Aceptar</button>
+                    <button id="cancelStatus" class="btn btn-default" onclick="cerrarModalStatus();">Cancelar</button>
                 </div>
             </div>
         </div>
@@ -211,12 +211,17 @@
         }
 
         function mostrarAdvertenciaStatus(id,status) {
-            $("#accept").attr("onclick", "editarStatus('" + id + "'," + status.ToString().ToLower() + ");");
+            status = status.toLowerCase();
+            $("#acceptStatus").attr("onclick", "editarStatus('" + id + "','" + status + "');");
             $("#alert_modal_status").modal("show");
+            $("#alert_modal_status").attr('alertid',id)
         }    
 
         function cerrarModalStatus() {
             $("#alert_modal_status").modal("hide");
+            let alertid = $("#alert_modal_status").attr('alertid')
+            console.log('#checkbox-status_'+alertid)
+            $('#checkbox-status_'+alertid).prop("checked",true);
         }
 
         function eliminarAlerta(id) {
@@ -235,10 +240,16 @@
         }
 
         function editarStatus(id, status) {
+            status = (status == 'true')
             $.ajax({
-                    url: "/api/alert/" + id + "/" + status,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                    url: "/api/alert/" + id + "/Status",
                     type: 'PATCH',
-                    async: false,
+                    async: true,
+                    data: JSON.stringify(!status),
                     success: function() {
                         window.location.href = '@Url.Action("Index","Alert")';
                     }

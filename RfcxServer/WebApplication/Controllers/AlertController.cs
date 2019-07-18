@@ -66,7 +66,6 @@ namespace WebApplication.Controllers
                 condition.Threshold = Int32.Parse(Request.Form["threshold_alerta" + i.ToString()]);
                 condition_list.Add(condition);
             }
-
             alert.Status = true;
             alert.Conditions = condition_list;
             _AlertRepository.AddAlert(alert);
@@ -169,7 +168,6 @@ namespace WebApplication.Controllers
         public IActionResult Edit(string id)
         {
             Alert alert = _AlertRepository.Get(id);
-            string i = alert.AlertId;
             return View(alert);
         }
     }

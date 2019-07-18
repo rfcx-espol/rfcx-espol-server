@@ -133,7 +133,6 @@
                     async: false,
                     success: function(response) {
                         $("#sensor_alerta"+i).empty();
-                        console.log("#sensor_alerta"+i);
                         $.each(response, function(idx, sensor) {
                             let option = $("<option></option>");
                             let name = sensor.Type + " - " + sensor.Location;
