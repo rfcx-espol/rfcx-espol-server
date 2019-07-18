@@ -52,18 +52,21 @@ namespace WebApplication.Controllers
         {
             Alert alert = new Alert();
             List<Condition> condition_list = new List<Condition>();
-            Condition condition = new Condition();
-            alert.Name = Request.Form["nombre_alerta"];
+            alert.Name = Request.Form["alert_name"];
             alert.AlertType = Request.Form["tipo_alerta"];
             string mails = Request.Form["correos_notificacion"];
             alert.Mailto = mails.Split(";").ToList();
             alert.Message = Request.Form["mensaje_alerta"];
-            alert.StationId = Request.Form["estacion_alerta"];
-            condition.SensorId = Request.Form["sensor_alerta"];
-            condition.Comparison = Request.Form["tipo_condicion"];
-            condition.Threshold = Int32.Parse(Request.Form["threshold_alerta"]);
+            for (int i = 0; i < Int32.Parse(Request.Form["conditions_number"]); i++){
+                Condition condition = new Condition();
+                condition.StationId = Request.Form["estacion_alerta"+i.ToString()];
+                condition.SensorId = Request.Form["sensor_alerta"+i.ToString()];
+                condition.Comparison = Request.Form["condicion_alerta"+i.ToString()];
+                condition.Threshold = Int32.Parse(Request.Form["threshold_alerta"+i.ToString()]);
+                condition_list.Add(condition);
+            }
+            
             alert.Status = true;
-            condition_list.Add(condition);
             alert.Conditions = condition_list;
             _AlertRepository.AddAlert(alert);
             return Redirect("index");
@@ -161,7 +164,7 @@ namespace WebApplication.Controllers
             return View();
         }
 
-        [HttpGet("{id:string}/edit")]
+        [HttpGet("{id}/edit")]
         public IActionResult Edit(string id)
         {
             Alert alert = _AlertRepository.Get(id);

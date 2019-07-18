@@ -10,7 +10,6 @@ namespace WebApplication.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string AlertId { get; set; }
-        public string StationId { get; set; }
         public string Name { get; set; }
         public string AlertType { get; set; }
         public List<string> Mailto { get; set; }
