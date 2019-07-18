@@ -73,10 +73,29 @@ namespace WebApplication.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<bool> Put(string id, [FromBody] Alert Alert)
+        public async void Put(string id)
         {
-            if (string.IsNullOrEmpty(id)) return false;
-            return await _AlertRepository.UpdateAlert(id, Alert);
+            Alert alert = new Alert();
+            alert.AlertId = id;
+            List<Condition> condition_list = new List<Condition>();
+            alert.Name = Request.Form["alert_name"];
+            alert.AlertType = Request.Form["tipo_alerta"];
+            string mails = Request.Form["correos_notificacion"];
+            alert.Mailto = mails.Split(";").ToList();
+            alert.Message = Request.Form["mensaje_alerta"];
+            for (int i = 0; i < Int32.Parse(Request.Form["conditions_number"]); i++)
+            {
+                Condition condition = new Condition();
+                condition.StationId = Request.Form["estacion_alerta" + i.ToString()];
+                condition.SensorId = Request.Form["sensor_alerta" + i.ToString()];
+                condition.Comparison = Request.Form["condicion_alerta" + i.ToString()];
+                condition.Threshold = Int32.Parse(Request.Form["threshold_alerta" + i.ToString()]);
+                condition_list.Add(condition);
+            }
+            alert.Status = true;
+            alert.Conditions = condition_list;
+            await _AlertRepository.UpdateAlert(id, alert);
+            Redirect("index");
         }
 
         [HttpDelete("{id}")]
