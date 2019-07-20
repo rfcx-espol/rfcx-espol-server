@@ -123,7 +123,9 @@ hr{
     text-align: center;
 }
 .sensores_monitor{
-    margin-bottom: 20px;
+    margin-bottom: 5%;
+    padding-bottom: 5%;
+    border-bottom: 1px solid #ccc;
 }
 
 /* The side navigation menu */

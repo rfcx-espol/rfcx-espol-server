@@ -4,15 +4,14 @@ var stationId = $("#stationId").text();
 
 /*** place empty CanvasJs charts, given the div IDs ***/
 
-var chartContainers = Array.from(document.querySelectorAll("div.sensores_monitor div.chartContainer"));
+var chartContainers = Array.from(document.querySelectorAll("div.sensores_monitor"));
 
 //create a list of objects, to iterate later
 var charts = chartContainers.map(function(chartContainer){
-    //get sensor Id
-    //this depends on the html response of ~/StationView
-    let sensor = chartContainer.nextElementSibling;
-    let sensorId = sensor.getAttribute("id");
-
+    //get sensor info, this depends on the html response of ~/StationView
+    let sensorId = chartContainer.querySelector("div.sensorId").textContent;    
+    let sensorType = chartContainer.querySelector("div.sensorType").textContent;
+   
     //build url to retrieve initial Data
     let query =  timeStampQuery({
         momentJsObject : moment(),
@@ -21,11 +20,13 @@ var charts = chartContainers.map(function(chartContainer){
     let initialDataUrl = `api/Station/${stationId}/Sensor/${sensorId}/${query}`;    
 
     //get div id to build a CanvasJs chart
-    let chartContainerDivId = chartContainer.getAttribute("id");
+    let canvasJsChart = chartContainer.querySelector("div.canvasJsChart");
+    let canvasJsChartDivId = canvasJsChart.getAttribute("id");
 
     return {
         sensorId : sensorId,
-        canvasJsChart : realTimeChart(chartContainerDivId),
+        sensorType : sensorType, 
+        canvasJsChart : realTimeChart(canvasJsChartDivId),        
         initialDataUrl : initialDataUrl
     }
 })
@@ -33,12 +34,20 @@ var charts = chartContainers.map(function(chartContainer){
 /*** fill charts with initial data ***/
 charts.forEach(function(chart){
     //make request
+    //MUST VALIDATE WHEN THERE IS NO VALUE IN THE LAST K HOURS
     $.getJSON(chart.initialDataUrl, function(data){
-        //process response       
+        //process response
         let dataPoints = data.map(toDataPoint).reverse();
+        
+        //take units from first element of response and assume all elements have same units
+        let units = data[0].Units;
+        let toolTipContent = formatUnitsToTheToolTip(units);
+        let axisYTitle = chart.sensorType; 
 
         //update the chart
         chart.canvasJsChart.options.data[0].dataPoints=dataPoints;
+        chart.canvasJsChart.toolTip.set("content", toolTipContent);
+        chart.canvasJsChart.axisY[0].set("title", axisYTitle);
 
         //render changes
         chart.canvasJsChart.render();
@@ -53,7 +62,7 @@ charts.forEach(function(chart){
     let lastDataUrl = `api/Station/${stationId}/Sensor/${sensorId}/Data/LastData`;
 
     //set the job
-    setInterval(updateChart, 1000, chart.canvasJsChart, lastDataUrl, 15);
+    setInterval(updateChart, 10000, chart.canvasJsChart, lastDataUrl, 15);
 })
 
 /*** Aditional webpage behaviour ***/
@@ -71,9 +80,12 @@ function realTimeChart(divId){
             valueFormatString: "hh:mm:ss TT" ,
             labelAngle: -50
         },
+        axisY:{            
+            titleFontSize: 18
+        },
         data:[{
             xValueType: "dateTime",
-            type : "spline",
+            type : "line",
             dataPoints: []
         }]
     });
@@ -113,7 +125,7 @@ function updateChart( canvasJsChart, lastDataURL, maxDataPointsAllowed ) {
 
         //compare new value against last value
         let dataPointsLength = canvasJsChart.options.data[0].dataPoints.length;
-        //VALIDATE EMPTY ARRAYS
+        //MUST VALIDATE EMPTY ARRAYS
         let lastDataPoint = canvasJsChart.options.data[0].dataPoints[dataPointsLength - 1];
         let isSamePoint = JSON.stringify(lastDataPoint) === JSON.stringify(newDataPoint);
         
@@ -141,6 +153,13 @@ function updateChart( canvasJsChart, lastDataURL, maxDataPointsAllowed ) {
     });
 }
 
+function formatUnitsToTheToolTip(units){
+    if ( units == "Celcius") {
+        return "{y} °C" ; 
+    } else if ( units == "Percent") {
+        return "{y} %" ;
+    }
+}
 
 /*** Functions for additional webpage behaviour ***/
 
