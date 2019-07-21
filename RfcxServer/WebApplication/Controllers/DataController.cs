@@ -5,6 +5,7 @@ using WebApplication.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using MongoDB.Bson;
 
 
 
@@ -217,5 +218,25 @@ namespace WebApplication.Controllers
             if (string.IsNullOrEmpty(id)) return false;
             return await _DataRepository.Remove(id);
         }
+
+        [HttpGet]
+        [Route("api/Station/{StationId:int}/Sensor/{SensorId:int}/AvgPerDate")]        
+        public Task<string> GetAvgPerDate(
+            [FromRoute]int StationId,
+            [FromRoute] int SensorId,
+            [FromQuery] long StartTimestamp)
+        {
+            return this._GetAvgPerDate(StationId, SensorId, StartTimestamp);
+        }
+
+        private async Task<string> _GetAvgPerDate(
+            int StationId, 
+            int SensorId, 
+            long StartTimestamp)
+        {
+            var data = await _DataRepository.AvgPerDate(StationId, SensorId, StartTimestamp);
+            return JsonConvert.SerializeObject(data);
+        }
+
     }
 }
