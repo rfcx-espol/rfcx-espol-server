@@ -1,43 +1,57 @@
-@model IndexModel
+@model IEnumerable<WebApplication.Models.Sensor>
 @{
     ViewData["Title"] = "Bosque Protector";
 }
 @section Style{
-  <link href='https://fonts.googleapis.com/css?family=Prata' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>     
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>  
-  <link rel="stylesheet" type="text/css" href="~/css/deviceView.css">
+  <link rel="stylesheet" type="text/css" href="~/css/stationView.css">
 }
 
-<div class="tab">  
-  <!--button class="tablinks" name="monitor" onclick="openDevice(event, 'monitor')" id="defaultOpen">
-    <i class="fa fa-television tabL" aria-hidden="true"></i>
-    <p class="tabMonitor">Consulta de Datos</p>
-  </button-->
-
-  <!--button class="tablinks" name="myTab" onfocus="openDevice(event,'individual')">
-    <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
-    <p class="tabMonitor">My Tab</p>
-  </button>  
-
-  <button class="tablinks" name="myTab" onfocus="">
-    <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
-    <p class="tabMonitor">My Tab2</p>
-  </button-->  
-
+<div class="tab">
   <button class="tablinks" name="monitor" id="defaultOpen" url='@Url.Action("Index","StationView", new{ stationName = @ViewData["stationName"] , stationId = @ViewData["stationId"] })'>
     <i class="fa fa-television tabL" aria-hidden="true"></i>
     <p class="tabMonitor">Consulta de Datos</p>
   </button>
   <button class="tablinks" name="statsTab" id="stats" url='@Url.Action("ByDateRange","StationView", new{ stationName = @ViewData["stationName"] , stationId = @ViewData["stationId"] })'>
     <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
-    <p class="tabMonitor">Estadisticas</p>
+    <p class="tabMonitor">Estadísticas</p>
   </button>
   <!--New tabs-->
 </div>
 
-<p>Place content @ViewBag.message</p>
+<div id="individual" class="tabcontent">
+  <h3 id="stationName" style="text-align: center; color: #e4b836; font-weight: bold;">@ViewData["stationName"].ToString()</h3>
+  <p id="stationId" style="display:none">@ViewData["stationId"].ToString()</p>
+
+  @foreach (Sensor sensor in @Model) {
+      <div class="sensor" style="display:none">
+        <div class="sensorId" style="display:none">@(sensor.Id)</div>
+        <div class="sensorType" style="display:none">@(sensor.Type)</div>
+      </div>      
+  }
+
+  <div class="col-sm-12 col-md-12 col-lg-12 historical">
+    <form class="form-inline text-center">      
+      <div class="form-group">
+        <label for="">Por</label>
+        <select class="form-control">
+          <option>Semana</option>
+          <option>Mes</option>
+          <option>Año</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="">  Desde:</label>        
+        <input type="date" class="form-control date-picker">
+      </div>
+      <button type="button" class="button-filter">Filtrar</button>                
+    </form>
+    <div id="chartAvgPerDate" style="height: 320px" class="canvasJsChart"></div>
+  </div>
+  
+</div>
+
 @section ScriptsIndex {
-  <script src="~/js/stations.js"></script>
-  <script src="~/js/monitor.js"></script>
+  <script src="js/moment.js" type="text/javascript"></script>
+  <script src="js/charts/canvasjs-2.1.2/canvasjs.min.js" type="text/javascript"></script>  
+  <script src="js/charts/byDateRange.js" type="text/javascript"></script>
 }

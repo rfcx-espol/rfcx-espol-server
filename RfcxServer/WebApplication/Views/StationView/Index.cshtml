@@ -5,32 +5,17 @@
 }
 
 @section Style {
-  <link rel="stylesheet" type="text/css" href="~/css/deviceView.css">
+  <link rel="stylesheet" type="text/css" href="~/css/stationView.css">
 }
 
-<div class="tab">  
-  <!--button class="tablinks" name="monitor" onclick="openDevice(event, 'monitor')" id="defaultOpen">
-    <i class="fa fa-television tabL" aria-hidden="true"></i>
-    <p class="tabMonitor">Consulta de Datos</p>
-  </button-->
-
-  <!--button class="tablinks" name="myTab" onfocus="openDevice(event,'individual')">
-    <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
-    <p class="tabMonitor">My Tab</p>
-  </button>  
-
-  <button class="tablinks" name="myTab" onfocus="">
-    <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
-    <p class="tabMonitor">My Tab2</p>
-  </button-->  
-
+<div class="tab"> 
   <button class="tablinks" name="monitor" id="defaultOpen" url='@Url.Action("Index","StationView", new{ stationName = @ViewData["stationName"] , stationId = @ViewData["stationId"] })'>
     <i class="fa fa-television tabL" aria-hidden="true"></i>
     <p class="tabMonitor">Consulta de Datos</p>
   </button>
   <button class="tablinks" name="statsTab" id="stats" url='@Url.Action("ByDateRange","StationView", new{ stationName = @ViewData["stationName"] , stationId = @ViewData["stationId"] })'>
     <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
-    <p class="tabMonitor">Estadisticas</p>
+    <p class="tabMonitor">Estadísticas</p>
   </button>
   <!--New tabs-->
 </div>
@@ -46,75 +31,13 @@
         <div id='chartMonitor@(sensor.Type)_@(sensor.Location)' style='height: 320px' class='canvasJsChart'></div>
         <div class="sensorId" style="display:none">@(sensor.Id)</div>
         <div class="sensorType" style="display:none">@(sensor.Type)</div>
-      </div>
-      <!--div class='boxInfoValues'>"+
-                        "<p class='boxLetters initialMon'><i class='material-icons iconsMinMax'>&#xe15d;</i> Min </p><p class='boxLetters initialValue'  id="+idMin+"></p>"+
-                        "<p class='boxLetters middle' ><i class='material-icons iconsMinMax'>&#xe148;</i> Max </p><p class='boxLetters middleValue' id="+idMax+"></p>"+
-                        "<p class='boxLetters last'><i class='fa  iconsAvg'>&#xf10c;</i> Avg</p><p class='boxLetters lastValue' id="+idAvg+"></p>"+
-                        "</div>"+
-                        "<hr>"+
-                        "</div-->
+      </div>      
   }
-
 </div>
-@{ /*
-<div id="individual" class="tabcontent">
-  <h3 id="stationName" style="text-align: center; color: #e4b836; font-weight: bold;">@ViewData["stationName"].ToString()</h3>
-  <!--INDIVIDUAL SENSORS --> 
-@{
-    var stationName = @ViewData["stationName"].ToString();
-    var ChartDivId = "statsTab";
-    var idTab = "tab_" + @ChartDivId;
-    var idChart = "chart_" + @ChartDivId;
-    var idChartFilter = "chart_filter_" + @ChartDivId; 
-}
-   
-    <div id="@(idTab)" class="col-sm-12 col-md-12 col-lg-12">
-        <div id="@(ChartDivId)" style="height: 320px;">
-        <h3 class="titulo_sensor">Estadísticas diarias de @(stationName)</h3>
-        <div class="Dates col-lg-12 col-md-12 col-sm-12">
-            <a class="exportcsv" id="export_@(ChartDivId)" href="#" onclick="downloadCSV(this.id);">EXPORTAR</a>
-            <ul class="nav nav-tabs">
-                <li class="active">
-                  <a id="current_tab" data-toggle="tab" href="#data-act-@(ChartDivId)" onclick="showChart('@(idChart)_wrapper','@(idChartFilter)_wrapper')">Datos actuales</a>
-                </li>
-                <li>
-                  <a id="filter_tab" data-toggle="tab" href="#date-range-@(ChartDivId)" onclick="showChart('@(idChartFilter)_wrapper','@(idChart)_wrapper')">Rango de fechas</a>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div id="data-act-@(ChartDivId)" class="tab-pane fade in active">                    
-              <!--input checked type="checkbox" value="'+ id + '" onchange="displayDataSeries(this)">'+
-                '<label>' + sensor + '</label-->
-                </div>
-                <div id="date-range-@(ChartDivId)" class="tab-pane fade">
-                    <label>Inicio</label>
-                    <input type="date" name="start" class="start" min="1899-01-01" max="2000-13-13">
-                    <label id="fin"> Fin   </label>
-                    <input type="date" name="finish" class="finish">
-                    <input type="hidden" id="id@(idTab)" value="sensor.Id">
-                    <button id="filter_@(idTab)" onclick="getDataByDates(event)" class="filter">Filtrar</button>
-                </div>
-            </div>
-        </div>
-        <div id="@(idChart)_wrapper">
-            <div id="@(idChart)" class="col-lg-12 col-md-12 col-sm-12 statChart" style="height: 320px; clear: right; margin-top: 20px;"></div>
-        </div>
-        <div id="@(idChartFilter)_wrapper">
-            <div id="@(idChartFilter)" class="col-lg-12 col-md-12 col-sm-12 statChart" style="height: 320px; clear: right; margin-top: 20px;"></div>
-        </div>
-      </div>
 
-</div>
-*/}
-
-@section Scripts {  
-  <script src="js/axios.min.js"></script>
-  <script src="js/vue.js"></script>
-  <!--jscript charts-->
-  <script src="js/canvasjs.min.js"></script>
-  <script src="js/moment.js"></script>
-  <script type="text/javascript" src="js/monitor.js"></script> 
-  <!--script type="text/javascript" src="js/individualCharts.js"></script-->    
-  <script type="text/javascript" src="js/simulator.js"></script>
+@section Scripts {   
+  <script src="js/moment.js" type="text/javascript"></script>
+  <script src="js/charts/canvasjs-2.1.2/canvasjs.min.js" type="text/javascript"></script>
+  <script src="js/charts/monitor.js" type="text/javascript"></script>
+  <script src="js/charts/simulator.js" type="text/javascript"></script>
 }
