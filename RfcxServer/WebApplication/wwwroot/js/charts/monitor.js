@@ -15,10 +15,10 @@ var charts = chartContainers.map(function(chartContainer){
     //build url to retrieve initial Data
     let query =  timeStampQuery({
         momentJsObject : moment(),
-        hoursAgo : 1
+        hoursAgo : 6
     })  
     let initialDataUrl = `api/Station/${stationId}/Sensor/${sensorId}/${query}`;    
-
+    console.log(initialDataUrl);
     //get div id to build a CanvasJs chart
     let canvasJsChart = chartContainer.querySelector("div.canvasJsChart");
     let canvasJsChartDivId = canvasJsChart.getAttribute("id");

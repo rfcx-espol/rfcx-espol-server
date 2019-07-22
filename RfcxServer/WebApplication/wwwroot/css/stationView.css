@@ -127,7 +127,14 @@ hr{
     padding-bottom: 5%;
     border-bottom: 1px solid #ccc;
 }
-
+.historical{
+    margin-bottom: 10%;
+    padding-bottom: 5%;
+    border-bottom: 1px solid #ccc;
+}
+#chartAvgPerDate{
+    margin-top: 5%;
+}
 /* The side navigation menu */
 div#submenu {
     width: 0; /* 0 width - change this with JavaScript */
@@ -182,7 +189,7 @@ div#submenu a:hover {
 }
 /*-----Date-------------------*/
 /*Button filter*/
-.filter{
+.button-filter{
     color: #fff;
     background: #007f42;
     border-radius: 6px;
@@ -191,14 +198,11 @@ div#submenu a:hover {
     cursor: pointer;
     margin-left: 15px;
 }
-.filter:hover {
+.button-filter:hover {
     color: #e4b836; 
 }
-.filter:disabled {
+.button-filter:disabled {
     background: #007f429c;
-}
-input{
-    margin-bottom: 10px;
 }
 #fin{
     margin-left: 10px;
@@ -212,10 +216,9 @@ label{
     margin: 20px 0px 20px 20px;
 }
 
-#data-act-statsTab, #date-range-statsTab {
+#data-act-statsTab {
     margin: 20px 0px 20px 20px;
 }
-
 #data-act-statsTab input {
     margin-right: 5px;
 }

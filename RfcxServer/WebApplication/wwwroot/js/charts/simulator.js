@@ -5,8 +5,8 @@ window.onload = function() {
     var randomValues = function () {
         var actual = moment();
         var xVal = actual.unix();
-        var yValTemp = yVal = Math.random() * 101.00;
-        var yValHum = yVal = Math.random() * 51.00;
+        var yValTemp = yVal = Math.random() * 51.00;
+        var yValHum = yVal = Math.random() * 21.00;
 
         var data = 
             {
@@ -45,5 +45,5 @@ window.onload = function() {
         });
     };
 
-    setInterval(randomValues, 10000);
+    setInterval(randomValues, 90000);
 }
