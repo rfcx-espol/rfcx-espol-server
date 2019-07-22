@@ -47,14 +47,15 @@ function getStationsList(data) {
     var data_dic = JSON.parse(data);
     for(station of data_dic){
         var station_id = station['Id'];
-        var station_name = station['Name'];
-        var content = '<div class="station col-lg-4 col-md-4 col-sm-4 col-xs-12"><div class="title row">'+
-        '<div class="col-lg-8 col-md-7 col-sm-7 col-xs-7"><h4>'+station_name+'</h4></div>'+
-        '<div class="col-lg-4 col-md-5 col-sm-5 col-xs-5 header"><a class="icon_station" href="/StationView?stationName='+station_name+'&stationId='+station_id+'">' + 
-        '<i class="material-icons fa fa-line-chart" id="barra"></i></a>'+
-        '<i class="material-icons icon_station" style="font-size:23px; color:#2874A6;" onclick="fillStationModal('+station_id+');">edit</i>'+
-        '<i class="material-icons icon_station" style="font-size:23px; color:#CB4335;" onclick="showAlertModal('+station_id+');">delete</i></div>'+
-        '</div><div class="station_body" id="station'+ station_id +'"></div></div>';
+        var station_name = station['Name'];        
+        var content = `<div class="station col-lg-4 col-md-4 col-sm-4 col-xs-12"><div class="title row">
+        <div class="col-lg-8 col-md-7 col-sm-7 col-xs-7"><h4>${station_name}</h4></div>
+        <div class="col-lg-4 col-md-5 col-sm-5 col-xs-5 header">
+        <a class="icon_station" href="/StationView?stationName=${station_name}&stationId=${station_id}">
+        <i class="material-icons fa fa-line-chart" id="barra"></i></a>
+        <i class="material-icons icon_station" style="font-size:23px; color:#2874A6;" onclick="fillStationModal('${station_id}');">edit</i>
+        <i class="material-icons icon_station" style="font-size:23px; color:#CB4335;" onclick="showAlertModal('${station_id}');">delete</i></div>
+        </div><div class="station_body" id="station${station_id}"></div></div>`;
         $(content).insertBefore(".plus-station");
     }
     $.ajax({
@@ -74,9 +75,12 @@ function getSensorsList(data) {
         var icon_type = getIconType(sensor_type);
         var icon_id = getIconId(sensor_type, sensor_location);
         var station_body = $("div.station_body#station"+station_id);
-        var content = '<div class="row"><div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 body"><i id="'+ icon_id +'" class="fa '+ icon_type +'"></i></div>' +
-        '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 body text"><p>'+ sensor_type + " " + sensor_location +'</p></div>' +
-        '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 body"><p id="sensor'+ sensor_id +'"></p></div></div>';
+        var content = `<div class="row"><div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 body">
+        <i id="${icon_id}" class="fa ${icon_type}"></i></div>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 body text">
+        <p>${sensor_type}  ${sensor_location}</p></div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 body">
+        <p id="sensor${sensor_id}"></p></div></div>`;
         $(station_body).append(content);
     }
     getLastData();
