@@ -1,32 +1,43 @@
 window.onload = function() {
-    console.log("Enviando datos...");
-    yVal = 15;
+    
+    var StationName =  $("#stationName").text();
+    console.log(`Enviando datos simulados a ${StationName}...`);
+
+    // initial value
+    var yValueTemp = 25; 
+    var yValueHum = 40;    
+    var StationId = $("#stationId").text();
 
     var randomValues = function () {
-        var actual = moment();
-        var xVal = actual.unix();
-        var yValTemp = yVal = Math.random() * 51.00;
-        var yValHum = yVal = Math.random() * 21.00;
+        var deltaY1, deltaY2;
+        var now = moment();
+        var xVal = now.unix();
+        deltaY1 = .5 + Math.random() *(-.5-.5);
+        deltaY2 = .5 + Math.random() *(-.5-.5);
+        
+        // adding random value and rounding it to two digits. 
+        yValueTemp = Math.round((yValueTemp + deltaY1)*100)/100;
+        yValueHum = Math.round((yValueHum + deltaY2)*100)/100;
 
         var data = 
             {
                 "data":
                 [
                     {
-                        "StationId": "14",
+                        "StationId": StationId,
                         "SensorId": "1",
                         "Timestamp": xVal + "",
                         "Type": "Temperature",
-                        "Value": yValTemp + "",
+                        "Value": yValueTemp + "",
                         "Units": "Celcius",
                         "Location": "Environment"
                     },
                     {
-                        "StationId": "14",
+                        "StationId": StationId,
                         "SensorId": "2",
                         "Timestamp": xVal + "",
                         "Type": "Humidity",
-                        "Value": yValHum + "",
+                        "Value": yValueHum + "",
                         "Units": "Percent",
                         "Location": "Environment"
                     }
@@ -39,11 +50,11 @@ window.onload = function() {
             data: JSON.stringify(data),
             dataType: 'json',
             contentType: "application/json",
-            success: function(res) {
-                console.log("Se enviaron los datos");
+            success: function() {                
+                console.log(`Envío de datos simulados a ${StationName} exitoso.`);
             }
         });
     };
 
-    setInterval(randomValues, 90000);
+    setInterval(randomValues, 3000);
 }

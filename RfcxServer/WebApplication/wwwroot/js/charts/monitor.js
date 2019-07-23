@@ -17,8 +17,7 @@ var charts = chartContainers.map(function(chartContainer){
         momentJsObject : moment(),
         hoursAgo : 6
     })  
-    let initialDataUrl = `api/Station/${stationId}/Sensor/${sensorId}/${query}`;    
-    console.log(initialDataUrl);
+    let initialDataUrl = `api/Station/${stationId}/Sensor/${sensorId}/${query}`; 
     //get div id to build a CanvasJs chart
     let canvasJsChart = chartContainer.querySelector("div.canvasJsChart");
     let canvasJsChartDivId = canvasJsChart.getAttribute("id");
@@ -35,12 +34,10 @@ var charts = chartContainers.map(function(chartContainer){
 charts.forEach(function(chart){
     //make request
     //MUST VALIDATE WHEN THERE IS NO VALUE IN THE LAST K HOURS
-    $.getJSON(chart.initialDataUrl, function(data){
+    $.getJSON(chart.initialDataUrl, function(data){        
         //process response
-        let dataPoints = data.map(toDataPoint).reverse();
-        
-        //take units from first element of response and assume all elements have same units
-        let units = data[0].Units;
+        let dataPoints = data.map(toDataPoint).reverse();        
+        let units = getUnits(data);
         let toolTipContent = formatUnitsToTheToolTip(units);
         let axisYTitle = chart.sensorType; 
 
@@ -62,7 +59,7 @@ charts.forEach(function(chart){
     let lastDataUrl = `api/Station/${stationId}/Sensor/${sensorId}/Data/LastData`;
 
     //set the job
-    setInterval(updateChart, 10000, chart.canvasJsChart, lastDataUrl, 15);
+    setInterval(updateChart, 3000, chart.canvasJsChart, lastDataUrl, 15);
 })
 
 /*** Aditional webpage behaviour ***/
@@ -158,6 +155,17 @@ function formatUnitsToTheToolTip(units){
         return "{y} °C" ; 
     } else if ( units == "Percent") {
         return "{y} %" ;
+    } else {
+        return "";
+    }
+}
+
+function getUnits(data){
+    if ( data[0] != null ){
+        //take units from first element of response and assume all elements have same units    
+        return data[0].Units;
+    } else {
+        return "";
     }
 }
 
