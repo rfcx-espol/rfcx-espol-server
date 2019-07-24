@@ -85,7 +85,10 @@ function contentStation(station_id, station_name){
                 </div>			
             </div>
             <div class="panel-body" id="station${station_id}">			   		   
-            </div>			  			  				  
+            </div>
+            <div class = "last_record">
+                <p><small class="text-muted">Last record 3 mins ago</small></p>
+            </div>
         </div>
 	</div>
     `;
