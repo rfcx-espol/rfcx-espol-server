@@ -95,7 +95,6 @@ namespace WebApplication
                 });
             services.AddTransient<IIncidentRepository, IncidentRepository>();
             services.AddTransient<IAlertRepository, AlertRepository>();
-            services.AddTransient<IAlertsConfigurationRepository, AlertsConfigurationRepository>();
             services.AddTransient<IImageRepository, ImageRepository>();
             services.AddTransient<IAudioRepository, AudioRepository>();
             services.AddTransient<IStationRepository, StationRepository>();

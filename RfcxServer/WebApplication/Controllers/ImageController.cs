@@ -30,6 +30,7 @@ using System.Drawing;
 using System.Net.Http;
 
 
+
 namespace WebApplication.Controllers
 {
     [Route("api/imgcapture")]
@@ -51,13 +52,7 @@ namespace WebApplication.Controllers
         }
 
         
-        [HttpGet("{_id}")]
-        public async Task<ActionResult> Show(string _id)
-        {
-            var image = await _ImageRepository.Find(_id);
-            var imgPath = Constants.RUTA_ARCHIVOS_ANALISIS_IMAGENES + image.StationId + "/" +  image.Path;
-            return base.PhysicalFile(imgPath, "image/"+Path.GetExtension(image.Path).Substring(1));
-        }
+        
 
         [HttpGet("index")]
         public IActionResult Index()
@@ -72,12 +67,34 @@ namespace WebApplication.Controllers
             return View(ivm);
         }
 
+        
+        public IActionResult Search(ImageViewModel imageVM)
+        {
+            var pageNumber = (imageVM.Pnumber == 0) ? 1 : imageVM.Pnumber;
+            var pageSize = 10;
+            imageVM.estaciones = _StationRepository.Get();
+            var imagenes = _ImageRepository.GetByStationAndDate(imageVM.StationId, imageVM.Start, imageVM.End).ToPagedList(pageNumber, pageSize);
+            imageVM.Images = imagenes;
+            return View(imageVM);
+        }
+
         [HttpPost]
         public async Task<ActionResult> PostPicture(ImageRequest req)
         {
             return await _ImageRepository.PostPicture(req);
 
         }
+
+        
+        [HttpGet("download")]
+        public FileResult download([FromQuery]string nameFile, [FromQuery]string station)
+        {
+            return File(Url.Content("C:\\var\\rfcx-espol-server\\resources\\images\\"+station+"\\"+nameFile), "image/jpg", "archivo.jpg");
+            
+        }
+
+
+
         [HttpGet("list")]
         public async Task<ActionResult> List([FromQuery]long starttime, [FromQuery]long endtime, [FromQuery]int page=1, [FromQuery]int rows=25)
         {
@@ -90,17 +107,14 @@ namespace WebApplication.Controllers
 
        
         
-        public IActionResult Search(ImageViewModel imageVM)
-        {
-            var pageNumber = (imageVM.Pnumber == 0) ? 1 : imageVM.Pnumber;
-            var pageSize = 10;
-            imageVM.estaciones = _StationRepository.Get();
-            var imagenes = _ImageRepository.GetByStationAndDate(imageVM.StationId, imageVM.Start, imageVM.End).ToPagedList(pageNumber, pageSize);
-            imageVM.Images = imagenes;
-            return View(imageVM);
-        }
 
-        
+        //[HttpGet("{_id}")]
+        //public async Task<ActionResult> Show(string _id)
+        //{
+        //    var image = await _ImageRepository.Find(_id);
+        //    var imgPath = Constants.RUTA_ARCHIVOS_ANALISIS_IMAGENES + image.StationId + "/" +  image.Path;
+        //    return base.PhysicalFile(imgPath, "image/"+Path.GetExtension(image.Path).Substring(1));
+        //}
 
         [HttpPut]
         public async Task<ActionResult> AddTag(int ImageId, string Tag)
@@ -149,7 +163,7 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        [Route("api/Station/{StationId:int}/[controller]/{AudioId:int}")]
+        [Route("api/Station/{StationId:int}/[controller]/{ImageId:int}")]
         public Task<string> Get([FromRoute]int StationId, [FromRoute]int ImageId)
         {
             return this.GetImageById(StationId, ImageId);
@@ -162,20 +176,15 @@ namespace WebApplication.Controllers
         }
 
         [HttpPut]
-        [Route("api/Station/{StationId:int}/[controller]/{AudioId:int}")]
+        [Route("api/Station/{StationId:int}/[controller]/{ImageId:int}")]
         public async Task<bool> Put([FromRoute]int StationId, [FromRoute]int ImageId, [FromBody] Image Image)
         {
             if (ImageId==0) return false;
             return await _ImageRepository.Update(StationId, ImageId, Image);
         }
 
-        //[HttpDelete("{id}")]
-        [HttpDelete]
-        [Route("Download/api/Station/{StationId:int}/[controller]/{AudioId:int}")]
-        public async Task<bool> Delete([FromRoute]int StationId, [FromRoute]int ImageId)
-        {
-            if (ImageId==0) return false;
-            return await _ImageRepository.Remove(StationId, ImageId);
-        }
+       
+
+        
     }
 }
