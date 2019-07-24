@@ -1,6 +1,12 @@
 //get Id of Station
 var stationId = $("#stationId").text();
 
+var CONFIG = {
+    stationId : stationId,
+    hoursAgo : 1 , //From how many hours ago, I want retrieve first batch of data
+    timeInterval : 10000, //At which rate I want to request for new single data. Milliseconds
+    maxDataPointsAllowed : 15, //How many points I want to keep in the chart    
+}
 
 /*** place empty CanvasJs charts, given the div IDs ***/
 
@@ -15,9 +21,9 @@ var charts = chartContainers.map(function(chartContainer){
     //build url to retrieve initial Data
     let query =  timeStampQuery({
         momentJsObject : moment(),
-        hoursAgo : 6
+        hoursAgo : CONFIG.hoursAgo
     })  
-    let initialDataUrl = `api/Station/${stationId}/Sensor/${sensorId}/${query}`; 
+    let initialDataUrl = `api/Station/${CONFIG.stationId}/Sensor/${sensorId}/${query}`; 
     //get div id to build a CanvasJs chart
     let canvasJsChart = chartContainer.querySelector("div.canvasJsChart");
     let canvasJsChartDivId = canvasJsChart.getAttribute("id");
@@ -56,10 +62,10 @@ charts.forEach(function(chart){
 charts.forEach(function(chart){
     //build url to retrieve last Data    
     let sensorId = chart.sensorId;
-    let lastDataUrl = `api/Station/${stationId}/Sensor/${sensorId}/Data/LastData`;
+    let lastDataUrl = `api/Station/${CONFIG.stationId}/Sensor/${sensorId}/Data/LastData`;
 
     //set the job
-    setInterval(updateChart, 3000, chart.canvasJsChart, lastDataUrl, 15);
+    setInterval(updateChart, CONFIG.timeInterval, chart.canvasJsChart, lastDataUrl, CONFIG.maxDataPointsAllowed);
 })
 
 /*** Aditional webpage behaviour ***/
@@ -119,26 +125,9 @@ function updateChart( canvasJsChart, lastDataURL, maxDataPointsAllowed ) {
 
         //process response            
         let newDataPoint = toDataPoint(data);
-
-        //compare new value against last value
-        let dataPointsLength = canvasJsChart.options.data[0].dataPoints.length;
-        //MUST VALIDATE EMPTY ARRAYS
-        let lastDataPoint = canvasJsChart.options.data[0].dataPoints[dataPointsLength - 1];
-        let isSamePoint = JSON.stringify(lastDataPoint) === JSON.stringify(newDataPoint);
-        
-        if (isSamePoint) {         
-            //set a null point
-            dataPoint = {
-                "x" : newDataPoint.x,
-                "y" : null
-            }
-        } else {
-            //use the new point
-            dataPoint = newDataPoint;
-        }       
-                
+           
         //update chart
-        canvasJsChart.options.data[0].dataPoints.push(dataPoint);
+        canvasJsChart.options.data[0].dataPoints.push(newDataPoint);
 
         //avoids accumulate points in the chart
         if(canvasJsChart.options.data[0].dataPoints.length > maxDataPointsAllowed ){
