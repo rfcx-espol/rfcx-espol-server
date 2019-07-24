@@ -2,6 +2,7 @@ using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApplication.Models;
+using MongoDB.Bson;
 
 namespace WebApplication.IRepository
 {
@@ -24,5 +25,9 @@ namespace WebApplication.IRepository
         Task<bool> Update(string id, Data item);
         Task<bool> Remove(string id);
         Task<bool> RemoveAll();
+        Task<IEnumerable<BsonDocument>> AvgPerDate(
+            int StationId, 
+            int SensorId, 
+            long StartTimestamp);
     }
 }

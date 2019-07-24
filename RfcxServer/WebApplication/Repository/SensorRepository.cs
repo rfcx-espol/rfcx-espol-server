@@ -76,6 +76,19 @@ namespace WebApplication.Repository
             }
         }
 
+         public IEnumerable<Sensor> GetByStationNotAsync(int StationId)
+        {
+            try
+            {
+                var filter = Builders<Sensor>.Filter.Eq("StationId", StationId);
+                return _context.Sensors.Find(filter).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<Sensor> Get(int StationId, int SensorId)
         {
             var filter = Builders<Sensor>.Filter.Eq("Id", SensorId) & Builders<Sensor>.Filter.Eq("StationId", StationId);

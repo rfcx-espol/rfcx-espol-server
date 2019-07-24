@@ -370,6 +370,70 @@ namespace WebApplication.Repository
                 throw ex;
             }
         }
+        public async Task<IEnumerable<BsonDocument>> AvgPerDate(
+            int StationId, 
+            int SensorId, 
+            long StartTimestamp)
+        {
+            
+            // Use mongodb driver to do aggregation of data
+            var timestampInMillis = new BsonDocument {
+                { "$multiply", new BsonArray{ "$Timestamp", 1000 } }
+            };
+            var dateField =new BsonDocument{
+                { "$toDate", timestampInMillis }
+            };
+
+            var _id = new BsonDocument {                
+                {"year", new BsonDocument("$year","$date")},               
+                {"month", new BsonDocument("$month","$date")},                
+                {"dayOfMonth", new BsonDocument("$dayOfMonth","$date")}  
+            };
+            var avg = new BsonDocument {
+                {"$avg", new BsonDocument("$toDouble","$Value")}
+            };
+            
+            // do the aggregation
+            var aggregatedResult = _context.Datas.Aggregate()
+                .AppendStage<BsonDocument> 
+                (
+                    new BsonDocument { 
+                        { "$match", new BsonDocument("Timestamp", new BsonDocument("$gte",StartTimestamp)) }
+                    }
+                )
+                .AppendStage<BsonDocument> 
+                (
+                    new BsonDocument { 
+                        { "$match", new BsonDocument("StationId", StationId) } 
+                    }
+                )
+                .AppendStage<BsonDocument> 
+                (
+                    new BsonDocument { 
+                        { "$match", new BsonDocument("SensorId", SensorId) } 
+                    }
+                )
+                .AppendStage<BsonDocument>
+                (
+                    new BsonDocument{
+                        { "$addFields", new BsonDocument("date", dateField) }
+                    }
+                )                
+                .AppendStage<BsonDocument>
+                (
+                    new BsonDocument{
+                        { "$group", new BsonDocument("_id", _id).Add("avg",avg) }
+                    }
+                )              
+                .AppendStage<BsonDocument>
+                (
+                    new BsonDocument{
+                        { "$sort", new BsonDocument("_id",1) }
+                    }
+                )
+                .ToListAsync();                
+            return await aggregatedResult;
+        }
 
         
     }
