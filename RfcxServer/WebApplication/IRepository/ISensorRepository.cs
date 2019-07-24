@@ -13,7 +13,8 @@ namespace WebApplication.IRepository
         Task<Sensor> Get(int StationId, int SensorId);
         Sensor getSensor(int id);
         Sensor getSensorByStation(int StationId, int SensorId);
-        Task<IEnumerable<Sensor>> GetByStation(int StationId);
+        Task<IEnumerable<Sensor>> GetByStation(int StationId);        
+        IEnumerable<Sensor> GetByStationNotAsync(int StationId);
         Task Add(Sensor item);
         Task<bool> Update(string id, Sensor item);
         Task<bool> Remove(string id);
