@@ -50,14 +50,6 @@ namespace WebApplication.DbModels
             }
         }
 
-        public IMongoCollection<AlertsConfiguration> AlertsConfigurations
-        {
-            get
-            {
-                return _database.GetCollection<AlertsConfiguration>("AlertsConfiguration");
-            }
-        }
-
         public IMongoCollection<Audio> Audios
         {
             get
