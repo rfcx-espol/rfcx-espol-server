@@ -7,9 +7,12 @@ from trymodel import tensoroutput, structure_lists_output
 
 MINIMUM_PROBABILITY = 0.5
 
-def get_top_pick(image_path_source):
+def raw_as_lists(image_path_source):
 	raw = tensoroutput(image_path_source)
 	species, probs = structure_lists_output(raw)
+	return species, probs
+
+def get_top_pick(species, probs):
 	if probs[0] < MINIMUM_PROBABILITY:
 		return None
 	return species[0]
@@ -24,18 +27,22 @@ collection = db.Camera_Image
 cursor = collection.find({"State" : "PENDIENTE"})
 
 path = "/var/rfcx-espol-server/resources/images/"
-temp = "/home/johnny/Pictures/temp/"
+# temp = "/home/johnny/Pictures/temp/"
 
-makedirs(temp, exist_ok=True)
+# makedirs(temp, exist_ok=True)
 
 for image in cursor:
 	image_path_source = path+str(image['StationId']) + "/" + image['Path']
 	# image_path_temp = temp+image['Path']
 	# copyfile(image_path_source, image_path_temp)
-	top_pick = get_top_pick(image_path_source)
+	species, probs = raw_as_lists(image_path_source)
+	top_pick = get_top_pick(species, probs)
 	if top_pick is not None:
 		if image.get('Family') is None:
 			image['Family'] = []
+		if image.get('Tags') is None:
+			image['Tags'] = []
 		image['Family'].append(top_pick)
+		image['Tags'] += species[1:]
 		collection.replace_one({'_id': image['_id']}, image)
     

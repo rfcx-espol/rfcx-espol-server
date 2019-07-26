@@ -34,7 +34,7 @@ namespace WebApplication.Models
         public string State{ get; set; }
 
         public string[] Tag { get; set; }
-        public JsonResult Predictions {get; set;}
+        //public JsonResult Predictions {get; set;}
         //public List<String> Family{ get; set; }
         
         //public List<String> LabelList { get; set; }
