@@ -293,4 +293,4 @@ __pycache__/
 bin/
 
 # DB Settings
-appsettings.json
+RfcxServer/WebApplication/appsettings.json
