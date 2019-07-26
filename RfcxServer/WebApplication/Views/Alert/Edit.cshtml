@@ -7,23 +7,26 @@
         #titulo {
             text-align: center;
         }
+
         #formulario {
             margin-left: 0;
             margin-right: 270px;
         }
 
+        textarea {
+            resize:none;
+        }
+
         .condition-container {
             margin: 10px;
             padding: 5px;
-            border: 3px solid #f2f2f2;
-            border-radius: 8px;
         }
 
     </style>
 }
 
 <div id="formulario" class="row">
-    <form id="form_editar_alerta" method="put" action="api/alert/@Model.AlertId">
+    <form id="form_editar_alerta" method="patch" action="/api/alert/@Model.AlertId">
         <div id="titulo" class="form-group col-lg-12 col-md-12">
             <h2>Edición de alerta</h2>
         </div>
@@ -121,12 +124,13 @@
             alert_input_changed = [];
         });
         
-        $("#formulario input.form-control").change(function () {
+        $("#formulario .form-control").change(function () {
             var input_id = $(this).attr("id");
             if(!alert_input_changed.includes(input_id)) {
                 alert_input_changed.push(input_id);
             }
-        })
+            console.log("Input changed: "+input_id);
+        });
 
         function addSelectedAlertType(){
             alerttype = $('#tipo_alerta').attr('alerttype');
@@ -135,65 +139,37 @@
         
         function addCondition(){
             i++;
+
             $('#conditions_number').attr('value',i);
             let divContainer = $('<div></div>');
             divContainer.attr('class','condition-container');
 
             let divStation= $('<div></div>');
             divStation.attr('class','col-md-3');
-
             let labelStation = $('<label></label>');
             labelStation.text('Estación: ');
-
             let selectStation = $('<select></select>');
-            selectStation.attr('class','form-control');
-            selectStation.attr('name','estacion_alerta_'+i);
-            selectStation.attr('id','estacion_alerta_'+i);
-
-            let defaultOption = $('<option></option>');
-            defaultOption.attr('hidden','""');
-            defaultOption.attr('value','""');
-            defaultOption.text('Escoja una opción');
-
-            selectStation.append(defaultOption);
+            addAttributes(selectStation, 'estacion');
+            appendDefaultOption(selectStation);
             divStation.append(labelStation);
             divStation.append(selectStation);
-
             divContainer.append(divStation);
 
             let divSensor = $('<div></div>');
             divSensor.attr('class','col-md-3');
-
             let labelSensor = $('<label></label>');
             labelSensor.text('Sensor: ');
-
-            let defaultOption2 = $('<option></option>');
-            defaultOption2.attr('hidden','""');
-            defaultOption2.attr('value','""');
-            defaultOption2.text('Escoja una opción');
-
             let selectSensor = $('<select></select>');
-            selectSensor.attr('class','form-control');
-            selectSensor.attr('name','sensor_alerta_'+i);
-            selectSensor.attr('id','sensor_alerta_'+i);
-            selectSensor.append(defaultOption2);
-
-
+            addAttributes(selectSensor, 'sensor');
+            appendDefaultOption(selectSensor);
             divSensor.append(labelSensor);
             divSensor.append(selectSensor);
             divContainer.append(divSensor);
 
             let divCondition = $('<div></div>');
             divCondition.attr('class','col-md-3');
-
             let labelCondition = $('<label></label>');
             labelCondition.text('Condición: ');
-
-            let defaultOption3 = $('<option></option>');
-            defaultOption3.attr('hidden','""');
-            defaultOption3.attr('value','""');
-            defaultOption3.text('Escoja una opción');
-
             let mayorque = $('<option></option>');
             mayorque.attr('value', 'MAYOR QUE');
             mayorque.text("mayor que");
@@ -203,16 +179,12 @@
             let igualque = $('<option></option>');
             igualque.attr('value','IGUAL QUE');
             igualque.text("igual que");
-
             let selectCondition = $('<select></select>');
-            selectCondition.attr('class','form-control');
-            selectCondition.attr('name','condicion_alerta_'+i);
-            selectCondition.attr('id','condicion_alerta_'+i);
-            selectCondition.append(defaultOption3);
+            addAttributes(selectCondition, 'condicion');
+            appendDefaultOption(selectCondition);
             selectCondition.append(mayorque);
             selectCondition.append(menorque);
             selectCondition.append(igualque);
-
             divCondition.append(labelCondition);
             divCondition.append(selectCondition);
             divContainer.append(divCondition);
@@ -224,9 +196,7 @@
             labelValue.text('Valor: ');
 
             let inputValue = $('<input></input>');
-            inputValue.attr('id','threshold_alerta_'+i);
-            inputValue.attr('name','threshold_alerta_'+i);
-            inputValue.attr('class','form-control');
+            addAttributes(inputValue, 'threshold');
             inputValue.attr('type','text');
 
             divValue.append(labelValue);
@@ -236,6 +206,20 @@
 
             addStations();
             addOnChange();
+        }
+
+        function appendDefaultOption(select){
+            let defaultOption = $('<option></option>');
+            defaultOption.attr('hidden','""');
+            defaultOption.attr('value','""');
+            defaultOption.text('Escoja una opción');
+            select.append(defaultOption);
+        }
+
+        function addAttributes(input, inputname){
+            input.attr('class', 'form-control');
+            input.attr('name', inputname+'_alerta_'+i);
+            input.attr('id', inputname+'_alerta_'+i);
         }
 
         function addStations(){
@@ -293,23 +277,7 @@
                                 option.prop('selected', true);
                             }
                             $("#estacion_alerta_"+idx).append(option);
-                            $.ajax({
-                                url:"/api/Station/"+station.Id+"/Sensor",
-                                dataType:'json',
-                                async: true,
-                                success: function(response) {
-                                    $("#sensor_alerta_"+idx).empty();
-                                    $.each(response, function(idx2, sensor) {
-                                    let option = $("<option></option>");
-                                    let name = sensor.Type + " - " + sensor.Location;
-                                    option.text(name);
-                                    option.attr("value",sensor.Id);
-                                    if (sensor.Id == $("#sensor_alerta_"+idx).attr('sel'))
-                                        option.prop('selected', true);
-                                    $("#sensor_alerta_"+idx).append(option);
-                                    });
-                                }
-                            });
+                            addSelectedSensor(idx, station)
                         });
                     }
                 });
@@ -334,12 +302,38 @@
                     }
                 });
                 });
-                condicion_alerta = $('#condicion_alerta_'+idx).attr('sel');
-                console.log(condicion_alerta)
-                $("#condicion_alerta_"+idx+" option[value='"+condicion_alerta+"']").prop('selected', true);
+                addSelectedCondition(idx);
             }
             
         }
+
+
+        function addSelectedSensor(idx, station){
+           $.ajax({
+                url:"/api/Station/"+station.Id+"/Sensor",
+                dataType:'json',
+                async: true,
+                success: function(response) {
+                    $("#sensor_alerta_"+idx).empty();
+                    $.each(response, function(idx2, sensor) {
+                    let option = $("<option></option>");
+                    let name = sensor.Type + " - " + sensor.Location;
+                    option.text(name);
+                    option.attr("value",sensor.Id);
+                    if (sensor.Id == $("#sensor_alerta_"+idx).attr('sel'))
+                        option.prop('selected', true);
+                    $("#sensor_alerta_"+idx).append(option);
+                    });
+                }
+            }); 
+        }
+
+        function addSelectedCondition(idx){
+            condicion_alerta = $('#condicion_alerta_'+idx).attr('sel');
+            console.log(condicion_alerta);
+            $("#condicion_alerta_"+idx+" option[value='"+condicion_alerta+"']").prop('selected', true);
+        }
+        
 
     </script>
 }
