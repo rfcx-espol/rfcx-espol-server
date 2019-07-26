@@ -26,7 +26,7 @@
 }
 
 <div id="formulario" class="row">
-    <form id="form_editar_alerta" method="patch" action="/api/alert/@Model.AlertId">
+    <form id="form_editar_alerta" method="post" action="/api/alert/@Model.AlertId">
         <div id="titulo" class="form-group col-lg-12 col-md-12">
             <h2>Edición de alerta</h2>
         </div>
@@ -108,7 +108,7 @@
             <a class="btn btn-primary" onclick="addCondition()">+</a>
         </div>
         <div id="boton_alerta" class="form-group col-lg-12 col-md-12">
-            <button class="btn btn-primary" type="submit">Editar Alerta</button>
+            <button class="btn btn-primary" >Editar Alerta</button>
         </div>
     </form>
 </div>
@@ -129,7 +129,7 @@
             if(!alert_input_changed.includes(input_id)) {
                 alert_input_changed.push(input_id);
             }
-            console.log("Input changed: "+input_id);
+            console.log(input_id);
         });
 
         function addSelectedAlertType(){
@@ -285,7 +285,6 @@
                 
                 $("#estacion_alerta_"+idx).change(function(){
                 let id = $(this).val();
-                console.log(id)
                 $.ajax({
                     url:"/api/Station/"+id+"/Sensor",
                     dataType:'json',
@@ -330,10 +329,30 @@
 
         function addSelectedCondition(idx){
             condicion_alerta = $('#condicion_alerta_'+idx).attr('sel');
-            console.log(condicion_alerta);
             $("#condicion_alerta_"+idx+" option[value='"+condicion_alerta+"']").prop('selected', true);
         }
         
+        function updateAlert(id){
+            for (ai of alert_input_changed){
+                var obj = {};
+                var field = getField(ai);
+                var value = $("");
+            }
+        }
+
+        function getField(ai) {
+            switch(ai) {
+                case "nombre_alerta":
+                    return "Name";
+                case "tipo_alerta":
+                    return "AlertType";
+                case "correos_notificacion":
+                    return "MailTo";
+                case "mensaje_alerta":
+                    return "Message";
+                
+            }
+        }
 
     </script>
 }
