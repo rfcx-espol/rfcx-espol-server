@@ -7,88 +7,23 @@
         #titulo {
             text-align: center;
         }
-        #boton_especie {
-            text-align: left;
-            margin-top: 20px;
-            margin-bottom: 65px;
-        }
         #formulario {
             margin-left: 0;
             margin-right: 270px;
         }
-        textarea {
-            resize: none;
-        }
-        .botones_eliminar {
-            padding: 0;
-            text-align: right;
-            display: none;
-            margin-bottom: 5px;
-        }
-        #boton_agregar {
-            padding: 0;
-            text-align: center;
-            margin-bottom: 5px;
-        }
-        .descripcion, .botones_eliminar, #boton_agregar {
-            margin-bottom: 5px;
-        }
-        #alerta {
-            margin: 20px 0 0 0;
-        }
-        .div_descripcion {
-            margin-top: 3px;
-        }
-        .imagen {
-            position: relative;
-            display: inline-block;
-            overflow: hidden;
-            width: 100%;
-            border: solid 1px rgb(221, 221, 221);
-            padding: 4px;
-            border-radius: 2%;
-        }
-        .img-responsive {
-            margin: auto;
-        }
-        .boton_eliminar {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 100;
-            background-color: #f9f9f9;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 1px 1px #888888;
-        }
-        .material-icons {
-            font-size: 25px;
-            padding-right: 3px;
-            padding-left: 3px;
-            padding-top: 3px;
-            color: #CB4335;     
-        }
-        h4#modal_alert_label {
-            color: white;
-        }
-        .modal-header.alert-danger button.close{
-            color: white;
-            opacity: 1;
-        }
-        .modal-header.alert-danger {
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-            background-color: #d9534f;
-        }
-        .modal-footer {
-            text-align: center !important;
+
+        .condition-container {
+            margin: 10px;
+            padding: 5px;
+            border: 3px solid #f2f2f2;
+            border-radius: 8px;
         }
 
     </style>
 }
 
 <div id="formulario" class="row">
-        <form id="form_editar_alerta" method="put" action="api/alert/@Model.AlertId">
+    <form id="form_editar_alerta" method="put" action="api/alert/@Model.AlertId">
         <div id="titulo" class="form-group col-lg-12 col-md-12">
             <h2>Edición de alerta</h2>
         </div>
@@ -133,7 +68,37 @@
             <h4>Notificar cuando: </h4>
         </div>
         <input id="conditions_number" hidden="" name="conditions_number" value="@Model.Conditions.Count()"></input>
-        <div id="condiciones">
+        <div id="conditions">
+            @for (var i = 1; i <= @Model.Conditions.Count(); i++)
+            {
+                <div class="condition-container">
+                    <div class="col-md-3">
+                        <label> Estación: </label>
+                        <select class="form-control" id='estacion_alerta_@i' name='estacion_alerta_@i' sel=@Model.Conditions[i-1].StationId>
+                            <option hidden="" value="">Escoja una opción</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label> Sensor: </label>
+                        <select class="form-control" id="sensor_alerta_@i" name="sensor_alerta_@i" sel="@Model.Conditions[i-1].SensorId">
+                            <option hidden="" value="">Escoja una opción</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label> Condición: </label>
+                        <select class="form-control" id="condicion_alerta_@i" name="condicion_alerta_@i" sel="@Model.Conditions[i-1].Comparison">
+                            <option hidden="" value="">Escoja una opción</option>
+                            <option value="MAYOR QUE">mayor que</option>
+                            <option value="MENOR QUE">menor que</option>
+                            <option value="IGUAL QUE">igual que</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label> Valor: </label>
+                        <input class="form-control" id="threshold_alerta_@i" name="threshold_alerta_@i" type="text" value=@Model.Conditions[i-1].Threshold>
+                    </div>
+                </div>
+            }
         </div>
         <div class="col-lg-12">
             <label> </label>
@@ -150,8 +115,9 @@
 
         
         $(document).ready(function(){
-            addSelected();
-            addConditionsAlert();
+            i = $('#conditions_number').attr('value');
+            addSelectedAlertType();
+            addSelectedConditionInfo();
             alert_input_changed = [];
         });
         
@@ -162,16 +128,9 @@
             }
         })
 
-        function addSelected(){
+        function addSelectedAlertType(){
             alerttype = $('#tipo_alerta').attr('alerttype');
             $("#tipo_alerta option[value="+alerttype+"]").prop('selected', true);
-        }
-
-        function addConditionsAlert(){
-            conditions_number = $('#conditions-number').attr('value')
-            for (int idx = 0; idx < conditions_number; idx++){
-
-            }
         }
         
         function addCondition(){
@@ -188,8 +147,8 @@
 
             let selectStation = $('<select></select>');
             selectStation.attr('class','form-control');
-            selectStation.attr('name','estacion_alerta'+i);
-            selectStation.attr('id','estacion_alerta'+i);
+            selectStation.attr('name','estacion_alerta_'+i);
+            selectStation.attr('id','estacion_alerta_'+i);
 
             let defaultOption = $('<option></option>');
             defaultOption.attr('hidden','""');
@@ -215,8 +174,8 @@
 
             let selectSensor = $('<select></select>');
             selectSensor.attr('class','form-control');
-            selectSensor.attr('name','sensor_alerta'+i);
-            selectSensor.attr('id','sensor_alerta'+i);
+            selectSensor.attr('name','sensor_alerta_'+i);
+            selectSensor.attr('id','sensor_alerta_'+i);
             selectSensor.append(defaultOption2);
 
 
@@ -247,8 +206,8 @@
 
             let selectCondition = $('<select></select>');
             selectCondition.attr('class','form-control');
-            selectCondition.attr('name','condicion_alerta'+i);
-            selectCondition.attr('id','condicion_alerta'+i);
+            selectCondition.attr('name','condicion_alerta_'+i);
+            selectCondition.attr('id','condicion_alerta_'+i);
             selectCondition.append(defaultOption3);
             selectCondition.append(mayorque);
             selectCondition.append(menorque);
@@ -265,21 +224,21 @@
             labelValue.text('Valor: ');
 
             let inputValue = $('<input></input>');
-            inputValue.attr('id','threshold_alerta'+i);
-            inputValue.attr('name','threshold_alerta'+i);
+            inputValue.attr('id','threshold_alerta_'+i);
+            inputValue.attr('name','threshold_alerta_'+i);
             inputValue.attr('class','form-control');
             inputValue.attr('type','text');
 
             divValue.append(labelValue);
             divValue.append(inputValue);
             divContainer.append(divValue);
-            $("#condiciones").append(divContainer);
+            $("#conditions").append(divContainer);
 
             addStations();
             addOnChange();
         }
 
-                function addStations(){
+        function addStations(){
             $.ajax({
                 url:"/api/Station/list",
                 dataType:'json',
@@ -290,7 +249,7 @@
                         option.text(station.Name);
                         option.attr("id",station.Id)
                         option.attr("value",station.Id)
-                        $("#estacion_alerta"+i).append(option);
+                        $("#estacion_alerta_"+i).append(option);
                     });
                 }
             });
@@ -298,24 +257,88 @@
 
 
         function addOnChange() {
-           $("#estacion_alerta"+i).change(function(){
+           $("#estacion_alerta_"+i).change(function(){
                 let id = $(this).val();
                 $.ajax({
                     url:"/api/Station/"+id+"/Sensor",
                     dataType:'json',
                     async: false,
                     success: function(response) {
-                        $("#sensor_alerta"+i).empty();
+                        $("#sensor_alerta_"+i).empty();
                         $.each(response, function(idx, sensor) {
                             let option = $("<option></option>");
                             let name = sensor.Type + " - " + sensor.Location;
                             option.text(name);
                             option.attr("value",sensor.Id);
-                            $("#sensor_alerta"+i).append(option);
+                            $("#sensor_alerta_"+i).append(option);
                         });
                     }
                 });
             });
+        }
+
+        function addSelectedConditionInfo() {
+            for (let idx=1; idx <= i; idx++){
+                $.ajax({
+                    url:"/api/Station/list",
+                    dataType:'json',
+                    async: true,
+                    success: function(response) {
+                        $.each(response, function(idx2, station) {
+                            let option = $("<option></option>");
+                            option.text(station.Name);
+                            option.attr("id",station.Id)
+                            option.attr("value",station.Id)
+                            if (station.Id == $("#estacion_alerta_"+idx).attr('sel')){
+                                option.prop('selected', true);
+                            }
+                            $("#estacion_alerta_"+idx).append(option);
+                            $.ajax({
+                                url:"/api/Station/"+station.Id+"/Sensor",
+                                dataType:'json',
+                                async: true,
+                                success: function(response) {
+                                    $("#sensor_alerta_"+idx).empty();
+                                    $.each(response, function(idx2, sensor) {
+                                    let option = $("<option></option>");
+                                    let name = sensor.Type + " - " + sensor.Location;
+                                    option.text(name);
+                                    option.attr("value",sensor.Id);
+                                    if (sensor.Id == $("#sensor_alerta_"+idx).attr('sel'))
+                                        option.prop('selected', true);
+                                    $("#sensor_alerta_"+idx).append(option);
+                                    });
+                                }
+                            });
+                        });
+                    }
+                });
+
+                
+                $("#estacion_alerta_"+idx).change(function(){
+                let id = $(this).val();
+                console.log(id)
+                $.ajax({
+                    url:"/api/Station/"+id+"/Sensor",
+                    dataType:'json',
+                    async: true,
+                    success: function(response) {
+                        $("#sensor_alerta_"+idx).empty();
+                        $.each(response, function(idx2, sensor) {
+                            let option = $("<option></option>");
+                            let name = sensor.Type + " - " + sensor.Location;
+                            option.text(name);
+                            option.attr("value",sensor.Id);
+                            $("#sensor_alerta_"+idx).append(option);
+                        });
+                    }
+                });
+                });
+                condicion_alerta = $('#condicion_alerta_'+idx).attr('sel');
+                console.log(condicion_alerta)
+                $("#condicion_alerta_"+idx+" option[value='"+condicion_alerta+"']").prop('selected', true);
+            }
+            
         }
 
     </script>
