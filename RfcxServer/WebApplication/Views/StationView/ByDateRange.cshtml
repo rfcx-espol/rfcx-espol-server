@@ -32,6 +32,14 @@
   <div class="col-sm-12 col-md-12 col-lg-12 historical">
     <form class="form-inline text-center">      
       <div class="form-group">
+        <label for="">Sensor</label>
+        <select class="form-control">
+           @foreach (Sensor sensor in @Model) {
+            <option>@(sensor.Type) @(sensor.Location) @(sensor.Id)</option>
+          }
+        </select>
+      </div>
+      <div class="form-group">
         <label for="">Por</label>
         <select class="form-control">
           <option>Semana</option>
