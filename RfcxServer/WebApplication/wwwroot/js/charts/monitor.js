@@ -3,9 +3,9 @@ var stationId = $("#stationId").text();
 
 var CONFIG = {
     stationId : stationId,
-    hoursAgo : 1 , //From how many hours ago, I want retrieve first batch of data
+    hoursAgo : 1, //From how many hours ago, I want retrieve first batch of data
     timeInterval : 10000, //At which rate I want to request for new single data. Milliseconds
-    maxDataPointsAllowed : 15, //How many points I want to keep in the chart    
+    maxDataPointsAllowed : 15, //How many points I want to keep in the chart when adding new points
 }
 
 /*** place empty CanvasJs charts, given the div IDs ***/
@@ -40,9 +40,16 @@ var charts = chartContainers.map(function(chartContainer){
 charts.forEach(function(chart){
     //make request
     //MUST VALIDATE WHEN THERE IS NO VALUE IN THE LAST K HOURS
-    $.getJSON(chart.initialDataUrl, function(data){        
+    $.getJSON(chart.initialDataUrl, function(data){
+
+        //default value if empty response        
+        let dps = (data.length > 1 ) ? data : [{Timestamp : moment().unix() , Value : null }];
+        
         //process response
-        let dataPoints = data.map(toDataPoint).reverse();        
+        let rawDataPoints = dps.map(toRawDataPoint).sort(byTimestamp);
+        let dpsNullPointsAdded = addNullPoints(rawDataPoints, (CONFIG.timeInterval/1000));
+        let dataPoints = dpsNullPointsAdded.map(toDataPoint);
+
         let units = getUnits(data);
         let toolTipContent = formatUnitsToTheToolTip(units);
         let axisYTitle = chart.sensorType; 
@@ -89,6 +96,7 @@ function realTimeChart(divId){
         data:[{
             xValueType: "dateTime",
             type : "line",
+            markerSize: 5,
             dataPoints: []
         }]
     });
@@ -110,7 +118,7 @@ function toDataPoint(responseElement){
     let x = new Date(parseInt(timestamp)*1000);
 
     //format y value
-    var y = Number(parseFloat(value).toFixed(2));  
+    let y = (value == null) ? null : Number(parseFloat(value).toFixed(2));
     
     return {
         "x" : x,
@@ -118,16 +126,62 @@ function toDataPoint(responseElement){
     };
 }
 
+function toRawDataPoint(responseElement){
+    return {
+        Timestamp : responseElement.Timestamp,                
+        Value : responseElement.Value
+    };
+}
+
+//compare function to be used in sort method
+function byTimestamp(a,b){
+    return a.Timestamp - b.Timestamp;
+}
+
+//place datapoints if between two datapoints there was supposed to be a value.
+function addNullPoints(dataPoints, timeInterval){
+    let dataPointsNullPointsAdded = [];
+    for(let i = 0 ; i < (dataPoints.length -1) ; i++){
+      dataPointsNullPointsAdded.push(dataPoints[i]);
+  
+      let nextTimestamp = dataPoints[i+1].Timestamp;
+      let currentTimestamp = dataPoints[i].Timestamp;
+  
+      if ( nextTimestamp > (currentTimestamp + timeInterval)) {
+        let nullDataPoint = makeNullDataPoint(nextTimestamp, currentTimestamp);  
+        dataPointsNullPointsAdded.push(nullDataPoint);
+      }        
+    }
+    dataPointsNullPointsAdded.push(dataPoints[dataPoints.length - 1]);
+    return dataPointsNullPointsAdded;
+}
+
+function makeNullDataPoint(nextTimestamp, currentTimestamp){
+    let middleTimestamp = Math.floor((nextTimestamp + currentTimestamp)/2);
+    let nullDataPoint = {
+        Timestamp: middleTimestamp,
+        Value: null
+    };
+    return nullDataPoint;
+}
+
 function updateChart( canvasJsChart, lastDataURL, maxDataPointsAllowed ) {    
     $.getJSON(lastDataURL, function(data) {
-        //dataPoint to add
-        let dataPoint;
-
         //process response            
-        let newDataPoint = toDataPoint(data);
-           
+        let dataPointsLength = canvasJsChart.options.data[0].dataPoints.length;
+        let lastDataPoint = canvasJsChart.options.data[0].dataPoints[dataPointsLength - 1];
+        let newDataPoint = toRawDataPoint(data);
+        
+        let nextTimestamp = newDataPoint.Timestamp;
+        let currentTimestamp = lastDataPoint.x.getTime()/1000;
+        let timeInterval  = CONFIG.timeInterval/1000;
+        if ( nextTimestamp > (currentTimestamp + timeInterval)){         
+            let nullDataPoint = makeNullDataPoint(nextTimestamp, currentTimestamp);  
+            canvasJsChart.options.data[0].dataPoints.push(toDataPoint(nullDataPoint));
+        }
+
         //update chart
-        canvasJsChart.options.data[0].dataPoints.push(newDataPoint);
+        canvasJsChart.options.data[0].dataPoints.push(toDataPoint(newDataPoint));
 
         //avoids accumulate points in the chart
         if(canvasJsChart.options.data[0].dataPoints.length > maxDataPointsAllowed ){
@@ -157,6 +211,7 @@ function getUnits(data){
         return "";
     }
 }
+
 
 /*** Functions for additional webpage behaviour ***/
 
