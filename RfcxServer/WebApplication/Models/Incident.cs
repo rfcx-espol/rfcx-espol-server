@@ -14,12 +14,12 @@ namespace WebApplication.Models
         public DateTime IncidentTime { get; set; }
         public String RaisedAlertName { get; set; }
         public String RaisedCondition { get; set; }
-        public Boolean Solved { get; set; }
+        public Boolean Status { get; set; }
 
         public Incident()
         {
             IncidentTime = DateTime.Now;
-            Solved = false;
+            Status = true;
         }
 
 

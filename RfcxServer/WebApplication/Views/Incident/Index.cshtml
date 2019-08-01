@@ -110,6 +110,19 @@
     
 
     <!-- Pop ups with return messages-->
+    @if(((int) TempData["editResult"]) == 1) {
+        <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            La pregunta ha sido editada correctamente
+        </div>
+    } else if(((int) TempData["editResult"]) == -1) {
+        <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            Hubo un problema al editar la pregunta. Por favor, vuelva a intentarlo.
+        </div>
+    }
 
     <div id="div_tabla_incidentes">
         <table id="tabla_incidentes" class="cell-border display compact">
@@ -118,8 +131,7 @@
                     <th>Fecha</th>
                     <th>Alerta</th>
                     <th>Condicion</th>
-                    <th>Resuelto</th>
-                    <th>Acciones</th>
+                    <th>Notificar</th>
                 </tr>
             </thead>
             <tbody>
@@ -131,13 +143,10 @@
                         <td>@incident.RaisedCondition</td>
                         <td style="text-align: center;">
                             <label class="switch" id='switch_@incident.IncidentId'>
-                                @if (incident.Solved) {<input id="checkbox-status_@incident.IncidentId" type="checkbox" onclick="mostrarAdvertenciaStatus('@incident.IncidentId','@incident.Solved');" checked>}
-                                else {<input id="checkbox-status_@incident.IncidentId" type="checkbox" onclick="editarStatus('@incident.IncidentId','@incident.Solved');"> }
+                                @if (incident.Status) {<input id="checkbox-status_@incident.IncidentId" type="checkbox" onclick="mostrarAdvertenciaStatus('@incident.IncidentId','@incident.Status');" checked>}
+                                else {<input id="checkbox-status_@incident.IncidentId" type="checkbox" onclick="editarStatus('@incident.IncidentId','@incident.Status');"> }
                                 <span class="slider round"></span>
                             </label>
-                        </td>
-                        <td style="text-align: center;">
-                            <button class="btn btn-danger" onclick="mostrarAdvertencia('@incident.IncidentId');">Eliminar</button>
                         </td>
                     </tr>
                 }
@@ -146,26 +155,6 @@
         </table>
     </div>
 
-    <div class="modal fade" id="incident_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header alert-danger">
-                    <button type="button" class="close" style="margin-top: 1px" onclick="cerrarModal();">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="modal_incident_label">ADVERTENCIA</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Se borrará la incidente. Esta acción no puede revertirse. ¿Desea continuar?
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button id="accept" class="btn btn-danger" onclick="">Aceptar</button>
-                    <button id="cancel" class="btn btn-default" onclick="cerrarModal();">Cancelar</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="modal fade" id="incident_modal_status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -177,7 +166,7 @@
                     <h4 class="modal-title" id="modal_incident_label">ADVERTENCIA</h4>
                 </div>
                 <div class="modal-body">
-                    <p>La incidente dejará de estar activa. ¿Desea continuar?
+                    <p>El incidente dejará de notificarse. ¿Desea continuar?
                     </p>
                 </div>
                 <div class="modal-footer">
@@ -199,23 +188,13 @@
                     "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
                 },
                 "columns": [
+                    { "width": "40%" },
                     { "width": "20%" },
                     { "width": "20%" },
                     { "width": "20%" },
-                    { "width": "20%" },
-                    { "width": "20%" }
                 ]
             });
         });
-
-        function mostrarAdvertencia(id) {
-            $("#accept").attr("onclick", "eliminarAlerta('" + id + "');");
-            $("#incident_modal").modal("show");
-        }
-
-        function cerrarModal() {
-            $("#incident_modal").modal("hide");
-        }
 
         function mostrarAdvertenciaStatus(id,status) {
             status = status.toLowerCase();
@@ -230,5 +209,23 @@
             console.log('#checkbox-status_'+incidentid)
             $('#checkbox-status_'+incidentid).prop("checked",true);
         }
+
+        function editarStatus(id, status) {
+            status = (status == 'true')
+            $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                    url: "/api/incident/" + id + "/status",
+                    type: 'PATCH',
+                    async: true,
+                    data: JSON.stringify(!status),
+                    success: function() {
+                        window.location.href = '@Url.Action("Index","Incident")';
+                    }
+            });
+        }
+
     </script>
 }
