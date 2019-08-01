@@ -291,3 +291,6 @@ __pycache__/
 [Ff]iles/
 
 bin/
+
+# DB Settings
+RfcxServer/WebApplication/appsettings.json

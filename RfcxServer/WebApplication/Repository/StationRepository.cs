@@ -117,12 +117,10 @@ namespace WebApplication.Repository
             var filter2=Builders<Data>.Filter.Eq("StationId", id);
             var filter3=Builders<Audio>.Filter.Eq("StationId", id);
             var filter4=Builders<Alert>.Filter.Eq("StationId", id);
-            var filter5=Builders<AlertsConfiguration>.Filter.Eq("StationId", id);
             _context.Sensors.DeleteMany(filter1);
             _context.Datas.DeleteMany(filter2);
             _context.Audios.DeleteMany(filter3);
             _context.Alerts.DeleteMany(filter4);
-            _context.AlertsConfigurations.DeleteMany(filter5);
             Core.MakeRecyclerFolder();
             string audiosDeletedPath = Core.StationAudiosFolderPath(id.ToString());
             string audiosOggDeletedPath = Core.StationOggFolderPath(id.ToString());

@@ -92,7 +92,7 @@ namespace WebApplication {
         }
 
          public static string StationFolderPathImage(string stationId) {
-            return Path.Combine(getBPVImagesDirectory(), "station" + stationId);
+            return Path.Combine(getBPVImagesDirectory(), "images");
         }
 
         public static string SpecieFolderPath(string specieId) {
@@ -112,7 +112,7 @@ namespace WebApplication {
         }
 
          public static string StationImagesFolderPath(string stationId) {
-            return Path.Combine(StationFolderPathImage(stationId), "images");
+            return Path.Combine(StationFolderPathImage(stationId), stationId);
         }
 
         public static string StationOggFolderPath(string stationId) {
@@ -213,12 +213,12 @@ namespace WebApplication {
             return Constants.RUTA_ARCHIVOS_AUDIOS;
         }
 
-        // /var/rfcx-espol-server/resources/bpv/images/
+        // /var/rfcx-espol-server/resources/
         public static string getBPVImagesDirectory() {
-            return Constants.RUTA_ARCHIVOS_IMAGENES;
+            return Constants.RUTA_ARCHIVOS;
+            
         }
-
-
+               
         private static void GrantAccess(string fullPath) {
             Syscall.chown(fullPath, Constants.USER_ID, Constants.GROUP_ID);//1000 es el UID y GID de estudiante (file, UID, GID)
             Syscall.chmod(fullPath, FilePermissions.ALLPERMS);

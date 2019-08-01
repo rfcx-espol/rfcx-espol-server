@@ -33,6 +33,79 @@ var canvasJsChartDivId = canvasJsChart.getAttribute("id");
 //create chart
 var chart = avgPerDateChart(canvasJsChartDivId);
 
+var faked_temp_dataPoints = [
+    {x : new Date(2019,6,17), y : 25.09 },    
+    {x : new Date(2019,6,18), y : 26.78 },    
+    {x : new Date(2019,6,19), y : 35.00 },    
+    {x : new Date(2019,6,20), y : 25.68 },    
+    {x : new Date(2019,6,21), y : 26.21 },    
+    {x : new Date(2019,6,22), y : 28.62 },    
+    {x : new Date(2019,6,23), y : 22.34 },    
+    {x : new Date(2019,6,24), y : 24.01 },
+];
+
+var faked_hum_dataPoints = [
+    {x : new Date(2019,6,17) , y : 35.09 },    
+    {x : new Date(2019,6,18) , y : 33.78 },    
+    {x : new Date(2019,6,19) , y : 40.00 },    
+    {x : new Date(2019,6,20) , y : 36.68 },    
+    {x : new Date(2019,6,21) , y : 36.21 },    
+    {x : new Date(2019,6,22) , y : 39.62 },    
+    {x : new Date(2019,6,23) , y : 32.34 },    
+    {x : new Date(2019,6,24) , y : 35.01 },
+];
+
+sensors.forEach(function(sensor){
+    if (sensor.sensorType == "Temperature"){
+
+        //update the chart
+        chart.options.data.push({            
+            legendMarkerType: "circle",
+            toolTipContent: "{y} C°",
+            name : sensor.sensorType,
+            showInLegend: true,
+            xValueType: "dateTime",
+            type : "stackedArea",
+            dataPoints: faked_temp_dataPoints
+        });
+
+        //render changes
+        chart.render();
+
+    } else if (sensor.sensorType == "Humidity") {
+
+        //update the chart
+        chart.options.data.push({            
+            legendMarkerType: "circle",
+            toolTipContent: "{y} %",
+            name : sensor.sensorType,
+            showInLegend: true,
+            xValueType: "dateTime",
+            type : "stackedArea",
+            dataPoints: faked_hum_dataPoints
+        });
+
+        //render changes
+        chart.render(); 
+    } else {
+        //update the chart
+        chart.options.data.push({            
+            legendMarkerType: "circle",
+            toolTipContent: "{y}",
+            name : sensor.sensorType,
+            showInLegend: true,
+            xValueType: "dateTime",
+            type : "stackedArea",
+            dataPoints: faked_hum_dataPoints
+        });
+
+        //render changes
+        chart.render(); 
+    }
+     
+});
+
+/*
 //iterate over sensors to obtain agreggated data
 sensors.forEach(function(sensor){
     //make request
@@ -75,7 +148,7 @@ sensors.forEach(function(sensor){
         chart.render();   
     });
 });
-
+*/
 
 //set behaviour to obtain agreggated data...
 

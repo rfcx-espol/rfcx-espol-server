@@ -32,7 +32,10 @@ namespace WebApplication.Models
         
         public string Path{ get; set; }
         public string State{ get; set; }
-        public List<String> Family{ get; set; }
+
+        public string[] Tag { get; set; }
+        //public JsonResult Predictions {get; set;}
+        //public List<String> Family{ get; set; }
         
         //public List<String> LabelList { get; set; }
         
@@ -45,6 +48,7 @@ namespace WebApplication.Models
             this.ArriveDate = DateTime.UtcNow;
             Path = id + Extension;
             State = "PENDIENTE";
+            
         }
         
     }

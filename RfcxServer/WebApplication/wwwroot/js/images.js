@@ -18,21 +18,34 @@ function deleteStation() {
     window.location.reload();
 }
 
-function downloadAudios() {
+function downloadImagenes() {
+    console.log("actualizado images");
     var station_id = $("#StationId").find(":selected").val();
-    var audios = $('.check:checkbox:checked').map(function (){
+    console.log(station_id);
+
+    var image_id = $("#imagen").find(":selected").val();
+    console.log(image_id);
+
+    var images = $('.check:checkbox:checked').map(function (){
         var currentRow = $(this).closest('tr');
-        return currentRow.find("td:eq(1)").text();
+        return currentRow.find("td:eq(2)").text();
     }).get().join(',');
-    if (audios == "") {
-        alert("Por favor, Seleccione los audios que desea descargar.");
+
+    console.log(images);
+    var image = images+".jpg";
+    console.log(image);
+    if (images == "") {
+        alert("Por favor, Seleccione las imagenes desea descargar.");
     } else {
-        window.location = 'DownloadFile?namefile=' + audios + '&station=' + station_id;
+        window.location = 'imgcapture/download?namefile=' + images + '&station=' + station_id;
     }
 }
 
+
+
 function newTag(t, id) {
-    var tag = prompt("Ingrese una nueva etiqueta:");
+    
+    var tag = prompt("Ingrese una nueva etiqueta prueba:"+id+t);
     if (tag !== null && tag !== "") {
         $.ajax({
             type: 'PUT',
@@ -49,7 +62,7 @@ function newTag(t, id) {
             }
         });
         var tr = $(t).closest('tr');
-        var td = tr.find("td:eq(4)");
+        var td = tr.find("td:eq(5)");
         if ($(td).find('.no-tags').length) {
             $(td).children().remove();
         }

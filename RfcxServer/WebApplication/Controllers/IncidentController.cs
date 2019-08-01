@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using WebApplication.IRepository;
 using WebApplication.Models;
 
@@ -55,6 +56,13 @@ namespace WebApplication.Controllers
         public async Task<bool> UpdateStatus(string id, [FromBody] Boolean status)
         {
             return await _IncidentRepository.UpdateIncidentStatus(id, status);
+        }
+
+        [HttpGet("index")]
+        public IActionResult Index()
+        {
+            IEnumerable<Incident> alerts = _IncidentRepository.Get();
+            return View(alerts);
         }
     }
 }

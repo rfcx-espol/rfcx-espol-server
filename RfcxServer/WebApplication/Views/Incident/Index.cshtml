@@ -1,25 +1,26 @@
-@model System.Collections.Generic.IEnumerable<Alert>
+@model System.Collections.Generic.IEnumerable<Incident>
 @{
-    ViewBag.Title = "Alertas";
+    ViewBag.Title = "Incident";
 }
+
 @section Style {
     <style>
-       #principal {
+        #principal {
             padding: 15px;
             margin-right: 270px;
         }
+
         h2 {
             margin-top: 10px;
             text-align: center;
         }
-        #div_tabla_alertas {
+
+        #div_tabla_incidentes {
             margin-top: 20px;
             margin-bottom: 50px;
         }
-        #div_boton_nuevo {
-            margin: 20px 0;
-        }
-        h4#modal_alert_label {
+
+        h4#modal_incident_label {
             color: white;
         }
         .modal-header.alert-danger button.close{
@@ -33,7 +34,7 @@
         }
         .modal-footer {
             text-align: center !important;
-        } 
+        }
 
         button {
             margin: 5px !important;
@@ -103,41 +104,40 @@
         }
     </style>
 }
+
 <div id="principal">
-    <h2>Alertas</h2>
-    <div id="div_boton_nuevo">
-        <input class="btn btn-primary" type="button" onclick="location.href='@Url.Action("Create","Alert")'" 
-            value="Nueva alerta">
-    </div>
+    <h2>Incidentes</h2>
+    
 
     <!-- Pop ups with return messages-->
 
-    <div id="div_tabla_alertas">
-        <table id="tabla_alertas" class="cell-border display compact">
+    <div id="div_tabla_incidentes">
+        <table id="tabla_incidentes" class="cell-border display compact">
             <thead>
                 <tr>
-                    <th>Nombre</th>
-                    <th>Nivel</th>
-                    <th>Activo</th>
+                    <th>Fecha</th>
+                    <th>Alerta</th>
+                    <th>Condicion</th>
+                    <th>Resuelto</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var alert in Model)
+                @foreach (var incident in Model)
                 {
                     <tr>
-                        <td>@alert.Name</td>
-                        <td>@alert.AlertType</td>
+                        <td>@incident.IncidentTime</td>
+                        <td>@incident.RaisedAlertName</td>
+                        <td>@incident.RaisedCondition</td>
                         <td style="text-align: center;">
-                            <label class="switch" id='switch_@alert.AlertId'>
-                                @if (alert.Status) {<input id="checkbox-status_@alert.AlertId" type="checkbox" onclick="mostrarAdvertenciaStatus('@alert.AlertId','@alert.Status');" checked>}
-                                else {<input id="checkbox-status_@alert.AlertId" type="checkbox" onclick="editarStatus('@alert.AlertId','@alert.Status');"> }
+                            <label class="switch" id='switch_@incident.IncidentId'>
+                                @if (incident.Solved) {<input id="checkbox-status_@incident.IncidentId" type="checkbox" onclick="mostrarAdvertenciaStatus('@incident.IncidentId','@incident.Solved');" checked>}
+                                else {<input id="checkbox-status_@incident.IncidentId" type="checkbox" onclick="editarStatus('@incident.IncidentId','@incident.Solved');"> }
                                 <span class="slider round"></span>
                             </label>
                         </td>
                         <td style="text-align: center;">
-                            <button class="btn btn-primary" onclick="editarAlerta('@alert.AlertId');">Editar</button>
-                            <button class="btn btn-danger" onclick="mostrarAdvertencia('@alert.AlertId');">Eliminar</button>
+                            <button class="btn btn-danger" onclick="mostrarAdvertencia('@incident.IncidentId');">Eliminar</button>
                         </td>
                     </tr>
                 }
@@ -146,17 +146,17 @@
         </table>
     </div>
 
-    <div class="modal fade" id="alert_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="incident_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header alert-danger">
                     <button type="button" class="close" style="margin-top: 1px" onclick="cerrarModal();">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="modal_alert_label">ADVERTENCIA</h4>
+                    <h4 class="modal-title" id="modal_incident_label">ADVERTENCIA</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Se borrará la alerta. Esta acción no puede revertirse. ¿Desea continuar?
+                    <p>Se borrará la incidente. Esta acción no puede revertirse. ¿Desea continuar?
                     </p>
                 </div>
                 <div class="modal-footer">
@@ -167,17 +167,17 @@
         </div>
     </div>
 
-    <div class="modal fade" id="alert_modal_status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="incident_modal_status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header alert-danger">
                     <button type="button" class="close" style="margin-top: 1px" onclick="cerrarModalStatus();">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="modal_alert_label">ADVERTENCIA</h4>
+                    <h4 class="modal-title" id="modal_incident_label">ADVERTENCIA</h4>
                 </div>
                 <div class="modal-body">
-                    <p>La alerta dejará de estar activa. ¿Desea continuar?
+                    <p>La incidente dejará de estar activa. ¿Desea continuar?
                     </p>
                 </div>
                 <div class="modal-footer">
@@ -190,15 +190,17 @@
 
 </div>
 
+
 @section Scripts {
     <script>
         $(document).ready(function() {
-            $('#tabla_alertas').DataTable({
+            $('#tabla_incidentes').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
                 },
                 "columns": [
-                    { "width": "40%" },
+                    { "width": "20%" },
+                    { "width": "20%" },
                     { "width": "20%" },
                     { "width": "20%" },
                     { "width": "20%" }
@@ -208,64 +210,25 @@
 
         function mostrarAdvertencia(id) {
             $("#accept").attr("onclick", "eliminarAlerta('" + id + "');");
-            $("#alert_modal").modal("show");
-        }    
+            $("#incident_modal").modal("show");
+        }
 
         function cerrarModal() {
-            $("#alert_modal").modal("hide");
+            $("#incident_modal").modal("hide");
         }
 
         function mostrarAdvertenciaStatus(id,status) {
             status = status.toLowerCase();
             $("#acceptStatus").attr("onclick", "editarStatus('" + id + "','" + status + "');");
-            $("#alert_modal_status").modal("show");
-            $("#alert_modal_status").attr('alertid',id)
-        }    
+            $("#incident_modal_status").modal("show");
+            $("#incident_modal_status").attr('incidentid',id)
+        }
 
         function cerrarModalStatus() {
-            $("#alert_modal_status").modal("hide");
-            let alertid = $("#alert_modal_status").attr('alertid')
-            console.log('#checkbox-status_'+alertid)
-            $('#checkbox-status_'+alertid).prop("checked",true);
+            $("#incident_modal_status").modal("hide");
+            let incidentid = $("#incident_modal_status").attr('incidentid')
+            console.log('#checkbox-status_'+incidentid)
+            $('#checkbox-status_'+incidentid).prop("checked",true);
         }
-
-        function eliminarAlerta(id) {
-            $.ajax({
-                url: "/api/alert/" + id + "/",
-                type: 'DELETE',
-                async: false,
-                success: function() {
-                    window.location.href = '@Url.Action("Index","Alert")';
-                }
-            });
-        }
-
-        function editarAlerta(id) {
-            window.location.href = '/api/alert/' + id + '/edit/';
-        }
-
-        function editarStatus(id, status) {
-            status = (status == 'true')
-            $.ajax({
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                    url: "/api/alert/" + id + "/Status",
-                    type: 'PATCH',
-                    async: true,
-                    data: JSON.stringify(!status),
-                    success: function() {
-                        window.location.href = '@Url.Action("Index","Alert")';
-                    }
-            });
-        }
-
-
-        function editarAlerta(id) {
-            window.location.href = '/api/alert/' + id + '/edit/';
-        }
-
-
     </script>
 }

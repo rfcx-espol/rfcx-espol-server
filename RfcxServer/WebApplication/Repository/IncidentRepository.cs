@@ -105,5 +105,17 @@ namespace WebApplication.Repository
                 throw ex;
             }
         }
+
+        public List<Incident> Get()
+        {
+            try
+            {
+                return _context.Incidents.Find(_ => true).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

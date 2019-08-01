@@ -52,7 +52,7 @@ namespace WebApplication.Controllers
         {
             Alert alert = new Alert();
             List<Condition> condition_list = new List<Condition>();
-            alert.Name = Request.Form["alert_name"];
+            alert.Name = Request.Form["nombre_alerta"];
             alert.AlertType = Request.Form["tipo_alerta"];
             string mails = Request.Form["correos_notificacion"];
             alert.Mailto = mails.Split(";").ToList();
@@ -78,18 +78,18 @@ namespace WebApplication.Controllers
             Alert alert = new Alert();
             alert.AlertId = id;
             List<Condition> condition_list = new List<Condition>();
-            alert.Name = Request.Form["alert_name"];
+            alert.Name = Request.Form["nombre_alerta"];
             alert.AlertType = Request.Form["tipo_alerta"];
             string mails = Request.Form["correos_notificacion"];
             alert.Mailto = mails.Split(";").ToList();
             alert.Message = Request.Form["mensaje_alerta"];
-            for (int i = 0; i < Int32.Parse(Request.Form["conditions_number"]); i++)
+            for (int i = 1; i <= Int32.Parse(Request.Form["conditions_number"]); i++)
             {
                 Condition condition = new Condition();
-                condition.StationId = Request.Form["estacion_alerta" + i.ToString()];
-                condition.SensorId = Request.Form["sensor_alerta" + i.ToString()];
-                condition.Comparison = Request.Form["condicion_alerta" + i.ToString()];
-                condition.Threshold = Int32.Parse(Request.Form["threshold_alerta" + i.ToString()]);
+                condition.StationId = Request.Form["estacion_alerta_" + i.ToString()];
+                condition.SensorId = Request.Form["sensor_alerta_" + i.ToString()];
+                condition.Comparison = Request.Form["condicion_alerta_" + i.ToString()];
+                condition.Threshold = Int32.Parse(Request.Form["threshold_alerta_" + i.ToString()]);
                 condition_list.Add(condition);
             }
             alert.Status = true;

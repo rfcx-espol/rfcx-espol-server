@@ -7,6 +7,7 @@ namespace WebApplication.IRepository
 {
     public interface IIncidentRepository
     {
+        List<Incident> Get();
         Task<IEnumerable<Incident>> GetAllIncidents();
         Task<Incident> GetIncident(string id);
         Task AddIncident(Incident item);

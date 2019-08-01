@@ -9,7 +9,6 @@ namespace WebApplication.Models
         {}
         
         public DbSet<Alert> Alerts { get; set; }
-        public DbSet<AlertsConfiguration> AlertsConfiguration { get; set; }
         public DbSet<Audio> Audios { get; set; }
         public DbSet<Station> Stations { get; set; } 
         public DbSet<Sensor> Sensors { get; set; }
