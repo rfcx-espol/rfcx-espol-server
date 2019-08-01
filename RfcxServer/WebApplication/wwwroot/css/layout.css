@@ -147,3 +147,10 @@ body {
     margin: 0px;
     padding: 0px;
 }
+
+/* New proposal for list items clicks' better UX */
+
+li div {
+    display: inline-block;
+    width: 85%;
+}
