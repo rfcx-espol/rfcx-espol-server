@@ -26,8 +26,7 @@ namespace WebApplication.IRepository
         Task<bool> Remove(string id);
         Task<bool> RemoveAll();
         Task<IEnumerable<BsonDocument>> AvgPerDate(
-            int StationId, 
-            int SensorId, 
+            int StationId,
             long StartTimestamp);
     }
 }

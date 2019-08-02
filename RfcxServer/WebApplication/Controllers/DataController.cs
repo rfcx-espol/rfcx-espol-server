@@ -221,22 +221,20 @@ namespace WebApplication.Controllers
             }
             
             [HttpGet]
-            [Route("api/Station/{StationId:int}/Sensor/{SensorId:int}/AvgPerDate")]        
+            [Route("api/Station/{StationId:int}/AvgPerDate")]        
             public Task<string> GetAvgPerDate(
                 [FromRoute]int StationId,
-                [FromRoute] int SensorId,
                 [FromQuery] long StartTimestamp)
             {
-                return this._GetAvgPerDate(StationId, SensorId, StartTimestamp);
+                return this._GetAvgPerDate(StationId, StartTimestamp);
             }
 
             private async Task<string> _GetAvgPerDate(
-                int StationId, 
-                int SensorId, 
+                int StationId,
                 long StartTimestamp)
             {
-                var data = await _DataRepository.AvgPerDate(StationId, SensorId, StartTimestamp);
-                return JsonConvert.SerializeObject(data);
+                var data = await _DataRepository.AvgPerDate(StationId, StartTimestamp);
+                return data.ToJson() ;
             }
         }
 }
