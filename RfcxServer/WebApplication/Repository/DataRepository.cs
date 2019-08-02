@@ -389,6 +389,7 @@ namespace WebApplication.Repository
                 {"month", new BsonDocument("$month","$date")},                
                 {"dayOfMonth", new BsonDocument("$dayOfMonth","$date")}  
             };
+            
             var avg = new BsonDocument {
                 {"$avg", new BsonDocument("$toDouble","$Value")}
             };
