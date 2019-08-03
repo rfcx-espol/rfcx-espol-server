@@ -193,10 +193,9 @@ div#submenu a:hover {
     color: #fff;
     background: #007f42;
     border-radius: 6px;
-    padding: 5px 10px;
+    padding: 5px 5px;
     border: none;
     cursor: pointer;
-    margin-left: 15px;
 }
 .button-filter:hover {
     color: #e4b836; 
