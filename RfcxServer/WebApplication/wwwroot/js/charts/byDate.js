@@ -20,21 +20,40 @@ filterButton.addEventListener("click", function(){
                 let sensorId = responseElement.SensorId;                                      
                 let sensorType = sensors.find( s => s.Id == sensorId ).Type;                                  
                 let sensorLocation = sensors.find( s => s.Id == sensorId ).Location;
-                let dataPoints = responseElement.aggregates.map(function(aggregate){
+
+                let rawDataPoints = responseElement.aggregates.map(function(aggregate){
                     let year = aggregate._id.year; 
                     let month =  aggregate._id.month ;
                     let day =  aggregate._id.dayOfMonth;
                     let avg = aggregate.avg;
+                    
+                    let dateObject = new Date(year, (month - 1), day);
+                    let timestamp = dateObject.getTime()/1000;//gives timestamp in seconds
+                    //console.log(timestamp);
+                    return {
+                        Timestamp : timestamp,                
+                        Value : avg
+                    }; 
+                }).sort(function byTimestamp(a,b){
+                    return a.Timestamp - b.Timestamp;                    
+                });
+                let dpsNullPointsAdded = addNullPoints(rawDataPoints, 86400);
+                let dataPoints = dpsNullPointsAdded.map(function(responseElement){
+                    let timestamp = responseElement.Timestamp;
+                    let value = responseElement.Value;
+
                     //format x value
-                    let x = new Date(year, (month - 1), day);                   
+                    let x = new Date(parseInt(timestamp)*1000);
+
                     //format y value
-                    let y = Number(parseFloat(avg).toFixed(2));  
-                    //console.log(`x:${x} , y:${y}`);
+                    let y = (value == null) ? null : Number(parseFloat(value).toFixed(2));
+                    
                     return {
                         "x" : x,
-                        "y" : y 
-                    }
-                });            
+                        "y" : y
+                    };
+                });
+
                 let chartDivId = `chart_${sensorId}`;
 
                 //if there was a previous chart remove it
@@ -94,6 +113,34 @@ function avgPerDateChart(divId){
         },
         data:[]
     });
+}
+
+
+//place datapoints if between two datapoints there was supposed to be a value.
+function addNullPoints(dataPoints, timeInterval){
+    let dataPointsNullPointsAdded = [];
+    for(let i = 0 ; i < (dataPoints.length -1) ; i++){
+      dataPointsNullPointsAdded.push(dataPoints[i]);
+  
+      let nextTimestamp = dataPoints[i+1].Timestamp;
+      let currentTimestamp = dataPoints[i].Timestamp;
+  
+      if ( nextTimestamp > (currentTimestamp + timeInterval)) {
+        let nullDataPoint = makeNullDataPoint(nextTimestamp, currentTimestamp);  
+        dataPointsNullPointsAdded.push(nullDataPoint);
+      }        
+    }
+    dataPointsNullPointsAdded.push(dataPoints[dataPoints.length - 1]);
+    return dataPointsNullPointsAdded;
+}
+
+function makeNullDataPoint(nextTimestamp, currentTimestamp){
+    let middleTimestamp = Math.floor((nextTimestamp + currentTimestamp)/2);
+    let nullDataPoint = {
+        Timestamp: middleTimestamp,
+        Value: null
+    };
+    return nullDataPoint;
 }
 
 });
