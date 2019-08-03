@@ -211,6 +211,10 @@ label{
     color: #757575;
 }
 
+.filter-widget-label{
+    padding-top: 4px;
+}
+
 .selectDiv{
     margin: 20px 0px 20px 20px;
 }
@@ -226,6 +230,17 @@ label{
     margin-right: 20px;
 }
 
+/*to remove up and down arrows of date input element*/
+input[type=date]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
+}
+/*custom fix to avoid button fall out of the row*/
+@media (min-width: 992px) {
+    div.col-md-2 button.button-filter {
+        width: 10%;
+    }
+}
 /*-----Date-------------------*/
 @media (max-width: 1199px) {
     .initialMon{
