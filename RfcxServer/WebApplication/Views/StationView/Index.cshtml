@@ -11,11 +11,7 @@
 <div class="tab"> 
   <button class="tablinks" name="monitor" id="defaultOpen" url='@Url.Action("Index","StationView", new{ stationName = @ViewData["stationName"] , stationId = @ViewData["stationId"] })'>
     <i class="fa fa-television tabL" aria-hidden="true"></i>
-    <p class="tabMonitor">Consulta de Datos</p>
-  </button>
-  <button class="tablinks" name="statsTab" id="stats" url='@Url.Action("ByDateRange","StationView", new{ stationName = @ViewData["stationName"] , stationId = @ViewData["stationId"] })'>
-    <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
-    <p class="tabMonitor">Estadísticas</p>
+    <p class="tabMonitor">Realtime</p>
   </button>
   <!--New tabs-->
 </div>
