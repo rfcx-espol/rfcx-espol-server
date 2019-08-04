@@ -4,100 +4,120 @@ $(function(){
 let date_pickers = Array.from(document.getElementsByClassName("date-picker"));
 date_pickers.forEach(function(date_picker){
     let now = moment();
-    date_picker.value = now.subtract(7,'days').format('YYYY-MM-DD');    
+    date_picker.value = now.subtract(6,'days').format('YYYY-MM-DD');    
 });
 
 let filterButton = document.querySelector("button.button-filter");
 
 filterButton.addEventListener("click", function(){ 
     let selectedStationId = document.querySelector("select.form-control").value;
-    let startTimestamp = moment(document.querySelector("input.date-picker").value).unix();
-    let dataUrl = `api/Station/${selectedStationId}/AvgPerDate?StartTimestamp=${startTimestamp}`;
-    let sensorsUrl = ` api/Station/${selectedStationId}/Sensor`;    
-    $.getJSON(sensorsUrl,function(sensors){
-        $.getJSON(dataUrl,function(data){      
-            data.forEach(function(responseElement){
-                let sensorId = responseElement.SensorId;                                      
-                let sensorType = sensors.find( s => s.Id == sensorId ).Type;                                  
-                let sensorLocation = sensors.find( s => s.Id == sensorId ).Location;
-
-                let rawDataPoints = responseElement.aggregates.map(function(aggregate){
-                    let year = aggregate._id.year; 
-                    let month =  aggregate._id.month ;
-                    let day =  aggregate._id.dayOfMonth;
-                    let avg = aggregate.avg;
-                    
-                    let dateObject = new Date(year, (month - 1), day);
-                    let timestamp = dateObject.getTime()/1000;//gives timestamp in seconds
-                    //console.log(timestamp);
-                    return {
-                        Timestamp : timestamp,                
-                        Value : avg
-                    }; 
-                }).sort(function byTimestamp(a,b){
-                    return a.Timestamp - b.Timestamp;                    
-                });
-                //compute basic statistics
-
-                let rawDataPointsValues = rawDataPoints.map( element => element.Value );
-                let valuesForBasicStatistics = (rawDataPointsValues.length > 1 ) ? rawDataPointsValues : [-1]; 
-                let basicStatistics = {
-                    min : ss.min(valuesForBasicStatistics),
-                    max : ss.max(valuesForBasicStatistics),
-                    mean : ss.mean(valuesForBasicStatistics)
+    let startDateMoment =  moment(document.querySelector("input.date-picker").value);
+    let startTimestamp = startDateMoment.unix();
+    let endTimestamp = makeEndTimestamp(
+        document.querySelector("select.range-picker").value,
+        startDateMoment
+    );
+    let validDateRange = isValidDateRange(
+        startTimestamp, 
+        endTimestamp,
+        moment().unix()     
+    );
+    //console.log(endTimestamp);
+    //let endTimestamp = moment(document.querySelector("select.range-picker").value).unix();    
+    let dataUrl = `api/Station/${selectedStationId}/AvgPerDate?StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`;
+    //console.log(dataUrl);
+    let sensorsUrl = ` api/Station/${selectedStationId}/Sensor`;
+    if ( validDateRange ) {
+        $.getJSON(sensorsUrl,function(sensors){
+            $.getJSON(dataUrl,function(data){
+                if (data.length < 1 ) {                
+                    alert("No existen valores en el rango especificado");
                 }
-                let basicStatisticsContainer = makeBasicStatisticsContainer(basicStatistics);
-                //console.log(basicStatisticsContainer);
-                //console.log(basicStatistics);             
-                let dpsNullPointsAdded = addNullPoints(rawDataPoints, 86400);
-                let dataPoints = dpsNullPointsAdded.map(function(responseElement){
-                    let timestamp = responseElement.Timestamp;
-                    let value = responseElement.Value;
+                data.forEach(function(responseElement){
+                    let sensorId = responseElement.SensorId;                                      
+                    let sensorType = sensors.find( s => s.Id == sensorId ).Type;                                  
+                    let sensorLocation = sensors.find( s => s.Id == sensorId ).Location;
 
-                    //format x value
-                    let x = new Date(parseInt(timestamp)*1000);
+                    let rawDataPoints = responseElement.aggregates.map(function(aggregate){
+                        let year = aggregate._id.year; 
+                        let month =  aggregate._id.month ;
+                        let day =  aggregate._id.dayOfMonth;
+                        let avg = aggregate.avg;
+                        
+                        let dateObject = new Date(year, (month - 1), day);
+                        let timestamp = dateObject.getTime()/1000;//gives timestamp in seconds
+                        //console.log(timestamp);
+                        return {
+                            Timestamp : timestamp,                
+                            Value : avg
+                        }; 
+                    }).sort(function byTimestamp(a,b){
+                        return a.Timestamp - b.Timestamp;                    
+                    });
+                    //compute basic statistics
 
-                    //format y value
-                    let y = (value == null) ? null : Number(parseFloat(value).toFixed(2));
+                    let rawDataPointsValues = rawDataPoints.map( element => element.Value );
+                    let valuesForBasicStatistics = (rawDataPointsValues.length > 1 ) ? rawDataPointsValues : [-1]; 
+                    let basicStatistics = {
+                        min : ss.min(valuesForBasicStatistics),
+                        max : ss.max(valuesForBasicStatistics),
+                        mean : ss.mean(valuesForBasicStatistics)
+                    }
+                    let basicStatisticsContainer = makeBasicStatisticsContainer(basicStatistics);
+                    //console.log(basicStatisticsContainer);
+                    //console.log(basicStatistics);             
+                    let dpsNullPointsAdded = addNullPoints(rawDataPoints, 86400);
+                    let dataPoints = dpsNullPointsAdded.map(function(responseElement){
+                        let timestamp = responseElement.Timestamp;
+                        let value = responseElement.Value;
+
+                        //format x value
+                        let x = new Date(parseInt(timestamp)*1000);
+
+                        //format y value
+                        let y = (value == null) ? null : Number(parseFloat(value).toFixed(2));
+                        
+                        return {
+                            "x" : x,
+                            "y" : y
+                        };
+                    });
                     
-                    return {
-                        "x" : x,
-                        "y" : y
-                    };
-                });
+                    let chartDivId = `chart_${sensorId}`;
+
+                    //if there was a previous chart remove it
+                    if ( $(`div.historical #${chartDivId}`).length ) {                                                      
+                        $(`div.historical #${chartDivId} + .boxInfoValues`).remove();
+                        $(`div.historical #${chartDivId}`).remove();  
+                    } 
+                    let chartDiv = `
+                    <div id="${chartDivId}" style="height: 320px" class="canvasJsChart"></div>
+                    ${basicStatisticsContainer}
+                    `;
+                    $("div#individual div.historical").append(chartDiv);        
                 
-                let chartDivId = `chart_${sensorId}`;
+                    //create chart
+                    let chart = avgPerDateChart(chartDivId);            
+                    let nameOfChart = `${sensorType} ${sensorLocation}`
+                    chart.options.data.push({            
+                        legendMarkerType: "circle",
+                        toolTipContent: "{y}",
+                        showInLegend: true,
+                        name : nameOfChart,
+                        xValueType: "dateTime",
+                        type : "area",
+                        dataPoints: dataPoints
+                    });
+                    //render changes
+                    chart.render();      
 
-                //if there was a previous chart remove it
-                if ( $(`div.historical #${chartDivId}`).length ) {                                                      
-                    $(`div.historical #${chartDivId} + .boxInfoValues`).remove();
-                    $(`div.historical #${chartDivId}`).remove();  
-                } 
-                let chartDiv = `
-                <div id="${chartDivId}" style="height: 320px" class="canvasJsChart"></div>
-                ${basicStatisticsContainer}
-                `;
-                $("div#individual div.historical").append(chartDiv);        
-               
-                //create chart
-                let chart = avgPerDateChart(chartDivId);            
-                let nameOfChart = `${sensorType} ${sensorLocation}`
-                chart.options.data.push({            
-                    legendMarkerType: "circle",
-                    toolTipContent: "{y}",
-                    showInLegend: true,
-                    name : nameOfChart,
-                    xValueType: "dateTime",
-                    type : "area",
-                    dataPoints: dataPoints
+                    //adding basic statistics to charts                
                 });
-                //render changes
-                chart.render();      
-
-                //adding basic statistics to charts                
             });
         });
-    });
+    } else {
+        alert("Los valores en el rango a filtrar son inválidos. Es probable que esté tratando de filtrar valores que aún no existen.");   
+    }
 });
 filterButton.click();
 
@@ -185,6 +205,33 @@ function makeBasicStatisticsContainer({min, max, mean}){
 }
 function formatFloats(value){
     return Number(parseFloat(value).toFixed(2));
+}
+
+function makeEndTimestamp(rangePickerValue, startDateMoment){
+    let start = startDateMoment.clone();
+    let end;
+    switch (rangePickerValue) {
+        case "Semana":
+            end = start.add(6,"days");
+            break;
+        case "Mes":
+            end = start.add(29,"days");         
+            break; 
+        case "Año":
+            end = start.add(364,"days");
+            break;
+    }
+    let endTimestamp = end.unix();    
+    return endTimestamp;
+}
+
+
+function isValidDateRange(
+    startTimestamp,
+    endTimestamp, 
+    nowTimestamp
+){
+    return  !(startTimestamp > nowTimestamp || endTimestamp > nowTimestamp);
 }
 
 });

@@ -372,7 +372,9 @@ namespace WebApplication.Repository
         }
         public async Task<IEnumerable<BsonDocument>> AvgPerDate(
             int StationId,
-            long StartTimestamp)
+            long StartTimestamp,
+            long EndTimestamp
+        )
         {
             
             // Use mongodb driver to do aggregation of data
@@ -410,6 +412,12 @@ namespace WebApplication.Repository
                 (
                     new BsonDocument { 
                         { "$match", new BsonDocument("Timestamp", new BsonDocument("$gte",StartTimestamp)) }
+                    }
+                )            
+                .AppendStage<BsonDocument> 
+                (
+                    new BsonDocument { 
+                        { "$match", new BsonDocument("Timestamp", new BsonDocument("$lte",EndTimestamp)) }
                     }
                 )
                 .AppendStage<BsonDocument>
