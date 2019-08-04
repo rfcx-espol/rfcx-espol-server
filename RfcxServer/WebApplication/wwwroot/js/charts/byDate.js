@@ -37,6 +37,18 @@ filterButton.addEventListener("click", function(){
                 }).sort(function byTimestamp(a,b){
                     return a.Timestamp - b.Timestamp;                    
                 });
+                //compute basic statistics
+
+                let rawDataPointsValues = rawDataPoints.map( element => element.Value );
+                let valuesForBasicStatistics = (rawDataPointsValues.length > 1 ) ? rawDataPointsValues : [-1]; 
+                let basicStatistics = {
+                    min : ss.min(valuesForBasicStatistics),
+                    max : ss.max(valuesForBasicStatistics),
+                    mean : ss.mean(valuesForBasicStatistics)
+                }
+                let basicStatisticsContainer = makeBasicStatisticsContainer(basicStatistics);
+                //console.log(basicStatisticsContainer);
+                //console.log(basicStatistics);             
                 let dpsNullPointsAdded = addNullPoints(rawDataPoints, 86400);
                 let dataPoints = dpsNullPointsAdded.map(function(responseElement){
                     let timestamp = responseElement.Timestamp;
@@ -53,15 +65,17 @@ filterButton.addEventListener("click", function(){
                         "y" : y
                     };
                 });
-
+                
                 let chartDivId = `chart_${sensorId}`;
 
                 //if there was a previous chart remove it
-                if ( $(`div.historical #${chartDivId}`).length ) {
-                    $(`div.historical #${chartDivId}`).remove();
+                if ( $(`div.historical #${chartDivId}`).length ) {                                                      
+                    $(`div.historical #${chartDivId} + .boxInfoValues`).remove();
+                    $(`div.historical #${chartDivId}`).remove();  
                 } 
                 let chartDiv = `
                 <div id="${chartDivId}" style="height: 320px" class="canvasJsChart"></div>
+                ${basicStatisticsContainer}
                 `;
                 $("div#individual div.historical").append(chartDiv);        
                
@@ -79,11 +93,14 @@ filterButton.addEventListener("click", function(){
                 });
                 //render changes
                 chart.render();      
+
+                //adding basic statistics to charts                
             });
         });
     });
 });
 filterButton.click();
+
 
 
 function avgPerDateChart(divId){
@@ -141,6 +158,33 @@ function makeNullDataPoint(nextTimestamp, currentTimestamp){
         Value: null
     };
     return nullDataPoint;
+}
+
+function makeBasicStatisticsContainer({min, max, mean}){
+
+    let container = `
+    <div class="boxInfoValues">
+        <p class="boxLetters  initialMon">
+            <i class="material-icons iconsMinMax">&#xe15d;</i>
+            Min
+        </p>
+        <p class="boxLetters initialValue" id="minVal">${formatFloats(min)}</p>
+        <p class="boxLetters middle">
+            <i class="material-icons iconsMinMax">&#xe148;</i>
+            Max 
+        </p>
+        <p class="boxLetters middleValue" id="maxVal">${formatFloats(max)}</p>
+        <p class="boxLetters last">
+            <i class="fa iconsAvg">&#xf10c;</i> 
+            Avg
+        </p>
+        <p class="boxLetters lastValue" id="avgVal" >${formatFloats(mean)}</p>
+    </div>
+    `;
+    return container;
+}
+function formatFloats(value){
+    return Number(parseFloat(value).toFixed(2));
 }
 
 });
