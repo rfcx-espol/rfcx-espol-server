@@ -16,5 +16,13 @@ namespace WebApplication.Controllers
             ViewBag.message = "From server";
             return View(stations);
         }
+
+        [Route("/ByHour")]
+        public IActionResult ByHour(){
+            //retrieve stations
+            var stations = _StationRepository.Get();
+            ViewBag.message = "From server";
+            return View(stations);
+        }
     }
 }

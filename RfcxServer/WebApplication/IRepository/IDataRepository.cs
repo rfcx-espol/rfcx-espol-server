@@ -30,5 +30,11 @@ namespace WebApplication.IRepository
             long StartTimestamp,
             long EndTimestamp
         );
+
+        Task<IEnumerable<BsonDocument>> AvgPerHour(
+            int StationId,
+            long StartTimestamp,
+            long EndTimestamp
+        );
     }
 }

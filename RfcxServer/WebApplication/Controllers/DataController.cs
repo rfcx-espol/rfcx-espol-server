@@ -248,5 +248,34 @@ namespace WebApplication.Controllers
                 );
                 return data.ToJson() ;
             }
+
+            [HttpGet]
+            [Route("api/Station/{StationId:int}/AvgPerHour")]        
+            public Task<string> GetAvgPerHour(
+                [FromRoute]int StationId,
+                [FromQuery] long StartTimestamp,
+                [FromQuery] long EndTimestamp
+            )
+            {
+                return this._GetAvgPerHour(
+                    StationId, 
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+            }
+
+            private async Task<string> _GetAvgPerHour(
+                int StationId,
+                long StartTimestamp,
+                long EndTimestamp
+            )
+            {
+                var data = await _DataRepository.AvgPerHour(
+                    StationId, 
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+                return data.ToJson() ;
+            }
         }
 }
