@@ -537,6 +537,30 @@ namespace WebApplication.Repository
             return await aggregatedResult;
         }
 
+        public List<BsonDocument> sensorsTypeAndLocation()
+        {
+            var _id = new BsonDocument {                                
+                {"Type", "$Type"}, 
+                {"Location", "$Location" }, 
+            };
+
+            var aggregatedResult = _context.Datas.Aggregate()                          
+            .AppendStage<BsonDocument>
+            (
+                new BsonDocument{
+                    { "$group", new BsonDocument("_id", _id) }
+                }
+            )
+            .AppendStage<BsonDocument>
+            (
+                new BsonDocument{
+                    { "$project", new BsonDocument("_id", 0).Add("Type","$_id.Type").Add("Location","$_id.Location") }
+                }
+            )
+            .ToList();
+            return aggregatedResult;
+        }
+
         
     }
 }
