@@ -92,10 +92,9 @@ hr{
     margin-bottom: 65px;
     clear: both;
 }
-.boxLetters{
-    margin-right: 20px;
+.boxLetters{    
     float: left;
-    font-size: 18px;
+    font-size: 15px;
     text-align: center;
 }
 
@@ -167,7 +166,7 @@ div#submenu a:hover {
 }
 
 .initialMon{
-    margin-left: 35%;
+    margin-left: 30%;
 }
 .initialMon, .middle, .last{
     margin-right: 7px;
@@ -244,7 +243,7 @@ input[type=date]::-webkit-inner-spin-button {
 /*-----Date-------------------*/
 @media (max-width: 1199px) {
     .initialMon{
-        margin-left: 30%;
+        margin-left: 27%;
     }
 }
 @media (max-width: 991px) {
