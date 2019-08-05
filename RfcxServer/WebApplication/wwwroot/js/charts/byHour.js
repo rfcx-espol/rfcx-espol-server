@@ -5,7 +5,7 @@ let date_pickers = Array.from(document.getElementsByClassName("date-picker"));
 date_pickers.forEach(function(date_picker){
     let now = moment();    
     document.querySelector("input.date-picker-end").value = now.format('YYYY-MM-DD');
-    date_picker.value = now.subtract(6,'days').format('YYYY-MM-DD');        
+    date_picker.value = now.subtract(29,'days').format('YYYY-MM-DD');        
 });
 
 let filterButton = document.querySelector("button.button-filter");
@@ -55,7 +55,7 @@ filterButton.addEventListener("click", function(){
                     //compute basic statistics
 
                     let rawDataPointsValues = rawDataPoints.map( element => element.Value );
-                    let valuesForBasicStatistics = (rawDataPointsValues.length > 1 ) ? rawDataPointsValues : [-1]; 
+                    let valuesForBasicStatistics = (rawDataPointsValues.length >= 1 ) ? rawDataPointsValues : [-1]; 
                     let basicStatistics = {
                         min : ss.min(valuesForBasicStatistics),
                         max : ss.max(valuesForBasicStatistics),
@@ -71,7 +71,7 @@ filterButton.addEventListener("click", function(){
                         let value = responseElement.Value;
 
                         let hour = (timestamp/3600) ;
-                        
+
                         //format x value                        
                         let x = new Date(1996,1,1,hour); //we just care about hours not the date by itself.
 
@@ -107,7 +107,7 @@ filterButton.addEventListener("click", function(){
                         showInLegend: true,
                         name : nameOfChart,
                         xValueType: "dateTime",
-                        type : "area",
+                        type : "line",
                         dataPoints: dataPoints
                     });
                     //render changes

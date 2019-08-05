@@ -54,7 +54,7 @@ charts.forEach(function(chart){
 
         //add basic statistics
         let rawDataPointsValues = rawDataPoints.map( element => parseFloat(element.Value) );
-        let valuesForBasicStatistics = (rawDataPointsValues.length > 1 ) ? rawDataPointsValues : [-1];
+        let valuesForBasicStatistics = (rawDataPointsValues.length >= 1 ) ? rawDataPointsValues : [-1];
         //console.log(valuesForBasicStatistics);
         let basicStatistics = {
             min : ss.min(valuesForBasicStatistics),

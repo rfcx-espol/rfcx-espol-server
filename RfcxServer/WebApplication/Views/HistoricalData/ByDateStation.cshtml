@@ -21,7 +21,7 @@
       <div class ="col-md-3" style="padding-right:0px;">
         <select class="form-control input-sm" >
           @foreach(var obj in @sensorsTypeAndLocation){
-            <option value="">
+            <option>
               @(obj)
             </option>
           }
@@ -35,22 +35,35 @@
       </div>
 
       <div class ="col-md-1 filter-widget-label">
-        <label for="">Por:</label>
+        <label for="">Hasta:</label>
       </div>
 
-      <div class ="col-md-2" style="padding-right:0px;">
-        <select class="form-control input-sm range-picker">
-          <option>Semana</option>
-          <option>Mes</option>
-          <option>Año</option>
-        </select>
+      <div class ="col-md-2" style="padding-right:0px; width:130px;">
+        <input type="date" class="form-control input-sm date-picker-end" required="true" style="">     
       </div>      
       <div class ="col-md-1">
         <button type="button" class="button-filter">Filtrar</button>                      
       </div> 
     </div>
 
-    <!--div id="chartAvgPerDate" style="height: 320px" class="canvasJsChart"></div-->
+    <div id="chartAvgPerDate" style="height: 320px" class="canvasJsChart"></div>
+    <div class="boxInfoValues">
+          <p class="boxLetters  initialMon">
+              <i class="material-icons iconsMinMax">&#xe15d;</i>
+              Min
+          </p>
+          <p class="boxLetters initialValue" id="minVal"> </p>
+          <p class="boxLetters middle">
+              <i class="material-icons iconsMinMax">&#xe148;</i>
+              Max 
+          </p>
+          <p class="boxLetters middleValue" id="maxVal"></p>
+          <p class="boxLetters last">
+              <i class="fa iconsAvg">&#xf10c;</i> 
+              Avg
+          </p>
+          <p class="boxLetters lastValue" id="avgVal"></p>
+    </div>
   </div>  
 </div>
 @section ScriptsIndex {  

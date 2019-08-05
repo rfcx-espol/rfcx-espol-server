@@ -277,5 +277,39 @@ namespace WebApplication.Controllers
                 );
                 return data.ToJson() ;
             }
+
+            [HttpGet]
+            [Route("api/AvgPerDateStation")]
+            public Task<string> GetAvgPerDateStation(            
+                [FromQuery] string SensorType,
+                [FromQuery] string SensorLocation,
+                [FromQuery] long StartTimestamp,
+                [FromQuery] long EndTimestamp
+            )
+            {
+                return this._GetAvgPerDateStation(
+                    SensorType,
+                    SensorLocation,
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+            }
+
+            private async Task<string> _GetAvgPerDateStation(
+                string SensorType,
+                string SensorLocation,
+                long StartTimestamp,
+                long EndTimestamp
+            )
+            {
+                var data = await _DataRepository.AvgPerDateStation(
+                    SensorType,
+                    SensorLocation,
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+                return data.ToJson() ;
+            }
+
         }
 }
