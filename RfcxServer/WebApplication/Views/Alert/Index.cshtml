@@ -111,6 +111,47 @@
     </div>
 
     <!-- Pop ups with return messages-->
+    @if(((int) TempData["editResult"]) == 1) {
+        <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            La alerta ha sido editada correctamente
+        </div>
+    } else if(((int) TempData["editResult"]) == -1) {
+        <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            Hubo un problema al editar la alerta. Por favor, vuelva a intentarlo.
+        </div>
+    }
+
+    @if(((int) TempData["createResult"]) == 1) {
+        <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            La alerta ha sido creada correctamente
+        </div>
+    } else if(((int) TempData["createResult"]) == -1) {
+        <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            Hubo un problema al crear la alerta. Por favor, vuelva a intentarlo.
+        </div>
+    }
+
+    @if(((int) TempData["deleteResult"]) == 1) {
+        <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            La alerta ha sido eliminada correctamente
+        </div>
+    } else if(((int) TempData["deleteResult"]) == -1) {
+        <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            Hubo un problema al eliminar la alerta. Por favor, vuelva a intentarlo.
+        </div>
+    }
 
     <div id="div_tabla_alertas">
         <table id="tabla_alertas" class="cell-border display compact">
@@ -225,7 +266,6 @@
         function cerrarModalStatus() {
             $("#alert_modal_status").modal("hide");
             let alertid = $("#alert_modal_status").attr('alertid')
-            console.log('#checkbox-status_'+alertid)
             $('#checkbox-status_'+alertid).prop("checked",true);
         }
 
