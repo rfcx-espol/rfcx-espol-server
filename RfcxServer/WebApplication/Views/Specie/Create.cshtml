@@ -16,7 +16,6 @@
         }
         #formulario {
             margin-left: 0;
-            margin-right: 270px;
             overflow: hidden;
         }
         textarea {
@@ -47,49 +46,51 @@
         }
     </style>
 }
-<div id="formulario" class="row">
-    <form id="form_crear_especie" method="post" enctype="multipart/form-data" action="/api/bpv/specie/">
-        <div id="titulo" class="form-group col-lg-12 col-md-12">
-            <h2>Creación de especie</h2>
-        </div>
-        <div class="form-group col-lg-6 col-md-6">
-            <label>Nombre de la especie: </label>
-            <input id="nombre_especie" class="form-control" type="text" name="nombre_especie" required>
-        </div>
-        <div class="form-group col-lg-6 col-md-6">
-            <label>Familia: </label>
-            <input id="familia" class="form-control" type="text" name="familia" required>
-        </div>
-        <div id="subtitulo" class="form-group col-lg-12 col-md-12">
-            <h4>Ingreso de imágenes</h4>
-        </div>
-        <div class="col-lg-6 col-md-6">
-            <label>Descripción: </label>
-        </div>
-        <div class="col-lg-6 col-md-6">
-            <label>Archivo: </label>
-        </div>
-        <div id="imagenes">
-            <div class="form-group col-lg-6 col-md-6 descripcion">
-                <textarea name="descripciones" class="form-control" rows="1" type="text" required></textarea>
+<div class="container">
+    <div id="formulario" class="row">
+        <form id="form_crear_especie" method="post" enctype="multipart/form-data" action="/api/bpv/specie/">
+            <div id="titulo" class="form-group col-lg-12 col-md-12">
+                <h2>Creación de especie</h2>
             </div>
-            <div class="form-group col-lg-4 col-md-4 archivo">
-                <input name="archivos" type="file" accept="image/*" data-max-size="3000000" class="file" required>
+            <div class="form-group col-lg-6 col-md-6">
+                <label>Nombre de la especie: </label>
+                <input id="nombre_especie" class="form-control" type="text" name="nombre_especie" required>
             </div>
-            <div class="form-group botones_eliminar col-lg-1 col-md-1">
-                <input id="boton_eliminar_1" type="button" class="btn btn-danger" value="x" onclick="eliminarImagen(1)"/>
+            <div class="form-group col-lg-6 col-md-6">
+                <label>Familia: </label>
+                <input id="familia" class="form-control" type="text" name="familia" required>
             </div>
-            <div id="boton_agregar" class="form-group col-lg-1 col-md-1">
-                <input type="button" class="btn btn-primary" value="+" onclick="agregarImagen();"/>
+            <div id="subtitulo" class="form-group col-lg-12 col-md-12">
+                <h4>Ingreso de imágenes</h4>
             </div>
-        </div>
-        <div class="col-lg-6 col-lg-offset-6 col-md-6 col-md-offset-6">
-            <p id="mensaje">* El tamaño máximo de las imágenes es de 3 MB</p>
-        </div>
-        <div id="boton_especie" class="form-group col-lg-12 col-md-12">
-            <button class="btn btn-primary" type="submit">Crear especie</button>
-        </div>
-    </form>
+            <div class="col-lg-6 col-md-6">
+                <label>Descripción: </label>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <label>Archivo: </label>
+            </div>
+            <div id="imagenes">
+                <div class="form-group col-lg-6 col-md-6 descripcion">
+                    <textarea name="descripciones" class="form-control" rows="1" type="text" required></textarea>
+                </div>
+                <div class="form-group col-lg-4 col-md-4 archivo">
+                    <input name="archivos" type="file" accept="image/*" data-max-size="3000000" class="file" required>
+                </div>
+                <div class="form-group botones_eliminar col-lg-1 col-md-1">
+                    <input id="boton_eliminar_1" type="button" class="btn btn-danger" value="x" onclick="eliminarImagen(1)"/>
+                </div>
+                <div id="boton_agregar" class="form-group col-lg-1 col-md-1">
+                    <input type="button" class="btn btn-primary" value="+" onclick="agregarImagen();"/>
+                </div>
+            </div>
+            <div class="col-lg-6 col-lg-offset-6 col-md-6 col-md-offset-6">
+                <p id="mensaje">* El tamaño máximo de las imágenes es de 3 MB</p>
+            </div>
+            <div id="boton_especie" class="form-group col-lg-12 col-md-12">
+                <button class="btn btn-primary" type="submit">Crear especie</button>
+            </div>
+        </form>
+    </div>
 </div>
 @section Scripts {
     <script>

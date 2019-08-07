@@ -30,41 +30,33 @@
                         <a href="#"><i class="fa fa-dashboard fa-lg"></i> Monitoreo <span class="arrow"></span></a>
                     </li>
                     <ul class="sub-menu collapse" id="monitoreo">
-                        <li><a href='@Url.Action("Index","Home")'>Estaciones</a></li>
-                        <li><a href='@Url.Action("Index","Audios")'>Audios</a></li>
-                        <li><a href='@Url.Action("Index","Image")'>Imágenes</a></li>
-                        <li><a href='@Url.Action("Index","Map")'>Mapa</a></li>
+                        <li><a href='@Url.Action("Index","Home")'><div>Estaciones</div></a></li>
+                        <li><a href='@Url.Action("Index","Audios")'><div>Audios</div></a></li>
+                        <li><a href='@Url.Action("Index","Image")'><div>Imágenes</div></a></li>
+                        <li><a href='@Url.Action("Index","Map")'><div>Mapa</div></a></li>
                     </ul>
-                    <!--li data-toggle="collapse" data-target="#estadisticas" class="collapsed">
-                        <a href="#"><i class="fa fa-bar-chart"></i> Estadísticas<span class="arrow"></span></a>
-                    </li>
-                    <ul class="sub-menu collapse" id="estadisticas">
-                        <li><a href='@Url.Action("Index","Statistic")'>Estadísticas</a></li>
-                    </ul-->
                     <li data-toggle="collapse" data-target="#bosque" class="collapsed">
                         <a href="#"><i class="fa fa-tree fa-lg"></i> Bosque Virtual <span class="arrow"></span></a>
                     </li>  
                     <ul class="sub-menu collapse" id="bosque">
-                        <li><a href='@Url.Action("Index","Specie")'>Especies</a></li>
-                        <li><a href='@Url.Action("Index","Question")'>Preguntas</a></li>
-                        <li><a href='@Url.Action("Index","BosqueVirtual")' target="_blank">Juego</a></li>
+                        <li><a href='@Url.Action("Index","Specie")'><div>Especies</div></a></li>
+                        <li><a href='@Url.Action("Index","Question")'><div>Preguntas</div></a></li>
+                        <li><a href='@Url.Action("Index","BosqueVirtual")' target="_blank"><div>Juego</div></a></li>
                     </ul>
-                    <li>
-                        <a href="#"><i class="fa fa-wrench fa-lg"></i> Administración </a>
-                    </li>
                     <li>
                         <a href='@Url.Action("Index","Alert")'><i class="fa fa-bell fa-lg"></i> <div>Alertas</div> </a>
                     </li>
                     <li>
                         <a href='@Url.Action("Index","Incident")'><i class="fa fa-exclamation-triangle" ></i> <div>Incidentes</div> </a>
                     </li>
+                    <li data-toggle="collapse" data-target="#administracion" class="collapsed">
+                        <a href="#"><i class="fa fa-wrench fa-lg"></i> Administración <span class="arrow"></span></a>
+                    </li>
+                    <ul class="sub-menu collapse" id="administracion">
+                        <li><a href='@Url.Action("Index","Users")'><div>Usuarios</div></a></li>
+                    </ul>
                 </ul>
-                <li data-toggle="collapse" data-target="#administracion" class="collapsed">
-                    <a href="#"><i class="fa fa-wrench fa-lg"></i> Administración <span class="arrow"></span></a>
-                </li>
-                <ul class="sub-menu collapse" id="administracion">
-                    <li><a href='@Url.Action("Index","Users")'>Usuarios</a></li>
-                </ul>
+               
             </ul>
         </div>
     </div>
@@ -75,7 +67,7 @@
         </ul>
     </nav>
 
-    <div class="container body-content" style="margin-top: 67px;">
+    <div class="container-fluid body-content">
         @RenderBody()
     </div>
 

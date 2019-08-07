@@ -1,4 +1,4 @@
-.container.body-content {
+.body-content {
     padding: 1.5% !important;
 }
 .title.row{
@@ -132,4 +132,7 @@ red:#ff4000
     }
   }
   /* END - PULSATING CIRCLE ANIMATION*/
-  
+
+.container {
+    padding: 15px;    
+}

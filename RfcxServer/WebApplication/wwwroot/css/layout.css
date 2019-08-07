@@ -1,6 +1,5 @@
 .nav-side-menu {
     overflow: auto;
-    font-family: verdana;
     font-size: 12px;
     font-weight: 200;
     background-color: #007f42;
@@ -9,6 +8,7 @@
     width: 270px;
     height: 100%;
     color: #e1ffff;
+    z-index: 1000;
 }
 .nav-side-menu .brand {
     background-color: white;
@@ -16,13 +16,14 @@
     display: block;
     text-align: center;
 }
-.container.body-content, nav {
-    position: relative;
-    overflow: auto;
-    clear: both;
-    margin-left: 270px;
+.body-content {
+    margin-top: 67px;
+    padding-left: 270px;
+
 }
+
 nav {
+    margin-left: 270px;
     height: 67px;
 }
 .navbar-nav li a {
@@ -93,6 +94,7 @@ nav {
 }
 .nav-side-menu li a {
     text-decoration: none;
+    font-size: 14px;
     color: #e1ffff;
 }
 .nav-side-menu li a i {
@@ -109,9 +111,9 @@ nav {
     transition: all 1s ease;
 }
 @media (max-width: 767px) {
-    .container.body-content {
+    .body-content {
         position: initial;
-        margin-left: 0;
+        padding-left: 0;
     }
     .nav-side-menu {
         position: relative;
