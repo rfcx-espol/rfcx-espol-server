@@ -131,8 +131,8 @@
                         <td>@incident.RaisedCondition</td>
                         <td style="text-align: center;">
                             <label class="switch" id='switch_@incident.IncidentId'>
-                                @if (incident.Solved) {<input id="checkbox-status_@incident.IncidentId" type="checkbox" onclick="mostrarAdvertenciaStatus('@incident.IncidentId','@incident.Solved');" checked>}
-                                else {<input id="checkbox-status_@incident.IncidentId" type="checkbox" onclick="editarStatus('@incident.IncidentId','@incident.Solved');"> }
+                                @if (incident.Status) {<input id="checkbox-status_@incident.IncidentId" type="checkbox" onclick="mostrarAdvertenciaStatus('@incident.IncidentId','@incident.Status');" checked>}
+                                else {<input id="checkbox-status_@incident.IncidentId" type="checkbox" onclick="editarStatus('@incident.IncidentId','@incident.Status');"> }
                                 <span class="slider round"></span>
                             </label>
                         </td>
