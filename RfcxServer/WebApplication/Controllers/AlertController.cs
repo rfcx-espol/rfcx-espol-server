@@ -72,8 +72,8 @@ namespace WebApplication.Controllers
             return Redirect("index");
         }
 
-        [HttpPut("{id}")]
-        public async void Put(string id)
+        [HttpPost("{id}")]
+        public IActionResult Post(string id)
         {
             Alert alert = new Alert();
             alert.AlertId = id;
@@ -94,8 +94,8 @@ namespace WebApplication.Controllers
             }
             alert.Status = true;
             alert.Conditions = condition_list;
-            await _AlertRepository.UpdateAlert(id, alert);
-            Redirect("index");
+            _AlertRepository.UpdateAlert(id, alert);
+            return Redirect("index");
         }
 
         [HttpDelete("{id}")]
