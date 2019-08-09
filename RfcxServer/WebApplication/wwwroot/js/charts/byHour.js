@@ -64,8 +64,14 @@ filterButton.addEventListener("click", function(){
                     let basicStatisticsContainer = makeBasicStatisticsContainer(basicStatistics);
                     //console.log(basicStatisticsContainer);
                     //console.log(basicStatistics);             
-                    let dpsNullPointsAdded = addNullPoints(rawDataPoints, 3600);
-                    //console.log(dpsNullPointsAdded);
+                    //let dpsNullPointsAdded = addNullPoints(rawDataPoints, 3600);
+                    let dpsNullPointsAdded = addNullPoints_(
+                        rawDataPoints, 
+                        0,
+                        86400,
+                        3600
+                    );
+                    console.log(dpsNullPointsAdded);
                     let dataPoints = dpsNullPointsAdded.map(function(responseElement){
                         let timestamp = responseElement.Timestamp;
                         let value = responseElement.Value;
@@ -144,8 +150,8 @@ function avgPerDateChart(divId){
             }
         },
         axisX:{
-            valueFormatString: "hh TT" ,
-            labelAngle: -50
+            valueFormatString: "HH:00" ,
+            labelAngle: -90
         },
         axisY:{            
             titleFontSize: 18
@@ -154,9 +160,24 @@ function avgPerDateChart(divId){
     });
 }
 
-
 //place datapoints if between two datapoints there was supposed to be a value.
-function addNullPoints(dataPoints, timeInterval){
+//differente from the used in realtime chart
+function addNullPoints_(
+    dataPoints,
+    startTimestamp,
+    endTimestamp,
+    timeInterval
+){
+    
+    let timestampRange = endTimestamp - startTimestamp;
+    let timestampsLength = Math.floor(timestampRange/timeInterval);
+    let timestamps  = Array.from({length: timestampsLength}, (_, i) => (startTimestamp + i*timeInterval) );
+    let dataPointsNullPointsAdded = timestamps.map(function(timestamp){
+        dpFound = dataPoints.find(dp => dp.Timestamp == timestamp);
+        dataPoint = (dpFound == null) ? { Timestamp: timestamp, Value: null } : dpFound ;
+        return dataPoint;
+    });    
+    /*
     let dataPointsNullPointsAdded = [];
     for(let i = 0 ; i < (dataPoints.length -1) ; i++){
       dataPointsNullPointsAdded.push(dataPoints[i]);
@@ -165,22 +186,25 @@ function addNullPoints(dataPoints, timeInterval){
       let currentTimestamp = dataPoints[i].Timestamp;
   
       if ( nextTimestamp > (currentTimestamp + timeInterval)) {
-        let nullDataPoint = makeNullDataPoint(nextTimestamp, currentTimestamp);  
+        let nullDataPoint = makeNullDataPoint_(currentTimestamp, timeInterval);  
         dataPointsNullPointsAdded.push(nullDataPoint);
       }        
     }
     dataPointsNullPointsAdded.push(dataPoints[dataPoints.length - 1]);
+    */
     return dataPointsNullPointsAdded;
 }
 
-function makeNullDataPoint(nextTimestamp, currentTimestamp){
-    let middleTimestamp = Math.floor((nextTimestamp + currentTimestamp)/2);
+//differente from the used in realtime chart
+function makeNullDataPoint_(currentTimestamp, timeInterval){
+    let newTimestamp = currentTimestamp + timeInterval;
     let nullDataPoint = {
-        Timestamp: middleTimestamp,
+        Timestamp: newTimestamp,
         Value: null
     };
     return nullDataPoint;
 }
+
 
 function makeBasicStatisticsContainer({min, max, mean}){
 
