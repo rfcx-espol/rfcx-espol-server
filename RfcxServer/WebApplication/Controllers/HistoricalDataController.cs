@@ -32,6 +32,14 @@ namespace WebApplication.Controllers
             return View(stations);
         }
 
+        [Route("/ByMonth")]
+        public IActionResult ByMonth(){
+            //retrieve stations
+            var stations = _StationRepository.Get();
+            ViewBag.message = "From server";
+            return View(stations);
+        }
+
         [Route("/ByDateStation")]
         public IActionResult ByDateStation(){            
             var sensorsTypeAndLocation = _DataRepository.sensorsTypeAndLocation();            

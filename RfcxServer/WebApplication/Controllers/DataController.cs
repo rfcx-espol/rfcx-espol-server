@@ -279,6 +279,35 @@ namespace WebApplication.Controllers
             }
 
             [HttpGet]
+            [Route("api/Station/{StationId:int}/AvgPerMonth")]        
+            public Task<string> GetAvgPerMonth(
+                [FromRoute]int StationId,
+                [FromQuery] long StartTimestamp,
+                [FromQuery] long EndTimestamp
+            )
+            {
+                return this._GetAvgPerMonth(
+                    StationId, 
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+            }
+
+            private async Task<string> _GetAvgPerMonth(
+                int StationId,
+                long StartTimestamp,
+                long EndTimestamp
+            )
+            {
+                var data = await _DataRepository.AvgPerMonth(
+                    StationId, 
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+                return data.ToJson() ;
+            }
+
+            [HttpGet]
             [Route("api/AvgPerDateStation")]
             public Task<string> GetAvgPerDateStation(            
                 [FromQuery] string SensorType,
