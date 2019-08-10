@@ -41,6 +41,7 @@ filterButton.addEventListener("click", function(){
                 }else {
                     console.log(data);                      
                     chart.options.data.length = 0; //free array of data on each request
+                    let allValuesForBasicStatistics = [];
                     data.forEach(function(responseElement){
                         let stationId = responseElement.StationId;                        
                         //console.log(stationId);
@@ -67,6 +68,8 @@ filterButton.addEventListener("click", function(){
                         //compute basic statistics
 
                         let rawDataPointsValues = rawDataPoints.map( element => element.Value );
+                        allValuesForBasicStatistics = allValuesForBasicStatistics.concat(rawDataPointsValues);
+                        /*
                         let valuesForBasicStatistics = (rawDataPointsValues.length >= 1 ) ? rawDataPointsValues : [-1]; 
                         let basicStatistics = {
                             min : ss.min(valuesForBasicStatistics),
@@ -74,6 +77,7 @@ filterButton.addEventListener("click", function(){
                             mean : ss.mean(valuesForBasicStatistics)
                         }
                         addDataToBasicStatisticsContainer(basicStatistics);
+                        */
 
                         let dpsNullPointsAdded = addNullPoints_(
                             rawDataPoints, 
@@ -116,6 +120,14 @@ filterButton.addEventListener("click", function(){
                         chart.render();
             
                     });
+                    console.log(allValuesForBasicStatistics);
+                    let valuesForBasicStatistics = (allValuesForBasicStatistics.length >= 1 ) ? allValuesForBasicStatistics : [-1];                     
+                    let basicStatistics = {
+                        min : ss.min(valuesForBasicStatistics),
+                        max : ss.max(valuesForBasicStatistics),
+                        mean : ss.mean(valuesForBasicStatistics)
+                    }
+                    addDataToBasicStatisticsContainer(basicStatistics);
                 }
             });
         });
