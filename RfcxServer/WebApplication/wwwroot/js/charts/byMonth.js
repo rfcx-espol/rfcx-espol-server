@@ -98,11 +98,12 @@ filterButton.addEventListener("click", function(){
                     let chartDivId = `chart_${sensorId}`;
 
                     //if there was a previous chart remove it
-                    /*
-                    if ( $(`div.historical #${chartDivId}`).length ) {                                                      
-                        $(`div.historical #${chartDivId} + .boxInfoValues`).remove();
-                        $(`div.historical #${chartDivId}`).remove();  
-                    }*/
+                    if ( $(`div.historical #${chartDivId}`).length ) {
+                        $(`div.historical #${chartDivId}`).parent().remove();
+                      //  $(`div.historical #${chartDivId}`).remove();
+                        //$(`div.historical #${chartDivId} + .boxInfoValues`).remove();
+                        //$(`div.historical #${chartDivId}`).remove();  
+                    }
                     let chartDiv = `
                     <div class="col-sm-12 col-md-12 col-lg-12 historical">
                     <div id="${chartDivId}" style="height: 320px" class="canvasJsChart"></div>
