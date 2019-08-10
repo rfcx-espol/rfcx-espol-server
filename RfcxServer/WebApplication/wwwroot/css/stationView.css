@@ -82,14 +82,11 @@ hr{
 /* Style the tab content */
 .tabcontent {
     margin: 0px 50px;
-    border: 1px solid #ccc;
 }
 
 .boxInfoValues{
     width: 100%;
     padding: 5px;
-    margin-top: 15px;
-    margin-bottom: 65px;
     clear: both;
 }
 .boxLetters{    
@@ -122,14 +119,16 @@ hr{
     text-align: center;
 }
 .sensores_monitor{
-    margin-bottom: 5%;
-    padding-bottom: 5%;
-    border-bottom: 1px solid #ccc;
+    margin-bottom: 7%;
+    padding-bottom: 1%;
+    border-bottom: 2px solid #ccc;
+    border: 1px solid #ccc;
 }
 .historical{
-    margin-bottom: 10%;
+    margin-bottom: 7%;
     padding-bottom: 5%;
     border-bottom: 1px solid #ccc;
+    border: 1px solid #ccc;
 }
 #chartAvgPerDate{
     margin-top: 5%;
