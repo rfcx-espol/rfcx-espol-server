@@ -382,8 +382,10 @@ namespace WebApplication.Repository
             var timestampInMillis = new BsonDocument {
                 { "$multiply", new BsonArray{ "$Timestamp", 1000 } }
             };
-            var dateField =new BsonDocument{
-                { "$toDate", timestampInMillis }
+            System.DateTime dateAtStartOfUnixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, 0,DateTimeKind.Utc);
+
+            var dateField = new BsonDocument {
+                { "$add", new BsonArray{ dateAtStartOfUnixEpoch, timestampInMillis } }
             };
 
             var _id = new BsonDocument {                                
@@ -466,8 +468,11 @@ namespace WebApplication.Repository
             var timestampInMillis = new BsonDocument {
                 { "$multiply", new BsonArray{ "$Timestamp", 1000 } }
             };
-            var dateField =new BsonDocument{
-                { "$toDate", timestampInMillis }
+            
+            System.DateTime dateAtStartOfUnixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, 0,DateTimeKind.Utc);
+
+            var dateField = new BsonDocument {
+                { "$add", new BsonArray{ dateAtStartOfUnixEpoch, timestampInMillis } }
             };
 
             var _id = new BsonDocument {                                
@@ -548,8 +553,11 @@ namespace WebApplication.Repository
             var timestampInMillis = new BsonDocument {
                 { "$multiply", new BsonArray{ "$Timestamp", 1000 } }
             };
-            var dateField =new BsonDocument{
-                { "$toDate", timestampInMillis }
+
+            System.DateTime dateAtStartOfUnixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, 0,DateTimeKind.Utc);
+
+            var dateField = new BsonDocument {
+                { "$add", new BsonArray{ dateAtStartOfUnixEpoch, timestampInMillis } }
             };
 
             var _id = new BsonDocument {                                
@@ -655,9 +663,11 @@ namespace WebApplication.Repository
             // Use mongodb driver to do aggregation of data
             var timestampInMillis = new BsonDocument {
                 { "$multiply", new BsonArray{ "$Timestamp", 1000 } }
-            };
-            var dateField =new BsonDocument{
-                { "$toDate", timestampInMillis }
+            };           
+            System.DateTime dateAtStartOfUnixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, 0,DateTimeKind.Utc);
+
+            var dateField = new BsonDocument {
+                { "$add", new BsonArray{ dateAtStartOfUnixEpoch, timestampInMillis } }
             };
 
             var _id = new BsonDocument {                                
