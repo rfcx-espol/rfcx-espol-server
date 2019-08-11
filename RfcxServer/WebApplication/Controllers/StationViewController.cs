@@ -22,16 +22,7 @@ namespace WebApplication {
             ViewData["stationId"]= stationId;           
             return View(sensors);
         }
-        
-        [Route("/ByDateRange")]
-        public IActionResult ByDateRange(string stationName, int stationId) {            
-            //retrieve sensors by station id
-            var sensors = _SensorRepository.GetByStationNotAsync(stationId);
-            Console.WriteLine(stationName);
-            ViewData["stationName"] =stationName;
-            ViewData["stationId"]= stationId;           
-            return View(sensors);
-        }
+               
     }
 
     

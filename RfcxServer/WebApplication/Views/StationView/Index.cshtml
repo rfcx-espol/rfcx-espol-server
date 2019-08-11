@@ -8,36 +8,57 @@
   <link rel="stylesheet" type="text/css" href="~/css/stationView.css">
 }
 
-<div class="tab"> 
+<!---div class="tab"> 
   <button class="tablinks" name="monitor" id="defaultOpen" url='@Url.Action("Index","StationView", new{ stationName = @ViewData["stationName"] , stationId = @ViewData["stationId"] })'>
     <i class="fa fa-television tabL" aria-hidden="true"></i>
-    <p class="tabMonitor">Consulta de Datos</p>
+    <p class="tabMonitor">Realtime</p>
   </button>
-  <button class="tablinks" name="statsTab" id="stats" url='@Url.Action("ByDateRange","StationView", new{ stationName = @ViewData["stationName"] , stationId = @ViewData["stationId"] })'>
-    <i class="fa fa-bar-chart tabL" aria-hidden="true"></i>
-    <p class="tabMonitor">Estadísticas</p>
-  </button>
-  <!--New tabs-->
+  New tabs
+</div-->
+
+<div style = "background-color:white; position:fixed;z-index:20000; width:75%; border-bottom: 1px solid #ccc;">  
+  <h3 id="stationName" style="text-align: center; color: #e4b836; font-weight: bold;">Datos en tiempo real</h3>
+  <p class="text-center">@ViewData["stationName"].ToString()</p>
+  <!--h5 class="text-muted" style=" text-align: center; width: 200px; margin:0px 0px 5px 5px;border: 1px solid #ccc; border-radius:10px; padding:10px;" > </h5-->
 </div>
 
+
 <!--MONITOR-->
-<div id="monitor" class="tabcontent" onload="display(this)">
-  <h3 id="stationName" style="text-align: center; color: #e4b836; font-weight: bold;">@ViewData["stationName"].ToString()</h3>
+<div id="monitor" class="tabcontent" onload="display(this)" style="margin-top:15%; text-align: center; ">
   <p id="stationId" style="display:none">@ViewData["stationId"].ToString()</p>
 
   @foreach (Sensor sensor in @Model) {
       <div class='col-sm-12 col-md-12 col-lg-12 sensores_monitor'>
         <h4 class='titulo_sensor'><i class="fa"></i>@(sensor.Type) @(sensor.Location)</h4>
         <div id='chartMonitor@(sensor.Type)_@(sensor.Location)' style='height: 320px' class='canvasJsChart'></div>
+        <div class="boxInfoValues">
+          <p class="boxLetters  initialMon">
+              <i class="material-icons iconsMinMax">&#xe15d;</i>
+              Min
+          </p>
+          <p class="boxLetters initialValue" id="minVal"> </p>
+          <p class="boxLetters middle">
+              <i class="material-icons iconsMinMax">&#xe148;</i>
+              Max 
+          </p>
+          <p class="boxLetters middleValue" id="maxVal"></p>
+          <p class="boxLetters last">
+              <i class="fa iconsAvg">&#xf10c;</i> 
+              Avg
+          </p>
+          <p class="boxLetters lastValue" id="avgVal"></p>
+        </div>
         <div class="sensorId" style="display:none">@(sensor.Id)</div>
-        <div class="sensorType" style="display:none">@(sensor.Type)</div>
+        <div class="sensorType" style="display:none">@(sensor.Type)</div>        
+        <div class="sensorLocation" style="display:none">@(sensor.Location)</div>
       </div>      
   }
 </div>
 
 @section Scripts {   
-  <script src="js/moment.js" type="text/javascript"></script>
-  <script src="js/charts/canvasjs-2.1.2/canvasjs.min.js" type="text/javascript"></script>
-  <script src="js/charts/monitor.js" type="text/javascript"></script>
+  <script src="~/js/moment.js" type="text/javascript"></script>
+  <script src="~/js/charts/canvasjs-2.1.2/canvasjs.min.js" type="text/javascript"></script>
+  <script src="~/js/charts/simple-statistics/simple-statistics.min.js" type="text/javascript"></script>  
+  <script src="~/js/charts/monitor.js" type="text/javascript"></script>
   <!--script src="js/charts/simulator.js" type="text/javascript"></script-->
 }
