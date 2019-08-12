@@ -40,10 +40,8 @@ var charts = chartContainers.map(function(chartContainer){
 
 /*** fill charts with initial data ***/
 charts.forEach(function(chart){
-    //make request
-    //MUST VALIDATE WHEN THERE IS NO VALUE IN THE LAST K HOURS
-    $.getJSON(chart.initialDataUrl, function(data){
-
+    //make request    
+    $.getJSON(chart.initialDataUrl, function(data){ 
         //default value if empty response        
         let dps = (data.length > 1 ) ? data : [{Timestamp : moment().unix() , Value : null }];
         
@@ -54,6 +52,7 @@ charts.forEach(function(chart){
 
         //add basic statistics
         let rawDataPointsValues = rawDataPoints.map( element => parseFloat(element.Value) );
+        console.log(rawDataPointsValues);
         let valuesForBasicStatistics = (rawDataPointsValues.length >= 1 ) ? rawDataPointsValues : [-1];
         //console.log(valuesForBasicStatistics);
         let basicStatistics = {
@@ -209,6 +208,7 @@ function updateChart(
             canvasJsChart.options.data[0].dataPoints.push(toDataPoint(nullDataPoint));
         }
         
+        
         //update chart
         canvasJsChart.options.data[0].dataPoints.push(toDataPoint(newDataPoint));
 
@@ -223,7 +223,7 @@ function updateChart(
         //update basic statistics
         let rawDataPointsValues = canvasJsChart.options.data[0].dataPoints.filter( element => element.y != null ).map( element => parseFloat(element.y) );
         console.log(rawDataPointsValues);        
-        let valuesForBasicStatistics = (rawDataPointsValues.length > 1 ) ? rawDataPointsValues : [-1];
+        let valuesForBasicStatistics = (rawDataPointsValues.length >= 1 ) ? rawDataPointsValues : [-1];
         //console.log(valuesForBasicStatistics);
         let basicStatistics = {
             min : ss.min(valuesForBasicStatistics),
@@ -259,9 +259,9 @@ function getUnits(data){
 }
 
 function addDataToBasicStatisticsContainer(sensorType,sensorLocation, basicStatistics){
-    let min = basicStatistics.min != -1 ? formatFloat(basicStatistics.min) : "" ; 
-    let max = basicStatistics.mean != -1 ? formatFloat(basicStatistics.max) : "" ; 
-    let mean = basicStatistics.max != -1 ? formatFloat(basicStatistics.mean) : "" ;    
+    let min = ( basicStatistics.min != -1 && !isNaN(basicStatistics.min) ) ? formatFloat(basicStatistics.min) : "" ; 
+    let max = ( basicStatistics.max != -1 && !isNaN(basicStatistics.max) ) ? formatFloat(basicStatistics.max) : "" ;
+    let mean = ( basicStatistics.mean != -1 && !isNaN(basicStatistics.mean) ) ? formatFloat(basicStatistics.mean) : "" ;    
     //console.log(basicStatistics.min);
     console.log(sensorType);
     console.log(sensorLocation);

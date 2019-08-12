@@ -57,7 +57,7 @@ filterButton.addEventListener("click", function(){
                     //compute basic statistics
 
                     let rawDataPointsValues = rawDataPoints.map( element => element.Value );
-                    let valuesForBasicStatistics = (rawDataPointsValues.length > 1 ) ? rawDataPointsValues : [-1]; 
+                    let valuesForBasicStatistics = (rawDataPointsValues.length >= 1 ) ? rawDataPointsValues : [-1];
                     let basicStatistics = {
                         min : ss.min(valuesForBasicStatistics),
                         max : ss.max(valuesForBasicStatistics),
