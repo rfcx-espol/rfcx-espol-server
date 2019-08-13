@@ -140,6 +140,24 @@ namespace WebApplication.Repository
             
         }
 
+        public async Task<IEnumerable<Data>> DataByStationTimestamp(
+            int StationId,
+            long StartTimestamp,
+            long EndTimestamp)
+        {
+            try{
+                var filter =Builders<Data>.Filter.Eq("StationId", StationId) &
+                Builders<Data>.Filter.Gte("Timestamp", StartTimestamp) &
+                Builders<Data>.Filter.Lte("Timestamp", EndTimestamp);
+
+                return await _context.Datas.Find(filter).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            
+        }
         public async Task<IEnumerable<Data>> GetByStationSensorTimestampFilter(int StationId, int SensorId, 
             long StartTimestamp, long EndTimestamp, string Filter, int FilterValue)
         {

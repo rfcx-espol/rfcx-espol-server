@@ -25,6 +25,12 @@ namespace WebApplication.IRepository
         Task<bool> Update(string id, Data item);
         Task<bool> Remove(string id);
         Task<bool> RemoveAll();
+
+        Task<IEnumerable<Data>> DataByStationTimestamp(
+            int StationId, 
+            long StartTimestamp, 
+            long EndTimestamp
+        );
         Task<IEnumerable<BsonDocument>> AvgPerDate(
             int StationId,
             long StartTimestamp,
