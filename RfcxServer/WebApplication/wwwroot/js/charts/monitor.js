@@ -9,7 +9,7 @@ var CONFIG = {
 }
 
 //build url to retrieve initial Data
-let query =  timeStampQuery_({
+let query =  timeStampQuery({
     momentJsObject : moment(),
     hoursAgo : CONFIG.hoursAgo
 })  
@@ -97,7 +97,7 @@ function realTimeChart(divId, axisYTitle, chartTitle){
 }
 
 //build a timeStampQuery, check https://momentjs.com/docs
-function timeStampQuery_( { momentJsObject, hoursAgo } ){
+function timeStampQuery( { momentJsObject, hoursAgo } ){
     let now = momentJsObject.clone();//I make a clone to avoid modify the original object
     let endTimestamp  = now.unix();//unix() function gives the timestamp
     let startTimestamp = now.subtract(hoursAgo,'hours').unix();
@@ -134,20 +134,24 @@ function byTimestamp(a,b){
 
 //place datapoints if between two datapoints there was supposed to be a value.
 function addNullPoints(dataPoints, timeInterval){
-    let dataPointsNullPointsAdded = [];
-    for(let i = 0 ; i < (dataPoints.length -1) ; i++){
-      dataPointsNullPointsAdded.push(dataPoints[i]);
-  
-      let nextTimestamp = dataPoints[i+1].Timestamp;
-      let currentTimestamp = dataPoints[i].Timestamp;
-  
-      if ( nextTimestamp > (currentTimestamp + timeInterval)) {
-        let nullDataPoint = makeNullDataPoint(nextTimestamp, currentTimestamp);  
-        dataPointsNullPointsAdded.push(nullDataPoint);
-      }        
+    if (dataPoints.length > 0 ){
+        let dataPointsNullPointsAdded = [];
+        for(let i = 0 ; i < (dataPoints.length -1) ; i++){
+        dataPointsNullPointsAdded.push(dataPoints[i]);
+    
+        let nextTimestamp = dataPoints[i+1].Timestamp;
+        let currentTimestamp = dataPoints[i].Timestamp;
+    
+        if ( nextTimestamp > (currentTimestamp + timeInterval)) {
+            let nullDataPoint = makeNullDataPoint(nextTimestamp, currentTimestamp);  
+            dataPointsNullPointsAdded.push(nullDataPoint);
+        }        
+        }
+        dataPointsNullPointsAdded.push(dataPoints[dataPoints.length - 1]);
+        return dataPointsNullPointsAdded;
+    }else {
+        return [];
     }
-    dataPointsNullPointsAdded.push(dataPoints[dataPoints.length - 1]);
-    return dataPointsNullPointsAdded;
 }
 
 function makeNullDataPoint(nextTimestamp, currentTimestamp){
@@ -166,33 +170,38 @@ function updateChart(
     chartDivId,
 ) {    
     $.getJSON(lastDataURL, function(data) {
-        //process response            
-        let dataPointsLength = canvasJsChart.options.data[0].dataPoints.length;        
-        let lastDataPoint = canvasJsChart.options.data[0].dataPoints[dataPointsLength - 1];
-        let newDataPoint = toRawDataPoint(data);
-                
 
-        let nextTimestamp = newDataPoint.Timestamp;
-        let currentTimestamp = lastDataPoint.x.getTime()/1000;
-        let timeInterval  = CONFIG.timeInterval/1000;
-        if ( nextTimestamp > (currentTimestamp + timeInterval)){         
-            let nullDataPoint = makeNullDataPoint(nextTimestamp, currentTimestamp);  
-            canvasJsChart.options.data[0].dataPoints.push(toDataPoint(nullDataPoint));
+        //either was previous data or not
+        //process response
+        let currentDataPoints = canvasJsChart.options.data[0].dataPoints;        
+        let newDataPoint = toRawDataPoint(data);
+
+        if (currentDataPoints.length > 0 ){
+            let dataPointsLength = currentDataPoints.length;
+            let lastDataPoint = currentDataPoints[dataPointsLength - 1];
+                    
+            let nextTimestamp = newDataPoint.Timestamp;
+            let currentTimestamp = lastDataPoint.x.getTime()/1000;
+            let timeInterval  = CONFIG.timeInterval/1000;
+            if ( nextTimestamp > (currentTimestamp + timeInterval)){         
+                let nullDataPoint = makeNullDataPoint(nextTimestamp, currentTimestamp);  
+                currentDataPoints.push(toDataPoint(nullDataPoint));
+            }
         }
                 
         //update chart
-        canvasJsChart.options.data[0].dataPoints.push(toDataPoint(newDataPoint));
+        currentDataPoints.push(toDataPoint(newDataPoint));
 
         //avoids accumulate points in the chart
-        if(canvasJsChart.options.data[0].dataPoints.length > maxDataPointsAllowed ){
-            canvasJsChart.options.data[0].dataPoints.shift();
+        if(currentDataPoints.length > maxDataPointsAllowed ){
+            currentDataPoints.shift();
         }
 
         //render changes
         canvasJsChart.render();
 
         //update basic statistics
-        let rawDataPointsValues = canvasJsChart.options.data[0].dataPoints.filter( element => element.y != null ).map( element => parseFloat(element.y) );
+        let rawDataPointsValues = currentDataPoints.filter( element => element.y != null ).map( element => parseFloat(element.y) );
         let basicStatistics = computeBasicStatistics(rawDataPointsValues);        
         addDataToBasicStatisticsContainer(
             chartDivId,
@@ -234,25 +243,24 @@ function makeChartDiv(
     }
     
     let chartDiv = `
-    <div class="col-sm-12 col-md-12 col-lg-12 historical">        
-        <div id="${chartDivId}" style="height: 320px" class="canvasJsChart"></div>        
-        <div class="boxInfoValues">
-            <p class="boxLetters  initialMon">
-                <i class="material-icons iconsMinMax">&#xe15d;</i>
-                Min
-            </p>
-            <p class="boxLetters initialValue" id="minVal">${min}</p>
-            <p class="boxLetters middle">
-                <i class="material-icons iconsMinMax">&#xe148;</i>
-                Max 
-            </p>
-            <p class="boxLetters middleValue" id="maxVal">${max}</p>
-            <p class="boxLetters last">
-                <i class="fa iconsAvg">&#xf10c;</i> 
-                Avg
-            </p>
-            <p class="boxLetters lastValue" id="avgVal" >${mean}</p>
-        </div>    
+    <div class="panel panel-default" id="_${chartDivId}">
+        <div class="panel-body" >
+            <div id="${chartDivId}" style="height: 320px" class="canvasJsChart"></div>
+        </div>        
+        <div class="panel-footer">
+            <i class="material-icons iconBasicStatitic">&#xe15d;</i>
+            min                
+            <p class="boxLetters" id="minVal">${min}</p>
+            
+            <i class="material-icons iconBasicStatitic">&#xe148;</i>
+            max
+            <p class="boxLetters" id="maxVal">${max}</p>
+
+            <i class="fa iconBasicStatitic">&#xf10c;</i>
+            avg
+            <p class="boxLetters" id="avgVal">${mean}</p>                
+        </div>
+        
     </div>                      
     `;
     return chartDiv;
@@ -268,9 +276,9 @@ function addDataToBasicStatisticsContainer(chartDivId, basicStatistics){
         min = max = mean = "";
     }
         
-    $(`div#${chartDivId} + .boxInfoValues p#minVal`).text(min);
-    $(`div#${chartDivId} + .boxInfoValues p#maxVal`).text(max);
-    $(`div#${chartDivId} + .boxInfoValues p#avgVal`).text(mean);   
+    $(`div.panel.panel-default#_${chartDivId} .panel-footer p#minVal`).text(min);
+    $(`div.panel.panel-default#_${chartDivId} .panel-footer p#maxVal`).text(max);
+    $(`div.panel.panel-default#_${chartDivId} .panel-footer p#avgVal`).text(mean);   
 }
 
 function computeBasicStatistics(values){

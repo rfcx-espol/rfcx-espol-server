@@ -24,37 +24,8 @@
 
 
 <!--MONITOR-->
-<div id="monitor" class="tabcontent" onload="display(this)" style="margin-top:15%; text-align: center; ">
+<div id="monitor" class="tabcontent" onload="display(this)" style="margin-top:15%; text-align: center; margin-bottom:10%;">
   <p id="stationId" style="display:none">@ViewData["stationId"].ToString()</p>
-
-@{/*
-  @foreach (Sensor sensor in @Model) {
-      <div class='col-sm-12 col-md-12 col-lg-12 sensores_monitor'>
-        <h4 class='titulo_sensor'><i class="fa"></i>@(sensor.Type) @(sensor.Location)</h4>
-        <div id='chartMonitor@(sensor.Type)_@(sensor.Location)' style='height: 320px' class='canvasJsChart'></div>
-        <div class="boxInfoValues">
-          <p class="boxLetters  initialMon">
-              <i class="material-icons iconsMinMax">&#xe15d;</i>
-              Min
-          </p>
-          <p class="boxLetters initialValue" id="minVal"> </p>
-          <p class="boxLetters middle">
-              <i class="material-icons iconsMinMax">&#xe148;</i>
-              Max 
-          </p>
-          <p class="boxLetters middleValue" id="maxVal"></p>
-          <p class="boxLetters last">
-              <i class="fa iconsAvg">&#xf10c;</i> 
-              Avg
-          </p>
-          <p class="boxLetters lastValue" id="avgVal"></p>
-        </div>
-        <div class="sensorId" style="display:none">@(sensor.Id)</div>
-        <div class="sensorType" style="display:none">@(sensor.Type)</div>        
-        <div class="sensorLocation" style="display:none">@(sensor.Location)</div>
-      </div>      
-  }
-*/}
 </div>
 
 @section Scripts {   
