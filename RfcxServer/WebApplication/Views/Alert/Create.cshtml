@@ -157,59 +157,34 @@
 
             let divStation= $('<div></div>');
             divStation.attr('class','col-md-3');
-
             let labelStation = $('<label></label>');
             labelStation.text('Estación: ');
-
             let selectStation = $('<select></select>');
-            selectStation.attr('class','form-control');
-            selectStation.attr('name','estacion_alerta'+i);
-            selectStation.attr('id','estacion_alerta'+i);
-
-            let defaultOption = $('<option></option>');
-            defaultOption.attr('hidden','""');
-            defaultOption.attr('value','""');
-            defaultOption.text('Escoja una opción');
-
-            selectStation.append(defaultOption);
+            addAttributes(selectStation, 'estacion');
+            appendDefaultOption(selectStation);
             divStation.append(labelStation);
             divStation.append(selectStation);
-
             divContainer.append(divStation);
 
             let divSensor = $('<div></div>');
             divSensor.attr('class','col-md-3');
-
             let labelSensor = $('<label></label>');
             labelSensor.text('Sensor: ');
-
-            let defaultOption2 = $('<option></option>');
-            defaultOption2.attr('hidden','""');
-            defaultOption2.attr('value','""');
-            defaultOption2.text('Escoja una opción');
-
             let selectSensor = $('<select></select>');
-            selectSensor.attr('class','form-control');
-            selectSensor.attr('name','sensor_alerta'+i);
-            selectSensor.attr('id','sensor_alerta'+i);
-            selectSensor.append(defaultOption2);
-
-
+            addAttributes(selectSensor, 'sensor');
+            appendDefaultOption(selectSensor);
             divSensor.append(labelSensor);
             divSensor.append(selectSensor);
             divContainer.append(divSensor);
 
             let divCondition = $('<div></div>');
             divCondition.attr('class','col-md-3');
-
             let labelCondition = $('<label></label>');
             labelCondition.text('Condición: ');
-
-            let defaultOption3 = $('<option></option>');
-            defaultOption3.attr('hidden','""');
-            defaultOption3.attr('value','""');
-            defaultOption3.text('Escoja una opción');
-
+            let nodata = $('<option></option>');
+            nodata.attr('value','NO DATA');
+            nodata.text('no recibe datos');
+            nodata.attr('onclick','changeFreqLabel('+i+')')
             let mayorque = $('<option></option>');
             mayorque.attr('value', 'MAYOR QUE');
             mayorque.text("mayor que");
@@ -219,16 +194,13 @@
             let igualque = $('<option></option>');
             igualque.attr('value','IGUAL QUE');
             igualque.text("igual que");
-
             let selectCondition = $('<select></select>');
-            selectCondition.attr('class','form-control');
-            selectCondition.attr('name','condicion_alerta'+i);
-            selectCondition.attr('id','condicion_alerta'+i);
-            selectCondition.append(defaultOption3);
+            addAttributes(selectCondition, 'condicion');
+            appendDefaultOption(selectCondition);
+            selectCondition.append(nodata);
             selectCondition.append(mayorque);
             selectCondition.append(menorque);
             selectCondition.append(igualque);
-
             divCondition.append(labelCondition);
             divCondition.append(selectCondition);
             divContainer.append(divCondition);
@@ -240,9 +212,7 @@
             labelValue.text('Valor: ');
 
             let inputValue = $('<input></input>');
-            inputValue.attr('id','threshold_alerta'+i);
-            inputValue.attr('name','threshold_alerta'+i);
-            inputValue.attr('class','form-control');
+            addAttributes(inputValue, 'threshold');
             inputValue.attr('type','text');
 
             divValue.append(labelValue);
@@ -253,5 +223,24 @@
             addStations();
             addOnChange();
         }
+
+        function appendDefaultOption(select){
+            let defaultOption = $('<option></option>');
+            defaultOption.attr('hidden','""');
+            defaultOption.attr('value','""');
+            defaultOption.text('Escoja una opción');
+            select.append(defaultOption);
+        }
+
+        function addAttributes(input, inputname){
+            input.attr('class', 'form-control');
+            input.attr('name', inputname+'_alerta'+i);
+            input.attr('id', inputname+'_alerta'+i);
+        }
+
+        function changeFreqLabel(i){
+            $(".col-md-2 :not(threshold_alerta"+i+")").text('Frecuencia');
+        }
+
     </script>
 }

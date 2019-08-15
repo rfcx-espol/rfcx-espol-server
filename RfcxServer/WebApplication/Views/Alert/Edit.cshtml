@@ -100,6 +100,7 @@
                             <label> Condición: </label>
                             <select class="form-control" id="condicion_alerta_@i" name="condicion_alerta_@i" sel="@Model.Conditions[i-1].Comparison">
                                 <option hidden="" value="">Escoja una opción</option>
+                                <option value="NO DATA" onclick="changeFreqLabel(@i)">no recibe datos</option>
                                 <option value="MAYOR QUE">mayor que</option>
                                 <option value="MENOR QUE">menor que</option>
                                 <option value="IGUAL QUE">igual que</option>
@@ -180,6 +181,9 @@
             divCondition.attr('class','col-md-3');
             let labelCondition = $('<label></label>');
             labelCondition.text('Condición: ');
+            let nodata = $('<option></option>');
+            nodata.attr('value','NO DATA');
+            nodata.text('no recibe datos');
             let mayorque = $('<option></option>');
             mayorque.attr('value', 'MAYOR QUE');
             mayorque.text("mayor que");
@@ -192,6 +196,7 @@
             let selectCondition = $('<select></select>');
             addAttributes(selectCondition, 'condicion');
             appendDefaultOption(selectCondition);
+            selectCondition.append(nodata);
             selectCondition.append(mayorque);
             selectCondition.append(menorque);
             selectCondition.append(igualque);
@@ -342,26 +347,8 @@
             $("#condicion_alerta_"+idx+" option[value='"+condicion_alerta+"']").prop('selected', true);
         }
         
-        function updateAlert(id){
-            for (ai of alert_input_changed){
-                var obj = {};
-                var field = getField(ai);
-                var value = $("");
-            }
-        }
-
-        function getField(ai) {
-            switch(ai) {
-                case "nombre_alerta":
-                    return "Name";
-                case "tipo_alerta":
-                    return "AlertType";
-                case "correos_notificacion":
-                    return "MailTo";
-                case "mensaje_alerta":
-                    return "Message";
-                
-            }
+        function changeFreqLabel(i){
+            $(".col-md-2 :not(threshold_alerta_"+i+")").text('Frecuencia');
         }
 
     </script>
