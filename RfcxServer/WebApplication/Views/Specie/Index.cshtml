@@ -3,10 +3,6 @@
 }
 @section Style {
     <style>
-        #principal {
-            padding: 15px;
-            margin-right: 270px;
-        }
         h2 {
             margin-top: 10px;
             text-align: center;
@@ -33,95 +29,100 @@
         .modal-footer {
             text-align: center !important;
         }
+        button {
+            margin: 5px !important;
+        }
     </style>
 }
 <div id="principal">
-    <h2>Especies</h2>
-    <div id="div_boton_nuevo">
-        <input class="btn btn-primary" type="button" onclick="location.href='@Url.Action("Create","Specie")'" 
-            value="Nueva especie">
-    </div>
-    @if(((int) TempData["creacion"]) == 1) {
-        <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-            La especie ha sido creada correctamente
+    <div class="body-wrapper">
+        <h2>Especies</h2>
+        <div id="div_boton_nuevo">
+            <input class="btn btn-primary" type="button" onclick="location.href='@Url.Action("Create","Specie")'" 
+                value="Nueva especie">
         </div>
-    } else if(((int) TempData["creacion"]) == -1) {
-        <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-            Hubo un problema al crear la especie. Por favor, vuelva a intentarlo.
+        @if(((int) TempData["creacion"]) == 1) {
+            <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                La especie ha sido creada correctamente
+            </div>
+        } else if(((int) TempData["creacion"]) == -1) {
+            <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                Hubo un problema al crear la especie. Por favor, vuelva a intentarlo.
+            </div>
+        }
+        @if(((int) TempData["eliminacion"]) == 1) {
+            <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                La especie ha sido eliminada correctamente
+            </div>
+        } else if(((int) TempData["eliminacion"]) == -1) {
+            <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                Hubo un problema al eliminar la especie. Por favor, vuelva a intentarlo.
+            </div>
+        }
+        @if(((int) TempData["edicion"]) == 1) {
+            <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                La especie ha sido editada correctamente
+            </div>
+        } else if(((int) TempData["edicion"]) == -1) {
+            <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                Hubo un problema al editar la especie. Por favor, vuelva a intentarlo.
+            </div>
+        }
+        <div id="div_tabla_especies">
+            <table id="tabla_especies" class="cell-border display compact">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Familia</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var esp in @ViewBag.especies)
+                {
+                    <tr>
+                        <td>@esp.Name</td>
+                        <td>@esp.Family</td>
+                        <td style="text-align: center;">
+                            <button class="btn btn-primary" onclick="editarEspecie(@esp.Id);">Editar</button>
+                            <button class="btn btn-danger" onclick="mostrarAlerta(@esp.Id);">Eliminar</button>
+                        </td>
+                    </tr>   
+                }
+                </tbody>
+            </table>
         </div>
-    }
-    @if(((int) TempData["eliminacion"]) == 1) {
-        <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-            La especie ha sido eliminada correctamente
-        </div>
-    } else if(((int) TempData["eliminacion"]) == -1) {
-        <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-            Hubo un problema al eliminar la especie. Por favor, vuelva a intentarlo.
-        </div>
-    }
-    @if(((int) TempData["edicion"]) == 1) {
-        <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-            La especie ha sido editada correctamente
-        </div>
-    } else if(((int) TempData["edicion"]) == -1) {
-        <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-            Hubo un problema al editar la especie. Por favor, vuelva a intentarlo.
-        </div>
-    }
-    <div id="div_tabla_especies">
-        <table id="tabla_especies" class="cell-border display compact">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Familia</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var esp in @ViewBag.especies)
-            {
-                <tr>
-                    <td>@esp.Name</td>
-                    <td>@esp.Family</td>
-                    <td style="text-align: center;">
-                        <button class="btn btn-primary" onclick="editarEspecie(@esp.Id);">Editar</button>
-                        <button class="btn btn-danger" onclick="mostrarAlerta(@esp.Id);">Eliminar</button>
-                    </td>
-                </tr>   
-            }
-            </tbody>
-        </table>
-    </div>
 
-    <div class="modal fade" id="alert_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header alert-danger">
-                    <button type="button" class="close" style="margin-top: 1px" onclick="cerrarModal();">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="modal_alert_label">ADVERTENCIA</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Se borrará la especie, así como todas las imágenes y preguntas relacionadas a ella.
-                        Esta acción no puede revertirse. ¿Desea continuar?
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button id="accept" class="btn btn-danger" onclick="">Aceptar</button>
-                    <button id="cancel" class="btn btn-default" onclick="cerrarModal();">Cancelar</button>
+        <div class="modal fade" id="alert_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header alert-danger">
+                        <button type="button" class="close" style="margin-top: 1px" onclick="cerrarModal();">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="modal_alert_label">ADVERTENCIA</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Se borrará la especie, así como todas las imágenes y preguntas relacionadas a ella.
+                            Esta acción no puede revertirse. ¿Desea continuar?
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="accept" class="btn btn-danger" onclick="">Aceptar</button>
+                        <button id="cancel" class="btn btn-default" onclick="cerrarModal();">Cancelar</button>
+                    </div>
                 </div>
             </div>
         </div>

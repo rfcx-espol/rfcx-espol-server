@@ -47,7 +47,7 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task AddAlert(Alert item)
+        public async Task<bool> AddAlert(Alert item)
         {
             try
             {
@@ -62,6 +62,7 @@ namespace WebApplication.Repository
                 // }
 
                 await _context.Alerts.InsertOneAsync(item);
+                return true;
             }
             catch (Exception ex)
             {

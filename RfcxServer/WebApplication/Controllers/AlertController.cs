@@ -68,7 +68,8 @@ namespace WebApplication.Controllers
             }
             alert.Status = true;
             alert.Conditions = condition_list;
-            _AlertRepository.AddAlert(alert);
+            bool result =_AlertRepository.Add(alert);
+            setTempData(result, "createResult");
             return Redirect("index");
         }
 
@@ -96,13 +97,21 @@ namespace WebApplication.Controllers
             alert.Conditions = condition_list;
             _AlertRepository.UpdateAlert(id, alert);
             return Redirect("index");
+            /* would work if method was async
+            bool result = await _AlertRepository.UpdateAlert(id, alert);
+            setTempData(result, "editResult");            
+            Redirect("index");
+             */
+            
         }
 
         [HttpDelete("{id}")]
         public async Task<bool> Delete(string id)
         {
             if (string.IsNullOrEmpty(id)) return false;
-            return await _AlertRepository.RemoveAlert(id);
+            bool result = await _AlertRepository.RemoveAlert(id);
+            setTempData(result, "deleteResult");
+            return result;
         }
 
         [HttpGet("{alertId}/condition/list")]
@@ -124,8 +133,9 @@ namespace WebApplication.Controllers
         [HttpPatch("{alertId}/Status")]
         public async Task<bool> UpdateStatus(string alertId, [FromBody] Boolean Status)
         {
-
-            return await _AlertRepository.updateAlertStatus(alertId, Status);
+            bool result = await _AlertRepository.updateAlertStatus(alertId, Status);
+            setTempData(result, "editResult");
+            return result;
         }
 
 
@@ -159,7 +169,9 @@ namespace WebApplication.Controllers
             int index = Alert.Conditions.FindIndex(x => x._id == ObjectId.Parse(conditionId));
             Alert.Conditions.RemoveAt(index);
 
-            return await _AlertRepository.UpdateAlert(alertId, Alert);
+            bool result = await _AlertRepository.UpdateAlert(alertId, Alert);
+            setTempData(result, "deleteResult");
+            return result;
 
         }
 
@@ -167,12 +179,17 @@ namespace WebApplication.Controllers
 
         public async Task<bool> UpdateCondition(string alertId, string conditionId, [FromBody] Condition condition)
         {
-            return await _AlertRepository.editCondition(alertId, conditionId, condition);
+            bool result = await _AlertRepository.editCondition(alertId, conditionId, condition);
+            setTempData(result, "editResult");
+            return result;
+            
         }
 
         [HttpGet("index")]
         public IActionResult Index()
         {
+            string[] variables = new string[]{"createResult","editResult","deleteResult"};
+            initializeTempData(variables);
             IEnumerable<Alert> alerts = _AlertRepository.Get();
             return View(alerts);
         }
@@ -188,6 +205,20 @@ namespace WebApplication.Controllers
         {
             Alert alert = _AlertRepository.Get(id);
             return View(alert);
+        }
+
+        private void initializeTempData(string[] variables){
+            foreach(string variable in variables){
+                if(TempData[variable] == null)
+                TempData[variable] = 0;
+            }
+        }
+
+        private void setTempData(bool result, string variable){
+            if (result)
+                TempData[variable] = 1;
+            else
+                TempData[variable] = -1;
         }
     }
 }
