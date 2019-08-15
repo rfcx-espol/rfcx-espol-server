@@ -104,8 +104,7 @@
     <div class="body-wrapper">
         <h2>Alertas</h2>
         <div id="div_boton_nuevo">
-            <input class="btn btn-primary" type="button" onclick="location.href='@Url.Action("Create","Alert")'" 
-                value="Nueva alerta">
+            <button class="btn btn-primary" type="button" onclick="location.href='@Url.Action("Create","Alert")'"><i class="fa fa-plus-circle"></i></button>
         </div>
 
         <!-- Pop ups with return messages-->
@@ -175,8 +174,8 @@
                                 </label>
                             </td>
                             <td style="text-align: center;">
-                                <button class="btn btn-primary" onclick="editarAlerta('@alert.AlertId');">Editar</button>
-                                <button class="btn btn-danger" onclick="mostrarAdvertencia('@alert.AlertId');">Eliminar</button>
+                                <button class="btn btn-primary" onclick="editarAlerta('@alert.AlertId');"><i class="fa fa-pencil"></i></button>
+                                <button class="btn btn-danger" onclick="mostrarAdvertencia('@alert.AlertId');"><i class="fa fa-times-circle"></i></button>
                             </td>
                         </tr>
                     }

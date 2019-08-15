@@ -5,7 +5,7 @@
     background-color: #007f42;
     position: fixed;
     top: 0px;
-    width: 270px;
+    width:200px ;
     height: 100%;
     color: #e1ffff;
     z-index: 1000;
@@ -17,12 +17,12 @@
 }
 .body-content {
     margin-top: 67px;
-    padding-left: 270px;
+    padding-left: 200px;
 
 }
 
 nav {
-    margin-left: 270px;
+    margin-left: 200px;
     height: 67px;
 }
 .brand {
@@ -151,14 +151,10 @@ nav {
         display: block;
     }
 }
-body {
-    margin: 0px;
-    padding: 0px;
-}
 
 /* New proposal for list items clicks' better UX */
 
 li div {
     display: inline-block;
-    width: 85%;
+    width: 80%;
 }
