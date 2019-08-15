@@ -112,7 +112,8 @@ filterButton.addEventListener("click", function(){
                     showInLegend: true,
                     name : nameOfData,
                     xValueType: "dateTime",
-                    type : "line",
+                    type : "line",                                        
+                    markerSize: 5,
                     dataPoints: dataPoints
                 });
                 //render changes
