@@ -1,12 +1,14 @@
 import time
+from datetime import datetime, timedelta
 import threading
 import pymongo
 import requests
+import json
 
 
 client = pymongo.MongoClient()
 db = client.db_rfcx
-TIME_INTERVAL = 60  # in seconds
+TIME_INTERVAL = 5  # in seconds
 
 
 def getAllActiveAlerts():
@@ -17,22 +19,30 @@ def getAllActiveAlerts():
     return activeAlerts
 
 
-def getLatestData(time):
+def getLatestDataByStation(timeFrame, stationId, sensorId):
     """
     return latest data, last (time) minutes.
 
     Keyword arguments:
-    time -- time interval to gather latest data in minutes (default 1)
+    timeFrame -- time interval to gather latest data in minutes (default 1)
+    stationId -- id of the station where the data was aquired
+    sensorId -- id of the sensor that captured the data
     """
 
-    data = db.data
-    ts = time.time()
+    data = db.Data
+    ts = int(time.time() - timeFrame*60)
+
     latestData = data.find(
-        {"Timestamp": {"$gte": ts-TIME_INTERVAL, "$lte": ts}})
+        {
+            "SavedAt": {"$gte": ts},
+            "StationId": stationId,
+            "SensorId": sensorId
+        }
+    )
     return latestData
 
 
-def checkConditions(alert, dataset):
+def checkConditions(alert):
     """
     Check all conditions in an alert. returns true if all conditions are met.
 
@@ -41,30 +51,77 @@ def checkConditions(alert, dataset):
     data -- datalist to check with alert's conditions
     """
 
-    conditions = alert["Conditions"]
+    # mFrecuency = alert["Frecuency"]
     raiseAlert = False
+    mFrecuency = 5
+    conditions = alert["Conditions"]
     for condition in conditions:
         raiseCondition = False
-        if condition["Comparison"] == "MORE THAN":
+        stationId = condition["StationId"]
+        sensorId = condition["SensorId"]
+        dataset = getLatestDataByStation(
+            mFrecuency, int(stationId), int(sensorId))
+        if dataset.count() <= 0:
+            return False
+        if condition["Comparison"] == "MAYOR QUE":
             for data in dataset:
-                if float(data["value"]) > condition["threshold"]:
+                if float(data["Value"]) > condition["Threshold"]:
                     raiseCondition = True
             if not raiseCondition:
-                return raiseAlert
-        elif condition["Comparison"] == "LESS THAN":
+                return False
+        elif condition["Comparison"] == "MENOR QUE":
             for data in dataset:
-                if float(data["value"]) < condition["threshold"]:
+                if float(data["Value"]) < condition["Threshold"]:
+                    print(float(data["Value"]))
                     raiseCondition = True
             if not raiseCondition:
-                return raiseAlert
-        elif condition["Comparison"] == "EQUALS":
+                return False
+        elif condition["Comparison"] == "IGUAL":
             for data in dataset:
-                if float(data["value"]) == condition["threshold"]:
+                if float(data["Value"]) == condition["Threshold"]:
+                    print(float(data["Value"]))
                     raiseCondition = True
             if not raiseCondition:
-                return raiseAlert
-    raiseAlert = True
-    return raiseAlert
+                return False
+    return True
+
+# # average
+# def checkConditions(alert):
+#     """
+#     Check all conditions in an alert. returns true if all conditions are met.
+
+#     Keyword arguments:
+#     alert -- dictionary of alert object
+#     data -- datalist to check with alert's conditions
+#     """
+
+#     # mFrecuency = alert["Frecuency"]
+#     mFrecuency = 5
+#     conditions = alert["Conditions"]
+#     for condition in conditions:
+#         raiseCondition = False
+#         stationId = condition["StationId"]
+#         sensorId = condition["SensorId"]
+
+#         dataset = getLatestDataByStation(mFrecuency, stationId, sensorId)
+#         avg = sum(float(data["value"]) for data in dataset)
+#         print(avg)
+#         if condition["Comparison"] == "MORE THAN":
+#             if avg > condition["threshold"]:
+#                 raiseCondition = True
+#             else:
+#                 return False
+#         elif condition["Comparison"] == "LESS THAN":
+#             if avg < condition["threshold"]:
+#                 raiseCondition = True
+#             else:
+#                 return False
+#         elif condition["Comparison"] == "EQUALS":
+#             if avg == condition["threshold"]:
+#                 raiseCondition = True
+#             else:
+#                 return False
+#     return True
 
 
 def createIncident(alert):
@@ -74,8 +131,11 @@ def createIncident(alert):
     Keyword arguments:
     alert -- dictionary of alert object
     """
-    r = requests.post("http://localhost:5000/api/Incident", data={
-                      'RaisedAlertName': alert['Name'], 'RaisedCondition': alert["Conditions"]})
+    headers = {'Content-type': 'application/json'}
+    data = {'RaisedAlertName': alert['Name'],
+            'RaisedCondition': str(alert["Conditions"])}
+    r = requests.post(url="http://localhost:5000/api/Incident",
+                      data=json.dumps(data), headers=headers)
     return r.status_code
 
 
@@ -85,13 +145,10 @@ def checkLatestData():
     if there is any it sends a post request to create an incident
     """
     activeAlerts = getAllActiveAlerts()
-    dataset = getLatestData(TIME_INTERVAL)
 
     for alert in activeAlerts:
-        if checkConditions(alert, dataset):
+        if checkConditions(alert):
             createIncident(alert)
-
-    print("incidente creado")
 
 
 class setInterval:
@@ -107,3 +164,6 @@ class setInterval:
         while not self.stopEvent.wait(nextTime-time.time()):
             nextTime += self.interval
             self.action()
+
+
+checkLatestData()
