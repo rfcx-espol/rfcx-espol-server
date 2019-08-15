@@ -221,22 +221,124 @@ namespace WebApplication.Controllers
             }
             
             [HttpGet]
-            [Route("api/Station/{StationId:int}/Sensor/{SensorId:int}/AvgPerDate")]        
+            [Route("api/Station/{StationId:int}/AvgPerDate")]        
             public Task<string> GetAvgPerDate(
                 [FromRoute]int StationId,
-                [FromRoute] int SensorId,
-                [FromQuery] long StartTimestamp)
+                [FromQuery] long StartTimestamp,
+                [FromQuery] long EndTimestamp
+            )
             {
-                return this._GetAvgPerDate(StationId, SensorId, StartTimestamp);
+                return this._GetAvgPerDate(
+                    StationId, 
+                    StartTimestamp, 
+                    EndTimestamp
+                );
             }
 
             private async Task<string> _GetAvgPerDate(
-                int StationId, 
-                int SensorId, 
-                long StartTimestamp)
+                int StationId,
+                long StartTimestamp,
+                long EndTimestamp
+            )
             {
-                var data = await _DataRepository.AvgPerDate(StationId, SensorId, StartTimestamp);
-                return JsonConvert.SerializeObject(data);
+                var data = await _DataRepository.AvgPerDate(
+                    StationId, 
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+                return data.ToJson() ;
             }
+
+            [HttpGet]
+            [Route("api/Station/{StationId:int}/AvgPerHour")]        
+            public Task<string> GetAvgPerHour(
+                [FromRoute]int StationId,
+                [FromQuery] long StartTimestamp,
+                [FromQuery] long EndTimestamp
+            )
+            {
+                return this._GetAvgPerHour(
+                    StationId, 
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+            }
+
+            private async Task<string> _GetAvgPerHour(
+                int StationId,
+                long StartTimestamp,
+                long EndTimestamp
+            )
+            {
+                var data = await _DataRepository.AvgPerHour(
+                    StationId, 
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+                return data.ToJson() ;
+            }
+
+            [HttpGet]
+            [Route("api/Station/{StationId:int}/AvgPerMonth")]        
+            public Task<string> GetAvgPerMonth(
+                [FromRoute]int StationId,
+                [FromQuery] long StartTimestamp,
+                [FromQuery] long EndTimestamp
+            )
+            {
+                return this._GetAvgPerMonth(
+                    StationId, 
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+            }
+
+            private async Task<string> _GetAvgPerMonth(
+                int StationId,
+                long StartTimestamp,
+                long EndTimestamp
+            )
+            {
+                var data = await _DataRepository.AvgPerMonth(
+                    StationId, 
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+                return data.ToJson() ;
+            }
+
+            [HttpGet]
+            [Route("api/AvgPerDateStation")]
+            public Task<string> GetAvgPerDateStation(            
+                [FromQuery] string SensorType,
+                [FromQuery] string SensorLocation,
+                [FromQuery] long StartTimestamp,
+                [FromQuery] long EndTimestamp
+            )
+            {
+                return this._GetAvgPerDateStation(
+                    SensorType,
+                    SensorLocation,
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+            }
+
+            private async Task<string> _GetAvgPerDateStation(
+                string SensorType,
+                string SensorLocation,
+                long StartTimestamp,
+                long EndTimestamp
+            )
+            {
+                var data = await _DataRepository.AvgPerDateStation(
+                    SensorType,
+                    SensorLocation,
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+                return data.ToJson() ;
+            }
+
         }
 }

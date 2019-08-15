@@ -82,20 +82,16 @@ hr{
 /* Style the tab content */
 .tabcontent {
     margin: 0px 50px;
-    border: 1px solid #ccc;
 }
 
 .boxInfoValues{
     width: 100%;
     padding: 5px;
-    margin-top: 15px;
-    margin-bottom: 65px;
     clear: both;
 }
-.boxLetters{
-    margin-right: 20px;
+.boxLetters{    
     float: left;
-    font-size: 18px;
+    font-size: 15px;
     text-align: center;
 }
 
@@ -123,14 +119,16 @@ hr{
     text-align: center;
 }
 .sensores_monitor{
-    margin-bottom: 5%;
-    padding-bottom: 5%;
-    border-bottom: 1px solid #ccc;
+    margin-bottom: 7%;
+    padding-bottom: 1%;
+    border-bottom: 2px solid #ccc;
+    border: 1px solid #ccc;
 }
 .historical{
-    margin-bottom: 10%;
+    margin-bottom: 7%;
     padding-bottom: 5%;
     border-bottom: 1px solid #ccc;
+    border: 1px solid #ccc;
 }
 #chartAvgPerDate{
     margin-top: 5%;
@@ -167,7 +165,7 @@ div#submenu a:hover {
 }
 
 .initialMon{
-    margin-left: 35%;
+    margin-left: 30%;
 }
 .initialMon, .middle, .last{
     margin-right: 7px;
@@ -193,10 +191,9 @@ div#submenu a:hover {
     color: #fff;
     background: #007f42;
     border-radius: 6px;
-    padding: 5px 10px;
+    padding: 5px 5px;
     border: none;
     cursor: pointer;
-    margin-left: 15px;
 }
 .button-filter:hover {
     color: #e4b836; 
@@ -210,6 +207,10 @@ div#submenu a:hover {
 label{
     margin-right: 10px;
     color: #757575;
+}
+
+.filter-widget-label{
+    padding-top: 4px;
 }
 
 .selectDiv{
@@ -227,10 +228,21 @@ label{
     margin-right: 20px;
 }
 
+/*to remove up and down arrows of date input element*/
+input[type=date]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
+}
+/*custom fix to avoid button fall out of the row*/
+@media (min-width: 992px) {
+    div.col-md-2 button.button-filter {
+        width: 10%;
+    }
+}
 /*-----Date-------------------*/
 @media (max-width: 1199px) {
     .initialMon{
-        margin-left: 30%;
+        margin-left: 27%;
     }
 }
 @media (max-width: 991px) {

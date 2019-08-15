@@ -55,7 +55,7 @@ function getDataSensor(){
   }
 
 function initMap() {
-	var bosque = {lat: -2.15437, lng: -79.963035};
+	var centerCoordinatesBosque = {lat: -2.15437, lng: -79.963035};
 	var estilos =[
 		{
 			featureType: "poi",
@@ -74,18 +74,17 @@ function initMap() {
 	];
 	var map = new google.maps.Map(document.getElementById('map'), {
 		zoom: 17,
-		center: bosque,
-		styles: estilos
+		center: centerCoordinatesBosque,
+		styles: estilos		
 	});
-	map.setMapTypeId(google.maps.MapTypeId.HYBRID);
-	
+	map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
 	for(var stationId in stations){
 		var coordenadas = {lat: parseFloat(stations[stationId]["lat"]), lng: parseFloat(stations[stationId]["long"])};
 		var contentString = stations[stationId]["content"];
 		var infowindow = new google.maps.InfoWindow({
 			content: contentString
 		});
-		var imageURL = 'http://maps.google.com/mapfiles/kml/paddle/orange-circle.png';
+		var imageURL = 'http://maps.google.com/mapfiles/kml/paddle/orange-circle.png';		
 		var image = {
 			url: imageURL,
 			scaledSize: new google.maps.Size(30, 30)
