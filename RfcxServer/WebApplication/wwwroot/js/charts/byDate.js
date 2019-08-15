@@ -22,11 +22,105 @@ filterButton.addEventListener("click", function(){
         endTimestamp,
         moment().unix()     
     );
-    //console.log(endTimestamp);
-    //let endTimestamp = moment(document.querySelector("select.range-picker").value).unix();    
     let dataUrl = `api/Station/${selectedStationId}/AvgPerDate?StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`;
-    //console.log(dataUrl);
     let sensorsUrl = ` api/Station/${selectedStationId}/Sensor`;
+    let dataPromise = $.getJSON(dataUrl);
+    let sensorsPromise = $.getJSON(sensorsUrl);
+
+    if ( !validDateRange ) {
+        alert("Los valores en el rango a filtrar son inválidos. Es probable que esté tratando de filtrar valores que aún no existen.");
+    } else {
+        $.when( sensorsPromise , dataPromise)
+        .done(function(sensorsResponse, dataResponse) {
+            let sensors = sensorsResponse[0];
+
+            if( dataResponse[0].length < 1 ) {
+                alert("No existen valores en el rango especificado");
+            }
+
+            sensors.forEach(function(sensor){
+                //filter data of sensor
+                let sensorData = dataResponse[0].find( data => data.SensorId == sensor.Id );
+
+                //if no value, .find() returns undefined. So, check for safety
+                let aggregates =  sensorData != null ? sensorData.aggregates : [];
+                
+                let rawDataPoints = aggregates.map(function(aggregate){
+                    let year = aggregate._id.year; 
+                    let month =  aggregate._id.month ;
+                    let day =  aggregate._id.dayOfMonth;
+                    let avg = aggregate.avg;
+                    
+                    let dateObject = new Date(year, (month - 1), day);
+                    let timestamp = dateObject.getTime()/1000;//gives timestamp in seconds
+                    //console.log(timestamp);
+                    return {
+                        Timestamp : timestamp,                
+                        Value : avg
+                    }; 
+                }).sort(byTimestamp);
+
+                let dpsNullPointsAdded = addNullPoints_(
+                    rawDataPoints, 
+                    startTimestamp,
+                    endTimestamp,
+                    86400
+                );
+                let dataPoints = dpsNullPointsAdded.map(function(responseElement){
+                    let timestamp = responseElement.Timestamp;
+                    let value = responseElement.Value;
+
+                    //format x value
+                    let x = new Date(parseInt(timestamp)*1000);
+
+                    //format y value
+                    let y = (value == null) ? null : formatFloat(value);
+                    
+                    return {
+                        "x" : x,
+                        "y" : y
+                    };
+                });
+
+                let rawDataPointsValues = rawDataPoints.map( element => element.Value ); 
+                let basicStatistics = computeBasicStatistics(rawDataPointsValues);
+
+                let chartDivId = `chart_${sensor.Id}`;                    
+                let chartDiv = makeChartDiv(
+                    chartDivId,
+                    basicStatistics
+                );
+
+                if ( $(`div#_${chartDivId}.panel`).length ) {
+                    $(`div#_${chartDivId}.panel`).remove(); 
+                }
+                $("div#individual").append(chartDiv);            
+            
+                //create chart                        
+                let chart = aggregationChart({
+                    chartDivId : chartDivId,                    
+                    chartTitle : "",
+                    axisYTitle : sensor.Type,
+                    axisXFormat: "DD MMM YY"
+                });
+                
+                let toolTipContent = `{y} ${unitsFromSensorType(sensor.Type)}`;
+                let nameOfData = `${sensor.Type} ${sensor.Location}`;
+                chart.options.data.push({         
+                    legendMarkerType: "circle",
+                    toolTipContent: toolTipContent,
+                    showInLegend: true,
+                    name : nameOfData,
+                    xValueType: "dateTime",
+                    type : "line",
+                    dataPoints: dataPoints
+                });
+                //render changes
+                chart.render();                                   
+            });    
+        });
+    }  
+    /*
     if ( validDateRange ) {
         $.getJSON(sensorsUrl,function(sensors){
             $.getJSON(dataUrl,function(data){
@@ -129,11 +223,12 @@ filterButton.addEventListener("click", function(){
     } else {
         alert("Los valores en el rango a filtrar son inválidos. Es probable que esté tratando de filtrar valores que aún no existen.");   
     }
+    */
 });
 filterButton.click();
 
 
-
+/*
 function avgPerDateChart(divId){
     return new CanvasJS.Chart(divId, {
         animationEnabled:true,
@@ -180,23 +275,10 @@ function addNullPoints_(
         dataPoint = (dpFound == null) ? { Timestamp: timestamp, Value: null } : dpFound ;
         return dataPoint;
     });
-    /*
-    let dataPointsNullPointsAdded = [];
-    for(let i = 0 ; i < (dataPoints.length -1) ; i++){
-      dataPointsNullPointsAdded.push(dataPoints[i]);
-  
-      let nextTimestamp = dataPoints[i+1].Timestamp;
-      let currentTimestamp = dataPoints[i].Timestamp;
-  
-      if ( nextTimestamp > (currentTimestamp + timeInterval)) {
-        let nullDataPoint = makeNullDataPoint_(currentTimestamp, timeInterval);  
-        dataPointsNullPointsAdded.push(nullDataPoint);
-      }        
-    }
-    dataPointsNullPointsAdded.push(dataPoints[dataPoints.length - 1]);
-    */
     return dataPointsNullPointsAdded;
 }
+
+
 
 //differente from the used in realtime chart
 function makeNullDataPoint_(currentTimestamp, timeInterval){
@@ -235,6 +317,146 @@ function formatFloats(value){
     return Number(parseFloat(value).toFixed(2));
 }
 
+
+function isValidDateRange(
+    startTimestamp,
+    endTimestamp, 
+    nowTimestamp
+){
+    return  !(startTimestamp > nowTimestamp || endTimestamp > nowTimestamp);    
+}
+*/
+
+
+
+function aggregationChart({
+    chartDivId,    
+    chartTitle,
+    axisYTitle,
+    axisXFormat
+}){
+    return new CanvasJS.Chart(chartDivId, {
+        animationEnabled:true,
+        height: 320,
+        theme: "light2",
+        title:{
+            text : chartTitle
+        },
+        legend: {
+            horizontalAlign: "right", // "center" , "right"
+            verticalAlign: "top",  // "top" , "bottom"
+            cursor: "pointer",
+            itemclick: function (e) {
+                if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                } else {
+                    e.dataSeries.visible = true;
+                }
+                e.chart.render();
+            }
+        },
+        axisX:{
+            valueFormatString: axisXFormat,
+            labelAngle: -90
+        },
+        axisY:{
+            title : axisYTitle,
+            titleFontSize: 18
+        },
+        data:[]
+    });
+}
+
+//place datapoints if between two datapoints there was supposed to be a value.
+//different from the used in realtime chart
+function addNullPoints_(
+    dataPoints,
+    startTimestamp,
+    endTimestamp,
+    timeInterval
+){
+    
+    if (dataPoints.length > 0 ){
+        let timestampRange = endTimestamp - startTimestamp;
+        let timestampsLength = Math.floor(timestampRange/timeInterval);
+        let timestamps  = Array.from({length: timestampsLength}, (_, i) => (startTimestamp + i*timeInterval) );
+        let dataPointsNullPointsAdded = timestamps.map(function(timestamp){
+            dpFound = dataPoints.find(dp => dp.Timestamp == timestamp);
+            dataPoint = (dpFound == null) ? { Timestamp: timestamp, Value: null } : dpFound ;
+            return dataPoint;
+        });
+        return dataPointsNullPointsAdded;
+    }else {
+        return [];
+    }
+};
+
+function computeBasicStatistics(values){
+
+    if (values.length > 0){
+        return {
+            min : ss.min(values),
+            max : ss.max(values),
+            mean : ss.mean(values)
+        }
+    } else {
+        return null;
+    }
+}
+
+function isValidDateRange(
+    startTimestamp,
+    endTimestamp, 
+    nowTimestamp
+){
+    return  !(startTimestamp > nowTimestamp || endTimestamp > nowTimestamp);
+}
+
+function makeChartDiv(
+    chartDivId,
+    basicStatistics
+){    
+    let min, max, mean;
+    if( basicStatistics != null ) {
+        min  = formatFloat(basicStatistics.min);
+        max  = formatFloat(basicStatistics.max);
+        mean = formatFloat(basicStatistics.mean);
+    }else {
+        min = max = mean = "";
+    }
+    
+    let chartDiv = `
+    <div class="panel panel-default" id="_${chartDivId}">
+        <div class="panel-body" >
+            <div id="${chartDivId}" style="height: 320px" class="canvasJsChart"></div>
+        </div>        
+        <div class="panel-footer">
+            <i class="material-icons iconBasicStatitic">&#xe15d;</i>
+            min                
+            <p class="boxLetters" id="minVal">${min}</p>
+            
+            <i class="material-icons iconBasicStatitic">&#xe148;</i>
+            max
+            <p class="boxLetters" id="maxVal">${max}</p>
+
+            <i class="fa iconBasicStatitic">&#xf10c;</i>
+            avg
+            <p class="boxLetters" id="avgVal">${mean}</p>                
+        </div>
+        
+    </div>                      
+    `;
+    return chartDiv;
+};
+
+function formatFloat(value){
+    return Number(parseFloat(value).toFixed(2));
+};
+
+//compare function to be used in sort method
+function byTimestamp(a,b){
+    return a.Timestamp - b.Timestamp;
+}
 function makeEndTimestamp(rangePickerValue, startDateMoment){
     let start = startDateMoment.clone();
     let end;
@@ -254,12 +476,19 @@ function makeEndTimestamp(rangePickerValue, startDateMoment){
 }
 
 
-function isValidDateRange(
-    startTimestamp,
-    endTimestamp, 
-    nowTimestamp
-){
-    return  !(startTimestamp > nowTimestamp || endTimestamp > nowTimestamp);
+function unitsFromSensorType(sensorType){
+    let units;
+    switch(sensorType){
+        case "Temperature":
+            units = "C°";
+            break;
+        case "Humidity":
+            units = "%";
+            break;
+        default :
+            units = "";
+            break;            
+    }
+    return units;
 }
-
 });

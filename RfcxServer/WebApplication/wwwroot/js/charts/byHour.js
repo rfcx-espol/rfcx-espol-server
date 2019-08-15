@@ -98,13 +98,20 @@ filterButton.addEventListener("click", function(){
                 $("div#individual").append(chartDiv);            
             
                 //create chart
-                let chart = avgPerDateChart(chartDivId);            
-                let nameOfChart = `${sensor.Type} ${sensor.Location}`;
-                chart.options.data.push({            
+                let chart = aggregationChart({
+                    chartDivId : chartDivId,                    
+                    chartTitle : "",
+                    axisYTitle : sensor.Type,
+                    axisXFormat: "HH:00"                    
+                });
+                
+                let toolTipContent = `{y} ${unitsFromSensorType(sensor.Type)}`;
+                let nameOfData = `${sensor.Type} ${sensor.Location}`;
+                chart.options.data.push({         
                     legendMarkerType: "circle",
-                    toolTipContent: "{y}",
+                    toolTipContent: toolTipContent,
                     showInLegend: true,
-                    name : nameOfChart,
+                    name : nameOfData,
                     xValueType: "dateTime",
                     type : "line",
                     dataPoints: dataPoints
@@ -119,11 +126,19 @@ filterButton.click();
 
 
 
-function avgPerDateChart(divId){
-    return new CanvasJS.Chart(divId, {
+function aggregationChart({
+    chartDivId,    
+    chartTitle,
+    axisYTitle,
+    axisXFormat
+}){
+    return new CanvasJS.Chart(chartDivId, {
         animationEnabled:true,
         height: 320,
         theme: "light2",
+        title:{
+            text : chartTitle
+        },
         legend: {
             horizontalAlign: "right", // "center" , "right"
             verticalAlign: "top",  // "top" , "bottom"
@@ -138,10 +153,11 @@ function avgPerDateChart(divId){
             }
         },
         axisX:{
-            valueFormatString: "HH:00" ,
+            valueFormatString: axisXFormat,
             labelAngle: -90
         },
-        axisY:{            
+        axisY:{
+            title : axisYTitle,
             titleFontSize: 18
         },
         data:[]
@@ -237,6 +253,22 @@ function formatFloat(value){
 //compare function to be used in sort method
 function byTimestamp(a,b){
     return a.Timestamp - b.Timestamp;
+}
+
+function unitsFromSensorType(sensorType){
+    let units;
+    switch(sensorType){
+        case "Temperature":
+            units = "C°";
+            break;
+        case "Humidity":
+            units = "%";
+            break;
+        default :
+            units = "";
+            break;            
+    }
+    return units;
 }
 
 });
