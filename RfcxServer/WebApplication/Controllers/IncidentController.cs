@@ -1,4 +1,6 @@
 using System;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -35,6 +37,29 @@ namespace WebApplication.Controllers
         [HttpPost]
         public async Task Post([FromBody] Incident incident)
         {
+            // var fromAddress = new MailAddress("mail@gmail.com", "Bosque Protector");
+            // var toAddress = new MailAddress("mail@hotmail.com", "");
+            // const string fromPassword = "";
+            // const string subject = "Incidente en tal estacion";
+            // const string body = "Se ha generado un incidente a tal hora en tal estacion, por favor visitar el link";
+
+            // var smtp = new SmtpClient
+            // {
+            //     Host = "smtp.gmail.com",
+            //     Port = 587,
+            //     EnableSsl = true,
+            //     DeliveryMethod = SmtpDeliveryMethod.Network,
+            //     UseDefaultCredentials = false,
+            //     Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
+            // };
+            // using (var message = new MailMessage(fromAddress, toAddress)
+            // {
+            //     Subject = subject,
+            //     Body = body
+            // })
+            // {
+            //     smtp.Send(message);
+            // }
             await _IncidentRepository.AddIncident(incident);
         }
 
