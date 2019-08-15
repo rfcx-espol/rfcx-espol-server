@@ -41,7 +41,7 @@
 }
 <div class="container">
     <div id="formulario" class="row">
-        <form id="form_crear_alerta" method="post" enctype="multipart/form-data" action="/api/alert/">
+        <form id="form_crear_alerta" class="form-row" method="post" enctype="multipart/form-data" action="/api/alert/">
             <div id="titulo" class="form-group col-lg-12 col-md-12">
                 <h2>Creación de alerta</h2>
             </div>
@@ -86,11 +86,11 @@
                 <h4>Notificar cuando: </h4>
             </div>
             <input id="conditions_number" hidden="" name="conditions_number"></input>
-            <div id="conditions">
+            <div id="conditions" class=" form-group row">
             </div>
             <div class="col-lg-12">
                 <label> </label>
-                <a class="btn btn-primary" onclick="addCondition()">+</a>
+                <a class="btn btn-primary" onclick="addCondition()"><i class="fa fa-plus-circle"></i></a>
             </div>
 
             <div id="boton_alerta" class="form-group col-md-12">
@@ -153,34 +153,18 @@
             i++;
             $('#conditions_number').attr('value',i);
             let divContainer = $('<div></div>');
-            divContainer.attr('class','condition-container');
+            divContainer.attr('class','condition-container form-row align-items-center');
 
-            let divStation= $('<div></div>');
-            divStation.attr('class','col-md-3');
-            let labelStation = $('<label></label>');
-            labelStation.text('Estación: ');
             let selectStation = $('<select></select>');
             addAttributes(selectStation, 'estacion');
             appendDefaultOption(selectStation);
-            divStation.append(labelStation);
-            divStation.append(selectStation);
-            divContainer.append(divStation);
+            divContainer.append(buildField("Estación", selectStation));
 
-            let divSensor = $('<div></div>');
-            divSensor.attr('class','col-md-3');
-            let labelSensor = $('<label></label>');
-            labelSensor.text('Sensor: ');
             let selectSensor = $('<select></select>');
             addAttributes(selectSensor, 'sensor');
             appendDefaultOption(selectSensor);
-            divSensor.append(labelSensor);
-            divSensor.append(selectSensor);
-            divContainer.append(divSensor);
+            divContainer.append(buildField("Sensor", selectSensor));
 
-            let divCondition = $('<div></div>');
-            divCondition.attr('class','col-md-3');
-            let labelCondition = $('<label></label>');
-            labelCondition.text('Condición: ');
             let nodata = $('<option></option>');
             nodata.attr('value','NO DATA');
             nodata.text('no recibe datos');
@@ -201,27 +185,34 @@
             selectCondition.append(mayorque);
             selectCondition.append(menorque);
             selectCondition.append(igualque);
-            divCondition.append(labelCondition);
-            divCondition.append(selectCondition);
-            divContainer.append(divCondition);
-
-            let divValue= $('<div></div>');
-            divValue.attr('class','col-md-2');
-
-            let labelValue = $('<label></label>');
-            labelValue.text('Valor: ');
+            divContainer.append(buildField("Condición",selectCondition));
 
             let inputValue = $('<input></input>');
             addAttributes(inputValue, 'threshold');
             inputValue.attr('type','text');
-
-            divValue.append(labelValue);
-            divValue.append(inputValue);
-            divContainer.append(divValue);
+            divContainer.append(buildField("Valor", inputValue, i));
             $("#conditions").append(divContainer);
 
             addStations();
             addOnChange();
+        }
+
+        function buildField(nameFieldString, inputField, i=""){
+            let divField = $('<div></div>').addClass('col-auto');
+            let divGroup = $('<div></div>').addClass('input-group mb-2');
+            let divPrepend = $('<div></div>').addClass('input-group-prepend');
+            let divText = $('<div></div>').addClass('input-group-text');
+            if (nameFieldString == "Valor"){
+                divText.attr('id','valor_div_'+i);
+                divField.addClass('col-sm-2');
+            }
+            divText.text(nameFieldString);
+            divPrepend.append(divText);
+            divGroup.append(divPrepend);
+
+            divGroup.append(inputField);
+            divField.append(divGroup);
+            return divField;
         }
 
         function appendDefaultOption(select){
@@ -239,7 +230,7 @@
         }
 
         function changeFreqLabel(i){
-            $(".col-md-2 :not(threshold_alerta"+i+")").text('Frecuencia');
+            $("#valor_div_"+i).text('Frecuencia');
         }
 
     </script>

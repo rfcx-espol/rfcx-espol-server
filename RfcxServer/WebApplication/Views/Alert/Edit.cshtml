@@ -35,7 +35,7 @@
 }
 <div class="container">
     <div id="formulario" class="row">
-        <form id="form_editar_alerta" method="post" enctype="multipart/form-data" action="/api/alert/@Model.AlertId">
+        <form id="form_editar_alerta" class="form-row" method="post" enctype="multipart/form-data" action="/api/alert/@Model.AlertId">
             <div id="titulo" class="form-group col-lg-12 col-md-12">
                 <h2>Edición de alerta</h2>
             </div>
@@ -83,39 +83,55 @@
             <div id="conditions">
                 @for (var i = 1; i <= @Model.Conditions.Count(); i++)
                 {
-                    <div class="condition-container">
-                        <div class="col-md-3">
-                            <label> Estación: </label>
-                            <select class="form-control" id='estacion_alerta_@i' name='estacion_alerta_@i' sel=@Model.Conditions[i-1].StationId>
-                                <option hidden="" value="">Escoja una opción</option>
-                            </select>
+                    <div class="condition-container form-row align-items-center">
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend"> 
+                                    <div class="input-group-text">Estación</div>
+                                </div>
+                                <select class="form-control" id='estacion_alerta_@i' name='estacion_alerta_@i' sel=@Model.Conditions[i-1].StationId>
+                                    <option hidden="" value="">Escoja una opción</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <label> Sensor: </label>
-                            <select class="form-control" id="sensor_alerta_@i" name="sensor_alerta_@i" sel="@Model.Conditions[i-1].SensorId">
-                                <option hidden="" value="">Escoja una opción</option>
-                            </select>
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend"> 
+                                    <div class="input-group-text">Sensor</div>
+                                </div>
+                                <select class="form-control" id="sensor_alerta_@i" name="sensor_alerta_@i" sel="@Model.Conditions[i-1].SensorId">
+                                    <option hidden="" value="">Escoja una opción</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <label> Condición: </label>
-                            <select class="form-control" id="condicion_alerta_@i" name="condicion_alerta_@i" sel="@Model.Conditions[i-1].Comparison">
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend"> 
+                                    <div class="input-group-text">Condición</div>
+                                </div>
+                                <select class="form-control" id="condicion_alerta_@i" name="condicion_alerta_@i" sel="@Model.Conditions[i-1].Comparison">
                                 <option hidden="" value="">Escoja una opción</option>
                                 <option value="NO DATA" onclick="changeFreqLabel(@i)">no recibe datos</option>
                                 <option value="MAYOR QUE">mayor que</option>
                                 <option value="MENOR QUE">menor que</option>
                                 <option value="IGUAL QUE">igual que</option>
                             </select>
+                            </div>
                         </div>
-                        <div class="col-md-2">
-                            <label> Valor: </label>
-                            <input class="form-control" id="threshold_alerta_@i" name="threshold_alerta_@i" type="text" value=@Model.Conditions[i-1].Threshold>
+                        <div class="col-sm-2">
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend"> 
+                                    <div id="valor_div_@i" class="input-group-text">Valor</div>
+                                </div>
+                                <input class="form-control" id="threshold_alerta_@i" name="threshold_alerta_@i" type="text" value=@Model.Conditions[i-1].Threshold>
+                            </div>
                         </div>
                     </div>
                 }
             </div>
             <div class="col-lg-12">
                 <label> </label>
-                <a class="btn btn-primary" onclick="addCondition()">+</a>
+                <a class="btn btn-primary" onclick="addCondition()"><i class="fa fa-plus-circle"></i></a>
             </div>
             <div id="boton_alerta" class="form-group col-lg-12 col-md-12">
                 <button class="btn btn-primary" >Editar Alerta</button>
@@ -153,37 +169,22 @@
 
             $('#conditions_number').attr('value',i);
             let divContainer = $('<div></div>');
-            divContainer.attr('class','condition-container');
+            divContainer.attr('class','condition-container form-row align-items-center');
 
-            let divStation= $('<div></div>');
-            divStation.attr('class','col-md-3');
-            let labelStation = $('<label></label>');
-            labelStation.text('Estación: ');
             let selectStation = $('<select></select>');
             addAttributes(selectStation, 'estacion');
             appendDefaultOption(selectStation);
-            divStation.append(labelStation);
-            divStation.append(selectStation);
-            divContainer.append(divStation);
+            divContainer.append(buildField("Estación", selectStation));
 
-            let divSensor = $('<div></div>');
-            divSensor.attr('class','col-md-3');
-            let labelSensor = $('<label></label>');
-            labelSensor.text('Sensor: ');
             let selectSensor = $('<select></select>');
             addAttributes(selectSensor, 'sensor');
             appendDefaultOption(selectSensor);
-            divSensor.append(labelSensor);
-            divSensor.append(selectSensor);
-            divContainer.append(divSensor);
+            divContainer.append(buildField("Sensor", selectSensor));
 
-            let divCondition = $('<div></div>');
-            divCondition.attr('class','col-md-3');
-            let labelCondition = $('<label></label>');
-            labelCondition.text('Condición: ');
             let nodata = $('<option></option>');
             nodata.attr('value','NO DATA');
             nodata.text('no recibe datos');
+            nodata.attr('onclick','changeFreqLabel('+i+')')
             let mayorque = $('<option></option>');
             mayorque.attr('value', 'MAYOR QUE');
             mayorque.text("mayor que");
@@ -200,27 +201,34 @@
             selectCondition.append(mayorque);
             selectCondition.append(menorque);
             selectCondition.append(igualque);
-            divCondition.append(labelCondition);
-            divCondition.append(selectCondition);
-            divContainer.append(divCondition);
-
-            let divValue= $('<div></div>');
-            divValue.attr('class','col-md-2');
-
-            let labelValue = $('<label></label>');
-            labelValue.text('Valor: ');
+            divContainer.append(buildField("Condición", selectCondition));
 
             let inputValue = $('<input></input>');
             addAttributes(inputValue, 'threshold');
             inputValue.attr('type','text');
-
-            divValue.append(labelValue);
-            divValue.append(inputValue);
-            divContainer.append(divValue);
+            divContainer.append(buildField("Valor", inputValue, i));
             $("#conditions").append(divContainer);
 
             addStations();
             addOnChange();
+        }
+
+        function buildField(nameFieldString, inputField, i=""){
+            let divField = $('<div></div>').addClass('col-auto');
+            let divGroup = $('<div></div>').addClass('input-group mb-2');
+            let divPrepend = $('<div></div>').addClass('input-group-prepend');
+            let divText = $('<div></div>').addClass('input-group-text');
+            if (nameFieldString == "Valor"){
+                divText.attr('id','valor_div_'+i);
+                divField.addClass('col-sm-2');
+            }
+            divText.text(nameFieldString);
+            divPrepend.append(divText);
+            divGroup.append(divPrepend);
+
+            divGroup.append(inputField);
+            divField.append(divGroup);
+            return divField;
         }
 
         function appendDefaultOption(select){
@@ -348,7 +356,7 @@
         }
         
         function changeFreqLabel(i){
-            $(".col-md-2 :not(threshold_alerta_"+i+")").text('Frecuencia');
+            $("#valor_div_"+i).text('Frecuencia');
         }
 
     </script>

@@ -158,3 +158,8 @@ li div {
     display: inline-block;
     width: 80%;
 }
+
+.btn-primary {
+    background-color: #2196F3;
+    border-color: #2196F3;
+}

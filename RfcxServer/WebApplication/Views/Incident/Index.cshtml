@@ -101,7 +101,7 @@
 }
 
 <div id="principal">
-    <div class="body-wrapper">
+    <div class="body-wrapper container">
         <h2>Incidentes</h2>
 
         <!-- Pop ups with return messages-->
@@ -120,7 +120,7 @@
         }
 
         <div id="div_tabla_incidentes">
-            <table id="tabla_incidentes" class="cell-border display compact">
+            <table id="tabla_incidentes" class="table">
                 <thead>
                     <tr>
                         <th>Fecha</th>
@@ -177,19 +177,6 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function() {
-            $('#tabla_incidentes').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-                },
-                "columns": [
-                    { "width": "40%" },
-                    { "width": "20%" },
-                    { "width": "20%" },
-                    { "width": "20%" },
-                ]
-            });
-        });
 
         function mostrarAdvertenciaStatus(id,status) {
             status = status.toLowerCase();
