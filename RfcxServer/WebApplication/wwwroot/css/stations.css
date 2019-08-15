@@ -1,6 +1,3 @@
-.container.body-content {
-    padding: 1.5% !important;
-}
 .title.row{
     background-color: rgba(247, 247, 247, 1);
     border: 1px solid #6c757d;
@@ -132,4 +129,7 @@ red:#ff4000
     }
   }
   /* END - PULSATING CIRCLE ANIMATION*/
-  
+
+.container {
+    padding: 15px;    
+}

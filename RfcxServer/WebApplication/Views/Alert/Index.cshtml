@@ -4,10 +4,6 @@
 }
 @section Style {
     <style>
-       #principal {
-            padding: 15px;
-            margin-right: 270px;
-        }
         h2 {
             margin-top: 10px;
             text-align: center;
@@ -101,93 +97,135 @@
         .slider.round:before {
         border-radius: 50%;
         }
+
     </style>
 }
 <div id="principal">
-    <h2>Alertas</h2>
-    <div id="div_boton_nuevo">
-        <input class="btn btn-primary" type="button" onclick="location.href='@Url.Action("Create","Alert")'" 
-            value="Nueva alerta">
-    </div>
+    <div class="body-wrapper">
+        <h2>Alertas</h2>
+        <div id="div_boton_nuevo">
+            <button class="btn btn-primary" type="button" onclick="location.href='@Url.Action("Create","Alert")'"><i class="fa fa-plus-circle"></i></button>
+        </div>
 
-    <!-- Pop ups with return messages-->
+        <!-- Pop ups with return messages-->
+        @if(((int) TempData["editResult"]) == 1) {
+            <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                La alerta ha sido editada correctamente
+            </div>
+        } else if(((int) TempData["editResult"]) == -1) {
+            <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                Hubo un problema al editar la alerta. Por favor, vuelva a intentarlo.
+            </div>
+        }
 
-    <div id="div_tabla_alertas">
-        <table id="tabla_alertas" class="cell-border display compact">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Nivel</th>
-                    <th>Activo</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var alert in Model)
-                {
+        @if(((int) TempData["createResult"]) == 1) {
+            <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                La alerta ha sido creada correctamente
+            </div>
+        } else if(((int) TempData["createResult"]) == -1) {
+            <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                Hubo un problema al crear la alerta. Por favor, vuelva a intentarlo.
+            </div>
+        }
+
+        @if(((int) TempData["deleteResult"]) == 1) {
+            <div id="alerta" class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                La alerta ha sido eliminada correctamente
+            </div>
+        } else if(((int) TempData["deleteResult"]) == -1) {
+            <div id="alerta" class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                Hubo un problema al eliminar la alerta. Por favor, vuelva a intentarlo.
+            </div>
+        }
+
+        <div id="div_tabla_alertas">
+            <table id="tabla_alertas" class="cell-border display compact">
+                <thead>
                     <tr>
-                        <td>@alert.Name</td>
-                        <td>@alert.AlertType</td>
-                        <td style="text-align: center;">
-                            <label class="switch" id='switch_@alert.AlertId'>
-                                @if (alert.Status) {<input id="checkbox-status_@alert.AlertId" type="checkbox" onclick="mostrarAdvertenciaStatus('@alert.AlertId','@alert.Status');" checked>}
-                                else {<input id="checkbox-status_@alert.AlertId" type="checkbox" onclick="editarStatus('@alert.AlertId','@alert.Status');"> }
-                                <span class="slider round"></span>
-                            </label>
-                        </td>
-                        <td style="text-align: center;">
-                            <button class="btn btn-primary" onclick="editarAlerta('@alert.AlertId');">Editar</button>
-                            <button class="btn btn-danger" onclick="mostrarAdvertencia('@alert.AlertId');">Eliminar</button>
-                        </td>
+                        <th>Nombre</th>
+                        <th>Nivel</th>
+                        <th>Activo</th>
+                        <th>Acciones</th>
                     </tr>
-                }
-            </tbody>
+                </thead>
+                <tbody>
+                    @foreach (var alert in Model)
+                    {
+                        <tr>
+                            <td>@alert.Name</td>
+                            <td>@alert.AlertType</td>
+                            <td style="text-align: center;">
+                                <label class="switch" id='switch_@alert.AlertId'>
+                                    @if (alert.Status) {<input id="checkbox-status_@alert.AlertId" type="checkbox" onclick="mostrarAdvertenciaStatus('@alert.AlertId','@alert.Status');" checked>}
+                                    else {<input id="checkbox-status_@alert.AlertId" type="checkbox" onclick="editarStatus('@alert.AlertId','@alert.Status');"> }
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td style="text-align: center;">
+                                <button class="btn btn-primary" onclick="editarAlerta('@alert.AlertId');"><i class="fa fa-pencil"></i></button>
+                                <button class="btn btn-danger" onclick="mostrarAdvertencia('@alert.AlertId');"><i class="fa fa-times-circle"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
 
-        </table>
-    </div>
+            </table>
+        </div>
 
-    <div class="modal fade" id="alert_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header alert-danger">
-                    <button type="button" class="close" style="margin-top: 1px" onclick="cerrarModal();">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="modal_alert_label">ADVERTENCIA</h4>
+        <div class="modal fade" id="alert_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header alert-danger">
+                        <button type="button" class="close" style="margin-top: 1px" onclick="cerrarModal();">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="modal_alert_label">ADVERTENCIA</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Se borrará la alerta. Esta acción no puede revertirse. ¿Desea continuar?
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="accept" class="btn btn-danger" onclick="">Aceptar</button>
+                        <button id="cancel" class="btn btn-default" onclick="cerrarModal();">Cancelar</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <p>Se borrará la alerta. Esta acción no puede revertirse. ¿Desea continuar?
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button id="accept" class="btn btn-danger" onclick="">Aceptar</button>
-                    <button id="cancel" class="btn btn-default" onclick="cerrarModal();">Cancelar</button>
+            </div>
+        </div>
+
+        <div class="modal fade" id="alert_modal_status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header alert-danger">
+                        <button type="button" class="close" style="margin-top: 1px" onclick="cerrarModalStatus();">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="modal_alert_label">ADVERTENCIA</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>La alerta dejará de estar activa. ¿Desea continuar?
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="acceptStatus" class="btn btn-danger" onclick="">Aceptar</button>
+                        <button id="cancelStatus" class="btn btn-default" onclick="cerrarModalStatus();">Cancelar</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="alert_modal_status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header alert-danger">
-                    <button type="button" class="close" style="margin-top: 1px" onclick="cerrarModalStatus();">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="modal_alert_label">ADVERTENCIA</h4>
-                </div>
-                <div class="modal-body">
-                    <p>La alerta dejará de estar activa. ¿Desea continuar?
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button id="acceptStatus" class="btn btn-danger" onclick="">Aceptar</button>
-                    <button id="cancelStatus" class="btn btn-default" onclick="cerrarModalStatus();">Cancelar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 @section Scripts {
@@ -225,7 +263,6 @@
         function cerrarModalStatus() {
             $("#alert_modal_status").modal("hide");
             let alertid = $("#alert_modal_status").attr('alertid')
-            console.log('#checkbox-status_'+alertid)
             $('#checkbox-status_'+alertid).prop("checked",true);
         }
 

@@ -80,14 +80,22 @@ namespace WebApplication.Controllers
         [HttpPatch("{id}/status")]
         public async Task<bool> UpdateStatus(string id, [FromBody] Boolean status)
         {
-            return await _IncidentRepository.UpdateIncidentStatus(id, status);
+            bool result = await _IncidentRepository.UpdateIncidentStatus(id, status);
+            if(result == true)
+                TempData["editResult"] = 1;
+            else
+                TempData["editResult"] = -1;
+            return result;
         }
 
         [HttpGet("index")]
         public IActionResult Index()
         {
+            if(TempData["editResult"] == null)
+                TempData["editResult"] = 0;
             IEnumerable<Incident> alerts = _IncidentRepository.Get();
             return View(alerts);
         }
+
     }
 }

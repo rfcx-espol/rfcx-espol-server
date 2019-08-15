@@ -1,15 +1,4 @@
-body {
-  overflow-x: hidden;
-  line-height: 24px;
-  display: inline;
-  padding-top: 50px;
-  padding-bottom: 20px;
-}
 
-.container {
-  padding-left: 0px !important;
-  padding-right: 0px !important;
-}
 
 .navbar {
   margin-bottom: 0px !important;
@@ -494,6 +483,23 @@ a:focus {
   display: inline;
   padding-top: 30px;
   padding-right: 15px;
+}
+
+#principal {
+  padding: 15px;
+  text-align: center;
+}
+
+.body-wrapper {
+  display: inline-block;
+}
+
+.body-wrapper * {
+  text-align: left;
+}
+
+.body-wrapper h2{
+  text-align: center;
 }
 
 

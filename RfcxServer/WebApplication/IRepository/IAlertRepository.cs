@@ -13,7 +13,7 @@ namespace WebApplication.IRepository
         bool Add(Alert item);
         Task<IEnumerable<Alert>> GetAllAlerts();
         Task<Alert> GetAlert(string id);
-        Task AddAlert(Alert item);
+        Task<bool> AddAlert(Alert item);
         Task<bool> UpdateAlert(string id, Alert item);
         Task<bool> RemoveAlert(string id);
         // Task<IEnumerable<Condition>> GetConditions(string alertId);
