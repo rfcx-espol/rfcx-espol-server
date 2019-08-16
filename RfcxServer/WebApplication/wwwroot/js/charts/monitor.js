@@ -3,116 +3,88 @@ var stationId = $("#stationId").text();
 
 var CONFIG = {
     stationId : stationId,
-    hoursAgo : 1, //From how many hours ago, I want retrieve first batch of data
+    hoursAgo : 400, //From how many hours ago, I want retrieve first batch of data
     timeInterval : 5000, //At which rate I want to request for new single data. Milliseconds
     maxDataPointsAllowed : 15, //How many points I want to keep in the chart when adding new points
 }
 
-/*** place empty CanvasJs charts, given the div IDs ***/
+//build url to retrieve initial Data
+let query =  timeStampQuery({
+    momentJsObject : moment(),
+    hoursAgo : CONFIG.hoursAgo
+})  
 
-var chartContainers = Array.from(document.querySelectorAll("div.sensores_monitor"));
+let initialDataUrl = `api/Station/${CONFIG.stationId}/${query}`;
+let sensorsUrl = `api/Station/${CONFIG.stationId}/Sensor`; 
 
-//create a list of objects, to iterate later
-var charts = chartContainers.map(function(chartContainer){
-    //get sensor info, this depends on the html response of ~/StationView
-    let sensorId = chartContainer.querySelector("div.sensorId").textContent;    
-    let sensorType = chartContainer.querySelector("div.sensorType").textContent;    
-    let sensorLocation = chartContainer.querySelector("div.sensorLocation").textContent;
-   
-    //build url to retrieve initial Data
-    let query =  timeStampQuery({
-        momentJsObject : moment(),
-        hoursAgo : CONFIG.hoursAgo
-    })  
-    let initialDataUrl = `api/Station/${CONFIG.stationId}/Sensor/${sensorId}/${query}`; 
-    //get div id to build a CanvasJs chart
-    let canvasJsChart = chartContainer.querySelector("div.canvasJsChart");
-    let canvasJsChartDivId = canvasJsChart.getAttribute("id");
+let initialDataPromise = $.getJSON(initialDataUrl);
+let sensorsPromise = $.getJSON(sensorsUrl);
 
-    return {
-        sensorId : sensorId,
-        sensorType : sensorType, 
-        sensorLocation : sensorLocation,
-        canvasJsChart : realTimeChart(canvasJsChartDivId),        
-        initialDataUrl : initialDataUrl
-    }
-})
+$.when( sensorsPromise , initialDataPromise)
+.done(function(sensorsResponse, initialDataResponse) {
+    let sensors = sensorsResponse[0];
+    sensors.forEach(function(sensor){
+        //filter data of sensor
+        let sensorData = initialDataResponse[0].filter( data => data.SensorId == sensor.Id );
 
-/*** fill charts with initial data ***/
-charts.forEach(function(chart){
-    //make request
-    //MUST VALIDATE WHEN THERE IS NO VALUE IN THE LAST K HOURS
-    $.getJSON(chart.initialDataUrl, function(data){
-
-        //default value if empty response        
-        let dps = (data.length > 1 ) ? data : [{Timestamp : moment().unix() , Value : null }];
-        
         //process response
-        let rawDataPoints = dps.map(toRawDataPoint).sort(byTimestamp);
-        let dpsNullPointsAdded = addNullPoints(rawDataPoints, (CONFIG.timeInterval/1000));
+        let rawDataPoints = sensorData.map(toRawDataPoint).sort(byTimestamp);
+        let dpsNullPointsAdded = addNullPoints(rawDataPoints, (CONFIG.timeInterval/1000));//Refactor with reduce
         let dataPoints = dpsNullPointsAdded.map(toDataPoint);
-
+        
         //add basic statistics
         let rawDataPointsValues = rawDataPoints.map( element => parseFloat(element.Value) );
-        let valuesForBasicStatistics = (rawDataPointsValues.length >= 1 ) ? rawDataPointsValues : [-1];
-        //console.log(valuesForBasicStatistics);
-        let basicStatistics = {
-            min : ss.min(valuesForBasicStatistics),
-            max : ss.max(valuesForBasicStatistics),
-            mean : ss.mean(valuesForBasicStatistics)
-        }
-        //console.log(basicStatistics);
-        addDataToBasicStatisticsContainer(chart.sensorType,chart.sensorLocation, basicStatistics);
-    
-        let units = getUnits(data);
+        let basicStatistics = computeBasicStatistics(rawDataPointsValues);       
+        let chartDivId = `chart_${sensor.Id}`;
+        let chartDiv = makeChartDiv(
+            chartDivId,
+            basicStatistics
+        );
+        $("div#monitor").append(chartDiv);
+
+        //create chart
+        let chart =  realTimeChart(chartDivId, sensor.Type, "");
+        let units = getUnits(sensorData);
         let toolTipContent = formatUnitsToTheToolTip(units);
-        let axisYTitle = chart.sensorType; 
 
         //update the chart
-        chart.canvasJsChart.options.data[0].dataPoints=dataPoints;
-        chart.canvasJsChart.toolTip.set("content", toolTipContent);
-        chart.canvasJsChart.axisY[0].set("title", axisYTitle);
+        chart.options.data[0].dataPoints = dataPoints;
+        chart.toolTip.set("content", toolTipContent);
 
         //render changes
-        chart.canvasJsChart.render();
-    });
+        chart.render();
+
+        //build url to retrieve last Data  
+        let lastDataUrl = `api/Station/${CONFIG.stationId}/Sensor/${sensor.Id}/Data/LastData`;
+
+        //set a job to update charts for certain time period, this makes the chart realtime
+        setInterval(
+            updateChart, 
+            CONFIG.timeInterval, 
+            chart, 
+            lastDataUrl, 
+            CONFIG.maxDataPointsAllowed,
+            chartDivId
+        );
+    });    
 });
-
-/*** set a job to update charts for certain time period, this makes the chart realtime ***/
-
-charts.forEach(function(chart){
-    //build url to retrieve last Data    
-    let sensorId = chart.sensorId;
-    let lastDataUrl = `api/Station/${CONFIG.stationId}/Sensor/${sensorId}/Data/LastData`;
-
-    //set the job
-    setInterval(
-        updateChart, 
-        CONFIG.timeInterval, 
-        chart.canvasJsChart, 
-        lastDataUrl, 
-        CONFIG.maxDataPointsAllowed,
-        chart.sensorType,
-        chart.sensorLocation
-    );
-})
-
-/*** Aditional webpage behaviour ***/
-setGoToLinkBehaviourInTabs();
-
 
 /*** Functions for charts logic ***/
 
 //create a  CanvasJs chart object, given a divId
-function realTimeChart(divId){
+function realTimeChart(divId, axisYTitle, chartTitle){
     return new CanvasJS.Chart(divId, {
         height: 320,
         theme: "light2",
+        title:{
+            text : chartTitle
+        },
         axisX:{
             valueFormatString: "hh:mm:ss TT" ,
-            labelAngle: -50
+            labelAngle: -90
         },
-        axisY:{            
+        axisY:{
+            title : axisYTitle,
             titleFontSize: 18
         },
         data:[{
@@ -129,7 +101,7 @@ function timeStampQuery( { momentJsObject, hoursAgo } ){
     let now = momentJsObject.clone();//I make a clone to avoid modify the original object
     let endTimestamp  = now.unix();//unix() function gives the timestamp
     let startTimestamp = now.subtract(hoursAgo,'hours').unix();
-    return `DataTimestamp?startTimestamp=${startTimestamp}&endTimestamp=${endTimestamp}`;
+    return `Timestamp?startTimestamp=${startTimestamp}&endTimestamp=${endTimestamp}`;
 }
 
 function toDataPoint(responseElement){
@@ -162,20 +134,24 @@ function byTimestamp(a,b){
 
 //place datapoints if between two datapoints there was supposed to be a value.
 function addNullPoints(dataPoints, timeInterval){
-    let dataPointsNullPointsAdded = [];
-    for(let i = 0 ; i < (dataPoints.length -1) ; i++){
-      dataPointsNullPointsAdded.push(dataPoints[i]);
-  
-      let nextTimestamp = dataPoints[i+1].Timestamp;
-      let currentTimestamp = dataPoints[i].Timestamp;
-  
-      if ( nextTimestamp > (currentTimestamp + timeInterval)) {
-        let nullDataPoint = makeNullDataPoint(nextTimestamp, currentTimestamp);  
-        dataPointsNullPointsAdded.push(nullDataPoint);
-      }        
+    if (dataPoints.length > 0 ){
+        let dataPointsNullPointsAdded = [];
+        for(let i = 0 ; i < (dataPoints.length -1) ; i++){
+        dataPointsNullPointsAdded.push(dataPoints[i]);
+    
+        let nextTimestamp = dataPoints[i+1].Timestamp;
+        let currentTimestamp = dataPoints[i].Timestamp;
+    
+        if ( nextTimestamp > (currentTimestamp + timeInterval)) {
+            let nullDataPoint = makeNullDataPoint(nextTimestamp, currentTimestamp);  
+            dataPointsNullPointsAdded.push(nullDataPoint);
+        }        
+        }
+        dataPointsNullPointsAdded.push(dataPoints[dataPoints.length - 1]);
+        return dataPointsNullPointsAdded;
+    }else {
+        return [];
     }
-    dataPointsNullPointsAdded.push(dataPoints[dataPoints.length - 1]);
-    return dataPointsNullPointsAdded;
 }
 
 function makeNullDataPoint(nextTimestamp, currentTimestamp){
@@ -191,49 +167,44 @@ function updateChart(
     canvasJsChart, 
     lastDataURL, 
     maxDataPointsAllowed,
-    sensorType,
-    sensorLocation
+    chartDivId,
 ) {    
     $.getJSON(lastDataURL, function(data) {
-        //process response            
-        let dataPointsLength = canvasJsChart.options.data[0].dataPoints.length;
-        let lastDataPoint = canvasJsChart.options.data[0].dataPoints[dataPointsLength - 1];
-        let newDataPoint = toRawDataPoint(data);
-                
 
-        let nextTimestamp = newDataPoint.Timestamp;
-        let currentTimestamp = lastDataPoint.x.getTime()/1000;
-        let timeInterval  = CONFIG.timeInterval/1000;
-        if ( nextTimestamp > (currentTimestamp + timeInterval)){         
-            let nullDataPoint = makeNullDataPoint(nextTimestamp, currentTimestamp);  
-            canvasJsChart.options.data[0].dataPoints.push(toDataPoint(nullDataPoint));
+        //either was previous data or not
+        //process response
+        let currentDataPoints = canvasJsChart.options.data[0].dataPoints;        
+        let newDataPoint = toRawDataPoint(data);
+
+        if (currentDataPoints.length > 0 ){
+            let dataPointsLength = currentDataPoints.length;
+            let lastDataPoint = currentDataPoints[dataPointsLength - 1];
+                    
+            let nextTimestamp = newDataPoint.Timestamp;
+            let currentTimestamp = lastDataPoint.x.getTime()/1000;
+            let timeInterval  = CONFIG.timeInterval/1000;
+            if ( nextTimestamp > (currentTimestamp + timeInterval)){         
+                let nullDataPoint = makeNullDataPoint(nextTimestamp, currentTimestamp);  
+                currentDataPoints.push(toDataPoint(nullDataPoint));
+            }
         }
-        
+                
         //update chart
-        canvasJsChart.options.data[0].dataPoints.push(toDataPoint(newDataPoint));
+        currentDataPoints.push(toDataPoint(newDataPoint));
 
         //avoids accumulate points in the chart
-        if(canvasJsChart.options.data[0].dataPoints.length > maxDataPointsAllowed ){
-            canvasJsChart.options.data[0].dataPoints.shift();
+        if(currentDataPoints.length > maxDataPointsAllowed ){
+            currentDataPoints.shift();
         }
 
         //render changes
         canvasJsChart.render();
 
         //update basic statistics
-        let rawDataPointsValues = canvasJsChart.options.data[0].dataPoints.filter( element => element.y != null ).map( element => parseFloat(element.y) );
-        console.log(rawDataPointsValues);        
-        let valuesForBasicStatistics = (rawDataPointsValues.length > 1 ) ? rawDataPointsValues : [-1];
-        //console.log(valuesForBasicStatistics);
-        let basicStatistics = {
-            min : ss.min(valuesForBasicStatistics),
-            max : ss.max(valuesForBasicStatistics),
-            mean : ss.mean(valuesForBasicStatistics)
-        }
-        //console.log(basicStatistics);
+        let rawDataPointsValues = currentDataPoints.filter( element => element.y != null ).map( element => parseFloat(element.y) );
+        let basicStatistics = computeBasicStatistics(rawDataPointsValues);        
         addDataToBasicStatisticsContainer(
-            sensorType,
-            sensorLocation, 
+            chartDivId,
             basicStatistics
         );
     });
@@ -258,30 +229,71 @@ function getUnits(data){
     }
 }
 
-function addDataToBasicStatisticsContainer(sensorType,sensorLocation, basicStatistics){
-    let min = basicStatistics.min != -1 ? formatFloat(basicStatistics.min) : "" ; 
-    let max = basicStatistics.mean != -1 ? formatFloat(basicStatistics.max) : "" ; 
-    let mean = basicStatistics.max != -1 ? formatFloat(basicStatistics.mean) : "" ;    
-    //console.log(basicStatistics.min);
-    console.log(sensorType);
-    console.log(sensorLocation);
-    //place values in corresponding section
-    $(`div#chartMonitor${sensorType}_${sensorLocation} + .boxInfoValues p#minVal`).text(min);
-    $(`div#chartMonitor${sensorType}_${sensorLocation} + .boxInfoValues p#maxVal`).text(max);
-    $(`div#chartMonitor${sensorType}_${sensorLocation} + .boxInfoValues p#avgVal`).text(mean);   
+function makeChartDiv(
+    chartDivId,
+    basicStatistics
+){    
+    let min, max, mean;
+    if( basicStatistics != null ) {
+        min  = formatFloat(basicStatistics.min);
+        max  = formatFloat(basicStatistics.max);
+        mean = formatFloat(basicStatistics.mean);
+    }else {
+        min = max = mean = "";
+    }
+    
+    let chartDiv = `
+    <div class="panel panel-default" id="_${chartDivId}">
+        <div class="panel-body" >
+            <div id="${chartDivId}" style="height: 320px" class="canvasJsChart"></div>
+        </div>        
+        <div class="panel-footer">
+            <i class="material-icons iconBasicStatitic">&#xe15d;</i>
+            min                
+            <p class="boxLetters" id="minVal">${min}</p>
+            
+            <i class="material-icons iconBasicStatitic">&#xe148;</i>
+            max
+            <p class="boxLetters" id="maxVal">${max}</p>
+
+            <i class="fa iconBasicStatitic">&#xf10c;</i>
+            avg
+            <p class="boxLetters" id="avgVal">${mean}</p>                
+        </div>
+        
+    </div>                      
+    `;
+    return chartDiv;
+};
+
+function addDataToBasicStatisticsContainer(chartDivId, basicStatistics){
+    let min, max, mean;
+    if( basicStatistics != null ) {
+        min  = formatFloat(basicStatistics.min);
+        max  = formatFloat(basicStatistics.max);
+        mean = formatFloat(basicStatistics.mean);
+    } else {
+        min = max = mean = "";
+    }
+        
+    $(`div.panel.panel-default#_${chartDivId} .panel-footer p#minVal`).text(min);
+    $(`div.panel.panel-default#_${chartDivId} .panel-footer p#maxVal`).text(max);
+    $(`div.panel.panel-default#_${chartDivId} .panel-footer p#avgVal`).text(mean);   
 }
+
+function computeBasicStatistics(values){
+
+    if (values.length > 0){
+        return {
+            min : ss.min(values),
+            max : ss.max(values),
+            mean : ss.mean(values)
+        }
+    } else {
+        return null;
+    }
+}
+
 function formatFloat(value){
     return Number(parseFloat(value).toFixed(2));
-}
-
-/*** Functions for additional webpage behaviour ***/
-
-function setGoToLinkBehaviourInTabs(){        
-    var tabs=document.querySelectorAll("button.tablinks");
-    tabs.forEach(function(tab){
-        //when click on tab, go to specific view
-        tab.addEventListener("click",function(){
-            window.location=tab.getAttribute("url");
-        })
-    })
 }

@@ -89,13 +89,14 @@ hr{
     padding: 5px;
     clear: both;
 }
-.boxLetters{    
-    float: left;
+.boxLetters{
+    display : inline;
     font-size: 15px;
     text-align: center;
+    margin-right: 15px;
 }
 
-.iconsMinMax{
+.iconBasicStatitic{
     font-size: 13px;
 }
 
@@ -133,6 +134,11 @@ hr{
 #chartAvgPerDate{
     margin-top: 5%;
 }
+
+.canvasJsChart{
+    margin-top : 20px;
+}
+
 /* The side navigation menu */
 div#submenu {
     width: 0; /* 0 width - change this with JavaScript */
