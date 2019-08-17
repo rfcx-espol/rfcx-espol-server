@@ -8,25 +8,17 @@
   <link rel="stylesheet" type="text/css" href="~/css/stationView.css">
 }
 
-<!---div class="tab"> 
-  <button class="tablinks" name="monitor" id="defaultOpen" url='@Url.Action("Index","StationView", new{ stationName = @ViewData["stationName"] , stationId = @ViewData["stationId"] })'>
-    <i class="fa fa-television tabL" aria-hidden="true"></i>
-    <p class="tabMonitor">Realtime</p>
-  </button>
-  New tabs
-</div-->
-
-<div style = "background-color:white; position:fixed;z-index:20000; width:75%; border-bottom: 1px solid #ccc;">  
-  <h3 id="stationName" style="text-align: center; color: #e4b836; font-weight: bold;">Datos en tiempo real</h3>
+<div class ="card ml-3">
+  <h3 class="titleHistoricalView">Datos en tiempo real</h3>
   <p class="text-center">@ViewData["stationName"].ToString()</p>
-  <!--h5 class="text-muted" style=" text-align: center; width: 200px; margin:0px 0px 5px 5px;border: 1px solid #ccc; border-radius:10px; padding:10px;" > </h5-->
 </div>
 
-
-<!--MONITOR-->
-<div id="monitor" class="tabcontent" onload="display(this)" style="margin-top:15%; text-align: center; margin-bottom:10%;">
-  <p id="stationId" style="display:none">@ViewData["stationId"].ToString()</p>
+<div class="chartsContainer">
+   <p id="stationId" style="display:none">@ViewData["stationId"].ToString()</p>
 </div>
+
+<!--div id="individual" class="tabcontent" style="text-align: center; margin-bottom:10%;">
+ </div-->
 
 @section Scripts {   
   <script src="~/js/moment.js" type="text/javascript"></script>

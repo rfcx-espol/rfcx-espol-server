@@ -7,7 +7,7 @@ date_pickers.forEach(function(date_picker){
     date_picker.value = now.subtract(6,'days').format('YYYY-MM-DD');    
 });
 
-let filterButton = document.querySelector("button.button-filter");
+let filterButton = document.querySelector("button#button-filter");
 
 filterButton.addEventListener("click", function(){ 
     let selectedStationId = document.querySelector("select.form-control").value;
@@ -91,10 +91,10 @@ filterButton.addEventListener("click", function(){
                     basicStatistics
                 );
 
-                if ( $(`div#_${chartDivId}.panel`).length ) {
-                    $(`div#_${chartDivId}.panel`).remove(); 
+                if ( $(`div#_${chartDivId}.card`).length ) {
+                    $(`div#_${chartDivId}.card`).remove(); 
                 }
-                $("div#individual").append(chartDiv);            
+                $("div.chartsContainer").append(chartDiv);            
             
                 //create chart                        
                 let chart = aggregationChart({
@@ -222,11 +222,11 @@ function makeChartDiv(
     }
     
     let chartDiv = `
-    <div class="panel panel-default" id="_${chartDivId}">
-        <div class="panel-body" >
+    <div class="card historical" id="_${chartDivId}">
+        <div class="card-body" >
             <div id="${chartDivId}" style="height: 320px" class="canvasJsChart"></div>
         </div>        
-        <div class="panel-footer">
+        <div class="card-footer basicStatistics">
             <i class="material-icons iconBasicStatitic">&#xe15d;</i>
             min                
             <p class="boxLetters" id="minVal">${min}</p>

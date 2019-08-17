@@ -8,7 +8,7 @@ date_pickers.forEach(function(date_picker){
     date_picker.value = now.subtract(29,'days').format('YYYY-MM-DD');    
 });
 
-let filterButton = document.querySelector("button.button-filter");
+let filterButton = document.querySelector("button#button-filter");
 
 filterButton.addEventListener("click", function(){ 
     let selectedSensorText = document.querySelector("select.form-control").value;
@@ -49,10 +49,10 @@ filterButton.addEventListener("click", function(){
                 basicStatistics : null
             });
             
-            if ( $(`div#_${chartDivId}.panel`).length ) {
-                $(`div#_${chartDivId}.panel`).remove(); 
+            if ( $(`div#_${chartDivId}.card`).length ) {
+                $(`div#_${chartDivId}.card`).remove(); 
             }
-            $("div#individual").append(chartDiv);            
+            $("div.chartsContainer").append(chartDiv);            
         
         
             //create chart                        
@@ -240,11 +240,11 @@ function makeChartDiv({
     }
     
     let chartDiv = `
-    <div class="panel panel-default" id="_${chartDivId}">
-        <div class="panel-body" >
+    <div class="card historical" id="_${chartDivId}">
+        <div class="card-body" >
             <div id="${chartDivId}" style="height: 320px" class="canvasJsChart"></div>
         </div>        
-        <div class="panel-footer">
+        <div class="card-footer basicStatistics">
             <i class="material-icons iconBasicStatitic">&#xe15d;</i>
             min                
             <p class="boxLetters" id="minVal">${min}</p>
@@ -277,9 +277,10 @@ function addDataToBasicStatisticsContainer({
         min = max = mean = "";
     }
         
-    $(`div.panel.panel-default#_${chartDivId} .panel-footer p#minVal`).text(min);
-    $(`div.panel.panel-default#_${chartDivId} .panel-footer p#maxVal`).text(max);
-    $(`div.panel.panel-default#_${chartDivId} .panel-footer p#avgVal`).text(mean);   
+    
+    $(`div.card#_${chartDivId} .card-footer p#minVal`).text(min);
+    $(`div.card#_${chartDivId} .card-footer p#maxVal`).text(max);
+    $(`div.card#_${chartDivId} .card-footer p#avgVal`).text(mean); 
 }
 
 function formatFloat(value){
