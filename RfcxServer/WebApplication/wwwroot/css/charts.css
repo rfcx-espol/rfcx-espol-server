@@ -28,6 +28,7 @@ div.container-fluid > div.card {
     font-weight: bold;
 }
 
+
 /*this class is critical for basic statistics values to be shown in a line*/
 .basicStatisticValue{
     display : inline;
@@ -43,7 +44,7 @@ div.container-fluid > div.card {
 }
 
 label{
-    margin-right: 10px;
+    margin-right: 5px;
     color: #757575;
 }
 

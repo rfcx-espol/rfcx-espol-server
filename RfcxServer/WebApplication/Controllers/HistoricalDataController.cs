@@ -9,13 +9,17 @@ namespace WebApplication.Controllers
     {
         private readonly IStationRepository _StationRepository;
         private readonly IDataRepository _DataRepository;
+        
+        private readonly ISensorRepository _SensorRepository;
         public HistoricalDataController(
             IStationRepository  StationRepository,
-            IDataRepository  DataRepository
+            IDataRepository  DataRepository,
+            ISensorRepository SensorRepository
         )
         {
                 _StationRepository = StationRepository;
                 _DataRepository = DataRepository;
+                _SensorRepository = SensorRepository;
         }        
         
         [Route("/ByDate")]
@@ -44,7 +48,7 @@ namespace WebApplication.Controllers
 
         [Route("/ByDateStation")]
         public IActionResult ByDateStation(){            
-            var sensorsTypeAndLocation = _DataRepository.sensorsTypeAndLocation();            
+            var sensorsTypeAndLocation = _SensorRepository.sensorsTypeAndLocation();            
             List<string> l = new List<string>();
             foreach(var obj in sensorsTypeAndLocation){
                 l.Add (obj["Type"].AsString + " " + obj["Location"].AsString);

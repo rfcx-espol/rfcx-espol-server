@@ -2,6 +2,7 @@ using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApplication.Models;
+using MongoDB.Bson;
 
 namespace WebApplication.IRepository
 {
@@ -18,6 +19,7 @@ namespace WebApplication.IRepository
         Task Add(Sensor item);
         Task<bool> Update(string id, Sensor item);
         Task<bool> Remove(string id);
-        Task<bool> RemoveAll();
+        Task<bool> RemoveAll();        
+        List<BsonDocument> sensorsTypeAndLocation();
     }
 }
