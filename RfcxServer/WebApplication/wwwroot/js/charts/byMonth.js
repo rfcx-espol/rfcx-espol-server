@@ -235,22 +235,22 @@ function makeChartDiv(
     }
     
     let chartDiv = `
-    <div class="card historical" id="_${chartDivId}">
+    <div class="card mb-4" id="_${chartDivId}">
         <div class="card-body" >
             <div id="${chartDivId}" style="height: 320px" class="canvasJsChart"></div>
         </div>        
-        <div class="card-footer basicStatistics">
+        <div class="card-footer text-center">
             <i class="material-icons iconBasicStatitic">&#xe15d;</i>
             min                
-            <p class="boxLetters" id="minVal">${min}</p>
+            <p class="basicStatisticValue" id="minVal">${min}</p>
             
             <i class="material-icons iconBasicStatitic">&#xe148;</i>
             max
-            <p class="boxLetters" id="maxVal">${max}</p>
+            <p class="basicStatisticValue" id="maxVal">${max}</p>
 
             <i class="fa iconBasicStatitic">&#xf10c;</i>
             avg
-            <p class="boxLetters" id="avgVal">${mean}</p>                
+            <p class="basicStatisticValue" id="avgVal">${mean}</p>                
         </div>
         
     </div>                      
