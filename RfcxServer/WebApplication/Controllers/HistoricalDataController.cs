@@ -17,7 +17,9 @@ namespace WebApplication.Controllers
                 _StationRepository = StationRepository;
                 _DataRepository = DataRepository;
         }        
-        public IActionResult Index(){
+        
+        [Route("/ByDate")]
+        public IActionResult ByDate(){
             //retrieve stations
             var stations = _StationRepository.Get();
             ViewBag.message = "From server";
