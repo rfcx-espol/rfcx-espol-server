@@ -50,7 +50,7 @@ filterButton.addEventListener("click", function(){
                     let hour = aggregate._id.hour;
                     let avg = aggregate.avg;
                     
-                    let timestamp = (hour == 0 ) ? 3600 : ((hour+1)*3600) ;
+                    let timestamp = (hour == 0 ) ? 3600 : ((hour)*3600) ;
 
                     return {
                         Timestamp : timestamp,

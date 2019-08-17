@@ -408,13 +408,13 @@ namespace WebApplication.Repository
 
             var _id = new BsonDocument {                                
                 {"SensorId", "$SensorId"}, 
-                {"year", new BsonDocument("$year","$date")},               
-                {"month", new BsonDocument("$month","$date")},                
-                {"dayOfMonth", new BsonDocument("$dayOfMonth","$date")}  
+                {"year", new BsonDocument("$year",new BsonDocument("date","$date").Add("timezone","-0500"))},               
+                {"month", new BsonDocument("$month",new BsonDocument("date","$date").Add("timezone","-0500"))},                
+                {"dayOfMonth", new BsonDocument("$dayOfMonth",new BsonDocument("date","$date").Add("timezone","-0500"))}  
             };
             
             var avg = new BsonDocument {
-                {"$avg", new BsonDocument("$toDouble","$Value")}
+                {"$avg", "$Value"}
             };
 
             var aggregates = new BsonDocument {
@@ -488,18 +488,18 @@ namespace WebApplication.Repository
             };
             
             System.DateTime dateAtStartOfUnixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, 0,DateTimeKind.Utc);
-
+            
             var dateField = new BsonDocument {
                 { "$add", new BsonArray{ dateAtStartOfUnixEpoch, timestampInMillis } }
             };
 
             var _id = new BsonDocument {                                
                 {"SensorId", "$SensorId"}, 
-                {"hour", new BsonDocument("$hour","$date")}, 
+                {"hour", new BsonDocument("$hour",new BsonDocument("date","$date").Add("timezone","-0500") )}, 
             };
             
             var avg = new BsonDocument {
-                {"$avg", new BsonDocument("$toDouble","$Value")}
+                {"$avg", "$Value"}
             };
 
             var aggregates = new BsonDocument {
@@ -580,11 +580,11 @@ namespace WebApplication.Repository
 
             var _id = new BsonDocument {                                
                 {"SensorId", "$SensorId"}, 
-                {"month", new BsonDocument("$month","$date")}, 
+                {"month", new BsonDocument("$month",new BsonDocument("date","$date").Add("timezone","-0500"))}, 
             };
             
             var avg = new BsonDocument {
-                {"$avg", new BsonDocument("$toDouble","$Value")}
+                {"$avg", "$Value"}
             };
 
             var aggregates = new BsonDocument {
@@ -690,13 +690,13 @@ namespace WebApplication.Repository
 
             var _id = new BsonDocument {                                
                 {"StationId", "$StationId"}, 
-                {"year", new BsonDocument("$year","$date")},               
-                {"month", new BsonDocument("$month","$date")},                
-                {"dayOfMonth", new BsonDocument("$dayOfMonth","$date")}  
+                {"year", new BsonDocument("$year",new BsonDocument("date","$date").Add("timezone","-0500"))},               
+                {"month", new BsonDocument("$month",new BsonDocument("date","$date").Add("timezone","-0500"))},                
+                {"dayOfMonth", new BsonDocument("$dayOfMonth",new BsonDocument("date","$date").Add("timezone","-0500"))}  
             };
             
             var avg = new BsonDocument {
-                {"$avg", new BsonDocument("$toDouble","$Value")}
+                {"$avg", "$Value"}
             };
 
             var aggregates = new BsonDocument {
