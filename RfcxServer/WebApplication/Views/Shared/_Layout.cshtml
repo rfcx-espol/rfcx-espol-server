@@ -18,13 +18,16 @@
         @RenderSection("Style", required: false)
     </head>
     <body>  
-        <div class="nav-side-menu">
+        <div class="nav-side-menu navbar-dark">
             <div class="brand">
+                <a href="/home">
                 <img src="/images/logo-white.png"/>
+                </a>
             </div>
-            <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+            <button class="navbar-toggler toggle-btn" data-toggle="collapse" data-target="#menu-content"><span class="navbar-toggler-icon"></span></button>
             <div class="menu-list">
                 <ul id="menu-content" class="menu-content collapse out">
+                    <li id="login-side" class="login"></li>
                     <li data-toggle="collapse" data-target="#monitoreo" class="collapsed">
                         <a href="#"><i class="fa fa-dashboard fa-lg"></i> Monitoreo <span class="arrow"></span></a>
                     </li>
@@ -72,8 +75,8 @@
     </div>
 
     <nav class="navbar navbar-default navbar-fixed-top">
-        <ul class="nav navbar-nav navbar-right">
-            <li id="login"></li>
+        <ul class="navbar-nav ml-auto mr-5">
+            <li class="login"></li>
         </ul>
     </nav>
 
@@ -91,10 +94,10 @@
         $(document).ready(function () {
             if (typeof $.cookie('token') === 'undefined') {
                 console.log("no cookie");
-                $("#login").html("<a href='/Authentication'><i class='fa fa-user fa-lg'></i> Ingresar</a>")
+                $(".login").html("<a href='/Authentication'><i class='fa fa-user fa-lg'></i> Ingresar</a>")
             } else {
-                $("#login").html("<a href='/'><i class='fa fa-user fa-lg'></i> Log Out</a>")
-                $("#login").click(function (e) {
+                $(".login").html("<a href='/'><i class='fa fa-user fa-lg'></i> Salir</a>")
+                $(".login").click(function (e) {
                     $.removeCookie("token", { path: '/' })
                 });
             }
