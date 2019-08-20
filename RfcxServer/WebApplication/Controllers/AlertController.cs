@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using MongoDB.Bson;
 using System.Linq;
 using System;
+using WebApplication.ViewModel;
+using X.PagedList;
+
 
 namespace WebApplication.Controllers
 {
@@ -186,12 +189,15 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet("index")]
-        public IActionResult Index()
+        public IActionResult Index(AlertViewModel alertVM)
         {
+            var pageNumber = (alertVM.Pnumber == 0) ? 1 : alertVM.Pnumber;
+            var pageSize = 2;
+            var alerts = _AlertRepository.GetAll().ToPagedList(pageNumber, pageSize);
+            alertVM.Alerts = alerts;
             string[] variables = new string[]{"createResult","editResult","deleteResult"};
             initializeTempData(variables);
-            IEnumerable<Alert> alerts = _AlertRepository.Get();
-            return View(alerts);
+            return View(alertVM);
         }
 
         [HttpGet("create")]

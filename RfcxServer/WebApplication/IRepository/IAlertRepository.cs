@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApplication.Models;
+using System.Linq;
 
 namespace WebApplication.IRepository
 {
@@ -10,6 +11,7 @@ namespace WebApplication.IRepository
     {
         List<Alert> Get();
         Alert Get(string id);
+        IQueryable<Alert> GetAll();
         bool Add(Alert item);
         Task<IEnumerable<Alert>> GetAllAlerts();
         Task<Alert> GetAlert(string id);

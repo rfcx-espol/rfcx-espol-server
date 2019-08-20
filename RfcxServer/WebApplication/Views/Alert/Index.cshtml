@@ -1,4 +1,6 @@
-@model System.Collections.Generic.IEnumerable<Alert>
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Mvc.Common;
+@model AlertViewModel
 @{
     ViewBag.Title = "Alertas";
 }
@@ -10,7 +12,7 @@
         }
         #div_tabla_alertas {
             margin-top: 20px;
-            margin-bottom: 50px;
+            margin-bottom: 50.);
         }
         #div_boton_nuevo {
             margin: 20px 0;
@@ -161,7 +163,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var alert in Model)
+                    @foreach (var alert in Model.Alerts)
                     {
                         <tr>
                             <td>@alert.Name</td>
@@ -182,6 +184,16 @@
                 </tbody>
 
             </table>
+            <form id="hidden" asp-controller="Alert" asp-action="Index" method="get" role="form">
+                @Html.HiddenFor(m => m.Pnumber)
+                @if (Model.Alerts != null)
+                {
+                    @Html.PagedListPager(Model.Alerts, page => Url.Action("Index", new { page = page }),
+                        new PagedListRenderOptions {
+                            PageClasses = new string[] { "pages" },
+                        });
+                }
+            </form>
         </div>
 
         <div class="modal fade" id="alert_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -289,6 +301,31 @@
         function editarAlerta(id) {
             window.location.href = '/api/alert/' + id + '/edit/';
         }
+
+        $(".pages").bind('click', function(e){
+            e.preventDefault();
+            var value = this.text;
+            switch(value) {
+                case '>':
+                    value = parseInt($(".active span").text()) + 1;
+                    break;
+                case '<':
+                    value = parseInt($(".active span").text()) - 1;
+                    break;
+                case '<<':
+                    value = 1;
+                    break;
+                case '>>':
+                    value = @Model.Alerts.PageCount;
+                    break;
+                default:
+                    value = this.text;
+            }
+            if (value == '>' || value == '<') {
+            }
+            $("#Pnumber").val(parseInt(value));
+            $("#hidden").submit();
+        });
 
 
     </script>

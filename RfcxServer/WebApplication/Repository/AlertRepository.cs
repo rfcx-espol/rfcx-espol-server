@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Linq;
 
 
 namespace WebApplication.Repository
@@ -155,6 +156,18 @@ namespace WebApplication.Repository
             {
                 Console.WriteLine(_context.Alerts.Find(filter).FirstOrDefault().AlertId);
                 return _context.Alerts.Find(filter).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public IQueryable<Alert> GetAll()
+        {
+            try
+            {
+                return _context.Alerts.AsQueryable();
             }
             catch (Exception ex)
             {
