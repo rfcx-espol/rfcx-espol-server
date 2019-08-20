@@ -139,6 +139,36 @@ namespace WebApplication.Controllers
                 return this.GetDataByStationSensorTimeStamp(StationId, SensorId, StartTimestamp, EndTimestamp);
             }
 
+
+            [HttpGet]
+            [Route("api/Station/{StationId:int}/Timestamp")]
+            public Task<string> GetDataByStationTimestamp(
+                [FromRoute] int StationId,
+                [FromQuery] long StartTimestamp,
+                [FromQuery] long EndTimestamp
+            )
+            {
+                return this._GetDataByStationTimestamp(
+                    StationId,
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+            }
+            
+            private async Task<string> _GetDataByStationTimestamp(
+                int StationId,
+                long StartTimestamp, 
+                long EndTimestamp
+            )
+            {
+                var data = await _DataRepository.DataByStationTimestamp(
+                    StationId, 
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+                return JsonConvert.SerializeObject(data);
+            }
+
             private async Task<string> GetDataByStationSensorTimeStamp(int StationId, int SensorId, long StartTimestamp, long EndTimeStamp)
             {
                 var Datas= await _DataRepository.GetByStationSensorTimestamp(StationId, SensorId, StartTimestamp, EndTimeStamp);

@@ -25,19 +25,19 @@ window.onload = function() {
                 [
                     {
                         "StationId": StationId,
-                        "SensorId": "1",
-                        "Timestamp": xVal + "",
+                        "SensorId": 1,
+                        "Timestamp": xVal,
                         "Type": "Temperature",
-                        "Value": yValueTemp + "",
+                        "Value": yValueTemp,
                         "Units": "Celcius",
                         "Location": "Environment"
                     },
                     {
                         "StationId": StationId,
-                        "SensorId": "2",
-                        "Timestamp": xVal + "",
+                        "SensorId": 2,
+                        "Timestamp": xVal,
                         "Type": "Humidity",
-                        "Value": yValueHum + "",
+                        "Value": yValueHum ,
                         "Units": "Percent",
                         "Location": "Environment"
                     }
