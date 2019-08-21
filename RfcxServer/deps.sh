@@ -17,7 +17,6 @@ apt-get install ffmpeg
 apt-get install frei0r-plugins 
 
 # icecast
-
 apt-get install libxslt1-dev
 apt-get install libshout3-dev 
 apt-get install libvorbis-dev
