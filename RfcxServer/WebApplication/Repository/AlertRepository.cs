@@ -208,6 +208,24 @@ namespace WebApplication.Repository
             }
 
         }
+
+        public async Task<bool> updateLastChecked(string alertId, long lastChecked)
+        {
+            var filter = Builders<Alert>.Filter.Eq("_id", ObjectId.Parse(alertId));
+            var update = Builders<Alert>.Update.Set("LastChecked", lastChecked);
+
+            try
+            {
+                UpdateResult actionResult = await _context.Alerts.UpdateOneAsync(filter, update);
+                return actionResult.IsAcknowledged
+                    && actionResult.ModifiedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
     }
 
 

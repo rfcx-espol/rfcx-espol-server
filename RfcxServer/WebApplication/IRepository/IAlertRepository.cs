@@ -23,6 +23,7 @@ namespace WebApplication.IRepository
         // Task <bool> deleteCondition(string alertId, string conditionId);
         Condition getConditionObject(string alertId, string conditionId);
         Task<bool> updateAlertStatus(string alertId, Boolean Status);
+        Task<bool> updateLastChecked(string alertId, long lastChecked);
 
     }
 }
