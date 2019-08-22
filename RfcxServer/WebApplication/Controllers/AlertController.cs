@@ -192,8 +192,20 @@ namespace WebApplication.Controllers
         public IActionResult Index(AlertViewModel alertVM)
         {
             var pageNumber = (alertVM.Pnumber == 0) ? 1 : alertVM.Pnumber;
-            var pageSize = 2;
+            var pageSize = 10;
             var alerts = _AlertRepository.GetAll().ToPagedList(pageNumber, pageSize);
+            alertVM.Alerts = alerts;
+            string[] variables = new string[]{"createResult","editResult","deleteResult"};
+            initializeTempData(variables);
+            return View(alertVM);
+        }
+
+        [HttpPost()]
+        public IActionResult List(AlertViewModel alertVM)
+        {
+            var pageNumber = (alertVM.Pnumber == 0) ? 1 : alertVM.Pnumber;
+            var pageSize = 10;
+            var alerts = _AlertRepository.GetByName(alertVM.FilterName).ToPagedList(pageNumber, pageSize);
             alertVM.Alerts = alerts;
             string[] variables = new string[]{"createResult","editResult","deleteResult"};
             initializeTempData(variables);

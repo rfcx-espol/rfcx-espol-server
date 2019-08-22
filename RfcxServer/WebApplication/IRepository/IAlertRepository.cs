@@ -12,6 +12,8 @@ namespace WebApplication.IRepository
         List<Alert> Get();
         Alert Get(string id);
         IQueryable<Alert> GetAll();
+        IQueryable<Alert> GetByName(string searchTerm);
+
         bool Add(Alert item);
         Task<IEnumerable<Alert>> GetAllAlerts();
         Task<Alert> GetAlert(string id);

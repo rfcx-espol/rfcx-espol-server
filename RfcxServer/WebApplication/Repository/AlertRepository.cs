@@ -175,6 +175,18 @@ namespace WebApplication.Repository
             }
         }
 
+        public IQueryable<Alert> GetByName(String searchTerm)
+        {
+           try
+            {
+                return _context.Alerts.AsQueryable().Where(a => a.Name.Contains(searchTerm));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            } 
+        }
+
         public bool Add(Alert item)
         {
             try

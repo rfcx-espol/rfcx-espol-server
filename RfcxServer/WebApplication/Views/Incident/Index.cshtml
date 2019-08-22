@@ -1,4 +1,6 @@
-@model System.Collections.Generic.IEnumerable<Incident>
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Mvc.Common;
+@model IncidentViewModel
 @{
     ViewBag.Title = "Incident";
 }
@@ -118,6 +120,21 @@
                 Hubo un problema al editar el incidente. Por favor, vuelva a intentarlo.
             </div>
         }
+        <form asp-controller="Incident" asp-action="List" method="post" role="form">
+            <div class="form-row align-items-center">
+                <div class="col-auto">
+                    <label class="sr-only" for="incident_start">Nombre Alerta</label>
+                    <input asp-for="Start" type="date" class="form-control mb-2" id="incident_start"></input>
+                </div>
+                <div class="col-auto">
+                    <label class="sr-only" for="incident_end">Nombre Alerta</label>
+                    <input asp-for="Start" type="date" class="form-control mb-2" id="incident_end"></input>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary mb-2" type="submit">Buscar</button>
+                </div>
+            </div>
+        </form>
 
         <div id="div_tabla_incidentes">
             <table id="tabla_incidentes" class="table">
@@ -130,7 +147,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var incident in Model)
+                    @foreach (var incident in Model.Incidents)
                     {
                         <tr>
                             <td>@incident.IncidentTime</td>
@@ -148,6 +165,18 @@
                 </tbody>
 
             </table>
+
+            <form id="hidden" asp-controller="Incident" asp-action="Index" method="get" role="form">
+                @Html.HiddenFor(m => m.Pnumber)
+                @if (Model.Incidents != null)
+                {
+                    @Html.PagedListPager(Model.Incidents, page => Url.Action("Index", new { page = page }),
+                        new PagedListRenderOptions {
+                            PageClasses = new string[] { "pages" },
+                        });
+                }
+            </form>
+
         </div>
 
 
@@ -208,6 +237,31 @@
                     }
             });
         }
+
+        $(".pages").bind('click', function(e){
+            e.preventDefault();
+            var value = this.text;
+            switch(value) {
+                case '>':
+                    value = parseInt($(".active span").text()) + 1;
+                    break;
+                case '<':
+                    value = parseInt($(".active span").text()) - 1;
+                    break;
+                case '<<':
+                    value = 1;
+                    break;
+                case '>>':
+                    value = @Model.Incidents.PageCount;
+                    break;
+                default:
+                    value = this.text;
+            }
+            if (value == '>' || value == '<') {
+            }
+            $("#Pnumber").val(parseInt(value));
+            $("#hidden").submit();
+        });
 
     </script>
 }

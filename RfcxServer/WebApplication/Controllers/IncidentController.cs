@@ -7,6 +7,9 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using WebApplication.IRepository;
 using WebApplication.Models;
+using WebApplication.ViewModel;
+using X.PagedList;
+
 
 namespace WebApplication.Controllers
 {
@@ -89,12 +92,27 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet("index")]
-        public IActionResult Index()
+        public IActionResult Index(IncidentViewModel iVM)
         {
+            var pageNumber = (iVM.Pnumber == 0) ? 1 : iVM.Pnumber;
+            var pageSize = 10;
+            var incidents = _IncidentRepository.GetAll().ToPagedList(pageNumber, pageSize);
+            iVM.Incidents = incidents;
             if(TempData["editResult"] == null)
                 TempData["editResult"] = 0;
-            IEnumerable<Incident> alerts = _IncidentRepository.Get();
-            return View(alerts);
+            return View(iVM);
+        }
+
+        [HttpPost()]
+        public IActionResult List(IncidentViewModel iVM)
+        {
+            var pageNumber = (iVM.Pnumber == 0) ? 1 : iVM.Pnumber;
+            var pageSize = 10;
+            var incidents = _IncidentRepository.GetByDate(iVM.Start, iVM.End).ToPagedList(pageNumber, pageSize);
+            iVM.Incidents = incidents;
+            if(TempData["editResult"] == null)
+                TempData["editResult"] = 0;
+            return View(iVM);
         }
 
     }
