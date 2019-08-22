@@ -203,15 +203,11 @@ namespace WebApplication.Controllers
         [HttpPost()]
         public IActionResult List(AlertViewModel alertVM)
         {
-<<<<<<< HEAD
             var pageNumber = (alertVM.Pnumber == 0) ? 1 : alertVM.Pnumber;
             var pageSize = 10;
             var alerts = _AlertRepository.GetByName(alertVM.FilterName).ToPagedList(pageNumber, pageSize);
             alertVM.Alerts = alerts;
             string[] variables = new string[]{"createResult","editResult","deleteResult"};
-=======
-            string[] variables = new string[] { "createResult", "editResult", "deleteResult" };
->>>>>>> 5b7c13ed12ebc0615acdc5d3ae23fc30e05158a9
             initializeTempData(variables);
             return View(alertVM);
         }
