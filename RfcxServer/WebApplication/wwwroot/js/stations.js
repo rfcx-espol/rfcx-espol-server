@@ -72,11 +72,11 @@ function contentStation(station_id, station_name){
         </div><div class="station_body" id="station${station_id}"></div></div>`;
     var content_=`
     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card" style ="margin-bottom:20px;">
+            <div class="card-header">
                 <div class="row">		
                 <div class="col-md-2 col-lg-2 col-sm-2 col-xs-2"><div class="pulse-animation"></div></div>
-                <div class="col-md-6 col-lg-5 col-sm-6 col-xs-6"><h3 class="panel-title">${station_name}</h3></div>
+                <div class="col-md-6 col-lg-5 col-sm-6 col-xs-6"><h5 class="card-title">${station_name}</h5></div>
                 <div class="col-md-4 col-lg-5 col-sm-4 col-xs-4">
                 <a href="/StationView?stationName=${station_name}&stationId=${station_id}"><i class="fa fa-line-chart icon_station"></i></a>
                 <i class='fa fa-pencil icon_station' onclick="fillStationModal('${station_id}');"></i>
@@ -84,7 +84,7 @@ function contentStation(station_id, station_name){
                 </div>
                 </div>			
             </div>
-            <div class="panel-body" id="station${station_id}">			   		   
+            <div class="card-body" id="station${station_id}">			   		   
             </div>
             <div class = "last_record">
                 <p><small class="text-muted">Last record 3 mins ago</small></p>
@@ -103,7 +103,7 @@ function getSensorsList(data) {
         var sensor_location = sensor['Location'];
         var icon_type = getIconType(sensor_type);
         var icon_id = getIconId(sensor_type, sensor_location);
-        var station_body = $("div.panel-body#station"+station_id);
+        var station_body = $("div.card-body#station"+station_id);
         var content = contentSensor(icon_id,icon_type, sensor_type, sensor_location, sensor_id);
         $(station_body).append(content);
     }
@@ -137,7 +137,7 @@ function getLastData() {
                 var sensor_id = data['SensorId'];
                 var value = parseFloat(data['Value']).toFixed(2);
                 var unit = getUnit(data['Type']);
-                var s = $("div.panel-body#station"+station_id+" p#sensor"+sensor_id);
+                var s = $("div.card-body#station"+station_id+" p#sensor"+sensor_id);
                 s.html(value + " " + unit);
             }
         }
