@@ -71,7 +71,7 @@ namespace WebApplication.Controllers
             }
             alert.Status = true;
             alert.Conditions = condition_list;
-            bool result =_AlertRepository.Add(alert);
+            bool result = _AlertRepository.Add(alert);
             setTempData(result, "createResult");
             return Redirect("index");
         }
@@ -105,7 +105,7 @@ namespace WebApplication.Controllers
             setTempData(result, "editResult");            
             Redirect("index");
              */
-            
+
         }
 
         [HttpDelete("{id}")]
@@ -141,6 +141,15 @@ namespace WebApplication.Controllers
             return result;
         }
 
+        [HttpPatch("{alertId}/LastChecked")]
+        public async Task<bool> UpdateLastChecked([FromRoute]string alertId, [FromBody] long LastChecked)
+        {
+            Console.WriteLine(LastChecked);
+            bool result = await _AlertRepository.updateLastChecked(alertId, LastChecked);
+            return result;
+        }
+
+
 
         [HttpPatch("{alertId}/condition")]
         public async Task<bool> AddCondition(string alertId, [FromBody] Condition condition)
@@ -151,15 +160,6 @@ namespace WebApplication.Controllers
             return await _AlertRepository.UpdateAlert(alertId, Alert);
         }
 
-
-        // [HttpPatch("{alertId}/condition/{conditionId}")]
-        // public async Task<bool> EditCondition(int alertId, int conditionId, [FromBody] Condition condition)
-        // {
-
-        //     var Alert = await _AlertRepository.GetAlert(alertId.ToString()) ?? new Alert();
-        //     Condition c = _AlertRepository.getConditionObject(alertId, conditionId);
-        //     Alert.Conditions
-        // }
 
         [HttpDelete("{alertId}/condition/{conditionId}")]
         public async Task<bool> DeleteCondition(string alertId, string conditionId)
@@ -185,7 +185,7 @@ namespace WebApplication.Controllers
             bool result = await _AlertRepository.editCondition(alertId, conditionId, condition);
             setTempData(result, "editResult");
             return result;
-            
+
         }
 
         [HttpGet("index")]
@@ -203,11 +203,15 @@ namespace WebApplication.Controllers
         [HttpPost()]
         public IActionResult List(AlertViewModel alertVM)
         {
+<<<<<<< HEAD
             var pageNumber = (alertVM.Pnumber == 0) ? 1 : alertVM.Pnumber;
             var pageSize = 10;
             var alerts = _AlertRepository.GetByName(alertVM.FilterName).ToPagedList(pageNumber, pageSize);
             alertVM.Alerts = alerts;
             string[] variables = new string[]{"createResult","editResult","deleteResult"};
+=======
+            string[] variables = new string[] { "createResult", "editResult", "deleteResult" };
+>>>>>>> 5b7c13ed12ebc0615acdc5d3ae23fc30e05158a9
             initializeTempData(variables);
             return View(alertVM);
         }
@@ -225,14 +229,17 @@ namespace WebApplication.Controllers
             return View(alert);
         }
 
-        private void initializeTempData(string[] variables){
-            foreach(string variable in variables){
-                if(TempData[variable] == null)
-                TempData[variable] = 0;
+        private void initializeTempData(string[] variables)
+        {
+            foreach (string variable in variables)
+            {
+                if (TempData[variable] == null)
+                    TempData[variable] = 0;
             }
         }
 
-        private void setTempData(bool result, string variable){
+        private void setTempData(bool result, string variable)
+        {
             if (result)
                 TempData[variable] = 1;
             else
