@@ -49,7 +49,7 @@
                 <label>Nombre: </label>
                 <input id="nombre_alerta" class="form-control" type="text" name="nombre_alerta" required>
             </div>
-            <div class="form-group col-lg-12 col-md-12">
+            <div class="form-group col-md-9">
                 <label>Nivel: </label>
                 <select name="tipo_alerta" class="form-control" required="">
                     <option value="" hidden="">Escoja una opción</option>
@@ -58,7 +58,14 @@
                         <option value="1">1 - Crisis</option>
                 </select>
             </div>
-            <div class="col-lg-12 col-md-12">
+            <div class="col-md-3">
+                <label>Frecuencia de notificación: </label>
+                <div class="form-row">
+                <input id="frecuencia_alerta" class="form-control col-3" type="text" name="frecuencia_alerta" required>
+                <span class="col-9">minutos</span>
+                </div>
+            </div>
+            <div class="col-md-12">
                 <a id="info-niveles" class="text-muted" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Mas información sobre los niveles</a>
                 <div class="collapse" id="collapseExample">
                     <div class="card card-body">
@@ -82,6 +89,7 @@
                 <label>Mensaje: </label>
                 <textarea id="mensaje_alerta" class="form-control" type="text" name="mensaje_alerta" rows="3" required></textarea>
             </div>
+            
             <div id="subtitulo" class="form-group col-md-12">
                 <h4>Notificar cuando: </h4>
             </div>
@@ -154,6 +162,7 @@
             $('#conditions_number').attr('value',i);
             let divContainer = $('<div></div>');
             divContainer.attr('class','condition-container form-row align-items-center');
+            divContainer.attr('id','condition-container_'+i)
 
             let selectStation = $('<select></select>');
             addAttributes(selectStation, 'estacion');
@@ -191,6 +200,13 @@
             addAttributes(inputValue, 'threshold');
             inputValue.attr('type','text');
             divContainer.append(buildField("Valor", inputValue, i));
+
+            let deleteButton = $('<a></a>').addClass('btn btn-danger');
+            deleteButton.attr('onclick','deleteConditionContainer('+i+')');
+            let icon = $('<i></i>').addClass('fa fa-remove');
+            deleteButton.append(icon);
+            divContainer.append(deleteButton);
+
             $("#conditions").append(divContainer);
 
             addStations();
@@ -231,6 +247,11 @@
 
         function changeFreqLabel(i){
             $("#valor_div_"+i).text('Frecuencia');
+        }
+
+        function deleteConditionContainer(idx){
+            i--;
+            $('#condition-container_'+idx).remove();
         }
 
     </script>

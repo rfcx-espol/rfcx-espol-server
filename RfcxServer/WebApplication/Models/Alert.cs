@@ -25,6 +25,7 @@ namespace WebApplication.Models
         public Alert()
         {
             LastChecked = 0;
+            Status = true;
         }
 
     }

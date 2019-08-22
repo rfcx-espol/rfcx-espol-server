@@ -57,6 +57,7 @@ namespace WebApplication.Controllers
             List<Condition> condition_list = new List<Condition>();
             alert.Name = Request.Form["nombre_alerta"];
             alert.AlertType = Request.Form["tipo_alerta"];
+            alert.Frecuency = Int32.Parse(Request.Form["frecuencia_alerta"]);
             string mails = Request.Form["correos_notificacion"];
             alert.Mailto = mails.Split(";").ToList();
             alert.Message = Request.Form["mensaje_alerta"];
@@ -69,7 +70,6 @@ namespace WebApplication.Controllers
                 condition.Threshold = Int32.Parse(Request.Form["threshold_alerta" + i.ToString()]);
                 condition_list.Add(condition);
             }
-            alert.Status = true;
             alert.Conditions = condition_list;
             bool result = _AlertRepository.Add(alert);
             setTempData(result, "createResult");
@@ -96,7 +96,6 @@ namespace WebApplication.Controllers
                 condition.Threshold = Int32.Parse(Request.Form["threshold_alerta_" + i.ToString()]);
                 condition_list.Add(condition);
             }
-            alert.Status = true;
             alert.Conditions = condition_list;
             _AlertRepository.UpdateAlert(id, alert);
             return Redirect("index");
