@@ -80,6 +80,9 @@ namespace WebApplication
 
                 options.AddPolicy(RolePolicy.PoliticaRoleTodos,
                     policy => policy.RequireRole(Role.Invitado, Role.Admin));
+
+                options.AddPolicy(RolePolicy.PoliticaRoleAdminDev,
+                    policy => policy.RequireRole(Role.Admin, Role.Desarrollador));
             });
 
             // configure DI for application services
