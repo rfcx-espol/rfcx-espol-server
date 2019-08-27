@@ -5,6 +5,7 @@ using WebApplication.Models;
 using WebApplication.IRepository;
 using WebApplication.Repository;
 using System;
+using System.Security.Claims;
 
 namespace WebApplication.Controllers
 {
@@ -23,6 +24,7 @@ namespace WebApplication.Controllers
         public IActionResult Index()
         {
             ViewBag.UsersInDB =  _userRepository.GetAll();
+            ViewBag.Role = HttpContext.User.FindFirst(ClaimTypes.Role).Value;
             return View();
         }
 
