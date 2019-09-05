@@ -50,6 +50,7 @@ function newTag(t, id) {
         });
         var tr = $(t).closest('tr');
         var td = tr.find("td:eq(4)");
+        console.WriteLine(td);
         if ($(td).find('.no-tags').length) {
             $(td).children().remove();
         }

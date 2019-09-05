@@ -45,7 +45,7 @@ function downloadImagenes() {
 
 function newTag(t, id) {
     
-    var tag = prompt("Ingrese una nueva etiqueta prueba:"+id+t);
+    var tag = prompt("Ingrese una nueva etiqueta prueba:");
     if (tag !== null && tag !== "") {
         $.ajax({
             type: 'PUT',

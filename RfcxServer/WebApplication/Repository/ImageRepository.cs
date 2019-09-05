@@ -233,7 +233,7 @@ namespace WebApplication.Repository
             try
             {
                 var filter = Builders<Image>.Filter.Eq("Id", ImageId);
-                var update = Builders<Image>.Update.Push("Family", Tag);
+                var update = Builders<Image>.Update.Push("Tag", Tag);
 
                 UpdateResult updateResult = await _context.Images.UpdateOneAsync(filter, update);
 
