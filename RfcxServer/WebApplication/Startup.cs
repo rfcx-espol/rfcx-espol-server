@@ -105,9 +105,6 @@ namespace WebApplication
             services.AddTransient<ISensorRepository, SensorRepository>();
             services.AddTransient<IDataRepository, DataRepository>();
             services.AddTransient<IInfoSensoresRepository, InfoSensoresRepository>();
-            services.AddTransient<ISpecieRepository, SpecieRepository>();
-            services.AddTransient<IPhotoRepository, PhotoRepository>();
-            services.AddTransient<IQuestionRepository, QuestionRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
 
             services.AddSingleton<AuthService>();

@@ -66,30 +66,6 @@ namespace WebApplication.DbModels
             }
         }
 
-        public IMongoCollection<Specie> Species
-        {
-            get
-            {
-                return _database.GetCollection<Specie>("Specie");
-            }
-        }
-
-        public IMongoCollection<Photo> Photos
-        {
-            get
-            {
-                return _database.GetCollection<Photo>("Photo");
-            }
-        }
-
-        public IMongoCollection<Question> Questions
-        {
-            get
-            {
-                return _database.GetCollection<Question>("Question");
-            }
-        }
-
         public IMongoCollection<User> Users
         {
             get
