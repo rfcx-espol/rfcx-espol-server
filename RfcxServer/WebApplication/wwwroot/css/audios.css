@@ -3,13 +3,14 @@
 }
 
 .pagination-container {
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     display: inline-block;
 }
 
 .download {
     float: right;
     margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 #hidden {

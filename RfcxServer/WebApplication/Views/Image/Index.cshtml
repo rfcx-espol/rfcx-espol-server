@@ -7,10 +7,6 @@
 
 @section Style {
     <style>
-        #mu-about-us {
-            padding: 15px;
-        }
-
         #div_tabla_especies {
             margin-top: 20px;
             margin-bottom: 50px;
@@ -27,91 +23,48 @@
         }
     </style>
 }
-
-<!-- Favicon -->
-<link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
-
-
-<!-- Main style sheet -->
-<link href="~/css/site.css" rel="stylesheet">
-
-<!-- Google Fonts -->
-<!-- Prata for body  -->
-<link href='https://fonts.googleapis.com/css?family=Prata' rel='stylesheet' type='text/css'>
-<!-- Tangerine for small title -->
-<link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>
-<!-- Open Sans for title -->
-<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
-
-<!-- Start About us -->
-<section id="mu-about-us">
-
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="mu-about-us-area">
-
-                    <div class="mu-title">
-                        <h2> Descarga de Imagenes </h2>
-                    </div>
-
-                    <form asp-controller="Image" asp-action="Search" method="get" role="form">
-
-                        <div class="form-group">
-                            <table class="table table-bordered input-group" id="vertical-table">
-
-                                <tr>
-
-                                    <th><label> Estación </label></th>
-                                    <td>
-
-                                         @Html.DropDownListFor(m => m.StationId,
-                                                                new SelectList(Model.estaciones.Select(x => new { Value = x.Id, Text = x.Name}), "Value", "Text"),
-                                                                "Estación", htmlAttributes: new { @class = "from-control border-input" })
-                                        <span asp-validation-for="estaciones" class="text-danger"></span>                       
-                                    </td>
-                                   
-                                </tr>
-
-                                <tr>
-                                    <th>
-                                        <label>Fecha Inicial</label>
-                                    </th>
-                                    <td>
-                                        <input asp-for="Start" class="form-control col-sm-8" type="date">
-                                        <span asp-validation-for="Start" class="text-danger"></span>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <th>
-                                        <label>Fecha Final</label>
-                                    </th>
-                                    <td>
-                                        <input asp-for="End" class="form-control col-sm-8" type="date">
-                                        <span asp-validation-for="End" class="text-danger"></span>
-                                    </td>
-                                </tr>
-
-                            </table>
-
-                            <br />
-                            <button id="search" type="submit" class="out" >Buscar</button><br /><br /><br />
+<div id="principal">
+    <div class="body-wrapper container">
+        <h2> Descarga de Imagenes </h2>
+        <br>
+        <form asp-controller="Image" asp-action="Search" method="get" role="form">
+            <div class="form-row">
+                <div class="col-auto">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend"> 
+                            <div class="input-group-text">Estación</div>
                         </div>
-                    </form>
-
-
-
-                    
-
+                        @Html.DropDownListFor(m => m.StationId,
+                                                new SelectList(Model.estaciones.Select(x => new { Value = x.Id, Text = x.Name}), "Value", "Text"),
+                                                "Estación", htmlAttributes: new { @class = "form-control" })
+                        <span asp-validation-for="estaciones" class="text-danger"></span>                       
+                    </div>
                 </div>
-
+                <div class="col-auto">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend"> 
+                            <div class="input-group-text">Fecha Inicial</div>
+                        </div>
+                        <input asp-for="Start" class="form-control" type="date">
+                        <span asp-validation-for="Start" class="text-danger"></span>                       
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend"> 
+                            <div class="input-group-text">Fecha Final</div>
+                        </div>
+                        <input asp-for="End" class="form-control" type="date">
+                        <span asp-validation-for="End" class="text-danger"></span>                     
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <button id="search" type="submit" class="btn btn-primary" >Buscar</button>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
-</section>
-
+</div>
 @section Scripts
 {
 
