@@ -126,6 +126,7 @@
                                 <input class="form-control" id="threshold_alerta_@i" name="threshold_alerta_@i" type="text" value=@Model.Conditions[i-1].Threshold>
                             </div>
                         </div>
+                        <a class="btn btn-danger" onclick="deleteConditionContainer(@i)"><i class="fa fa-x"></i></a>
                     </div>
                 }
             </div>
@@ -156,7 +157,6 @@
             if(!alert_input_changed.includes(input_id)) {
                 alert_input_changed.push(input_id);
             }
-            console.log(input_id);
         });
 
         function addSelectedAlertType(){
@@ -170,6 +170,8 @@
             $('#conditions_number').attr('value',i);
             let divContainer = $('<div></div>');
             divContainer.attr('class','condition-container form-row align-items-center');
+            divContainer.attr('id','condition-container_'+i)
+
 
             let selectStation = $('<select></select>');
             addAttributes(selectStation, 'estacion');
@@ -207,6 +209,13 @@
             addAttributes(inputValue, 'threshold');
             inputValue.attr('type','text');
             divContainer.append(buildField("Valor", inputValue, i));
+
+            let deleteButton = $('<a></a>').addClass('btn btn-danger');
+            deleteButton.attr('onclick','deleteConditionContainer('+i+')');
+            let icon = $('<i></i>').addClass('fa fa-remove');
+            deleteButton.append(icon);
+            divContainer.append(deleteButton);
+
             $("#conditions").append(divContainer);
 
             addStations();
@@ -357,6 +366,11 @@
         
         function changeFreqLabel(i){
             $("#valor_div_"+i).text('Frecuencia');
+        }
+
+        function deleteConditionContainer(idx){
+            i--;
+            $('#condition-container_'+idx).remove();
         }
 
     </script>

@@ -18,6 +18,15 @@ namespace WebApplication.Models
         public List<Condition> Conditions { get; set; }
         public bool Status { get; set; }
 
+        public int Frecuency { get; set; }
+
+        public long LastChecked { get; set; }
+
+        public Alert()
+        {
+            LastChecked = 0;
+            Status = true;
+        }
 
     }
 

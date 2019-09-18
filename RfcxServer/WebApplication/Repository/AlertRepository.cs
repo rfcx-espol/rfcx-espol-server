@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Linq;
 
 
 namespace WebApplication.Repository
@@ -162,6 +163,30 @@ namespace WebApplication.Repository
             }
         }
 
+        public IQueryable<Alert> GetAll()
+        {
+            try
+            {
+                return _context.Alerts.AsQueryable();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public IQueryable<Alert> GetByName(String searchTerm)
+        {
+           try
+            {
+                return _context.Alerts.AsQueryable().Where(a => a.Name.Contains(searchTerm));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            } 
+        }
+
         public bool Add(Alert item)
         {
             try
@@ -195,6 +220,24 @@ namespace WebApplication.Repository
         {
             var filter = Builders<Alert>.Filter.Eq("_id", ObjectId.Parse(alertId));
             var update = Builders<Alert>.Update.Set("Status", status);
+
+            try
+            {
+                UpdateResult actionResult = await _context.Alerts.UpdateOneAsync(filter, update);
+                return actionResult.IsAcknowledged
+                    && actionResult.ModifiedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public async Task<bool> updateLastChecked(string alertId, long lastChecked)
+        {
+            var filter = Builders<Alert>.Filter.Eq("_id", ObjectId.Parse(alertId));
+            var update = Builders<Alert>.Update.Set("LastChecked", lastChecked);
 
             try
             {

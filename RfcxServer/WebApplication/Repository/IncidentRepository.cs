@@ -7,6 +7,8 @@ using MongoDB.Driver;
 using WebApplication.DbModels;
 using WebApplication.IRepository;
 using WebApplication.Models;
+using System.Linq;
+
 
 namespace WebApplication.Repository
 {
@@ -117,5 +119,30 @@ namespace WebApplication.Repository
                 throw ex;
             }
         }
+
+
+        public IQueryable<Incident> GetAll()
+        {
+            try
+            {
+                return _context.Incidents.AsQueryable();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IQueryable<Incident> GetByDate(DateTime start, DateTime end)
+        {
+            try
+            {
+                return _context.Incidents.AsQueryable().Where(i => i.IncidentTime >= start).Where(i => i.IncidentTime <= end);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }

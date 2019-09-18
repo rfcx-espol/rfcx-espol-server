@@ -51,77 +51,42 @@ def checkConditions(alert):
     data -- datalist to check with alert's conditions
     """
 
-    # mFrecuency = alert["Frecuency"]
-    raiseAlert = False
-    mFrecuency = 5
-    conditions = alert["Conditions"]
-    for condition in conditions:
-        raiseCondition = False
-        stationId = condition["StationId"]
-        sensorId = condition["SensorId"]
-        dataset = getLatestDataByStation(
-            mFrecuency, int(stationId), int(sensorId))
-        if dataset.count() <= 0:
-            return False
-        if condition["Comparison"] == "MAYOR QUE":
-            for data in dataset:
-                if float(data["Value"]) > condition["Threshold"]:
-                    raiseCondition = True
-            if not raiseCondition:
+    mFrecuency = alert["Frecuency"]
+    if(alert["LastChecked"] > time.time() - (mFrecuency*60)):
+        return False
+    else:
+        raiseAlert = False
+        updateLastChecked(alert)
+        conditions = alert["Conditions"]
+        for condition in conditions:
+            raiseCondition = False
+            stationId = condition["StationId"]
+            sensorId = condition["SensorId"]
+            dataset = getLatestDataByStation(
+                mFrecuency, int(stationId), int(sensorId))
+            if dataset.count() <= 0:
                 return False
-        elif condition["Comparison"] == "MENOR QUE":
-            for data in dataset:
-                if float(data["Value"]) < condition["Threshold"]:
-                    print(float(data["Value"]))
-                    raiseCondition = True
-            if not raiseCondition:
-                return False
-        elif condition["Comparison"] == "IGUAL":
-            for data in dataset:
-                if float(data["Value"]) == condition["Threshold"]:
-                    print(float(data["Value"]))
-                    raiseCondition = True
-            if not raiseCondition:
-                return False
-    return True
-
-# # average
-# def checkConditions(alert):
-#     """
-#     Check all conditions in an alert. returns true if all conditions are met.
-
-#     Keyword arguments:
-#     alert -- dictionary of alert object
-#     data -- datalist to check with alert's conditions
-#     """
-
-#     # mFrecuency = alert["Frecuency"]
-#     mFrecuency = 5
-#     conditions = alert["Conditions"]
-#     for condition in conditions:
-#         raiseCondition = False
-#         stationId = condition["StationId"]
-#         sensorId = condition["SensorId"]
-
-#         dataset = getLatestDataByStation(mFrecuency, stationId, sensorId)
-#         avg = sum(float(data["value"]) for data in dataset)
-#         print(avg)
-#         if condition["Comparison"] == "MORE THAN":
-#             if avg > condition["threshold"]:
-#                 raiseCondition = True
-#             else:
-#                 return False
-#         elif condition["Comparison"] == "LESS THAN":
-#             if avg < condition["threshold"]:
-#                 raiseCondition = True
-#             else:
-#                 return False
-#         elif condition["Comparison"] == "EQUALS":
-#             if avg == condition["threshold"]:
-#                 raiseCondition = True
-#             else:
-#                 return False
-#     return True
+            if condition["Comparison"] == "MAYOR QUE":
+                for data in dataset:
+                    if float(data["Value"]) > condition["Threshold"]:
+                        raiseCondition = True
+                if not raiseCondition:
+                    return False
+            elif condition["Comparison"] == "MENOR QUE":
+                for data in dataset:
+                    if float(data["Value"]) < condition["Threshold"]:
+                        print(float(data["Value"]))
+                        raiseCondition = True
+                if not raiseCondition:
+                    return False
+            elif condition["Comparison"] == "IGUAL":
+                for data in dataset:
+                    if float(data["Value"]) == condition["Threshold"]:
+                        print(float(data["Value"]))
+                        raiseCondition = True
+                if not raiseCondition:
+                    return False
+        return True
 
 
 def createIncident(alert):
@@ -136,6 +101,21 @@ def createIncident(alert):
             'RaisedCondition': str(alert["Conditions"])}
     r = requests.post(url="http://localhost:5000/api/Incident",
                       data=json.dumps(data), headers=headers)
+    return r.status_code
+
+
+def updateLastChecked(alert):
+    """
+    Sends http patch request to create to update the last time an alert was checked.
+
+    Keyword arguments:
+    alert -- dictionary of alert object
+    """
+    headers = {'Content-type': 'application/json'}
+    data = int(time.time())
+    r = requests.patch(url="http://localhost:5000/api/alert/" + str(alert['_id']) + "/LastChecked",
+                       data=json.dumps(data), headers=headers)
+    print(r.status_code)
     return r.status_code
 
 

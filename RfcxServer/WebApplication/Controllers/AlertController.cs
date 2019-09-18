@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using MongoDB.Bson;
 using System.Linq;
 using System;
+using WebApplication.ViewModel;
+using X.PagedList;
+
 
 namespace WebApplication.Controllers
 {
@@ -54,6 +57,7 @@ namespace WebApplication.Controllers
             List<Condition> condition_list = new List<Condition>();
             alert.Name = Request.Form["nombre_alerta"];
             alert.AlertType = Request.Form["tipo_alerta"];
+            alert.Frecuency = Int32.Parse(Request.Form["frecuencia_alerta"]);
             string mails = Request.Form["correos_notificacion"];
             alert.Mailto = mails.Split(";").ToList();
             alert.Message = Request.Form["mensaje_alerta"];
@@ -66,9 +70,8 @@ namespace WebApplication.Controllers
                 condition.Threshold = Int32.Parse(Request.Form["threshold_alerta" + i.ToString()]);
                 condition_list.Add(condition);
             }
-            alert.Status = true;
             alert.Conditions = condition_list;
-            bool result =_AlertRepository.Add(alert);
+            bool result = _AlertRepository.Add(alert);
             setTempData(result, "createResult");
             return Redirect("index");
         }
@@ -93,7 +96,6 @@ namespace WebApplication.Controllers
                 condition.Threshold = Int32.Parse(Request.Form["threshold_alerta_" + i.ToString()]);
                 condition_list.Add(condition);
             }
-            alert.Status = true;
             alert.Conditions = condition_list;
             _AlertRepository.UpdateAlert(id, alert);
             return Redirect("index");
@@ -102,7 +104,7 @@ namespace WebApplication.Controllers
             setTempData(result, "editResult");            
             Redirect("index");
              */
-            
+
         }
 
         [HttpDelete("{id}")]
@@ -138,6 +140,15 @@ namespace WebApplication.Controllers
             return result;
         }
 
+        [HttpPatch("{alertId}/LastChecked")]
+        public async Task<bool> UpdateLastChecked([FromRoute]string alertId, [FromBody] long LastChecked)
+        {
+            Console.WriteLine(LastChecked);
+            bool result = await _AlertRepository.updateLastChecked(alertId, LastChecked);
+            return result;
+        }
+
+
 
         [HttpPatch("{alertId}/condition")]
         public async Task<bool> AddCondition(string alertId, [FromBody] Condition condition)
@@ -148,15 +159,6 @@ namespace WebApplication.Controllers
             return await _AlertRepository.UpdateAlert(alertId, Alert);
         }
 
-
-        // [HttpPatch("{alertId}/condition/{conditionId}")]
-        // public async Task<bool> EditCondition(int alertId, int conditionId, [FromBody] Condition condition)
-        // {
-
-        //     var Alert = await _AlertRepository.GetAlert(alertId.ToString()) ?? new Alert();
-        //     Condition c = _AlertRepository.getConditionObject(alertId, conditionId);
-        //     Alert.Conditions
-        // }
 
         [HttpDelete("{alertId}/condition/{conditionId}")]
         public async Task<bool> DeleteCondition(string alertId, string conditionId)
@@ -182,16 +184,31 @@ namespace WebApplication.Controllers
             bool result = await _AlertRepository.editCondition(alertId, conditionId, condition);
             setTempData(result, "editResult");
             return result;
-            
+
         }
 
         [HttpGet("index")]
-        public IActionResult Index()
+        public IActionResult Index(AlertViewModel alertVM)
         {
+            var pageNumber = (alertVM.Pnumber == 0) ? 1 : alertVM.Pnumber;
+            var pageSize = 10;
+            var alerts = _AlertRepository.GetAll().ToPagedList(pageNumber, pageSize);
+            alertVM.Alerts = alerts;
             string[] variables = new string[]{"createResult","editResult","deleteResult"};
             initializeTempData(variables);
-            IEnumerable<Alert> alerts = _AlertRepository.Get();
-            return View(alerts);
+            return View(alertVM);
+        }
+
+        [HttpPost()]
+        public IActionResult List(AlertViewModel alertVM)
+        {
+            var pageNumber = (alertVM.Pnumber == 0) ? 1 : alertVM.Pnumber;
+            var pageSize = 10;
+            var alerts = _AlertRepository.GetByName(alertVM.FilterName).ToPagedList(pageNumber, pageSize);
+            alertVM.Alerts = alerts;
+            string[] variables = new string[]{"createResult","editResult","deleteResult"};
+            initializeTempData(variables);
+            return View(alertVM);
         }
 
         [HttpGet("create")]
@@ -207,14 +224,17 @@ namespace WebApplication.Controllers
             return View(alert);
         }
 
-        private void initializeTempData(string[] variables){
-            foreach(string variable in variables){
-                if(TempData[variable] == null)
-                TempData[variable] = 0;
+        private void initializeTempData(string[] variables)
+        {
+            foreach (string variable in variables)
+            {
+                if (TempData[variable] == null)
+                    TempData[variable] = 0;
             }
         }
 
-        private void setTempData(bool result, string variable){
+        private void setTempData(bool result, string variable)
+        {
             if (result)
                 TempData[variable] = 1;
             else
