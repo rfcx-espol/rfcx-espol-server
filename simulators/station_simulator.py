@@ -25,6 +25,15 @@ to insert documents to Data collection I need :
         "Units" : "Celcius", //generated
         "Location" : "Environment" //got from Sensor
     }
+    data = {
+        "StationId" : station_id, #got it 
+        "SensorId" : d["Id"], #got it 
+        "Timestamp" : t,
+        "Type" : d["Type"], # got it 
+        "Value" : -25.11, 
+        "Units" : "Celcius", #got it 
+        "Location" : d["Location"] #got it
+    }
 """
 #get id of station using station name
 station_document = station_collection.find_one( { "Name": "Estacion Sansung phone" })
@@ -34,20 +43,46 @@ print(station_document['Id'])
 #get details of sensors such as Id, Type and Location
 sensor_documents = sensor_collection.find( { "StationId": station_id } )
 t = int(time.time())
+
+class Data(object):
+
+    def __init__(self , *args, **kwargs):
+        self.StationId = kwargs.get('StationId')
+        self.SensorId  = kwargs.get('SensorId')
+        self.Type      = kwargs.get('Type')
+        self.Location  = kwargs.get('Location')        
+        self.Units     = self.determineUnits(self.Type)
+
+    def determineUnits(self, typeOfSensor):
+        if typeOfSensor == 'Temperature' : 
+            units = 'Celsius'
+        elif typeOfSensor == 'Humidity':
+            units = 'Percentaje'
+        else : 
+            units = 'Unknown'
+        return units
+
+    def toSimulatedData(self):
+        self.Timestamp  = int(time.time())
+        self.Value = 2
+        print(vars(self))
+    
+ 
+
+sensors = {}
 for d in sensor_documents :
-    data = {
-        "StationId" : station_id, 
-        "SensorId" : d["Id"],
-        "Timestamp" : t,
-        "Type" : d["Type"], 
-        "Value" : -25.11,
-        "Units" : "Celcius", 
-        "Location" : d["Location"] 
-    }
+    data = Data(
+        StationId = station_id, 
+        SensorId  = d["Id"],
+        Type      = d["Type"],
+        Location  = d["Location"] 
+    )    
     #Here I extract the data
-    #so, here I can Up
-    data_collection.insert_one(data)
-    print(data)
+    #so, here I can insert
+    #data_collection.insert_one(data)
+    #print(vars(data))
+    data.toSimulatedData()
+    #print(d)
 
 
 """
