@@ -51,9 +51,6 @@ namespace WebApplication.Controllers
 
         }
 
-        
-        
-
         [HttpGet("index")]
         public IActionResult Index()
         {
@@ -86,14 +83,44 @@ namespace WebApplication.Controllers
         }
 
         
-        [HttpGet("download")]
-        public FileResult download([FromQuery]string nameFile, [FromQuery]string station)
+      
+        /* public FileResult download([FromQuery]string nameFile, [FromQuery]string station)
         {
-            return File(Url.Content("C:\\var\\rfcx-espol-server\\resources\\images\\"+station+"\\"+nameFile), "image/jpg", "archivo.jpg");
-            
+            var fs = System.IO.File.OpenRead("C:/var/rfcx-espol-server/resources/images/"+station+"/"+nameFile);
+            return File(fs, "image/jpg", nameFile);
+        }*/
+
+[HttpGet("download")]
+public FileResult DownloadFile(string namefile, string station)
+        {
+            string[] files = namefile.Split(',');
+            if (files.Length == 1){
+                /*DirectoryInfo DI = new DirectoryInfo("C:/var/rfcx-espol-server/resources/images/"+station);*/
+                DirectoryInfo DI = new DirectoryInfo("/var/rfcx-espol-server/resources/images/"+station);
+                string fileAddress = DI.FullName + '/' + namefile;
+                var net = new System.Net.WebClient();
+                var data = net.DownloadData(fileAddress);
+                var content = new System.IO.MemoryStream(data);
+
+                return File(content, "image/jpg", namefile);
+            } else {
+                var root = "C:/var/rfcx-espol-server/resources/images/";
+
+                if (Directory.Exists("temp"))
+                    Directory.Delete("temp", true);
+                Directory.CreateDirectory("temp");
+
+                foreach (var file in files)
+                    System.IO.File.Copy($"{root}{station}/{file}", "temp/" + file);
+
+                if (System.IO.File.Exists(root + "images.zip"))
+                    System.IO.File.Delete(root + "images.zip");
+
+                System.IO.Compression.ZipFile.CreateFromDirectory("temp", root + "images.zip");
+
+                return PhysicalFile(root + "images.zip", "application/zip", "images.zip");
+            }
         }
-
-
 
         [HttpGet("list")]
         public async Task<ActionResult> List([FromQuery]long starttime, [FromQuery]long endtime, [FromQuery]int page=1, [FromQuery]int rows=25)
@@ -103,11 +130,8 @@ namespace WebApplication.Controllers
             DateTime end = epoch.AddSeconds(endtime);
             var arr = await _ImageRepository.ListImages(start, end, page, rows);
             return new ContentResult(){ Content = JsonConvert.SerializeObject(arr)};
-        }
-
-       
+        }    
         
-
         //[HttpGet("{_id}")]
         //public async Task<ActionResult> Show(string _id)
         //{
@@ -117,9 +141,10 @@ namespace WebApplication.Controllers
         //}
 
         [HttpPut]
-        public async Task<ActionResult> AddTag(int ImageId, string Tag)
+        [Route("{Id}")]
+        public async Task<ActionResult> AddTag(int Id, string tag)
         {
-            await _ImageRepository.AddTag(ImageId, Tag);
+            await _ImageRepository.AddTag(Id, tag);
             return Content("Actualizado");
         }
 
