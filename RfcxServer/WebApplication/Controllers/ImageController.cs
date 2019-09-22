@@ -104,7 +104,7 @@ public FileResult DownloadFile(string namefile, string station)
 
                 return File(content, "image/jpg", namefile);
             } else {
-                var root = "C:/var/rfcx-espol-server/resources/images/";
+                var root = "/var/rfcx-espol-server/resources/images/";
 
                 if (Directory.Exists("temp"))
                     Directory.Delete("temp", true);
