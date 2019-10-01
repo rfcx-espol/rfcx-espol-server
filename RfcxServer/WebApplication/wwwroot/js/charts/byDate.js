@@ -24,6 +24,8 @@ filterButton.addEventListener("click", function(){
     );
     let dataUrl = `api/Station/${selectedStationId}/AvgPerDate?StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`;
     let sensorsUrl = ` api/Station/${selectedStationId}/Sensor`;
+    console.log(dataUrl);
+    console.log(sensorsUrl);
     let dataPromise = $.getJSON(dataUrl);
     let sensorsPromise = $.getJSON(sensorsUrl);
 

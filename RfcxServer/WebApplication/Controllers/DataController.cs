@@ -3,6 +3,8 @@ using WebApplication.IRepository;
 using System.Threading.Tasks;
 using WebApplication.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Linq;
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
@@ -370,5 +372,80 @@ namespace WebApplication.Controllers
                 return data.ToJson() ;
             }
 
+            [HttpGet]
+            [Route("api/test")]
+            public Task<string> testA(
+                [FromQuery] int StationId,
+                [FromQuery] long StartTimestamp,
+                [FromQuery] long EndTimestamp
+            )
+            {
+                return this._testA(
+                    StationId,
+                    StartTimestamp, 
+                    EndTimestamp
+                );
+            }
+
+            //this api is for testing remove it once accomplishes it purpose
+            private async Task<string> _testA(
+                int StationId,
+                long StartTimestamp,
+                long EndTimestamp
+            )
+            {
+                var sensors = await _SensorRepository.GetByStation(StationId);
+                
+                var arr = new JArray();
+                foreach(var s in sensors){
+                    var SensorId = s.Id;                                
+                    //Console.WriteLine(s.Id);
+
+                    dynamic obj = new JObject();
+                    IEnumerable<BsonDocument> data_ = await _DataRepository.testA(
+                        StationId,
+                        SensorId,
+                        StartTimestamp, 
+                        EndTimestamp
+                    ); 
+                    
+                    obj.SensorId = SensorId;
+                    obj.aggregates = new JArray();
+                    
+                    foreach(var x in data_){
+
+                        //get values from the result of mongo aggregation
+                        var date    = x["date"].ToUniversalTime();
+                        var average = x["average"].ToDouble();
+
+                        dynamic aggregate = new JObject();
+                        aggregate.average = average;
+                        aggregate.date    = date;
+
+                        obj.aggregates.Add(aggregate);
+                    }
+                    //now fill empty spots                    
+                    DateTime startDate = getUtcDateFromTimestampInSeconds(StartTimestamp);
+                    DateTime finishDate = getUtcDateFromTimestampInSeconds(EndTimestamp);
+                    int daysInRange = finishDate.Subtract(startDate).Days;
+                    DateTime[] datesSpan = Enumerable.Range( 0 , finishDate.Subtract(startDate).Days )
+                        .Select(offset => startDate.AddDays(offset))
+                        .ToArray();
+
+                    foreach(var qq in datesSpan){                        
+                        Console.WriteLine(qq);
+                    }
+                    arr.Add(obj);
+                }            
+                return arr.ToString(); 
+            }
+            
+            private static DateTime getUtcDateFromTimestampInSeconds(long timestamp){
+                System.DateTime dateAtStartOfUnixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, 0,DateTimeKind.Utc);
+                DateTime date_local = dateAtStartOfUnixEpoch.AddMilliseconds(timestamp*1000);
+                DateTime date_utc = DateTime.SpecifyKind(date_local, DateTimeKind.Utc);
+                return date_utc;
+            }
         }
+       
 }

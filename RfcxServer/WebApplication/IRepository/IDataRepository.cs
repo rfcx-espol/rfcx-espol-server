@@ -57,5 +57,12 @@ namespace WebApplication.IRepository
             long StartTimestamp,
             long EndTimestamp
         ); 
+
+        Task<IEnumerable<BsonDocument>> testA(
+            int StationId,
+            int SensorId,
+            long StartTimestamp,
+            long EndTimestamp
+        ); 
     }
 }

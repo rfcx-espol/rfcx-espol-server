@@ -757,6 +757,73 @@ namespace WebApplication.Repository
             return await aggregatedResult;
         }
 
-        
+        public async Task<IEnumerable<BsonDocument>> testA(
+            int StationId,            
+            int SensorId,
+            long StartTimestamp,
+            long EndTimestamp
+        )
+        {
+                        
+            //If need pass parameters to stages, build a string
+            BsonDocument addFieldsStage = BsonDocument.Parse(
+                @"
+                    {
+                        $addFields : {
+                            date : { 
+                                $toDate : {
+                                    $multiply : [ '$Timestamp', 1000 ]
+                                }
+                            }
+                        }  
+                    }
+                "
+            );
+            
+            BsonDocument groupStage = BsonDocument.Parse(
+                @"
+                    {
+                        $group : {
+                            _id : {
+                                year      : { $year       : '$date' },
+                                month     : { $month      : '$date' },
+                                dayOfMonth: { $dayOfMonth : '$date' }
+                            },
+                            average : { 
+                                $avg :'$Value'
+                            }
+                        }
+                    }
+                "                             
+            );
+             BsonDocument projectStage = BsonDocument.Parse(
+                @"
+                    {
+                        $project : {
+                            _id  : 0 ,
+                            date : {
+                                $dateFromParts : {
+                                    year  : '$_id.year',
+                                    month : '$_id.month',
+                                    day   : '$_id.dayOfMonth',
+                                }
+                            }                                                       
+                            average: 1
+                        }
+                    }
+                "                             
+            );
+            //Use mongodb driver to do aggregation of data
+            var aggregatedResult = _context.Datas.Aggregate()
+                .Match( d => d.SensorId  == SensorId  )
+                .Match( d => d.StationId == StationId )
+                .Match( d => StartTimestamp <= d.Timestamp && d.Timestamp <= EndTimestamp )                
+                .AppendStage<BsonDocument>(addFieldsStage)
+                .AppendStage<BsonDocument>(groupStage)                
+                .AppendStage<BsonDocument>(projectStage)
+                .ToListAsync();
+
+            return await aggregatedResult;
+        }
     }
 }

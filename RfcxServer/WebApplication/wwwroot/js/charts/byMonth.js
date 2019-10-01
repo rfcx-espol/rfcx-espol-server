@@ -19,7 +19,7 @@ filterButton.addEventListener("click", function(){
     let endTimestamp = startDateMoment.add(1,"years").unix();
     let validDateRange = true;
     let dataUrl = `api/Station/${selectedStationId}/AvgPerMonth?StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`;
-    //console.log(dataUrl);
+    console.log(dataUrl);
     let sensorsUrl = ` api/Station/${selectedStationId}/Sensor`;
 
     let dataPromise = $.getJSON(dataUrl);
