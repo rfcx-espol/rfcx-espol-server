@@ -103,9 +103,14 @@ while True:
     print("\n --- Simulating station {}... ---".format(input_station_name))
     for d in data_abstractions:        
         simulated_data = d.toSimulatedData()
+
         #so, here I can insert
         #data_collection.insert_one(simulated_data)
+        
+        #to avoid error on inserting iteratively -> https://stackoverflow.com/questions/5906493/pymongo-insert-inside-the-loop
+        #simulated_data.pop('_id', None)
+
         #or print it
         pprint.pprint(simulated_data)
         print()
-    time.sleep(5)
+    time.sleep(10)
