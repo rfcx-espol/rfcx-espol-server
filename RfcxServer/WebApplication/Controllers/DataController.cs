@@ -409,31 +409,19 @@ namespace WebApplication.Controllers
                         EndTimestamp
                     ); 
                     
-                    obj.SensorId = SensorId;
+                    obj.SensorId = SensorId;                
                     obj.aggregates = new JArray();
-                    
                     foreach(var x in data_){
-
                         //get values from the result of mongo aggregation
                         var date    = x["date"].ToUniversalTime();
+                        Console.WriteLine(x);
                         var average = x["average"].ToDouble();
-
+ 
                         dynamic aggregate = new JObject();
                         aggregate.average = average;
                         aggregate.date    = date;
-
+ 
                         obj.aggregates.Add(aggregate);
-                    }
-                    //now fill empty spots                    
-                    DateTime startDate = getUtcDateFromTimestampInSeconds(StartTimestamp);
-                    DateTime finishDate = getUtcDateFromTimestampInSeconds(EndTimestamp);
-                    int daysInRange = finishDate.Subtract(startDate).Days;
-                    DateTime[] datesSpan = Enumerable.Range( 0 , finishDate.Subtract(startDate).Days )
-                        .Select(offset => startDate.AddDays(offset))
-                        .ToArray();
-
-                    foreach(var qq in datesSpan){                        
-                        Console.WriteLine(qq);
                     }
                     arr.Add(obj);
                 }            

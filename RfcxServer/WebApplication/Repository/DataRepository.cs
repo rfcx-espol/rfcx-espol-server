@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using WebApplication.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -764,9 +765,27 @@ namespace WebApplication.Repository
             long EndTimestamp
         )
         {
-                        
+                                    
+            DateTime startDate = getUtcDateFromTimestampInSeconds(StartTimestamp);
+            DateTime finishDate = getUtcDateFromTimestampInSeconds(EndTimestamp);
+            int daysInRange = finishDate.Subtract(startDate).Days;
+            
+            DateTime[] datesSpan = Enumerable.Range( 0 , finishDate.Subtract(startDate).Days )
+                .Select(offset => startDate.AddDays(offset) )
+                .ToArray();
+            foreach(var d in datesSpan){                
+                //
+                Console.WriteLine("day");
+                Console.WriteLine(d.Hour);
+            }
+
+            DateTime h = DateTime.SpecifyKind(new DateTime(2019,10,1,0,0,0), DateTimeKind.Utc);
+            DateTime c = new DateTime(2019,10,1,0,0,0);
+            BsonDateTime a = new BsonDateTime(c);
+            Console.WriteLine(c.ToUniversalTime());
+            Console.WriteLine(h.ToUniversalTime());
             //If need pass parameters to stages, build a string
-            BsonDocument addFieldsStage = BsonDocument.Parse(
+            BsonDocument addDateFieldsStage = BsonDocument.Parse(
                 @"
                     {
                         $addFields : {
@@ -780,7 +799,7 @@ namespace WebApplication.Repository
                 "
             );
             
-            BsonDocument groupStage = BsonDocument.Parse(
+            BsonDocument groupByDateStage = BsonDocument.Parse(
                 @"
                     {
                         $group : {
@@ -796,7 +815,7 @@ namespace WebApplication.Repository
                     }
                 "                             
             );
-             BsonDocument projectStage = BsonDocument.Parse(
+            BsonDocument projectToDateStage = BsonDocument.Parse(
                 @"
                     {
                         $project : {
@@ -813,17 +832,110 @@ namespace WebApplication.Repository
                     }
                 "                             
             );
+            //This stage is required for the stage to fill missing values
+            BsonDocument shrinkToOneArrayStage = BsonDocument.Parse(
+                @"
+                    {
+                        $group: {
+                            _id: null,
+                            points: { $push: '$$ROOT' }
+                        }
+                    }
+                "
+            );
+           
+            BsonDocument fillMissingDatesStage = new BsonDocument {
+                { "$project" , new BsonDocument{
+                        { "points", new BsonDocument {
+                            { "$map" , new BsonDocument {
+                                { "input" , new BsonArray(datesSpan) },
+                                { "as" , "date"},
+                                { "in", new BsonDocument{
+                                    { "$let" , new BsonDocument{
+                                        { "vars", new BsonDocument{
+                                            { "dateIndex", new BsonDocument{
+                                                { "$indexOfArray" , new BsonArray{ "$points.date", "$$date" } }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        { "in", new BsonDocument{
+                                            { "$cond" , new BsonDocument{
+                                                { "if" , new BsonDocument{
+                                                    { "$ne" , new BsonArray { "$$dateIndex", -1 } }
+                                                  }
+                                                },
+                                                { "then" , new BsonDocument{
+                                                    { "$arrayElemAt" , new BsonArray { "$points", "$$dateIndex" } }                                  
+                                                  }
+                                                },
+                                                { "else" , new BsonDocument { 
+                                                    { "date" , "$$date"},
+                                                    { "average", -1 }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                    }
+                }
+            };             
+
+            //after fill missing values, unwind values
+            BsonDocument unwindStage = BsonDocument.Parse(
+                @"
+                    {
+                        $unwind: '$points'
+                    }
+                "
+            );
+            //promote original object to top level
+            BsonDocument finalStage = BsonDocument.Parse(
+                @"
+                    {
+                        $replaceRoot: {
+                            newRoot: '$points'
+                        }
+                    }
+                "
+            );
             //Use mongodb driver to do aggregation of data
             var aggregatedResult = _context.Datas.Aggregate()
                 .Match( d => d.SensorId  == SensorId  )
                 .Match( d => d.StationId == StationId )
                 .Match( d => StartTimestamp <= d.Timestamp && d.Timestamp <= EndTimestamp )                
-                .AppendStage<BsonDocument>(addFieldsStage)
-                .AppendStage<BsonDocument>(groupStage)                
-                .AppendStage<BsonDocument>(projectStage)
+                .AppendStage<BsonDocument>(addDateFieldsStage)
+                .AppendStage<BsonDocument>(groupByDateStage)                
+                .AppendStage<BsonDocument>(projectToDateStage)                            
+                .AppendStage<BsonDocument>(shrinkToOneArrayStage)                                         
+                .AppendStage<BsonDocument>(fillMissingDatesStage)                                                         
+                .AppendStage<BsonDocument>(unwindStage)
+                .AppendStage<BsonDocument>(finalStage)
                 .ToListAsync();
-
+            //Console.WriteLine(aggregatedResult);
             return await aggregatedResult;
+        }
+        private static DateTime getUtcDateFromTimestampInSeconds(long timestamp){
+            System.DateTime dateAtStartOfUnixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, 0,DateTimeKind.Utc);
+            DateTime date_local = dateAtStartOfUnixEpoch.AddMilliseconds(timestamp*1000);
+            
+            DateTime date_utc = DateTime.SpecifyKind(date_local, DateTimeKind.Utc);
+            Console.WriteLine(date_utc);
+            Console.WriteLine(GetDateZeroTime(date_utc));
+            return GetDateZeroTime(date_utc);
+        }
+        public static DateTime GetDateZeroTime(DateTime date){
+            //important to have it in this way to create utc date at 0,0,0 time
+            return DateTime.SpecifyKind(new DateTime(date.Year, date.Month, date.Day, 0, 0, 0) , DateTimeKind.Utc);
         }
     }
 }
