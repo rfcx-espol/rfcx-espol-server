@@ -89,7 +89,9 @@ namespace WebApplication.Controllers
             var sensors = await _SensorRepository.GetByStation(StationId);                
             var arr = new JArray();
             foreach(var s in sensors){
-                var SensorId = s.Id;                                
+                var SensorId = s.Id;
+                var SensorType = s.Type;                 
+                var SensorLocation = s.Location;                           
                 //Console.WriteLine(s.Id);
 
                 dynamic obj = new JObject();
@@ -101,6 +103,8 @@ namespace WebApplication.Controllers
                 ); 
                 
                 obj.SensorId = SensorId;                
+                obj.SensorType = SensorType;
+                obj.SensorLocation = SensorLocation;
                 obj.aggregates = new JArray();
                 foreach(var x in data_){
                     //extract values from the result of mongo aggregation
@@ -144,7 +148,9 @@ namespace WebApplication.Controllers
             var sensors = await _SensorRepository.GetByStation(StationId);                
             var arr = new JArray();
             foreach(var s in sensors){
-                var SensorId = s.Id;                                
+                var SensorId = s.Id;                
+                var SensorType = s.Type;                 
+                var SensorLocation = s.Location;                    
                 //Console.WriteLine(s.Id);
 
                 dynamic obj = new JObject();
@@ -155,7 +161,9 @@ namespace WebApplication.Controllers
                     EndTimestamp
                 ); 
                 
-                obj.SensorId = SensorId;                
+                obj.SensorId = SensorId;                                  
+                obj.SensorType = SensorType;
+                obj.SensorLocation = SensorLocation;
                 obj.aggregates = new JArray();
                 foreach(var x in data_){
                     //extract values from the result of mongo aggregation
@@ -197,7 +205,9 @@ namespace WebApplication.Controllers
             var sensors = await _SensorRepository.GetByStation(StationId);                
             var arr = new JArray();
             foreach(var s in sensors){
-                var SensorId = s.Id;                                
+                var SensorId = s.Id;                                   
+                var SensorType = s.Type;                 
+                var SensorLocation = s.Location;                    
                 //Console.WriteLine(s.Id);
 
                 dynamic obj = new JObject();
@@ -208,7 +218,9 @@ namespace WebApplication.Controllers
                     EndTimestamp
                 ); 
                 
-                obj.SensorId = SensorId;                
+                obj.SensorId = SensorId;                                                   
+                obj.SensorType = SensorType;
+                obj.SensorLocation = SensorLocation;    
                 obj.aggregates = new JArray();
                 foreach(var x in data_){
                     //extract values from the result of mongo aggregation
@@ -254,6 +266,7 @@ namespace WebApplication.Controllers
             var arr = new JArray();
             foreach(var s in stations){
                 var StationId = s.Id;                              
+                var StationName = s.Name;   
                 //Console.WriteLine(s.Id);
 
                 dynamic obj = new JObject();
@@ -266,6 +279,7 @@ namespace WebApplication.Controllers
                 ); 
                 
                 obj.StationId = StationId;
+                obj.StationName = StationName;
                 obj.aggregates = new JArray();
                 foreach(var x in data_){
                     //extract values from the result of mongo aggregation

@@ -21,18 +21,79 @@ filterButton.addEventListener("click", function(){
         endTimestamp,
         moment().unix()     
     );
-    let dataUrl = `api/Station/${selectedStationId}/AvgPerHour?StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`; 
-    let sensorsUrl = ` api/Station/${selectedStationId}/Sensor`;
+    //let dataUrl = `api/Station/${selectedStationId}/AvgPerHour?StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`; 
+    let dataUrl = `api/testB?StationId=${selectedStationId}&StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`;
+    //let sensorsUrl = ` api/Station/${selectedStationId}/Sensor`;
 
     
     let dataPromise = $.getJSON(dataUrl);
-    let sensorsPromise = $.getJSON(sensorsUrl);
+    //let sensorsPromise = $.getJSON(sensorsUrl);
 
     if ( !validDateRange ) {
         alert("Los valores en el rango a filtrar son inválidos. Es probable que esté tratando de filtrar valores que aún no existen.");
     } else {
-        $.when( sensorsPromise , dataPromise)
-        .done(function(sensorsResponse, dataResponse) {
+        $.when( dataPromise)
+        .done(function( dataResponse) {
+            
+            dataResponse.forEach(function(data){
+                let sensorId = data.SensorId;                
+                let sensorType = data.SensorType;                           
+                let sensorLocation = data.SensorLocation;
+                let rawDataPointsValues = data.aggregates.filter(element => element.average !=-1 ).map( element => element.average ); 
+                let basicStatistics = computeBasicStatistics(rawDataPointsValues);
+
+                let dataPoints = data.aggregates.map(function(element){
+                    let hour =  element.hour;
+                    let value = element.average;
+
+                    //format x value
+                    let currentDate = new Date();//we dont care about the date just the hours                
+                    let x = currentDate.setHours(hour);
+
+                    //format y value
+                    let y = (value == -1) ? null : formatFloat(value);
+                    
+                    return {
+                        "x" : x,
+                        "y" : y
+                    };
+                });
+
+                let chartDivId = `chart_${sensorId}`;
+                let chartDiv = makeChartDiv(
+                    chartDivId,
+                    basicStatistics
+                );
+
+                if ( $(`div#_${chartDivId}.card`).length ) {
+                    $(`div#_${chartDivId}.card`).remove(); 
+                }
+                $("div.chartsContainer").append(chartDiv); 
+
+                //create chart                        
+                let chart = aggregationChart({
+                    chartDivId : chartDivId,                    
+                    chartTitle : "",
+                    axisYTitle : sensorType,
+                    axisXFormat: "HH:00"
+                });
+
+                let toolTipContent = `{y} ${unitsFromSensorType(sensorType)}`;
+                let nameOfData = `${sensorType} ${sensorLocation}`;
+                chart.options.data.push({         
+                    legendMarkerType: "circle",
+                    toolTipContent: toolTipContent,
+                    showInLegend: true,
+                    name : nameOfData,
+                    xValueType: "dateTime",
+                    type : "line",                                        
+                    markerSize: 5,
+                    dataPoints: dataPoints
+                });
+                //render changes
+                chart.render();  
+                console.log(data);
+            /*
             let sensors = sensorsResponse[0];
 
             if( dataResponse[0].length < 1 ) {
@@ -118,7 +179,8 @@ filterButton.addEventListener("click", function(){
                 });
                 //render changes
                 chart.render();                                   
-            });    
+            });    */
+            });
         });
     }  
 });
@@ -166,6 +228,7 @@ function aggregationChart({
 
 //place datapoints if between two datapoints there was supposed to be a value.
 //different from the used in realtime chart
+/*
 function addNullPoints_(
     dataPoints,
     startTimestamp,
@@ -187,7 +250,7 @@ function addNullPoints_(
         return [];
     }
 };
-
+*/
 function computeBasicStatistics(values){
 
     if (values.length > 0){
@@ -251,10 +314,11 @@ function formatFloat(value){
 };
 
 //compare function to be used in sort method
+/*
 function byTimestamp(a,b){
     return a.Timestamp - b.Timestamp;
 }
-
+*/
 function unitsFromSensorType(sensorType){
     let units;
     switch(sensorType){

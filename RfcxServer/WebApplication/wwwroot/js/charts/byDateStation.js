@@ -25,17 +25,89 @@ filterButton.addEventListener("click", function(){
         endTimestamp,
         moment().unix()     
     );
-    let dataUrl = `api/AvgPerDateStation?SensorType=${sensorType}&SensorLocation=${sensorLocation}&StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`;
-    let stationsUrl = ` api/Station/`;
+    //let dataUrl = `api/AvgPerDateStation?SensorType=${sensorType}&SensorLocation=${sensorLocation}&StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`;
+    let dataUrl = `api/testD?SensorType=${sensorType}&SensorLocation=${sensorLocation}&StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`;
+        
+    //let stationsUrl = ` api/Station/`;
 
     let dataPromise = $.getJSON(dataUrl);
-    let stationsPromise = $.getJSON(stationsUrl);
+    //let stationsPromise = $.getJSON(stationsUrl);
 
     if ( !validDateRange ) {
         alert("Los valores en el rango a filtrar son inválidos. Es probable que esté tratando de filtrar valores que aún no existen.");
     } else {
-        $.when( stationsPromise , dataPromise)
-        .done(function(stationsResponse, dataResponse) {
+        $.when( dataPromise)
+        .done(function( dataResponse) {
+
+            //This chart is unique, and basic statistics involve data from all stations           
+            let chartDivId = `chartAvgPerDateBetweenStations`;
+            let chartDiv = makeChartDiv({
+                chartDivId: chartDivId,
+                basicStatistics : null
+            });
+            
+            if ( $(`div#_${chartDivId}.card`).length ) {
+                $(`div#_${chartDivId}.card`).remove(); 
+            }
+            $("div.chartsContainer").append(chartDiv);            
+        
+        
+            //create chart                        
+            let axisYTitle = `${sensorType} ${sensorLocation}`;
+            let chart = aggregationChart({
+                chartDivId : chartDivId,                    
+                chartTitle : "",
+                axisYTitle : axisYTitle,
+                axisXFormat: "DD MMM YY"
+            });
+
+            let allValuesForBasicStatistics = [];//gather all values to compute basic statistics
+            dataResponse.forEach(function(data){
+                let stationId = data.StationId;
+                let stationName = data.StationName;
+                let rawDataPointsValues = data.aggregates.filter(element => element.average !=-1 ).map( element => element.average ); 
+                allValuesForBasicStatistics = allValuesForBasicStatistics.concat(rawDataPointsValues);
+
+                let dataPoints = data.aggregates.map(function(element){
+                    let date =  element.date;
+                    let value = element.average;
+
+                    //format x value
+                    let x = new Date(date);
+
+                    //format y value
+                    let y = (value == -1) ? null : formatFloat(value);
+                    
+                    return {
+                        "x" : x,
+                        "y" : y
+                    };
+                });
+
+                let toolTipContent = `{y} ${unitsFromSensorType(sensorType)}`;
+                let nameOfData = `${stationName}`;
+                chart.options.data.push({         
+                    legendMarkerType: "circle",
+                    toolTipContent: toolTipContent,
+                    showInLegend: true,
+                    name : nameOfData,
+                    xValueType: "dateTime",
+                    type : "line",                                        
+                    markerSize: 5,
+                    dataPoints: dataPoints
+                });
+                               
+                //render changes
+                chart.render();  
+                console.log(data);
+            });
+            //after we gathered all data, we run basic statistics
+            let basicStatistics = computeBasicStatistics(allValuesForBasicStatistics);
+            addDataToBasicStatisticsContainer({
+                chartDivId: chartDivId, 
+                basicStatistics: basicStatistics
+            })
+            /*
             let stations = stationsResponse[0];
 
             if( dataResponse[0].length < 1 ) {
@@ -135,7 +207,7 @@ filterButton.addEventListener("click", function(){
                 chartDivId: chartDivId, 
                 basicStatistics: basicStatistics
             })
-            
+            */
         });
     }  
    
@@ -183,6 +255,7 @@ function aggregationChart({
 
 //place datapoints if between two datapoints there was supposed to be a value.
 //different from the used in realtime chart
+/*
 function addNullPoints_(
     dataPoints,
     startTimestamp,
@@ -204,6 +277,7 @@ function addNullPoints_(
         return [];
     }
 };
+*/
 
 function computeBasicStatistics(values){
 
