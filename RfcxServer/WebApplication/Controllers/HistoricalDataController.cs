@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.IRepository;
 using System.Collections.Generic;
-using System;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using MongoDB.Bson;
 
 namespace WebApplication.Controllers
 {        
@@ -57,5 +59,64 @@ namespace WebApplication.Controllers
             ViewData["l"] = l;
             return View(ViewData);
         }
+
+        //APIS with aggregated Data
+        
+        
+        [HttpGet]
+        [Route("api/test")]
+        public Task<string> testA(
+            [FromQuery] int StationId,
+            [FromQuery] long StartTimestamp,
+            [FromQuery] long EndTimestamp
+        )
+        {
+            return this._testA(
+                StationId,
+                StartTimestamp, 
+                EndTimestamp
+            );
+        }
+
+        //this api is for testing remove it once accomplishes its purpose
+        private async Task<string> _testA(
+            int StationId,
+            long StartTimestamp,
+            long EndTimestamp
+        )
+        {
+
+            var sensors = await _SensorRepository.GetByStation(StationId);                
+            var arr = new JArray();
+            foreach(var s in sensors){
+                var SensorId = s.Id;                                
+                //Console.WriteLine(s.Id);
+
+                dynamic obj = new JObject();
+                IEnumerable<BsonDocument> data_ = await _DataRepository.testA(
+                    StationId,
+                    SensorId,
+                    StartTimestamp, 
+                    EndTimestamp
+                ); 
+                
+                obj.SensorId = SensorId;                
+                obj.aggregates = new JArray();
+                foreach(var x in data_){
+                    //extract values from the result of mongo aggregation
+                    var date    = x["date"].ToUniversalTime();
+                    var average = x["average"].ToDouble();
+
+                    dynamic aggregate = new JObject();
+                    aggregate.average = average;
+                    aggregate.date    = date;
+
+                    obj.aggregates.Add(aggregate);
+                }
+                arr.Add(obj);
+            }
+            return arr.ToString(); 
+        }
+
     }
 }
