@@ -62,7 +62,7 @@ namespace WebApplication.Controllers
 
         //APIS with aggregated Data
         
-        
+
         [HttpGet]
         [Route("api/test")]
         public Task<string> testA(
@@ -110,6 +110,61 @@ namespace WebApplication.Controllers
                     dynamic aggregate = new JObject();
                     aggregate.average = average;
                     aggregate.date    = date;
+
+                    obj.aggregates.Add(aggregate);
+                }
+                arr.Add(obj);
+            }
+            return arr.ToString(); 
+        }
+
+        [HttpGet]
+        [Route("api/testB")]
+        public Task<string> testB(
+            [FromQuery] int StationId,
+            [FromQuery] long StartTimestamp,
+            [FromQuery] long EndTimestamp
+        )
+        {
+            return this._testB(
+                StationId,
+                StartTimestamp, 
+                EndTimestamp
+            );
+        }
+
+        //this api is for testing remove it once accomplishes its purpose
+        private async Task<string> _testB(
+            int StationId,
+            long StartTimestamp,
+            long EndTimestamp
+        )
+        {
+
+            var sensors = await _SensorRepository.GetByStation(StationId);                
+            var arr = new JArray();
+            foreach(var s in sensors){
+                var SensorId = s.Id;                                
+                //Console.WriteLine(s.Id);
+
+                dynamic obj = new JObject();
+                IEnumerable<BsonDocument> data_ = await _DataRepository.testB(
+                    StationId,
+                    SensorId,
+                    StartTimestamp, 
+                    EndTimestamp
+                ); 
+                
+                obj.SensorId = SensorId;                
+                obj.aggregates = new JArray();
+                foreach(var x in data_){
+                    //extract values from the result of mongo aggregation
+                    var hour    = x["hour"].ToInt32();
+                    var average = x["average"].ToDouble();
+
+                    dynamic aggregate = new JObject();
+                    aggregate.average = average;
+                    aggregate.hour    = hour;
 
                     obj.aggregates.Add(aggregate);
                 }

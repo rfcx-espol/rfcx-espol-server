@@ -58,7 +58,16 @@ namespace WebApplication.IRepository
             long EndTimestamp
         ); 
 
+        //avg per date
         Task<IEnumerable<BsonDocument>> testA(
+            int StationId,
+            int SensorId,
+            long StartTimestamp,
+            long EndTimestamp
+        ); 
+
+        //avg per hour
+        Task<IEnumerable<BsonDocument>> testB(
             int StationId,
             int SensorId,
             long StartTimestamp,

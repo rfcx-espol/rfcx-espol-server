@@ -758,6 +758,7 @@ namespace WebApplication.Repository
             return await aggregatedResult;
         }
 
+        //avg per date
         public async Task<IEnumerable<BsonDocument>> testA(
             int StationId,            
             int SensorId,
@@ -792,7 +793,41 @@ namespace WebApplication.Repository
                 .AppendStage<BsonDocument>(unwindStage)
                 .AppendStage<BsonDocument>(promoteOneLevelStage)
                 .ToListAsync();
-                
+
+            return await aggregatedResult;
+        }
+
+        public async Task<IEnumerable<BsonDocument>> testB(
+            int StationId,            
+            int SensorId,
+            long StartTimestamp,
+            long EndTimestamp
+        )
+        {
+            
+            //A serie of data transformations to get aggregated values. 
+            BsonDocument addDateFieldsStage    = MongoAggregationHelper.buildAddDateFieldStage();
+            BsonDocument groupByHourStage      = MongoAggregationHelper.buildGroupByHourStage();            
+            BsonDocument projectToHourStage    = MongoAggregationHelper.buildProjectToHourStage(); 
+            BsonDocument shrinkToOneArrayStage = MongoAggregationHelper.buildShrinkToOneArrayStage();
+            BsonDocument fillMissingHoursStage = MongoAggregationHelper.buildFillMissingHoursStage();
+            BsonDocument unwindStage           = MongoAggregationHelper.buildUnwindStage();            
+            BsonDocument promoteOneLevelStage  = MongoAggregationHelper.buildPromoteOneLevelStage();
+            
+            //Use mongodb driver to do aggregation of data
+            var aggregatedResult = _context.Datas.Aggregate()
+                .Match( d => d.SensorId  == SensorId  )
+                .Match( d => d.StationId == StationId )
+                .Match( d => StartTimestamp <= d.Timestamp && d.Timestamp <= EndTimestamp ) //After filter. Data transformation starts
+                .AppendStage<BsonDocument>(addDateFieldsStage)
+                .AppendStage<BsonDocument>(groupByHourStage)
+                .AppendStage<BsonDocument>(projectToHourStage)
+                .AppendStage<BsonDocument>(shrinkToOneArrayStage)
+                .AppendStage<BsonDocument>(fillMissingHoursStage)
+                .AppendStage<BsonDocument>(unwindStage)
+                .AppendStage<BsonDocument>(promoteOneLevelStage)
+                .ToListAsync();
+
             return await aggregatedResult;
         }
         

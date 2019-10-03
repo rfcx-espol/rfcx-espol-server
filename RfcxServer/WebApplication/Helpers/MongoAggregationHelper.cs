@@ -89,8 +89,39 @@ namespace WebApplication.Helpers
             return fillMissingDatesStage;
         }
 
+        public static BsonDocument buildFillMissingHoursStage(){
+            BsonDocument fillMissingHoursStage = BsonDocument.Parse(
+                @"
+                    {
+                        $project :{
+                            points : {
+                                $map :{                    
+                                        input : {
+                                            $range : [ 1, 25 ]
+                                        },
+                                        as : 'hour',
+                                        in : {
+                                            $let: {
+                                                vars: { hourIndex: { '$indexOfArray': [ '$points.hour', '$$hour' ] } },
+                                                in: { 
+                                                    $cond: {
+                                                        if: { $ne: [ '$$hourIndex', -1 ] },
+                                                        then: { $arrayElemAt: [ '$points', '$$hourIndex' ] },
+                                                        else: { hour: '$$hour', average: -1 }
+                                                    } 
+                                                }
+                                            }
+                                        }
+                                }
+                            }
+                        }
+                    }
+                "
+            );
+            return fillMissingHoursStage;
+        }
         public static BsonDocument buildAddDateFieldStage(){
-            BsonDocument unwindStage = BsonDocument.Parse(
+            BsonDocument addDateFieldStage = BsonDocument.Parse(
                 @"
                     {
                         $addFields : {
@@ -103,7 +134,7 @@ namespace WebApplication.Helpers
                     }
                 "
             );
-            return unwindStage;
+            return addDateFieldStage;
         }
 
         public static BsonDocument buildGroupByDateStage(){
@@ -115,6 +146,24 @@ namespace WebApplication.Helpers
                                 year      : { $year       : '$date' },
                                 month     : { $month      : '$date' },
                                 dayOfMonth: { $dayOfMonth : '$date' }
+                            },
+                            average : { 
+                                $avg :'$Value'
+                            }
+                        }
+                    }
+                "                             
+            );
+            return groupByDateStage;
+        }
+
+        public static BsonDocument buildGroupByHourStage(){
+            BsonDocument groupByDateStage = BsonDocument.Parse(
+                @"
+                    {
+                        $group : {                            
+                            _id : {
+                                hour : { $hour : '$date' },
                             },
                             average : { 
                                 $avg :'$Value'
@@ -138,7 +187,22 @@ namespace WebApplication.Helpers
                                     month : '$_id.month',
                                     day   : '$_id.dayOfMonth',
                                 }
-                            }                                                       
+                            }
+                            average: 1
+                        }
+                    }
+                "                             
+            );
+            return projectToDateStage;
+        }
+
+        public static BsonDocument buildProjectToHourStage(){
+            BsonDocument projectToDateStage = BsonDocument.Parse(
+                @"
+                    {
+                        $project : {
+                            _id  : 0 ,
+                            hour : '$_id.hour',                                                    
                             average: 1
                         }
                     }
