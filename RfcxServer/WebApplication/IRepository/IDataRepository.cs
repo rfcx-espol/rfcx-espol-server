@@ -73,5 +73,22 @@ namespace WebApplication.IRepository
             long StartTimestamp,
             long EndTimestamp
         ); 
+
+        //avg per month
+        Task<IEnumerable<BsonDocument>> testC(
+            int StationId,
+            int SensorId,
+            long StartTimestamp,
+            long EndTimestamp
+        ); 
+
+        //avg per month
+        Task<IEnumerable<BsonDocument>> testD(
+            int StationId,
+            string SensorType,
+            string SensorLocation,
+            long StartTimestamp,
+            long EndTimestamp
+        ); 
     }
 }

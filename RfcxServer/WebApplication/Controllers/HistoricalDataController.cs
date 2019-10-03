@@ -173,5 +173,114 @@ namespace WebApplication.Controllers
             return arr.ToString(); 
         }
 
+        [HttpGet]
+        [Route("api/testC")]
+        public Task<string> testC(
+            [FromQuery] int StationId,
+            [FromQuery] long StartTimestamp,
+            [FromQuery] long EndTimestamp
+        )
+        {
+            return this._testC(
+                StationId,
+                StartTimestamp, 
+                EndTimestamp
+            );
+        }
+        private async Task<string> _testC(
+            int StationId,
+            long StartTimestamp,
+            long EndTimestamp
+        )
+        {
+
+            var sensors = await _SensorRepository.GetByStation(StationId);                
+            var arr = new JArray();
+            foreach(var s in sensors){
+                var SensorId = s.Id;                                
+                //Console.WriteLine(s.Id);
+
+                dynamic obj = new JObject();
+                IEnumerable<BsonDocument> data_ = await _DataRepository.testC(
+                    StationId,
+                    SensorId,
+                    StartTimestamp, 
+                    EndTimestamp
+                ); 
+                
+                obj.SensorId = SensorId;                
+                obj.aggregates = new JArray();
+                foreach(var x in data_){
+                    //extract values from the result of mongo aggregation
+                    var month   = x["month"].ToInt32();
+                    var average = x["average"].ToDouble();
+
+                    dynamic aggregate = new JObject();
+                    aggregate.average = average;
+                    aggregate.month    = month;
+
+                    obj.aggregates.Add(aggregate);
+                }
+                arr.Add(obj);
+            }
+            return arr.ToString(); 
+        }
+
+        [HttpGet]
+        [Route("api/testD")]
+        public Task<string> testD(
+            [FromQuery] string SensorType,
+            [FromQuery] string SensorLocation,
+            [FromQuery] long StartTimestamp,
+            [FromQuery] long EndTimestamp
+        )
+        {
+            return this._testD(             
+                SensorType,
+                SensorLocation,
+                StartTimestamp, 
+                EndTimestamp
+            );
+        }
+        private async Task<string> _testD(
+            string SensorType,
+            string SensorLocation,
+            long StartTimestamp,
+            long EndTimestamp
+        )
+        {
+            
+            var stations = _StationRepository.Get();
+            var arr = new JArray();
+            foreach(var s in stations){
+                var StationId = s.Id;                              
+                //Console.WriteLine(s.Id);
+
+                dynamic obj = new JObject();
+                IEnumerable<BsonDocument> data_ = await _DataRepository.testD(
+                    StationId,
+                    SensorType,
+                    SensorLocation,
+                    StartTimestamp, 
+                    EndTimestamp
+                ); 
+                
+                obj.StationId = StationId;
+                obj.aggregates = new JArray();
+                foreach(var x in data_){
+                    //extract values from the result of mongo aggregation
+                    var date   = x["date"].ToUniversalTime();
+                    var average = x["average"].ToDouble();
+
+                    dynamic aggregate = new JObject();
+                    aggregate.average = average;
+                    aggregate.date    = date;
+
+                    obj.aggregates.Add(aggregate);
+                }
+                arr.Add(obj);
+            }
+            return arr.ToString(); 
+        }
     }
 }

@@ -97,7 +97,7 @@ namespace WebApplication.Helpers
                             points : {
                                 $map :{                    
                                         input : {
-                                            $range : [ 1, 25 ]
+                                            $range : [ 0, 24 ]
                                         },
                                         as : 'hour',
                                         in : {
@@ -108,6 +108,38 @@ namespace WebApplication.Helpers
                                                         if: { $ne: [ '$$hourIndex', -1 ] },
                                                         then: { $arrayElemAt: [ '$points', '$$hourIndex' ] },
                                                         else: { hour: '$$hour', average: -1 }
+                                                    } 
+                                                }
+                                            }
+                                        }
+                                }
+                            }
+                        }
+                    }
+                "
+            );
+            return fillMissingHoursStage;
+        }
+        
+        public static BsonDocument buildFillMissingMonthsStage(){
+            BsonDocument fillMissingHoursStage = BsonDocument.Parse(
+                @"
+                    {
+                        $project :{
+                            points : {
+                                $map :{                    
+                                        input : {
+                                            $range : [ 1, 13 ]
+                                        },
+                                        as : 'month',
+                                        in : {
+                                            $let: {
+                                                vars: { monthIndex: { '$indexOfArray': [ '$points.month', '$$month' ] } },
+                                                in: { 
+                                                    $cond: {
+                                                        if: { $ne: [ '$$monthIndex', -1 ] },
+                                                        then: { $arrayElemAt: [ '$points', '$$monthIndex' ] },
+                                                        else: { month: '$$month', average: -1 }
                                                     } 
                                                 }
                                             }
@@ -175,6 +207,23 @@ namespace WebApplication.Helpers
             return groupByDateStage;
         }
 
+        public static BsonDocument buildGroupByMonthStage(){
+            BsonDocument groupByDateStage = BsonDocument.Parse(
+                @"
+                    {
+                        $group : {                            
+                            _id : {
+                                month : { $month : '$date' },
+                            },
+                            average : { 
+                                $avg :'$Value'
+                            }
+                        }
+                    }
+                "                             
+            );
+            return groupByDateStage;
+        }
         public static BsonDocument buildProjectToDateStage(){
             BsonDocument projectToDateStage = BsonDocument.Parse(
                 @"
@@ -203,6 +252,21 @@ namespace WebApplication.Helpers
                         $project : {
                             _id  : 0 ,
                             hour : '$_id.hour',                                                    
+                            average: 1
+                        }
+                    }
+                "                             
+            );
+            return projectToDateStage;
+        }
+
+        public static BsonDocument buildProjectToMonthStage(){
+            BsonDocument projectToDateStage = BsonDocument.Parse(
+                @"
+                    {
+                        $project : {
+                            _id  : 0 ,
+                            month : '$_id.month',                                             
                             average: 1
                         }
                     }

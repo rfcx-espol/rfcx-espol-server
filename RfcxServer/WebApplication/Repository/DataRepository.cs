@@ -797,6 +797,48 @@ namespace WebApplication.Repository
             return await aggregatedResult;
         }
 
+        //avg per date and
+        public async Task<IEnumerable<BsonDocument>> testD(
+            int StationId,            
+            string SensorType,
+            string SensorLocation,
+            long StartTimestamp,
+            long EndTimestamp
+        )
+        {
+                                    
+            DateTime   startDate = MongoAggregationHelper.getUtcDateFromTimestampInSeconds(StartTimestamp);
+            DateTime   endDate   = MongoAggregationHelper.getUtcDateFromTimestampInSeconds(EndTimestamp);                 
+            DateTime[] datesSpan = MongoAggregationHelper.buildDateSpan(startDate,endDate);
+
+            //A serie of data transformations to get aggregated values. 
+            BsonDocument addDateFieldsStage    = MongoAggregationHelper.buildAddDateFieldStage();
+            BsonDocument groupByDateStage      = MongoAggregationHelper.buildGroupByDateStage();
+            BsonDocument projectToDateStage    = MongoAggregationHelper.buildProjectToDateStage();            
+            BsonDocument shrinkToOneArrayStage = MongoAggregationHelper.buildShrinkToOneArrayStage();           
+            BsonDocument fillMissingDatesStage = MongoAggregationHelper.buildFillMissingDatesStage(datesSpan);
+            BsonDocument unwindStage           = MongoAggregationHelper.buildUnwindStage();            
+            BsonDocument promoteOneLevelStage  = MongoAggregationHelper.buildPromoteOneLevelStage();
+            
+            //Use mongodb driver to do aggregation of data
+            var aggregatedResult = _context.Datas.Aggregate()
+                .Match( d => d.Type == SensorType )
+                .Match( d => d.Location == SensorLocation )
+                .Match( d => d.StationId == StationId )
+                .Match( d => StartTimestamp <= d.Timestamp && d.Timestamp <= EndTimestamp ) //After filter. Data transformation starts
+                .AppendStage<BsonDocument>(addDateFieldsStage)
+                .AppendStage<BsonDocument>(groupByDateStage)
+                .AppendStage<BsonDocument>(projectToDateStage)
+                .AppendStage<BsonDocument>(shrinkToOneArrayStage)
+                .AppendStage<BsonDocument>(fillMissingDatesStage)
+                .AppendStage<BsonDocument>(unwindStage)
+                .AppendStage<BsonDocument>(promoteOneLevelStage)
+                .ToListAsync();
+
+            return await aggregatedResult;
+        }
+
+        //per hour
         public async Task<IEnumerable<BsonDocument>> testB(
             int StationId,            
             int SensorId,
@@ -824,6 +866,42 @@ namespace WebApplication.Repository
                 .AppendStage<BsonDocument>(projectToHourStage)
                 .AppendStage<BsonDocument>(shrinkToOneArrayStage)
                 .AppendStage<BsonDocument>(fillMissingHoursStage)
+                .AppendStage<BsonDocument>(unwindStage)
+                .AppendStage<BsonDocument>(promoteOneLevelStage)
+                .ToListAsync();
+
+            return await aggregatedResult;
+        }
+
+
+        // per month
+        public async Task<IEnumerable<BsonDocument>> testC(
+            int StationId,            
+            int SensorId,
+            long StartTimestamp,
+            long EndTimestamp
+        )
+        {
+            
+            //A serie of data transformations to get aggregated values. 
+            BsonDocument addDateFieldsStage     = MongoAggregationHelper.buildAddDateFieldStage();
+            BsonDocument groupByMonthStage      = MongoAggregationHelper.buildGroupByMonthStage();            
+            BsonDocument projectToMonthStage    = MongoAggregationHelper.buildProjectToMonthStage(); 
+            BsonDocument shrinkToOneArrayStage  = MongoAggregationHelper.buildShrinkToOneArrayStage();
+            BsonDocument fillMissingMonthsStage = MongoAggregationHelper.buildFillMissingMonthsStage();
+            BsonDocument unwindStage            = MongoAggregationHelper.buildUnwindStage();            
+            BsonDocument promoteOneLevelStage   = MongoAggregationHelper.buildPromoteOneLevelStage();
+            
+            //Use mongodb driver to do aggregation of data
+            var aggregatedResult = _context.Datas.Aggregate()
+                .Match( d => d.SensorId  == SensorId  )
+                .Match( d => d.StationId == StationId )
+                .Match( d => StartTimestamp <= d.Timestamp && d.Timestamp <= EndTimestamp ) //After filter. Data transformation starts
+                .AppendStage<BsonDocument>(addDateFieldsStage)
+                .AppendStage<BsonDocument>(groupByMonthStage)
+                .AppendStage<BsonDocument>(projectToMonthStage)
+                .AppendStage<BsonDocument>(shrinkToOneArrayStage)
+                .AppendStage<BsonDocument>(fillMissingMonthsStage)
                 .AppendStage<BsonDocument>(unwindStage)
                 .AppendStage<BsonDocument>(promoteOneLevelStage)
                 .ToListAsync();
