@@ -22,7 +22,7 @@ filterButton.addEventListener("click", function(){
         moment().unix()     
     );
     //let dataUrl = `api/Station/${selectedStationId}/AvgPerHour?StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`; 
-    let dataUrl = `api/testB?StationId=${selectedStationId}&StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`;
+    let dataUrl = `api/avgPerHour?StationId=${selectedStationId}&StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`;
     //let sensorsUrl = ` api/Station/${selectedStationId}/Sensor`;
 
     

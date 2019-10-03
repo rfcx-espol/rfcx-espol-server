@@ -64,14 +64,14 @@ namespace WebApplication.Controllers
         
 
         [HttpGet]
-        [Route("api/test")]
-        public Task<string> testA(
+        [Route("api/avgPerDate")]
+        public Task<string> getAvgPerDate(
             [FromQuery] int StationId,
             [FromQuery] long StartTimestamp,
             [FromQuery] long EndTimestamp
         )
         {
-            return this._testA(
+            return this._getAvgPerDate(
                 StationId,
                 StartTimestamp, 
                 EndTimestamp
@@ -79,7 +79,7 @@ namespace WebApplication.Controllers
         }
 
         //this api is for testing remove it once accomplishes its purpose
-        private async Task<string> _testA(
+        private async Task<string> _getAvgPerDate(
             int StationId,
             long StartTimestamp,
             long EndTimestamp
@@ -95,7 +95,7 @@ namespace WebApplication.Controllers
                 //Console.WriteLine(s.Id);
 
                 dynamic obj = new JObject();
-                IEnumerable<BsonDocument> data_ = await _DataRepository.testA(
+                IEnumerable<BsonDocument> data_ = await _DataRepository.avgPerDate(
                     StationId,
                     SensorId,
                     StartTimestamp, 
@@ -123,14 +123,14 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        [Route("api/testB")]
-        public Task<string> testB(
+        [Route("api/avgPerHour")]
+        public Task<string> avgPerHour(
             [FromQuery] int StationId,
             [FromQuery] long StartTimestamp,
             [FromQuery] long EndTimestamp
         )
         {
-            return this._testB(
+            return this._avgPerHour(
                 StationId,
                 StartTimestamp, 
                 EndTimestamp
@@ -138,7 +138,7 @@ namespace WebApplication.Controllers
         }
 
         //this api is for testing remove it once accomplishes its purpose
-        private async Task<string> _testB(
+        private async Task<string> _avgPerHour(
             int StationId,
             long StartTimestamp,
             long EndTimestamp
@@ -154,7 +154,7 @@ namespace WebApplication.Controllers
                 //Console.WriteLine(s.Id);
 
                 dynamic obj = new JObject();
-                IEnumerable<BsonDocument> data_ = await _DataRepository.testB(
+                IEnumerable<BsonDocument> data_ = await _DataRepository.avgPerHour(
                     StationId,
                     SensorId,
                     StartTimestamp, 
@@ -182,20 +182,20 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        [Route("api/testC")]
-        public Task<string> testC(
+        [Route("api/avgPerMonth")]
+        public Task<string> avgPerMonth(
             [FromQuery] int StationId,
             [FromQuery] long StartTimestamp,
             [FromQuery] long EndTimestamp
         )
         {
-            return this._testC(
+            return this._avgPerMonth(
                 StationId,
                 StartTimestamp, 
                 EndTimestamp
             );
         }
-        private async Task<string> _testC(
+        private async Task<string> _avgPerMonth(
             int StationId,
             long StartTimestamp,
             long EndTimestamp
@@ -211,7 +211,7 @@ namespace WebApplication.Controllers
                 //Console.WriteLine(s.Id);
 
                 dynamic obj = new JObject();
-                IEnumerable<BsonDocument> data_ = await _DataRepository.testC(
+                IEnumerable<BsonDocument> data_ = await _DataRepository.avgPerMonth(
                     StationId,
                     SensorId,
                     StartTimestamp, 
@@ -239,22 +239,22 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        [Route("api/testD")]
-        public Task<string> testD(
+        [Route("api/avgPerDateStations")]
+        public Task<string> avgPerDateFromSensorTypeAndLocation(
             [FromQuery] string SensorType,
             [FromQuery] string SensorLocation,
             [FromQuery] long StartTimestamp,
             [FromQuery] long EndTimestamp
         )
         {
-            return this._testD(             
+            return this._avgPerDateFromSensorTypeAndLocation(             
                 SensorType,
                 SensorLocation,
                 StartTimestamp, 
                 EndTimestamp
             );
         }
-        private async Task<string> _testD(
+        private async Task<string> _avgPerDateFromSensorTypeAndLocation(
             string SensorType,
             string SensorLocation,
             long StartTimestamp,
@@ -270,7 +270,7 @@ namespace WebApplication.Controllers
                 //Console.WriteLine(s.Id);
 
                 dynamic obj = new JObject();
-                IEnumerable<BsonDocument> data_ = await _DataRepository.testD(
+                IEnumerable<BsonDocument> data_ = await _DataRepository.avgPerDateFromSensorTypeAndLocation(
                     StationId,
                     SensorType,
                     SensorLocation,

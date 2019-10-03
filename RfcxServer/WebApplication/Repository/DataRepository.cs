@@ -390,6 +390,7 @@ namespace WebApplication.Repository
             }
         }
         
+        /* 
         public async Task<IEnumerable<BsonDocument>> AvgPerDate(
             int StationId,
             long StartTimestamp,
@@ -645,31 +646,7 @@ namespace WebApplication.Repository
                 .ToListAsync();                
             return await aggregatedResult;
         }
-
-        public List<BsonDocument> sensorsTypeAndLocation()
-        {
-            var _id = new BsonDocument {                                
-                {"Type", "$Type"}, 
-                {"Location", "$Location" }, 
-            };
-
-            var aggregatedResult = _context.Datas.Aggregate()                          
-            .AppendStage<BsonDocument>
-            (
-                new BsonDocument{
-                    { "$group", new BsonDocument("_id", _id) }
-                }
-            )
-            .AppendStage<BsonDocument>
-            (
-                new BsonDocument{
-                    { "$project", new BsonDocument("_id", 0).Add("Type","$_id.Type").Add("Location","$_id.Location") }
-                }
-            )
-            .ToList();
-            return aggregatedResult;
-        }
-
+        
         
         public async Task<IEnumerable<BsonDocument>> AvgPerDateStation(
             string SensorType,
@@ -757,9 +734,20 @@ namespace WebApplication.Repository
                 .ToListAsync();                
             return await aggregatedResult;
         }
+        */
 
+        public List<BsonDocument> sensorsTypeAndLocation()
+        {
+            BsonDocument groupSensorsByTypeAndLocationStage = MongoAggregationHelper.buildGroupSensorsByTypeAndLocationStage();
+            BsonDocument projectToTypeAndLocationStage = MongoAggregationHelper.buildProjectToTypeAndLocationStage();
+            var aggregatedResult = _context.Datas.Aggregate()                          
+                .AppendStage<BsonDocument>(groupSensorsByTypeAndLocationStage)
+                .AppendStage<BsonDocument>(projectToTypeAndLocationStage)
+                .ToList();
+            return aggregatedResult;
+        }
         //avg per date
-        public async Task<IEnumerable<BsonDocument>> testA(
+        public async Task<IEnumerable<BsonDocument>> avgPerDate(
             int StationId,            
             int SensorId,
             long StartTimestamp,
@@ -798,7 +786,7 @@ namespace WebApplication.Repository
         }
 
         //avg per date and
-        public async Task<IEnumerable<BsonDocument>> testD(
+        public async Task<IEnumerable<BsonDocument>> avgPerDateFromSensorTypeAndLocation(
             int StationId,            
             string SensorType,
             string SensorLocation,
@@ -839,7 +827,7 @@ namespace WebApplication.Repository
         }
 
         //per hour
-        public async Task<IEnumerable<BsonDocument>> testB(
+        public async Task<IEnumerable<BsonDocument>> avgPerHour(
             int StationId,            
             int SensorId,
             long StartTimestamp,
@@ -875,7 +863,7 @@ namespace WebApplication.Repository
 
 
         // per month
-        public async Task<IEnumerable<BsonDocument>> testC(
+        public async Task<IEnumerable<BsonDocument>> avgPerMonth(
             int StationId,            
             int SensorId,
             long StartTimestamp,

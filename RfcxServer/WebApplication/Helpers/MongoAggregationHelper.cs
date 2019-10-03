@@ -38,6 +38,35 @@ namespace WebApplication.Helpers
 
         }
         
+        public static BsonDocument buildGroupSensorsByTypeAndLocationStage(){
+            BsonDocument groupSensorsByTypeAndLocationStage = BsonDocument.Parse(
+                @"
+                    {
+                        $group : {
+                            _id : {
+                                'Type': '$Type',
+                                'Location' : '$Location'
+                            }
+                        }
+                    }
+                "
+            );   
+            return groupSensorsByTypeAndLocationStage;         
+        }
+        public static BsonDocument buildProjectToTypeAndLocationStage(){
+            BsonDocument projectToTypeAndLocationStage = BsonDocument.Parse(
+                @"
+                    {
+                        $project : {
+                            _id  : 0 ,
+                            Type : '$_id.Type',
+                            Location : '$_id.Location'
+                        }
+                    }
+                "                             
+            );
+            return projectToTypeAndLocationStage;    
+        }
         public static BsonDocument buildFillMissingDatesStage(DateTime[] datesSpan){
 
             BsonDocument fillMissingDatesStage = new BsonDocument {

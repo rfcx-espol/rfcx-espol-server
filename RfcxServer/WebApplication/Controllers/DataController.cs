@@ -252,6 +252,7 @@ namespace WebApplication.Controllers
                 return await _DataRepository.Remove(id);
             }
             
+            /* 
             [HttpGet]
             [Route("api/Station/{StationId:int}/AvgPerDate")]        
             public Task<string> GetAvgPerDate(
@@ -372,7 +373,7 @@ namespace WebApplication.Controllers
                 return data.ToJson() ;
             }
 
-                        
+            */         
         }
        
 }
