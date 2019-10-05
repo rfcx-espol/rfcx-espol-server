@@ -14,7 +14,7 @@ if len(sys.argv) < 2:
 
 input_station_name = sys.argv[1]
 
-DB_NAME = "db_rfcx00"
+DB_NAME = "BosqueProtector1"
 
 client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = client[DB_NAME]
@@ -105,12 +105,12 @@ while True:
         simulated_data = d.toSimulatedData()
 
         #so, here I can insert
-        #data_collection.insert_one(simulated_data)
+        data_collection.insert_one(simulated_data)
         
         #to avoid error on inserting iteratively -> https://stackoverflow.com/questions/5906493/pymongo-insert-inside-the-loop
-        #simulated_data.pop('_id', None)
+        simulated_data.pop('_id', None)
 
         #or print it
         pprint.pprint(simulated_data)
         print()
-    time.sleep(10)
+    time.sleep(300)
