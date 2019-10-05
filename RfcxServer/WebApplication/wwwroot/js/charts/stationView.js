@@ -3,7 +3,7 @@ var stationId = $("#stationId").text();
 
 var CONFIG = {
     stationId : stationId,
-    hoursAgo : 400, //From how many hours ago, I want retrieve first batch of data
+    hoursAgo : 1, //From how many hours ago, I want retrieve first batch of data
     timeInterval : 5000, //At which rate I want to request for new single data. Milliseconds
     maxDataPointsAllowed : 15, //How many points I want to keep in the chart when adding new points
 }

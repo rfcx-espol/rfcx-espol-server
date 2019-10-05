@@ -1,13 +1,5 @@
 $(function(){
 
-//set current date to datepickers
-let date_pickers = Array.from(document.getElementsByClassName("date-picker"));
-date_pickers.forEach(function(date_picker){
-    let now = moment();
-    //document.querySelector("input.date-picker-end").value = now.format('YYYY-MM-DD');
-    //date_picker.value = now.subtract(29,'days').format('YYYY-MM-DD');        
-});
-
 let filterButton = document.querySelector("button#button-filter");
 
 filterButton.addEventListener("click", function(){ 
@@ -15,23 +7,23 @@ filterButton.addEventListener("click", function(){
     let year = document.querySelector("select.form-control.date-picker").value;
     let startDateMoment =  moment(year,"YYYY");
     let startTimestamp = startDateMoment.unix();
-    //console.log(startTimestamp);
     let endTimestamp = startDateMoment.add(1,"years").unix();
     let validDateRange = true;
-    //let dataUrl = `api/Station/${selectedStationId}/AvgPerMonth?StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`;
-    let dataUrl = `api/avgPerMonth?StationId=${selectedStationId}&StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`;
 
-    console.log(dataUrl);
-    //let sensorsUrl = ` api/Station/${selectedStationId}/Sensor`;
-
+    let dataUrl = `api/avgPerMonth?StationId=${selectedStationId}&StartTimestamp=${startTimestamp}&EndTimestamp=${endTimestamp}`;    
     let dataPromise = $.getJSON(dataUrl);
-    //let sensorsPromise = $.getJSON(sensorsUrl);
+
     
     if ( !validDateRange ) {
         alert("Los valores en el rango a filtrar son inválidos. Es probable que esté tratando de filtrar valores que aún no existen.");
     } else {
-        $.when( dataPromise)
-        .done(function( dataResponse) {
+        $.when(dataPromise)
+        .done(function(dataResponse) {
+
+        
+            if( dataResponse.length < 1 ) {
+                alert("No existen valores en el rango especificado");
+            }
 
             dataResponse.forEach(function(data){
                 let sensorId = data.SensorId;                
@@ -89,97 +81,9 @@ filterButton.addEventListener("click", function(){
                     dataPoints: dataPoints
                 });
                 //render changes
-                chart.render();  
-                console.log(data);
-            });
-            /*
-            let sensors = sensorsResponse[0];
+                chart.render();
 
-            if( dataResponse[0].length < 1 ) {
-                alert("No existen valores en el rango especificado");
-            }
-
-            sensors.forEach(function(sensor){
-                //filter data of sensor
-                let sensorData = dataResponse[0].find( data => data.SensorId == sensor.Id );
-
-                //if no value, .find() returns undefined. So, check for safety
-                let aggregates =  sensorData != null ? sensorData.aggregates : [];
-                
-                let rawDataPoints = aggregates.map(function(aggregate){
-                    let month = aggregate._id.month;
-                    let avg = aggregate.avg;
-                    
-                    let dateObject = new Date(year, (month - 1), 1);//we just care about month not the date by itself.
-                    let timestamp = dateObject.getTime()/1000;//gives timestamp in seconds                   
-
-                    return {
-                        Timestamp : timestamp,
-                        Value : avg
-                    };                     
-                }).sort(byTimestamp);
-
-                let dpsNullPointsAdded = addNullPoints_(
-                    rawDataPoints,
-                    startTimestamp,
-                    endTimestamp,
-                    0
-                );
-
-                let dataPoints = dpsNullPointsAdded.map(function(responseElement){
-                    let timestamp = responseElement.Timestamp;
-                    let value = responseElement.Value;
-
-                    //format x value
-                    let x = new Date(timestamp*1000);//we just care about month not the date by itself.                                          
-                        
-                    //format y value
-                    let y = (value == null) ? null : formatFloat(value);
-                    
-                    return {
-                        "x" : x,
-                        "y" : y
-                    };
-                });
-
-                let rawDataPointsValues = rawDataPoints.map( element => element.Value ); 
-                let basicStatistics = computeBasicStatistics(rawDataPointsValues);
-
-                let chartDivId = `chart_${sensor.Id}`;                    
-                let chartDiv = makeChartDiv(
-                    chartDivId,
-                    basicStatistics
-                );
-
-                if ( $(`div#_${chartDivId}.card`).length ) {
-                    $(`div#_${chartDivId}.card`).remove(); 
-                }
-                $("div.chartsContainer").append(chartDiv);            
-            
-                //create chart                        
-                let chart = aggregationChart({
-                    chartDivId : chartDivId,                    
-                    chartTitle : "",
-                    axisYTitle : sensor.Type,
-                    axisXFormat: "MMMM"
-                });
-                
-                let toolTipContent = `{y} ${unitsFromSensorType(sensor.Type)}`;
-                let nameOfData = `${sensor.Type} ${sensor.Location}`;
-                chart.options.data.push({         
-                    legendMarkerType: "circle",
-                    toolTipContent: toolTipContent,
-                    showInLegend: true,
-                    name : nameOfData,
-                    xValueType: "dateTime",
-                    type : "line",                                        
-                    markerSize: 5,
-                    dataPoints: dataPoints
-                });
-                //render changes
-                chart.render();                                   
-            }); */
-
+            });         
         });
     }     
 });
@@ -224,46 +128,6 @@ function aggregationChart({
     });
 }
 
-//place datapoints if between two datapoints there was supposed to be a value.
-//different from the used in realtime chart
-/*
-function addNullPoints_(
-    dataPoints,
-    startTimestamp,
-    endTimestamp,
-    timeInterval
-){  
-   
-    let startDateMoment = moment(moment.unix(startTimestamp));
-    let timestamps = [
-        startDateMoment.unix(),
-        startDateMoment.add(1,"months").unix(),        
-        startDateMoment.add(1,"months").unix(),        
-        startDateMoment.add(1,"months").unix(),        
-        startDateMoment.add(1,"months").unix(),        
-        startDateMoment.add(1,"months").unix(),        
-        startDateMoment.add(1,"months").unix(),        
-        startDateMoment.add(1,"months").unix(),        
-        startDateMoment.add(1,"months").unix(),        
-        startDateMoment.add(1,"months").unix(),
-        startDateMoment.add(1,"months").unix(),
-        startDateMoment.add(1,"months").unix(),
-    ];
-    if (dataPoints.length > 0 ){
-        let dataPointsNullPointsAdded = timestamps.map(function(timestamp){
-            dpFound = dataPoints.find(dp => ( dp.Timestamp == timestamp ));
-            dataPoint = (dpFound == null) ? { Timestamp: timestamp, Value: null } : dpFound ;
-            return {
-                Timestamp: timestamp,
-                Value : dataPoint.Value
-            };
-        });
-        return dataPointsNullPointsAdded;
-    } else {
-        return [];
-    }
-}
-*/
 function computeBasicStatistics(values){
 
     if (values.length > 0){
@@ -277,13 +141,6 @@ function computeBasicStatistics(values){
     }
 }
 
-function isValidDateRange(
-    startTimestamp,
-    endTimestamp, 
-    nowTimestamp
-){
-    return  !(startTimestamp > nowTimestamp || endTimestamp > nowTimestamp);
-}
 
 function makeChartDiv(
     chartDivId,
@@ -325,12 +182,6 @@ function makeChartDiv(
 function formatFloat(value){
     return Number(parseFloat(value).toFixed(2));
 };
-
-//compare function to be used in sort method
-/*
-function byTimestamp(a,b){
-    return a.Timestamp - b.Timestamp;
-}*/
 
 function unitsFromSensorType(sensorType){
     let units;

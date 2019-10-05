@@ -10,9 +10,9 @@ namespace WebApplication.Controllers
     public class HistoricalDataController : Controller
     {
         private readonly IStationRepository _StationRepository;
-        private readonly IDataRepository _DataRepository;
-        
+        private readonly IDataRepository _DataRepository;        
         private readonly ISensorRepository _SensorRepository;
+
         public HistoricalDataController(
             IStationRepository  StationRepository,
             IDataRepository  DataRepository,
@@ -60,8 +60,8 @@ namespace WebApplication.Controllers
             return View(ViewData);
         }
 
-        //APIS with aggregated Data
-        
+
+        //APIS with aggregated Data        
 
         [HttpGet]
         [Route("api/avgPerDate")]
