@@ -413,7 +413,7 @@ namespace WebApplication.Repository
             DateTime   startDate = MongoAggregationHelper.getUtcDateFromTimestampInSeconds(StartTimestamp);
             DateTime   endDate   = MongoAggregationHelper.getUtcDateFromTimestampInSeconds(EndTimestamp);                 
             DateTime[] datesSpan = MongoAggregationHelper.buildDateSpan(startDate,endDate);
-
+    
             //A serie of data transformations to get aggregated values. 
             BsonDocument addDateFieldsStage    = MongoAggregationHelper.buildAddDateFieldStage();
             BsonDocument groupByDateStage      = MongoAggregationHelper.buildGroupByDateStage();
@@ -453,7 +453,7 @@ namespace WebApplication.Repository
             DateTime   startDate = MongoAggregationHelper.getUtcDateFromTimestampInSeconds(StartTimestamp);
             DateTime   endDate   = MongoAggregationHelper.getUtcDateFromTimestampInSeconds(EndTimestamp);                 
             DateTime[] datesSpan = MongoAggregationHelper.buildDateSpan(startDate,endDate);
-
+    
             //A serie of data transformations to get aggregated values. 
             BsonDocument addDateFieldsStage    = MongoAggregationHelper.buildAddDateFieldStage();
             BsonDocument groupByDateStage      = MongoAggregationHelper.buildGroupByDateStage();

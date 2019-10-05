@@ -49,8 +49,9 @@ filterButton.addEventListener("click", function(){
                     let value = element.average;
 
                     //format x value
-                    let m = moment(date, moment.ISO_8601);
-                    let x = new Date(m.year(),m.month(),m.date(),0,0,0,0);
+                    let m = moment(date, moment.ISO_8601);                    
+                    console.log(m.date());
+                    let x = new Date(m.year(),m.month(),m.date()+1,0,0,0,0);
 
                     //format y value
                     let y = (value == -1) ? null : formatFloat(value);
@@ -95,7 +96,7 @@ filterButton.addEventListener("click", function(){
                 //render changes
                 chart.render();  
             });
-                      
+               
         });
     }     
 });

@@ -19,7 +19,6 @@ filterButton.addEventListener("click", function(){
     let endDateMoment =  moment(document.querySelector("input.date-picker-end").value);
     let startTimestamp = startDateMoment.unix();
     let endTimestamp = endDateMoment.unix();
-
     let validDateRange = isValidDateRange(
         startTimestamp, 
         endTimestamp,
@@ -77,7 +76,7 @@ filterButton.addEventListener("click", function(){
 
                     //format x value
                     let m = moment(date, moment.ISO_8601);
-                    let x = new Date(m.year(),m.month(),m.date(),0,0,0,0);
+                    let x = new Date(m.year(),m.month(),m.date()+1,0,0,0,0);
 
                     //format y value
                     let y = (value == -1) ? null : formatFloat(value);

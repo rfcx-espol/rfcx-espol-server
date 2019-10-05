@@ -18,7 +18,7 @@ namespace WebApplication.Helpers
             DateTime date_utc_at_zero_time  = GetDateAtZeroTime(date_utc);       
             return date_utc_at_zero_time;
         }
-
+        
         /**
             Given a Datetime , returns a new Datetime with same day, hour and month.
             But hour, minutes and seconds set to 0
@@ -31,7 +31,7 @@ namespace WebApplication.Helpers
         }
 
         public static DateTime[] buildDateSpan(DateTime startDate, DateTime endDate){
-            DateTime[] datesSpan = Enumerable.Range( 0 , endDate.Subtract(startDate).Days )
+            DateTime[] datesSpan = Enumerable.Range( 0 , endDate.Subtract(startDate).Days + 1)
                                     .Select(offset => startDate.AddDays(offset) )
                                     .ToArray();
             return datesSpan;
@@ -204,24 +204,9 @@ namespace WebApplication.Helpers
                     {
                         $group : {
                             _id : {
-                                year : { 
-                                    $year : {
-                                        date : '$date' ,
-                                        timezone: 'America/Guayaquil'
-                                    }
-                                },
-                                month : { 
-                                    $month : {
-                                        date : '$date' ,
-                                        timezone: 'America/Guayaquil'
-                                    }
-                                },
-                                dayOfMonth : { 
-                                    $dayOfMonth : {
-                                        date : '$date' ,
-                                        timezone: 'America/Guayaquil'
-                                    }
-                                }
+                                year : { $year : '$date' },
+                                month : { $month : '$date'},
+                                dayOfMonth : { $dayOfMonth : '$date'}
                             },
                             average : { 
                                 $avg :'$Value'
