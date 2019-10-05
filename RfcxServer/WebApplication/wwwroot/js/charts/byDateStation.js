@@ -64,7 +64,7 @@ filterButton.addEventListener("click", function(){
             if( dataResponse.length < 1 ) {
                 alert("No existen valores en el rango especificado");
             }
-            
+
             dataResponse.forEach(function(data){
                 let stationId = data.StationId;
                 let stationName = data.StationName;
@@ -76,7 +76,8 @@ filterButton.addEventListener("click", function(){
                     let value = element.average;
 
                     //format x value
-                    let x = new Date(date);
+                    let m = moment(date, moment.ISO_8601);
+                    let x = new Date(m.year(),m.month(),m.date(),0,0,0,0);
 
                     //format y value
                     let y = (value == -1) ? null : formatFloat(value);

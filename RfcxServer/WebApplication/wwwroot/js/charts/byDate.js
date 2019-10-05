@@ -49,7 +49,8 @@ filterButton.addEventListener("click", function(){
                     let value = element.average;
 
                     //format x value
-                    let x = new Date(date);
+                    let m = moment(date, moment.ISO_8601);
+                    let x = new Date(m.year(),m.month(),m.date(),0,0,0,0);
 
                     //format y value
                     let y = (value == -1) ? null : formatFloat(value);

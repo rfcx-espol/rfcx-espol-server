@@ -204,9 +204,24 @@ namespace WebApplication.Helpers
                     {
                         $group : {
                             _id : {
-                                year      : { $year       : '$date' },
-                                month     : { $month      : '$date' },
-                                dayOfMonth: { $dayOfMonth : '$date' }
+                                year : { 
+                                    $year : {
+                                        date : '$date' ,
+                                        timezone: 'America/Guayaquil'
+                                    }
+                                },
+                                month : { 
+                                    $month : {
+                                        date : '$date' ,
+                                        timezone: 'America/Guayaquil'
+                                    }
+                                },
+                                dayOfMonth : { 
+                                    $dayOfMonth : {
+                                        date : '$date' ,
+                                        timezone: 'America/Guayaquil'
+                                    }
+                                }
                             },
                             average : { 
                                 $avg :'$Value'
@@ -224,7 +239,12 @@ namespace WebApplication.Helpers
                     {
                         $group : {                            
                             _id : {
-                                hour : { $hour : '$date' },
+                                hour : { 
+                                    $hour : {
+                                        date : '$date' ,
+                                        timezone: 'America/Guayaquil'
+                                    }
+                                }
                             },
                             average : { 
                                 $avg :'$Value'
@@ -242,7 +262,12 @@ namespace WebApplication.Helpers
                     {
                         $group : {                            
                             _id : {
-                                month : { $month : '$date' },
+                                month : { 
+                                    $month : {
+                                        date : '$date' ,
+                                        timezone: 'America/Guayaquil'
+                                    }
+                                }
                             },
                             average : { 
                                 $avg :'$Value'

@@ -37,7 +37,7 @@ filterButton.addEventListener("click", function(){
                     let value = element.average;
 
                     //format x value
-                    let currentDate = new Date();//we dont care about the date just the hours                
+                    let currentDate = new Date();//we dont care about the date just the month
                     let x = currentDate.setMonth(month-1);
 
                     //format y value
