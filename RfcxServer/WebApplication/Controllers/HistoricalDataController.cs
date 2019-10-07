@@ -137,7 +137,6 @@ namespace WebApplication.Controllers
             );
         }
 
-        //this api is for testing remove it once accomplishes its purpose
         private async Task<string> _avgPerHour(
             int StationId,
             long StartTimestamp,
