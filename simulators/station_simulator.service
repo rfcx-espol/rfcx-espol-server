@@ -2,7 +2,7 @@
 Description=Station simulator for TestStation
 
 [Service]
-ExecStart=/usr/local/bin/python3 /usr/local/bin/station_simulator.py "TestStation"
+ExecStart=/usr/bin/python3 /usr/local/bin/station_simulator.py "TestStation"
 
 [Install]
 WantedBy=multi-user.target
