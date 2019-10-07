@@ -6,7 +6,7 @@ sudo rm /usr/local/bin/station_simulator.py
 sudo rm /lib/systemd/system/station_simulator.service
 
 #install requirements
-pip install -r requirements.txt
+sudo pip install -r requirements.txt
 
 #add new script and service configuration
 sudo cp station_simulator.py /usr/local/bin
