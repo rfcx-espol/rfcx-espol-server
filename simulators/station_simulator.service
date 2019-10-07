@@ -2,8 +2,7 @@
 Description=Station simulator for TestStation
 
 [Service]
-WorkingDirectory=/var/rfcx-espol-server/
-ExecStart=/usr/bin/python3 /usr/bin/station_simulator.py "TestStation"
+ExecStart=/usr/local/bin/python3 /usr/local/bin/station_simulator.py "TestStation"
 
 [Install]
 WantedBy=multi-user.target
