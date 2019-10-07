@@ -2,6 +2,7 @@
 Description=Station simulator for TestStation
 
 [Service]
+User=estudiante
 ExecStart=/usr/bin/python3 /usr/local/bin/station_simulator.py "TestStation"
 
 [Install]
