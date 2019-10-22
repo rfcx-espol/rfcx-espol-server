@@ -24,6 +24,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace WebApplication
 {
@@ -125,6 +126,17 @@ namespace WebApplication
         {
 
             app.UseMiddleware<PreRequestModifications>();
+
+            app.UseStatusCodePages(async context =>
+            {
+                var request = context.HttpContext.Request;
+                var response = context.HttpContext.Response;
+                var path = request.Path.Value ?? "";
+                if (response.StatusCode == (int)HttpStatusCode.Unauthorized && !path.StartsWith("/api", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    response.Redirect("/?link="+path);
+                }
+            });
 
             /*if (env.IsDevelopment())
             {
