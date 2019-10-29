@@ -103,6 +103,7 @@ namespace WebApplication.Controllers
             return View(iVM);
         }
 
+        /* TRIED BUT FAILED TO FILTER INCIDENTS BY DATE
         [HttpPost()]
         public IActionResult List(IncidentViewModel iVM)
         {
@@ -114,6 +115,6 @@ namespace WebApplication.Controllers
                 TempData["editResult"] = 0;
             return View(iVM);
         }
-
+        */
     }
 }

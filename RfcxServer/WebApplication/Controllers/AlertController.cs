@@ -199,6 +199,7 @@ namespace WebApplication.Controllers
             return View(alertVM);
         }
 
+        /* TRIED BUT FAILED TO FILTER ALERTS BY NAME
         [HttpPost()]
         public IActionResult List(AlertViewModel alertVM)
         {
@@ -210,6 +211,7 @@ namespace WebApplication.Controllers
             initializeTempData(variables);
             return View(alertVM);
         }
+         */
 
         [HttpGet("create")]
         public IActionResult Create()
