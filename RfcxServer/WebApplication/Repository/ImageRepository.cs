@@ -26,6 +26,24 @@ namespace WebApplication.Repository
             _context = new ObjectContext(settings);
         }
 
+        
+        public async Task<bool> AddTag(int ImageId, string Tag)
+        {
+            try
+            {
+                var filter = Builders<Image>.Filter.Eq("Id", ImageId);
+                var update = Builders<Image>.Update.Push("Tag", Tag);
+
+                UpdateResult updateResult = await _context.Images.UpdateOneAsync(filter, update);
+
+                return updateResult.IsAcknowledged;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                
+            }
+        }
         public async Task<Image> Find(string _id)
         {
             var filter = "{'_id':" +  "ObjectId('"+_id + "')}";
@@ -228,22 +246,6 @@ namespace WebApplication.Repository
             }
         }
 
-        public async Task<bool> AddTag(int ImageId, string Tag)
-        {
-            try
-            {
-                var filter = Builders<Image>.Filter.Eq("Id", ImageId);
-                var update = Builders<Image>.Update.Push("Tag", Tag);
-
-                UpdateResult updateResult = await _context.Images.UpdateOneAsync(filter, update);
-
-                return updateResult.IsAcknowledged;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
 
          
         private bool IsApiKeyCorrect(string ApiKey)

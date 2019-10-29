@@ -3,7 +3,7 @@
 #subprocess.call('sudo apt install python-pip3', shell=True)
 #subprocess.call('sudo apt-get install python3 -y', shell=True)
 #pip3 install -r requirements.txt
-'''
+
 import shlex, subprocess
 
 command_line = 'sudo apt install python-pip3'
@@ -40,7 +40,7 @@ subprocess.call(args)
 command_line = 'mv code.py /var/rfcx-espol-imageanalysis/'
 args = shlex.split(command_line)
 subprocess.call(args)
-'''
+
 #poner
 #* */4 * * * root python /var/rfcx-espol-imageanalysis/code.py > /var/rfcx-espol-imageanalysis/log.log  2>&1
 ruta = "./repo/crontab"

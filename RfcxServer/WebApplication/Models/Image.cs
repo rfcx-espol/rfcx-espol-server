@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-
-
-
+using System.Linq;
 
 namespace WebApplication.Models
 {
@@ -48,6 +46,13 @@ namespace WebApplication.Models
             this.ArriveDate = DateTime.UtcNow;
             Path = id + Extension;
             State = "PENDIENTE";
+            
+            var guid = Guid.NewGuid();
+            var justNumbers = new String(guid.ToString().Where(Char.IsDigit).ToArray());
+            this.Id = int.Parse(justNumbers.Substring(0, 4));
+
+
+
             
         }
         

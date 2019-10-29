@@ -45,15 +45,12 @@ function downloadImagenes() {
 
 function newTag(t, id) {
     
-    var tag = prompt("Ingrese una nueva etiqueta prueba:");
+    var tag = prompt("Ingrese una nueva etiqueta prueba:"+id);
+    console.log(tag);
     if (tag !== null && tag !== "") {
         $.ajax({
             type: 'PUT',
-            url: 'AddTag',
-            data: {
-                "ImageId": id,
-                "Tag": tag
-            },
+            url: '/api/imgcapture/'+id+'?tag='+tag,
             error: function(xhr, ajaxOptions, thrownError) {
                 alert(xhr.status);
             },
@@ -63,6 +60,7 @@ function newTag(t, id) {
         });
         var tr = $(t).closest('tr');
         var td = tr.find("td:eq(5)");
+        console.log(td);
         if ($(td).find('.no-tags').length) {
             $(td).children().remove();
         }
