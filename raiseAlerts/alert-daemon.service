@@ -1,0 +1,16 @@
+[Unit]
+Description=mongo database monitoring script
+After=mongod.service
+StartLimitIntervalSec=0
+Conflicts=getty@tty1.service
+
+[Service]
+WorkingDirectory=/usr/bin
+User=anibal
+Type=simple
+Restart=always
+RestartSec=1
+ExecStart=/home/anibal/Documents/bosque-protector/rfcx-espol-server/raiseAlerts/venv//bin/python3 /usr/bin/alertRaiser.py
+
+[Install]
+WantedBy=multi-user.target

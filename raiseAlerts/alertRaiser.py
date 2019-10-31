@@ -1,3 +1,5 @@
+#!/home/anibal/Documents/bosque-protector/rfcx-espol-server/raiseAlerts/venv/bin/python3
+
 import time
 from datetime import datetime, timedelta
 import threading
@@ -8,7 +10,6 @@ import json
 
 client = pymongo.MongoClient()
 db = client.db_rfcx
-TIME_INTERVAL = 5  # in seconds
 
 
 def getAllActiveAlerts():
@@ -16,6 +17,7 @@ def getAllActiveAlerts():
 
     alerts = db.Alert
     activeAlerts = alerts.find({"Status": True})
+    print(activeAlerts)
     return activeAlerts
 
 
@@ -51,42 +53,39 @@ def checkConditions(alert):
     data -- datalist to check with alert's conditions
     """
 
-    mFrecuency = alert["Frecuency"]
-    if(alert["LastChecked"] > time.time() - (mFrecuency*60)):
-        return False
-    else:
-        raiseAlert = False
-        updateLastChecked(alert)
-        conditions = alert["Conditions"]
-        for condition in conditions:
-            raiseCondition = False
-            stationId = condition["StationId"]
-            sensorId = condition["SensorId"]
-            dataset = getLatestDataByStation(
-                mFrecuency, int(stationId), int(sensorId))
-            if dataset.count() <= 0:
+    # mFrecuency = alert["Frecuency"]
+    raiseAlert = False
+    mFrecuency = 5
+    conditions = alert["Conditions"]
+    for condition in conditions:
+        raiseCondition = False
+        stationId = condition["StationId"]
+        sensorId = condition["SensorId"]
+        dataset = getLatestDataByStation(
+            mFrecuency, int(stationId), int(sensorId))
+        if dataset.count() <= 0:
+            return False
+        if condition["Comparison"] == "MAYOR QUE":
+            for data in dataset:
+                if float(data["Value"]) > condition["Threshold"]:
+                    raiseCondition = True
+            if not raiseCondition:
                 return False
-            if condition["Comparison"] == "MAYOR QUE":
-                for data in dataset:
-                    if float(data["Value"]) > condition["Threshold"]:
-                        raiseCondition = True
-                if not raiseCondition:
-                    return False
-            elif condition["Comparison"] == "MENOR QUE":
-                for data in dataset:
-                    if float(data["Value"]) < condition["Threshold"]:
-                        print(float(data["Value"]))
-                        raiseCondition = True
-                if not raiseCondition:
-                    return False
-            elif condition["Comparison"] == "IGUAL":
-                for data in dataset:
-                    if float(data["Value"]) == condition["Threshold"]:
-                        print(float(data["Value"]))
-                        raiseCondition = True
-                if not raiseCondition:
-                    return False
-        return True
+        elif condition["Comparison"] == "MENOR QUE":
+            for data in dataset:
+                if float(data["Value"]) < condition["Threshold"]:
+                    print(float(data["Value"]))
+                    raiseCondition = True
+            if not raiseCondition:
+                return False
+        elif condition["Comparison"] == "IGUAL":
+            for data in dataset:
+                if float(data["Value"]) == condition["Threshold"]:
+                    print(float(data["Value"]))
+                    raiseCondition = True
+            if not raiseCondition:
+                return False
+    return True
 
 
 def createIncident(alert):
@@ -104,21 +103,6 @@ def createIncident(alert):
     return r.status_code
 
 
-def updateLastChecked(alert):
-    """
-    Sends http patch request to create to update the last time an alert was checked.
-
-    Keyword arguments:
-    alert -- dictionary of alert object
-    """
-    headers = {'Content-type': 'application/json'}
-    data = int(time.time())
-    r = requests.patch(url="http://localhost:5000/api/alert/" + str(alert['_id']) + "/LastChecked",
-                       data=json.dumps(data), headers=headers)
-    print(r.status_code)
-    return r.status_code
-
-
 def checkLatestData():
     """
     checks if any alert should be raised based on the dataset of a set interval
@@ -130,20 +114,7 @@ def checkLatestData():
         if checkConditions(alert):
             createIncident(alert)
 
-
-class setInterval:
-    def __init__(self, interval, action):
-        self.interval = interval
-        self.action = action
-        self.stopEvent = threading.Event()
-        thread = threading.Thread(target=self.__setInterval)
-        thread.start()
-
-    def __setInterval(self):
-        nextTime = time.time()+self.interval
-        while not self.stopEvent.wait(nextTime-time.time()):
-            nextTime += self.interval
-            self.action()
-
-
-checkLatestData()
+while True:
+    print("running...")
+    checkLatestData()
+    time.sleep(60)
