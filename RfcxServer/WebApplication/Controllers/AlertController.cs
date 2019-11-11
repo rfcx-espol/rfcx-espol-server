@@ -9,11 +9,10 @@ using System.Linq;
 using System;
 using WebApplication.ViewModel;
 using X.PagedList;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication.Controllers
 {
-    [Route("api/[controller]")]
     public class AlertController : Controller
     {
 
@@ -24,7 +23,7 @@ namespace WebApplication.Controllers
             _AlertRepository = AlertRepository;
         }
 
-        [HttpGet("list")]
+        [HttpGet("api/[controller]/list")]
         public Task<string> Get()
         {
             return this.GetAlert();
@@ -37,7 +36,7 @@ namespace WebApplication.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet("api/[controller]/{id}")]
         public Task<string> Get(string id)
         {
             return this.GetAlertById(id);
@@ -50,7 +49,7 @@ namespace WebApplication.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("api/[controller]")]
         public IActionResult Post()
         {
             Alert alert = new Alert();
@@ -73,10 +72,10 @@ namespace WebApplication.Controllers
             alert.Conditions = condition_list;
             bool result = _AlertRepository.Add(alert);
             setTempData(result, "createResult");
-            return Redirect("index");
+            return Redirect("/alert/index");
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("api/[controller]/{id}")]
         public IActionResult Post(string id)
         {
             Alert alert = new Alert();
@@ -107,7 +106,7 @@ namespace WebApplication.Controllers
 
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("api/[controller]/{id}")]
         public async Task<bool> Delete(string id)
         {
             if (string.IsNullOrEmpty(id)) return false;
@@ -116,14 +115,14 @@ namespace WebApplication.Controllers
             return result;
         }
 
-        [HttpGet("{alertId}/condition/list")]
+        [HttpGet("api/[controller]/{alertId}/condition/list")]
         public async Task<string> GetConditions(string alertId)
         {
             var Alert = await _AlertRepository.GetAlert(alertId) ?? new Alert();
             return JsonConvert.SerializeObject(Alert.Conditions);
 
         }
-        [HttpGet("{alertId}/condition/{conditionId}")]
+        [HttpGet("api/[controller]/{alertId}/condition/{conditionId}")]
         public string GetCondition(string alertId, string conditionId)
         {
             Condition condition = _AlertRepository.getConditionObject(alertId, conditionId);
@@ -132,7 +131,7 @@ namespace WebApplication.Controllers
 
         }
 
-        [HttpPatch("{alertId}/Status")]
+        [HttpPatch("api/[controller]/{alertId}/Status")]
         public async Task<bool> UpdateStatus(string alertId, [FromBody] Boolean Status)
         {
             bool result = await _AlertRepository.updateAlertStatus(alertId, Status);
@@ -140,7 +139,7 @@ namespace WebApplication.Controllers
             return result;
         }
 
-        [HttpPatch("{alertId}/LastChecked")]
+        [HttpPatch("api/[controller]/{alertId}/LastChecked")]
         public async Task<bool> UpdateLastChecked([FromRoute]string alertId, [FromBody] long LastChecked)
         {
             Console.WriteLine(LastChecked);
@@ -150,7 +149,7 @@ namespace WebApplication.Controllers
 
 
 
-        [HttpPatch("{alertId}/condition")]
+        [HttpPatch("api/[controller]/{alertId}/condition")]
         public async Task<bool> AddCondition(string alertId, [FromBody] Condition condition)
         {
 
@@ -160,7 +159,7 @@ namespace WebApplication.Controllers
         }
 
 
-        [HttpDelete("{alertId}/condition/{conditionId}")]
+        [HttpDelete("api/[controller]/{alertId}/condition/{conditionId}")]
         public async Task<bool> DeleteCondition(string alertId, string conditionId)
         {
             if (string.IsNullOrEmpty(alertId))
@@ -177,7 +176,7 @@ namespace WebApplication.Controllers
 
         }
 
-        [HttpPatch("{alertId}/condition/{conditionId}")]
+        [HttpPatch("api/[controller]/{alertId}/condition/{conditionId}")]
 
         public async Task<bool> UpdateCondition(string alertId, string conditionId, [FromBody] Condition condition)
         {
@@ -186,8 +185,8 @@ namespace WebApplication.Controllers
             return result;
 
         }
-
-        [HttpGet("index")]
+        [Authorize(Policy = RolePolicy.PoliticaRoleTodos)]
+        [HttpGet("[controller]/index")]
         public IActionResult Index(AlertViewModel alertVM)
         {
             var pageNumber = (alertVM.Pnumber == 0) ? 1 : alertVM.Pnumber;
@@ -212,14 +211,16 @@ namespace WebApplication.Controllers
             return View(alertVM);
         }
          */
-
-        [HttpGet("create")]
+         
+        [Authorize(Policy = RolePolicy.PoliticaRoleAdminDev)]
+        [HttpGet("[controller]/create")]
         public IActionResult Create()
         {
             return View();
         }
 
-        [HttpGet("{id}/edit")]
+        [Authorize(Policy = RolePolicy.PoliticaRoleAdminDev)]
+        [HttpGet("[controller]/{id}/edit")]
         public IActionResult Edit(string id)
         {
             Alert alert = _AlertRepository.Get(id);

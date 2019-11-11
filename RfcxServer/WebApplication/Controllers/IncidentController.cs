@@ -9,11 +9,10 @@ using WebApplication.IRepository;
 using WebApplication.Models;
 using WebApplication.ViewModel;
 using X.PagedList;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication.Controllers
 {
-    [Route("api/[controller]")]
     public class IncidentController : Controller
     {
         private readonly IIncidentRepository _IncidentRepository;
@@ -22,7 +21,7 @@ namespace WebApplication.Controllers
             _IncidentRepository = IncidentRepository;
         }
 
-        [HttpGet("list")]
+        [HttpGet("api/[controller]/list")]
         public async Task<string> GetAllIncidents()
         {
             var Alerts = await _IncidentRepository.GetAllIncidents();
@@ -30,7 +29,7 @@ namespace WebApplication.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet("api/[controller]/{id}")]
         public async Task<string> Get(string id)
         {
             var Incident = await _IncidentRepository.GetIncident(id) ?? new Incident();
@@ -66,21 +65,21 @@ namespace WebApplication.Controllers
             await _IncidentRepository.AddIncident(incident);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("api/[controller]/{id}")]
         public async Task<bool> Put(string id, [FromBody] Incident incident)
         {
             if (string.IsNullOrEmpty(id)) return false;
             return await _IncidentRepository.UpdateIncident(id, incident);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("api/[controller]/{id}")]
         public async Task<bool> Delete(string id)
         {
             if (string.IsNullOrEmpty(id)) return false;
             return await _IncidentRepository.RemoveIncident(id);
         }
 
-        [HttpPatch("{id}/status")]
+        [HttpPatch("api/[controller]/{id}/status")]
         public async Task<bool> UpdateStatus(string id, [FromBody] Boolean status)
         {
             bool result = await _IncidentRepository.UpdateIncidentStatus(id, status);
@@ -91,7 +90,8 @@ namespace WebApplication.Controllers
             return result;
         }
 
-        [HttpGet("index")]
+        [Authorize(Policy = RolePolicy.PoliticaRoleTodos)]
+        [HttpGet("[controller]/index")]
         public IActionResult Index(IncidentViewModel iVM)
         {
             var pageNumber = (iVM.Pnumber == 0) ? 1 : iVM.Pnumber;

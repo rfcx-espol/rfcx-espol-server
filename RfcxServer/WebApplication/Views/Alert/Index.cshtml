@@ -292,7 +292,7 @@
         }
 
         function editarAlerta(id) {
-            window.location.href = '/api/alert/' + id + '/edit/';
+            window.location.href = '/alert/' + id + '/edit/';
         }
 
         function editarStatus(id, status) {
@@ -310,11 +310,6 @@
                         window.location.href = '@Url.Action("Index","Alert")';
                     }
             });
-        }
-
-
-        function editarAlerta(id) {
-            window.location.href = '/api/alert/' + id + '/edit/';
         }
 
         $(".pages").bind('click', function(e){

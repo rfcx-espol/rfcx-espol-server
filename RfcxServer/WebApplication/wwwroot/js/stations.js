@@ -32,7 +32,7 @@ $(document).ready(function(){
         $("h4#modal_label").html("Nueva Estación");
         var inputs = $(".form-group");
         for(i of inputs) {
-            $(i).removeClass("has-error"); 
+            $(i).removeClass("text-danger"); 
         }
         stations_input_changed.length = 0;
     });
@@ -194,7 +194,7 @@ function validateForm() {
     var result = true;
     var inputs = $(".form-group");
     for(i of inputs) {
-        $(i).removeClass("has-error"); 
+        $(i).removeClass("text-danger"); 
     }
     var name = $("#form #name");
     var game_station = $("#form #game_station");
@@ -202,23 +202,26 @@ function validateForm() {
     var latitude = $("#form #latitude");
     var longitude = $("#form #longitude");
     if(name.val() == "") {
-        name.parent(".form-group").addClass("has-error");
+        name.parent(".form-group").addClass("text-danger");
         result = false;
     } 
     if(api_key.val() == "") {
-        api_key.parent(".form-group").addClass("has-error");
+        api_key.parent(".form-group").addClass("text-danger");
         result = false;
     } 
     if(game_station.val() <= 0) {
-        game_station.parent(".form-group").addClass("has-error");
+        game_station.parent(".form-group").addClass("text-danger");
         result = false;   
     } 
     if(!($.isNumeric(latitude.val()) && (latitude.val() >= -90) && (latitude.val() <= 90))) {
-        latitude.parent(".form-group").addClass("has-error");
+        latitude.parent(".form-group").addClass("text-danger");
+        latitude.target.setCustomValidity("");
+        latitude.parent.target.setCustomValidity("Must be number between -90 and 90");
+        
         result = false;   
     } 
     if(!($.isNumeric(longitude.val()) && (longitude.val() >= -180) && (longitude.val() <= 180))) {
-        longitude.parent(".form-group").addClass("has-error");
+        longitude.parent(".form-group").addClass("text-danger");
         result = false;   
     }
     return result;

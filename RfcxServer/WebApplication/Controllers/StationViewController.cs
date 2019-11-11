@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Authorization;
+using WebApplication.Models;
+
 namespace WebApplication {
 
     public class StationViewController : Controller {
@@ -13,6 +16,8 @@ namespace WebApplication {
         {
             _SensorRepository = SensorRepository;
         }
+
+        [Authorize(Policy = RolePolicy.PoliticaRoleTodos)]
         public IActionResult Index(string stationName, int stationId) {
             
             //retrieve sensors by station id
