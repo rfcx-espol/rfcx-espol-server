@@ -42,7 +42,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12 form-group">
-                    <input type="password" asp-for="Password" placeholder="Enter your Password" class="form-control" required>
+                    <input id="password" type="password" asp-for="Password" placeholder="Enter your Password" class="form-control" required>
                 </div>
             </div>
             <div class="row">
@@ -57,7 +57,11 @@
             </div>
             <div class="row">
                 <div class="col-md-12 form-group">
-                    <input asp-for="Role" type="text" class="form-control" placeholder="Rol" required>
+                    <select asp-for="Role" class="form-control" placeholder="Rol" required>
+                        <option value="Admin">Administrador</option>
+                        <option value="Invitado">Invitado</option>
+                        <option value="Developer">Desarrollador</option>
+                    </select>
                 </div>
             </div>
             <div class="row">
@@ -67,7 +71,7 @@
             </div>
 
         </form>
-        <label id="passLabel"></label>
+        <label id="passLabel" class="text-danger"></label>
     </div>
 
 </body>
