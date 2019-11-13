@@ -1,9 +1,9 @@
 #!/bin/bash
 
-rm -r venv
-virtualenv venv
+rm -r daemonvenv
+virtualenv daemonvenv
 source venv/bin/activate
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 
 
 

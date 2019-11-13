@@ -6,11 +6,11 @@ Conflicts=getty@tty1.service
 
 [Service]
 WorkingDirectory=/usr/bin
-User=anibal
+User=estudiante
 Type=simple
 Restart=always
 RestartSec=1
-ExecStart=/home/anibal/Documents/bosque-protector/rfcx-espol-server/raiseAlerts/venv//bin/python3 /usr/bin/alertRaiser.py
+ExecStart=/var/alert-daemon/daemonvenv/bin/python3 /usr/bin/alertRaiser.py
 
 [Install]
 WantedBy=multi-user.target
