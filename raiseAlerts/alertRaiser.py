@@ -1,5 +1,3 @@
-#!/home/anibal/Documents/bosque-protector/rfcx-espol-server/raiseAlerts/venv/bin/python3
-
 import time
 from datetime import datetime, timedelta
 import threading
@@ -9,7 +7,7 @@ import json
 
 
 client = pymongo.MongoClient()
-db = client.db_rfcx
+db = client.BosqueProtector1
 
 
 def getAllActiveAlerts():
@@ -17,7 +15,6 @@ def getAllActiveAlerts():
 
     alerts = db.Alert
     activeAlerts = alerts.find({"Status": True})
-    print(activeAlerts)
     return activeAlerts
 
 
