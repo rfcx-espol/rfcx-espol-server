@@ -1,8 +1,8 @@
 #!/bin/bash
 
-rm -r daemonvenv
-virtualenv daemonvenv
-source venv/bin/activate
+rm -r /var/alert-daemon/daemonvenv
+virtualenv /var/alert-daemon/daemonvenv
+source /var/alert-daemon/daemonvenv/bin/activate
 pip3 install -r requirements.txt
 
 
