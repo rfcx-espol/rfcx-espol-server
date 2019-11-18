@@ -133,3 +133,12 @@ red:#ff4000
 .container {
     padding: 15px;    
 }
+
+.text-error{
+    position:relative;
+    margin: 10px 10px;
+    background:#DD4145;
+    color:white;
+    border-radius:5px;
+    padding:5px 3px ;
+}

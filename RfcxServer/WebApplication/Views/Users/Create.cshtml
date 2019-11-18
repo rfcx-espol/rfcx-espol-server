@@ -42,7 +42,13 @@
             </div>
             <div class="row">
                 <div class="col-md-12 form-group">
-                    <input id="password" type="password" asp-for="Password" placeholder="Enter your Password" class="form-control" required>
+                    <input id="password" type="password" asp-for="Password" placeholder="Contraseña" class="form-control" pattern="^(?=.*?[A-z])(?=.*?[0-9]).{8,}$" required>
+                    <p>  La contraseña debe ser de 8 caracteres y contener al menos un valor numérico.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    <input id="confirm_password" type="password" asp-for="Password" placeholder="Confirmar contraseña" class="form-control" required>
                 </div>
             </div>
             <div class="row">
@@ -52,7 +58,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12 form-group">
-                    <input asp-for="Email" type="email" class="form-control" placeholder="user@example.com" required>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="usuario@example.com" required>
                 </div>
             </div>
             <div class="row">
@@ -88,9 +94,9 @@
     $("#password").keyup(function () {
         var VAL = this.value;
 
-        var email = new RegExp("^(?=.*?[a-z])(?=.*?[0-9]).{8,}$");
+        var pass = new RegExp("^(?=.*?[A-z])(?=.*?[0-9]).{8,}$");
 
-        if (!email.test(VAL)) {
+        if (!pass.test(VAL)) {
             $("#passLabel").text("La contraseña debe ser de 8 caracteres y contener al menos un valor numérico.");
             $("button").prop("disabled", true);
         }
@@ -99,4 +105,18 @@
             $("button").prop("disabled", false);
         }
     });
+
+    var password = document.getElementById("password")
+    , confirm_password = document.getElementById("confirm_password");
+
+    function validatePassword(){
+    if(password.value != confirm_password.value) {
+        confirm_password.setCustomValidity("Passwords Don't Match");
+    } else {
+        confirm_password.setCustomValidity('');
+    }
+    }
+
+    password.onchange = validatePassword;
+    confirm_password.onkeyup = validatePassword;
 </script>

@@ -194,8 +194,13 @@ function validateForm() {
     var result = true;
     var inputs = $(".form-group");
     for(i of inputs) {
-        $(i).removeClass("text-danger"); 
+        $(i).removeClass("text-danger");
     }
+    var texterrors = $( '.text-error' );
+    for(errors of texterrors) {
+        $(errors).remove();
+    }
+    
     var name = $("#form #name");
     var game_station = $("#form #game_station");
     var api_key = $("#form #api_key");
@@ -203,25 +208,27 @@ function validateForm() {
     var longitude = $("#form #longitude");
     if(name.val() == "") {
         name.parent(".form-group").addClass("text-danger");
+        name.parent(".form-group").append("<span class='text-error'>Ingresar un nombre.</span>");
         result = false;
     } 
     if(api_key.val() == "") {
         api_key.parent(".form-group").addClass("text-danger");
+        api_key.parent(".form-group").append("<span class='text-error'>Ingresar api-key.");
         result = false;
     } 
     if(game_station.val() <= 0) {
         game_station.parent(".form-group").addClass("text-danger");
+        game_station.parent(".form-group").append("<span class='text-error'>Ingresar número válido mayor a 0.</span>");
         result = false;   
     } 
     if(!($.isNumeric(latitude.val()) && (latitude.val() >= -90) && (latitude.val() <= 90))) {
         latitude.parent(".form-group").addClass("text-danger");
-        latitude.target.setCustomValidity("");
-        latitude.parent.target.setCustomValidity("Must be number between -90 and 90");
-        
+        latitude.parent(".form-group").append("<span class='text-error'>Ingresar latitud entre -90 y 90.</span>");
         result = false;   
     } 
     if(!($.isNumeric(longitude.val()) && (longitude.val() >= -180) && (longitude.val() <= 180))) {
         longitude.parent(".form-group").addClass("text-danger");
+        longitude.parent(".form-group").append("<span class='text-error'>Ingresar longitud entre -180 y 180.</span>");
         result = false;   
     }
     return result;
