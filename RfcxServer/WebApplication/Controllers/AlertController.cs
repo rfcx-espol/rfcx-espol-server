@@ -52,6 +52,7 @@ namespace WebApplication.Controllers
         [HttpPost("api/[controller]")]
         public IActionResult Post()
         {
+
             Alert alert = new Alert();
             List<Condition> condition_list = new List<Condition>();
             alert.Name = Request.Form["nombre_alerta"];
@@ -97,7 +98,7 @@ namespace WebApplication.Controllers
             }
             alert.Conditions = condition_list;
             _AlertRepository.UpdateAlert(id, alert);
-            return Redirect("index");
+            return Redirect("/alert/index");
             /* would work if method was async
             bool result = await _AlertRepository.UpdateAlert(id, alert);
             setTempData(result, "editResult");            
@@ -140,7 +141,7 @@ namespace WebApplication.Controllers
         }
 
         [HttpPatch("api/[controller]/{alertId}/LastChecked")]
-        public async Task<bool> UpdateLastChecked([FromRoute]string alertId, [FromBody] long LastChecked)
+        public async Task<bool> UpdateLastChecked([FromRoute]string alertId, [FromBody] int LastChecked)
         {
             Console.WriteLine(LastChecked);
             bool result = await _AlertRepository.updateLastChecked(alertId, LastChecked);

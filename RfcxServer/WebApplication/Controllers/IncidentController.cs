@@ -36,7 +36,7 @@ namespace WebApplication.Controllers
             return JsonConvert.SerializeObject(Incident);
         }
 
-        [HttpPost]
+        [HttpPost("api/[controller]")]
         public async Task Post([FromBody] Incident incident)
         {
             // var fromAddress = new MailAddress("mail@gmail.com", "Bosque Protector");

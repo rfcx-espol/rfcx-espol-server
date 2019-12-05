@@ -31,6 +31,7 @@ $(document).ready(function(){
         $("form input").val("");
         $("h4#modal_label").html("Nueva Estación");
         var inputs = $(".form-group");
+        $( ".text-error" ).remove();
         for(i of inputs) {
             $(i).removeClass("text-danger"); 
         }
@@ -42,6 +43,7 @@ $(document).ready(function(){
     });
 
 });
+
 
 function getStationsList(data) {
     var data_dic = JSON.parse(data);
@@ -381,7 +383,7 @@ function updateStationsHeight(){
 
 function closeModal(id){
     if(id == 1) {
-        $("#station_modal").modal("hide");
+        $("#station_modal").modal("hide");  
     } else {
         $("#alert_modal").modal("hide");
     }
