@@ -143,7 +143,6 @@ namespace WebApplication.Controllers
         [HttpPatch("api/[controller]/{alertId}/LastChecked")]
         public async Task<bool> UpdateLastChecked([FromRoute]string alertId, [FromBody] int LastChecked)
         {
-            Console.WriteLine(LastChecked);
             bool result = await _AlertRepository.updateLastChecked(alertId, LastChecked);
             return result;
         }
