@@ -75,6 +75,7 @@ namespace WebApplication.Controllers
         }
 
         [HttpPost]
+	[Route("api/imgcapture")]
         public async Task<ActionResult> PostPicture(ImageRequest req)
         {
             return await _ImageRepository.PostPicture(req);
