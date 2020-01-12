@@ -7,7 +7,7 @@
                value="Nuevo Usuario">
     </div>
     <div id="div_tabla_usuarios">
-        <table id="tabla_usuarios" class="cell-border display compact">
+        <table id="tabla_usuarios" class="table">
             <thead>
                 <tr>
                     <th class="userId">User Id</th>
@@ -28,8 +28,8 @@
                         <td>@par.Email</td>
                         <td>@par.Role</td>
                         <td>
-                            <a class="btn btn-primary" href="/users/update/@par.UserId">Editar</a>
-                            <a class="eliminar_label btn btn-danger">Eliminar</a>
+                            <a class="btn btn-primary fa fa-pencil" href="/users/update/@par.UserId"></a>
+                            <a class="eliminar_label btn btn-danger fa fa-times-circle"></a>
                         </td>
                     </tr>
                 }

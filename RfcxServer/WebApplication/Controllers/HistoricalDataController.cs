@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using MongoDB.Bson;
+using System;
+using WebApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication.Controllers
 {        
@@ -24,6 +27,7 @@ namespace WebApplication.Controllers
                 _SensorRepository = SensorRepository;
         }        
         
+        [Authorize(Policy = RolePolicy.PoliticaRoleTodos)]
         [Route("/ByDate")]
         public IActionResult ByDate(){
             //retrieve stations
@@ -32,6 +36,7 @@ namespace WebApplication.Controllers
             return View(stations);
         }
 
+        [Authorize(Policy = RolePolicy.PoliticaRoleTodos)]
         [Route("/ByHour")]
         public IActionResult ByHour(){
             //retrieve stations
@@ -40,6 +45,7 @@ namespace WebApplication.Controllers
             return View(stations);
         }
 
+        [Authorize(Policy = RolePolicy.PoliticaRoleTodos)]
         [Route("/ByMonth")]
         public IActionResult ByMonth(){
             //retrieve stations
@@ -48,6 +54,7 @@ namespace WebApplication.Controllers
             return View(stations);
         }
 
+        [Authorize(Policy = RolePolicy.PoliticaRoleTodos)]
         [Route("/ByDateStation")]
         public IActionResult ByDateStation(){            
             var sensorsTypeAndLocation = _SensorRepository.sensorsTypeAndLocation();            

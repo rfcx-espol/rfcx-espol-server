@@ -7,17 +7,22 @@ import json
 
 
 client = pymongo.MongoClient()
-db = client.db_rfcx
-TIME_INTERVAL = 5  # in seconds
+db = client.BosqueProtector1
 
 
 def getAllActiveAlerts():
     """return all active alerts in a cursor object."""
 
     alerts = db.Alert
+    neededAlerts = []
     activeAlerts = alerts.find({"Status": True})
-    return activeAlerts
+    for alert in activeAlerts:
+        resta = int(time.time()) - alert["LastChecked"]
+        frec = 60*alert["Frecuency"]
+        if resta >= frec:
+            neededAlerts.append(alert)
 
+    return neededAlerts
 
 def getLatestDataByStation(timeFrame, stationId, sensorId):
     """
@@ -41,6 +46,47 @@ def getLatestDataByStation(timeFrame, stationId, sensorId):
     )
     return latestData
 
+def calculateAverageValue(latestData):
+    values = []
+    for data in latestData:
+        values.append(data["Value"])
+    average = sum(values)/len(values)
+    return average
+
+def checkConditionsAverage(alert):
+    values = []
+    updateLastChecked(alert)
+    frecuency = alert["Frecuency"]
+    conditions = alert["Conditions"]
+    for condition in conditions:
+        stationId = condition["StationId"]
+        sensorId = condition["SensorId"]
+        dataset = getLatestDataByStation(
+            frecuency, int(stationId), int(sensorId))
+        if dataset.count() <= 0:
+            return False, values
+        value = calculateAverageValue(dataset)
+
+        if condition["Comparison"] == "MAYOR QUE":
+            if float(value) > condition["Threshold"]:
+                values.append(value)
+            else:
+                return False, values
+        elif condition["Comparison"] == "MENOR QUE":
+            if float(value) < condition["Threshold"]:
+                values.append(value)
+            else:
+                return False, values
+        
+        elif condition["Comparison"] == "IGUAL":
+            if float(value) == condition["Threshold"]:
+                values.append(value)
+            else:
+                return False, values
+    
+    return True, values
+        
+
 
 def checkConditions(alert):
     """
@@ -50,46 +96,46 @@ def checkConditions(alert):
     alert -- dictionary of alert object
     data -- datalist to check with alert's conditions
     """
-
+    updateLastChecked(alert)
     mFrecuency = alert["Frecuency"]
-    if(alert["LastChecked"] > time.time() - (mFrecuency*60)):
-        return False
-    else:
-        raiseAlert = False
-        updateLastChecked(alert)
-        conditions = alert["Conditions"]
-        for condition in conditions:
-            raiseCondition = False
-            stationId = condition["StationId"]
-            sensorId = condition["SensorId"]
-            dataset = getLatestDataByStation(
-                mFrecuency, int(stationId), int(sensorId))
-            if dataset.count() <= 0:
-                return False
-            if condition["Comparison"] == "MAYOR QUE":
-                for data in dataset:
-                    if float(data["Value"]) > condition["Threshold"]:
-                        raiseCondition = True
-                if not raiseCondition:
-                    return False
-            elif condition["Comparison"] == "MENOR QUE":
-                for data in dataset:
-                    if float(data["Value"]) < condition["Threshold"]:
-                        print(float(data["Value"]))
-                        raiseCondition = True
-                if not raiseCondition:
-                    return False
-            elif condition["Comparison"] == "IGUAL":
-                for data in dataset:
-                    if float(data["Value"]) == condition["Threshold"]:
-                        print(float(data["Value"]))
-                        raiseCondition = True
-                if not raiseCondition:
-                    return False
-        return True
+    raiseAlert = False
+    conditions = alert["Conditions"]
+    values = []
+    for condition in conditions:
+        raiseCondition = False
+        stationId = condition["StationId"]
+        sensorId = condition["SensorId"]
+        dataset = getLatestDataByStation(
+            mFrecuency, int(stationId), int(sensorId))
+        if dataset.count() <= 0:
+            return False, values
+        if condition["Comparison"] == "MAYOR QUE":
+            for data in dataset:
+                if float(data["Value"]) > condition["Threshold"]:
+                    raiseCondition = True
+                    values.append(data)
+            if not raiseCondition:
+                return False, values
+        elif condition["Comparison"] == "MENOR QUE":
+            for data in dataset:
+                if float(data["Value"]) < condition["Threshold"]:
+                    raiseCondition = True
+                    values.append(data)
+            if not raiseCondition:
+                return False, values
+        
+        elif condition["Comparison"] == "IGUAL":
+            for data in dataset:
+                if float(data["Value"]) == condition["Threshold"]:
+                    raiseCondition = True
+                    values.append(data)
+            if not raiseCondition:
+                return False, values
+    
+    return raiseCondition, values
 
 
-def createIncident(alert):
+def createIncident(alert, data):
     """
     Sends http post request to create an incident, returns request status code.
 
@@ -98,26 +144,40 @@ def createIncident(alert):
     """
     headers = {'Content-type': 'application/json'}
     data = {'RaisedAlertName': alert['Name'],
-            'RaisedCondition': str(alert["Conditions"])}
+            'RaisedCondition': stringifyCondition(alert, data)}
+    #request to local database
     r = requests.post(url="http://localhost:5000/api/Incident",
                       data=json.dumps(data), headers=headers)
+    # r = requests.post(url="http://200.126.14.250/api/Incident",
+    #                   data=json.dumps(data), headers=headers)
     return r.status_code
-
 
 def updateLastChecked(alert):
-    """
-    Sends http patch request to create to update the last time an alert was checked.
-
-    Keyword arguments:
-    alert -- dictionary of alert object
-    """
     headers = {'Content-type': 'application/json'}
     data = int(time.time())
-    r = requests.patch(url="http://localhost:5000/api/alert/" + str(alert['_id']) + "/LastChecked",
-                       data=json.dumps(data), headers=headers)
-    print(r.status_code)
+    r = requests.patch(url="http://localhost:5000/api/Alert/"+ str(alert.get("_id"))+"/LastChecked",
+                      data=json.dumps(data), headers=headers)
+    # r = requests.patch(url="http://200.126.14.250/api/Alert/"+ str(alert.get("_id"))+"/LastChecked",
+    #                   data=json.dumps(data), headers=headers)
     return r.status_code
 
+def stringifyCondition(alert, datas):
+    message = ""
+    conditions = alert["Conditions"]
+    for i in range(len(conditions)):
+        stationId = str(conditions[i]["StationId"])
+        sensorId = str(conditions[i]["SensorId"])
+        threshold = str(conditions[i]["Threshold"])
+        comparision = conditions[i]["Comparison"]
+        value = str(datas[i])
+        timestamp = str(int(time.time()))
+        # unit = str(datas[i]["Units"])
+
+        message += "["+timestamp+"]: "+ value + " " \
+            + comparision + " "+ threshold \
+                +" en estación con id: " + stationId \
+                    + " usando el sensor con id: " + sensorId + "\n"
+    return message  
 
 def checkLatestData():
     """
@@ -127,23 +187,11 @@ def checkLatestData():
     activeAlerts = getAllActiveAlerts()
 
     for alert in activeAlerts:
-        if checkConditions(alert):
-            createIncident(alert)
+        check, data = checkConditionsAverage(alert)
+        if check:
+            print(createIncident(alert, data))
 
-
-class setInterval:
-    def __init__(self, interval, action):
-        self.interval = interval
-        self.action = action
-        self.stopEvent = threading.Event()
-        thread = threading.Thread(target=self.__setInterval)
-        thread.start()
-
-    def __setInterval(self):
-        nextTime = time.time()+self.interval
-        while not self.stopEvent.wait(nextTime-time.time()):
-            nextTime += self.interval
-            self.action()
-
-
-checkLatestData()
+while True:
+    print("running...")
+    checkLatestData()
+    time.sleep(60)

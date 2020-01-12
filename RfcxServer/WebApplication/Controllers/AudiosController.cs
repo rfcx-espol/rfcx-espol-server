@@ -28,6 +28,7 @@ namespace WebApplication.Controllers
             _fileProvider = fileProvider;
         }
 
+        [Authorize(Policy = RolePolicy.PoliticaRoleTodos)]
         public IActionResult Index()
         {
             var audioVM = new AudioViewModel()

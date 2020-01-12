@@ -31,8 +31,9 @@ $(document).ready(function(){
         $("form input").val("");
         $("h4#modal_label").html("Nueva Estación");
         var inputs = $(".form-group");
+        $( ".text-error" ).remove();
         for(i of inputs) {
-            $(i).removeClass("has-error"); 
+            $(i).removeClass("text-danger"); 
         }
         stations_input_changed.length = 0;
     });
@@ -42,6 +43,7 @@ $(document).ready(function(){
     });
 
 });
+
 
 function getStationsList(data) {
     var data_dic = JSON.parse(data);
@@ -194,31 +196,41 @@ function validateForm() {
     var result = true;
     var inputs = $(".form-group");
     for(i of inputs) {
-        $(i).removeClass("has-error"); 
+        $(i).removeClass("text-danger");
     }
+    var texterrors = $( '.text-error' );
+    for(errors of texterrors) {
+        $(errors).remove();
+    }
+    
     var name = $("#form #name");
     var game_station = $("#form #game_station");
     var api_key = $("#form #api_key");
     var latitude = $("#form #latitude");
     var longitude = $("#form #longitude");
     if(name.val() == "") {
-        name.parent(".form-group").addClass("has-error");
+        name.parent(".form-group").addClass("text-danger");
+        name.parent(".form-group").append("<span class='text-error'>Ingresar un nombre.</span>");
         result = false;
     } 
     if(api_key.val() == "") {
-        api_key.parent(".form-group").addClass("has-error");
+        api_key.parent(".form-group").addClass("text-danger");
+        api_key.parent(".form-group").append("<span class='text-error'>Ingresar api-key.");
         result = false;
     } 
     if(game_station.val() <= 0) {
-        game_station.parent(".form-group").addClass("has-error");
+        game_station.parent(".form-group").addClass("text-danger");
+        game_station.parent(".form-group").append("<span class='text-error'>Ingresar número válido mayor a 0.</span>");
         result = false;   
     } 
     if(!($.isNumeric(latitude.val()) && (latitude.val() >= -90) && (latitude.val() <= 90))) {
-        latitude.parent(".form-group").addClass("has-error");
+        latitude.parent(".form-group").addClass("text-danger");
+        latitude.parent(".form-group").append("<span class='text-error'>Ingresar latitud entre -90 y 90.</span>");
         result = false;   
     } 
     if(!($.isNumeric(longitude.val()) && (longitude.val() >= -180) && (longitude.val() <= 180))) {
-        longitude.parent(".form-group").addClass("has-error");
+        longitude.parent(".form-group").addClass("text-danger");
+        longitude.parent(".form-group").append("<span class='text-error'>Ingresar longitud entre -180 y 180.</span>");
         result = false;   
     }
     return result;
@@ -371,7 +383,7 @@ function updateStationsHeight(){
 
 function closeModal(id){
     if(id == 1) {
-        $("#station_modal").modal("hide");
+        $("#station_modal").modal("hide");  
     } else {
         $("#alert_modal").modal("hide");
     }

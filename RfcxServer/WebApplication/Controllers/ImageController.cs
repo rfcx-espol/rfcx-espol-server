@@ -28,12 +28,10 @@ using System.Collections;
 using Microsoft.Extensions.Primitives;
 using System.Drawing;
 using System.Net.Http;
-
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication.Controllers
 {
-    [Route("api/imgcapture")]
     public class ImageController : Controller
     {
         private readonly IImageRepository _ImageRepository;
@@ -51,7 +49,8 @@ namespace WebApplication.Controllers
 
         }
 
-        [HttpGet("index")]
+        [Authorize(Policy = RolePolicy.PoliticaRoleTodos)]
+        [HttpGet("imgcapture/index")]
         public IActionResult Index()
         {
             //ViewBag.estaciones = _StationRepository.Get();
@@ -76,6 +75,7 @@ namespace WebApplication.Controllers
         }
 
         [HttpPost]
+	[Route("api/imgcapture")]
         public async Task<ActionResult> PostPicture(ImageRequest req)
         {
             return await _ImageRepository.PostPicture(req);
@@ -90,7 +90,7 @@ namespace WebApplication.Controllers
             return File(fs, "image/jpg", nameFile);
         }*/
 
-[HttpGet("download")]
+[HttpGet("api/imgcapture/download")]
 public FileResult DownloadFile(string namefile, string station)
         {
             string[] files = namefile.Split(',');

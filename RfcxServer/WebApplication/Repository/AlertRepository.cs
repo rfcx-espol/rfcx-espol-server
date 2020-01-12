@@ -234,7 +234,7 @@ namespace WebApplication.Repository
 
         }
 
-        public async Task<bool> updateLastChecked(string alertId, long lastChecked)
+        public async Task<bool> updateLastChecked(string alertId, int lastChecked)
         {
             var filter = Builders<Alert>.Filter.Eq("_id", ObjectId.Parse(alertId));
             var update = Builders<Alert>.Update.Set("LastChecked", lastChecked);
