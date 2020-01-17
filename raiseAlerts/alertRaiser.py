@@ -104,14 +104,14 @@ def createIncident(alert, data):
     headers = {'Content-type': 'application/json'}
     data = {'RaisedAlertName': alert['Name'],
             'RaisedCondition': stringifyCondition(alert, data)}
-    r = requests.post(url="http://localhost:5000/api/Incident",
+    r = requests.post(url="http://200.126.14.250/api/Incident",
                       data=json.dumps(data), headers=headers)
     return r.status_code
 
 def updateLastChecked(alert):
     headers = {'Content-type': 'application/json'}
     data = int(time.time())
-    r = requests.patch(url="http://localhost:5000/api/Alert/"+ str(alert.get("_id"))+"/LastChecked",
+    r = requests.patch(url="http://200.126.14.250/api/Alert/"+ str(alert.get("_id"))+"/LastChecked",
                       data=json.dumps(data), headers=headers)
     return r.status_code
 
