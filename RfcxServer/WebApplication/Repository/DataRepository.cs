@@ -1,12 +1,13 @@
 using WebApplication.DbModels;
 using WebApplication.IRepository;
+using WebApplication.Helpers;
 using Microsoft.Extensions.Options;
 using WebApplication.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 
 
@@ -389,374 +390,167 @@ namespace WebApplication.Repository
             }
         }
         
-        public async Task<IEnumerable<BsonDocument>> AvgPerDate(
-            int StationId,
-            long StartTimestamp,
-            long EndTimestamp
-        )
-        {
-            
-            // Use mongodb driver to do aggregation of data
-            var timestampInMillis = new BsonDocument {
-                { "$multiply", new BsonArray{ "$Timestamp", 1000 } }
-            };
-            System.DateTime dateAtStartOfUnixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, 0,DateTimeKind.Utc);
-
-            var dateField = new BsonDocument {
-                { "$add", new BsonArray{ dateAtStartOfUnixEpoch, timestampInMillis } }
-            };
-
-            var _id = new BsonDocument {                                
-                {"SensorId", "$SensorId"}, 
-                {"year", new BsonDocument("$year",new BsonDocument("date","$date").Add("timezone","-0500"))},               
-                {"month", new BsonDocument("$month",new BsonDocument("date","$date").Add("timezone","-0500"))},                
-                {"dayOfMonth", new BsonDocument("$dayOfMonth",new BsonDocument("date","$date").Add("timezone","-0500"))}  
-            };
-            
-            var avg = new BsonDocument {
-                {"$avg", "$Value"}
-            };
-
-            var aggregates = new BsonDocument {
-                {"$push", "$$ROOT"}
-            };
-            
-            // do the aggregation
-            var aggregatedResult = _context.Datas.Aggregate()            
-                .AppendStage<BsonDocument> 
-                (
-                    new BsonDocument { 
-                        { "$match", new BsonDocument("StationId", StationId) } 
-                    }
-                )
-                .AppendStage<BsonDocument> 
-                (
-                    new BsonDocument { 
-                        { "$match", new BsonDocument("Timestamp", new BsonDocument("$gte",StartTimestamp)) }
-                    }
-                )            
-                .AppendStage<BsonDocument> 
-                (
-                    new BsonDocument { 
-                        { "$match", new BsonDocument("Timestamp", new BsonDocument("$lte",EndTimestamp)) }
-                    }
-                )
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$addFields", new BsonDocument("date", dateField) }
-                    }
-                )                
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$group", new BsonDocument("_id", _id).Add("avg",avg) }
-                    }
-                )                                
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$group", new BsonDocument("_id", "$_id.SensorId").Add("aggregates",aggregates) }
-                    }
-                )                                                  
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$project", new BsonDocument("_id", 0).Add("SensorId","$_id").Add("aggregates","$aggregates")}
-                    }
-                )              
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$sort", new BsonDocument("SensorId",1) }
-                    }
-                )
-                .ToListAsync();                
-            return await aggregatedResult;
-        }
-
-         public async Task<IEnumerable<BsonDocument>> AvgPerHour(
-            int StationId,
-            long StartTimestamp,
-            long EndTimestamp
-        )
-        {
-            
-            // Use mongodb driver to do aggregation of data
-            var timestampInMillis = new BsonDocument {
-                { "$multiply", new BsonArray{ "$Timestamp", 1000 } }
-            };
-            
-            System.DateTime dateAtStartOfUnixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, 0,DateTimeKind.Utc);
-            
-            var dateField = new BsonDocument {
-                { "$add", new BsonArray{ dateAtStartOfUnixEpoch, timestampInMillis } }
-            };
-
-            var _id = new BsonDocument {                                
-                {"SensorId", "$SensorId"}, 
-                {"hour", new BsonDocument("$hour",new BsonDocument("date","$date").Add("timezone","-0500") )}, 
-            };
-            
-            var avg = new BsonDocument {
-                {"$avg", "$Value"}
-            };
-
-            var aggregates = new BsonDocument {
-                {"$push", "$$ROOT"}
-            };
-            
-            // do the aggregation
-            var aggregatedResult = _context.Datas.Aggregate()            
-                .AppendStage<BsonDocument> 
-                (
-                    new BsonDocument { 
-                        { "$match", new BsonDocument("StationId", StationId) } 
-                    }
-                )
-                .AppendStage<BsonDocument> 
-                (
-                    new BsonDocument { 
-                        { "$match", new BsonDocument("Timestamp", new BsonDocument("$gte",StartTimestamp)) }
-                    }
-                )            
-                .AppendStage<BsonDocument> 
-                (
-                    new BsonDocument { 
-                        { "$match", new BsonDocument("Timestamp", new BsonDocument("$lte",EndTimestamp)) }
-                    }
-                )
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$addFields", new BsonDocument("date", dateField) }
-                    }
-                )                
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$group", new BsonDocument("_id", _id).Add("avg",avg) }
-                    }
-                )                                
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$group", new BsonDocument("_id", "$_id.SensorId").Add("aggregates",aggregates) }
-                    }
-                )                                                  
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$project", new BsonDocument("_id", 0).Add("SensorId","$_id").Add("aggregates","$aggregates")}
-                    }
-                )
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$sort", new BsonDocument("SensorId",1) }
-                    }
-                )
-                .ToListAsync();                
-            return await aggregatedResult;
-        }
-
-        public async Task<IEnumerable<BsonDocument>> AvgPerMonth(
-            int StationId,
-            long StartTimestamp,
-            long EndTimestamp
-        )
-        {
-            
-            // Use mongodb driver to do aggregation of data
-            var timestampInMillis = new BsonDocument {
-                { "$multiply", new BsonArray{ "$Timestamp", 1000 } }
-            };
-
-            System.DateTime dateAtStartOfUnixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, 0,DateTimeKind.Utc);
-
-            var dateField = new BsonDocument {
-                { "$add", new BsonArray{ dateAtStartOfUnixEpoch, timestampInMillis } }
-            };
-
-            var _id = new BsonDocument {                                
-                {"SensorId", "$SensorId"}, 
-                {"month", new BsonDocument("$month",new BsonDocument("date","$date").Add("timezone","-0500"))}, 
-            };
-            
-            var avg = new BsonDocument {
-                {"$avg", "$Value"}
-            };
-
-            var aggregates = new BsonDocument {
-                {"$push", "$$ROOT"}
-            };
-            
-            // do the aggregation
-            var aggregatedResult = _context.Datas.Aggregate()            
-                .AppendStage<BsonDocument> 
-                (
-                    new BsonDocument { 
-                        { "$match", new BsonDocument("StationId", StationId) } 
-                    }
-                )
-                .AppendStage<BsonDocument> 
-                (
-                    new BsonDocument { 
-                        { "$match", new BsonDocument("Timestamp", new BsonDocument("$gte",StartTimestamp)) }
-                    }
-                )            
-                .AppendStage<BsonDocument> 
-                (
-                    new BsonDocument { 
-                        { "$match", new BsonDocument("Timestamp", new BsonDocument("$lte",EndTimestamp)) }
-                    }
-                )
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$addFields", new BsonDocument("date", dateField) }
-                    }
-                )       
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$group", new BsonDocument("_id", _id).Add("avg",avg) }
-                    }
-                )                                
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$group", new BsonDocument("_id", "$_id.SensorId").Add("aggregates",aggregates) }
-                    }
-                )                                                  
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$project", new BsonDocument("_id", 0).Add("SensorId","$_id").Add("aggregates","$aggregates")}
-                    }
-                )
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$sort", new BsonDocument("SensorId",1) }
-                    }
-                )
-                .ToListAsync();                
-            return await aggregatedResult;
-        }
-
         public List<BsonDocument> sensorsTypeAndLocation()
         {
-            var _id = new BsonDocument {                                
-                {"Type", "$Type"}, 
-                {"Location", "$Location" }, 
-            };
-
+            BsonDocument groupSensorsByTypeAndLocationStage = MongoAggregationHelper.buildGroupSensorsByTypeAndLocationStage();
+            BsonDocument projectToTypeAndLocationStage = MongoAggregationHelper.buildProjectToTypeAndLocationStage();
             var aggregatedResult = _context.Datas.Aggregate()                          
-            .AppendStage<BsonDocument>
-            (
-                new BsonDocument{
-                    { "$group", new BsonDocument("_id", _id) }
-                }
-            )
-            .AppendStage<BsonDocument>
-            (
-                new BsonDocument{
-                    { "$project", new BsonDocument("_id", 0).Add("Type","$_id.Type").Add("Location","$_id.Location") }
-                }
-            )
-            .ToList();
+                .AppendStage<BsonDocument>(groupSensorsByTypeAndLocationStage)
+                .AppendStage<BsonDocument>(projectToTypeAndLocationStage)
+                .ToList();
             return aggregatedResult;
         }
-
         
-        public async Task<IEnumerable<BsonDocument>> AvgPerDateStation(
+        //avg per date
+        public async Task<IEnumerable<BsonDocument>> avgPerDate(
+            int StationId,            
+            int SensorId,
+            long StartTimestamp,
+            long EndTimestamp
+        )
+        {
+                                    
+            DateTime   startDate = MongoAggregationHelper.getUtcDateFromTimestampInSeconds(StartTimestamp);
+            DateTime   endDate   = MongoAggregationHelper.getUtcDateFromTimestampInSeconds(EndTimestamp);                 
+            DateTime[] datesSpan = MongoAggregationHelper.buildDateSpan(startDate,endDate);
+    
+            //A serie of data transformations to get aggregated values. 
+            BsonDocument addDateFieldsStage    = MongoAggregationHelper.buildAddDateFieldStage();
+            BsonDocument groupByDateStage      = MongoAggregationHelper.buildGroupByDateStage();
+            BsonDocument projectToDateStage    = MongoAggregationHelper.buildProjectToDateStage();            
+            BsonDocument shrinkToOneArrayStage = MongoAggregationHelper.buildShrinkToOneArrayStage();           
+            BsonDocument fillMissingDatesStage = MongoAggregationHelper.buildFillMissingDatesStage(datesSpan);
+            BsonDocument unwindStage           = MongoAggregationHelper.buildUnwindStage();            
+            BsonDocument promoteOneLevelStage  = MongoAggregationHelper.buildPromoteOneLevelStage();
+            
+            //Use mongodb driver to do aggregation of data
+            var aggregatedResult = _context.Datas.Aggregate()
+                .Match( d => d.SensorId  == SensorId  )
+                .Match( d => d.StationId == StationId )
+                .Match( d => StartTimestamp <= d.Timestamp && d.Timestamp <= EndTimestamp ) //After filter. Data transformation starts
+                .AppendStage<BsonDocument>(addDateFieldsStage)
+                .AppendStage<BsonDocument>(groupByDateStage)
+                .AppendStage<BsonDocument>(projectToDateStage)
+                .AppendStage<BsonDocument>(shrinkToOneArrayStage)
+                .AppendStage<BsonDocument>(fillMissingDatesStage)
+                .AppendStage<BsonDocument>(unwindStage)
+                .AppendStage<BsonDocument>(promoteOneLevelStage)
+                .ToListAsync();
+
+            return await aggregatedResult;
+        }
+
+        //avg per date but filter by type and location also
+        public async Task<IEnumerable<BsonDocument>> avgPerDateFromSensorTypeAndLocation(
+            int StationId,            
             string SensorType,
             string SensorLocation,
             long StartTimestamp,
             long EndTimestamp
         )
         {
+                                    
+            DateTime   startDate = MongoAggregationHelper.getUtcDateFromTimestampInSeconds(StartTimestamp);
+            DateTime   endDate   = MongoAggregationHelper.getUtcDateFromTimestampInSeconds(EndTimestamp);                 
+            DateTime[] datesSpan = MongoAggregationHelper.buildDateSpan(startDate,endDate);
+    
+            //A serie of data transformations to get aggregated values. 
+            BsonDocument addDateFieldsStage    = MongoAggregationHelper.buildAddDateFieldStage();
+            BsonDocument groupByDateStage      = MongoAggregationHelper.buildGroupByDateStage();
+            BsonDocument projectToDateStage    = MongoAggregationHelper.buildProjectToDateStage();            
+            BsonDocument shrinkToOneArrayStage = MongoAggregationHelper.buildShrinkToOneArrayStage();           
+            BsonDocument fillMissingDatesStage = MongoAggregationHelper.buildFillMissingDatesStage(datesSpan);
+            BsonDocument unwindStage           = MongoAggregationHelper.buildUnwindStage();            
+            BsonDocument promoteOneLevelStage  = MongoAggregationHelper.buildPromoteOneLevelStage();
             
-            // Use mongodb driver to do aggregation of data
-            var timestampInMillis = new BsonDocument {
-                { "$multiply", new BsonArray{ "$Timestamp", 1000 } }
-            };           
-            System.DateTime dateAtStartOfUnixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, 0,DateTimeKind.Utc);
+            //Use mongodb driver to do aggregation of data
+            var aggregatedResult = _context.Datas.Aggregate()
+                .Match( d => d.Type == SensorType )
+                .Match( d => d.Location == SensorLocation )
+                .Match( d => d.StationId == StationId )
+                .Match( d => StartTimestamp <= d.Timestamp && d.Timestamp <= EndTimestamp ) //After filter. Data transformation starts
+                .AppendStage<BsonDocument>(addDateFieldsStage)
+                .AppendStage<BsonDocument>(groupByDateStage)
+                .AppendStage<BsonDocument>(projectToDateStage)
+                .AppendStage<BsonDocument>(shrinkToOneArrayStage)
+                .AppendStage<BsonDocument>(fillMissingDatesStage)
+                .AppendStage<BsonDocument>(unwindStage)
+                .AppendStage<BsonDocument>(promoteOneLevelStage)
+                .ToListAsync();
 
-            var dateField = new BsonDocument {
-                { "$add", new BsonArray{ dateAtStartOfUnixEpoch, timestampInMillis } }
-            };
-
-            var _id = new BsonDocument {                                
-                {"StationId", "$StationId"}, 
-                {"year", new BsonDocument("$year",new BsonDocument("date","$date").Add("timezone","-0500"))},               
-                {"month", new BsonDocument("$month",new BsonDocument("date","$date").Add("timezone","-0500"))},                
-                {"dayOfMonth", new BsonDocument("$dayOfMonth",new BsonDocument("date","$date").Add("timezone","-0500"))}  
-            };
-            
-            var avg = new BsonDocument {
-                {"$avg", "$Value"}
-            };
-
-            var aggregates = new BsonDocument {
-                {"$push", "$$ROOT"}
-            };
-            
-            // do the aggregation
-            var aggregatedResult = _context.Datas.Aggregate()            
-                .AppendStage<BsonDocument> 
-                (
-                    new BsonDocument { 
-                        { "$match", new BsonDocument("Type", SensorType).Add("Location", SensorLocation) }
-                    }
-                )
-                .AppendStage<BsonDocument> 
-                (
-                    new BsonDocument { 
-                        { "$match", new BsonDocument("Timestamp", new BsonDocument("$gte",StartTimestamp)) }
-                    }
-                )            
-                .AppendStage<BsonDocument> 
-                (
-                    new BsonDocument { 
-                        { "$match", new BsonDocument("Timestamp", new BsonDocument("$lte",EndTimestamp)) }
-                    }
-                )
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$addFields", new BsonDocument("date", dateField) }
-                    }
-                )                
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$group", new BsonDocument("_id", _id).Add("avg",avg) }
-                    }
-                )                                
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$group", new BsonDocument("_id", "$_id.StationId").Add("aggregates",aggregates) }
-                    }
-                )                                                  
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$project", new BsonDocument("_id", 0).Add("StationId","$_id").Add("aggregates","$aggregates")}
-                    }
-                )              
-                .AppendStage<BsonDocument>
-                (
-                    new BsonDocument{
-                        { "$sort", new BsonDocument("StationId",1) }
-                    }
-                )
-                .ToListAsync();                
             return await aggregatedResult;
         }
 
+        //per hour
+        public async Task<IEnumerable<BsonDocument>> avgPerHour(
+            int StationId,            
+            int SensorId,
+            long StartTimestamp,
+            long EndTimestamp
+        )
+        {
+            
+            //A serie of data transformations to get aggregated values. 
+            BsonDocument addDateFieldsStage    = MongoAggregationHelper.buildAddDateFieldStage();
+            BsonDocument groupByHourStage      = MongoAggregationHelper.buildGroupByHourStage();            
+            BsonDocument projectToHourStage    = MongoAggregationHelper.buildProjectToHourStage(); 
+            BsonDocument shrinkToOneArrayStage = MongoAggregationHelper.buildShrinkToOneArrayStage();
+            BsonDocument fillMissingHoursStage = MongoAggregationHelper.buildFillMissingHoursStage();
+            BsonDocument unwindStage           = MongoAggregationHelper.buildUnwindStage();            
+            BsonDocument promoteOneLevelStage  = MongoAggregationHelper.buildPromoteOneLevelStage();
+            
+            //Use mongodb driver to do aggregation of data
+            var aggregatedResult = _context.Datas.Aggregate()
+                .Match( d => d.SensorId  == SensorId  )
+                .Match( d => d.StationId == StationId )
+                .Match( d => StartTimestamp <= d.Timestamp && d.Timestamp <= EndTimestamp ) //After filter. Data transformation starts
+                .AppendStage<BsonDocument>(addDateFieldsStage)
+                .AppendStage<BsonDocument>(groupByHourStage)
+                .AppendStage<BsonDocument>(projectToHourStage)
+                .AppendStage<BsonDocument>(shrinkToOneArrayStage)
+                .AppendStage<BsonDocument>(fillMissingHoursStage)
+                .AppendStage<BsonDocument>(unwindStage)
+                .AppendStage<BsonDocument>(promoteOneLevelStage)
+                .ToListAsync();
+
+            return await aggregatedResult;
+        }
+
+
+        // per month
+        public async Task<IEnumerable<BsonDocument>> avgPerMonth(
+            int StationId,            
+            int SensorId,
+            long StartTimestamp,
+            long EndTimestamp
+        )
+        {
+            
+            //A serie of data transformations to get aggregated values. 
+            BsonDocument addDateFieldsStage     = MongoAggregationHelper.buildAddDateFieldStage();
+            BsonDocument groupByMonthStage      = MongoAggregationHelper.buildGroupByMonthStage();            
+            BsonDocument projectToMonthStage    = MongoAggregationHelper.buildProjectToMonthStage(); 
+            BsonDocument shrinkToOneArrayStage  = MongoAggregationHelper.buildShrinkToOneArrayStage();
+            BsonDocument fillMissingMonthsStage = MongoAggregationHelper.buildFillMissingMonthsStage();
+            BsonDocument unwindStage            = MongoAggregationHelper.buildUnwindStage();            
+            BsonDocument promoteOneLevelStage   = MongoAggregationHelper.buildPromoteOneLevelStage();
+            
+            //Use mongodb driver to do aggregation of data
+            var aggregatedResult = _context.Datas.Aggregate()
+                .Match( d => d.SensorId  == SensorId  )
+                .Match( d => d.StationId == StationId )
+                .Match( d => StartTimestamp <= d.Timestamp && d.Timestamp <= EndTimestamp ) //After filter. Data transformation starts
+                .AppendStage<BsonDocument>(addDateFieldsStage)
+                .AppendStage<BsonDocument>(groupByMonthStage)
+                .AppendStage<BsonDocument>(projectToMonthStage)
+                .AppendStage<BsonDocument>(shrinkToOneArrayStage)
+                .AppendStage<BsonDocument>(fillMissingMonthsStage)
+                .AppendStage<BsonDocument>(unwindStage)
+                .AppendStage<BsonDocument>(promoteOneLevelStage)
+                .ToListAsync();
+
+            return await aggregatedResult;
+        }
         
     }
 }

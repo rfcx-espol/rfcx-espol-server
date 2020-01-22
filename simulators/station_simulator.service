@@ -1,0 +1,9 @@
+[Unit]
+Description=Station simulator for TestStation
+
+[Service]
+User=estudiante
+ExecStart=/usr/bin/python3 /usr/local/bin/station_simulator.py "Estacion 3"
+
+[Install]
+WantedBy=multi-user.target

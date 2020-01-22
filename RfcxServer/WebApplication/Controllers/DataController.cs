@@ -3,6 +3,8 @@ using WebApplication.IRepository;
 using System.Threading.Tasks;
 using WebApplication.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Linq;
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
@@ -250,125 +252,7 @@ namespace WebApplication.Controllers
                 return await _DataRepository.Remove(id);
             }
             
-            [HttpGet]
-            [Route("api/Station/{StationId:int}/AvgPerDate")]        
-            public Task<string> GetAvgPerDate(
-                [FromRoute]int StationId,
-                [FromQuery] long StartTimestamp,
-                [FromQuery] long EndTimestamp
-            )
-            {
-                return this._GetAvgPerDate(
-                    StationId, 
-                    StartTimestamp, 
-                    EndTimestamp
-                );
-            }
-
-            private async Task<string> _GetAvgPerDate(
-                int StationId,
-                long StartTimestamp,
-                long EndTimestamp
-            )
-            {
-                var data = await _DataRepository.AvgPerDate(
-                    StationId, 
-                    StartTimestamp, 
-                    EndTimestamp
-                );
-                return data.ToJson() ;
-            }
-
-            [HttpGet]
-            [Route("api/Station/{StationId:int}/AvgPerHour")]        
-            public Task<string> GetAvgPerHour(
-                [FromRoute]int StationId,
-                [FromQuery] long StartTimestamp,
-                [FromQuery] long EndTimestamp
-            )
-            {
-                return this._GetAvgPerHour(
-                    StationId, 
-                    StartTimestamp, 
-                    EndTimestamp
-                );
-            }
-
-            private async Task<string> _GetAvgPerHour(
-                int StationId,
-                long StartTimestamp,
-                long EndTimestamp
-            )
-            {
-                var data = await _DataRepository.AvgPerHour(
-                    StationId, 
-                    StartTimestamp, 
-                    EndTimestamp
-                );
-                return data.ToJson() ;
-            }
-
-            [HttpGet]
-            [Route("api/Station/{StationId:int}/AvgPerMonth")]        
-            public Task<string> GetAvgPerMonth(
-                [FromRoute]int StationId,
-                [FromQuery] long StartTimestamp,
-                [FromQuery] long EndTimestamp
-            )
-            {
-                return this._GetAvgPerMonth(
-                    StationId, 
-                    StartTimestamp, 
-                    EndTimestamp
-                );
-            }
-
-            private async Task<string> _GetAvgPerMonth(
-                int StationId,
-                long StartTimestamp,
-                long EndTimestamp
-            )
-            {
-                var data = await _DataRepository.AvgPerMonth(
-                    StationId, 
-                    StartTimestamp, 
-                    EndTimestamp
-                );
-                return data.ToJson() ;
-            }
-
-            [HttpGet]
-            [Route("api/AvgPerDateStation")]
-            public Task<string> GetAvgPerDateStation(            
-                [FromQuery] string SensorType,
-                [FromQuery] string SensorLocation,
-                [FromQuery] long StartTimestamp,
-                [FromQuery] long EndTimestamp
-            )
-            {
-                return this._GetAvgPerDateStation(
-                    SensorType,
-                    SensorLocation,
-                    StartTimestamp, 
-                    EndTimestamp
-                );
-            }
-
-            private async Task<string> _GetAvgPerDateStation(
-                string SensorType,
-                string SensorLocation,
-                long StartTimestamp,
-                long EndTimestamp
-            )
-            {
-                var data = await _DataRepository.AvgPerDateStation(
-                    SensorType,
-                    SensorLocation,
-                    StartTimestamp, 
-                    EndTimestamp
-                );
-                return data.ToJson() ;
-            }
-
+                 
         }
+       
 }

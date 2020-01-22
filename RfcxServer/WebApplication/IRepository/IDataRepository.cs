@@ -30,28 +30,38 @@ namespace WebApplication.IRepository
             int StationId, 
             long StartTimestamp, 
             long EndTimestamp
-        );
-        Task<IEnumerable<BsonDocument>> AvgPerDate(
-            int StationId,
-            long StartTimestamp,
-            long EndTimestamp
-        );
+        );        
 
-        Task<IEnumerable<BsonDocument>> AvgPerHour(
-            int StationId,
-            long StartTimestamp,
-            long EndTimestamp
-        );    
+        //all combinations of type and
+        List<BsonDocument> sensorsTypeAndLocation();
 
-        Task<IEnumerable<BsonDocument>> AvgPerMonth(
+        //avg per date
+        Task<IEnumerable<BsonDocument>> avgPerDate(
             int StationId,
+            int SensorId,
             long StartTimestamp,
             long EndTimestamp
         ); 
 
-        List<BsonDocument> sensorsTypeAndLocation();
+        //avg per hour
+        Task<IEnumerable<BsonDocument>> avgPerHour(
+            int StationId,
+            int SensorId,
+            long StartTimestamp,
+            long EndTimestamp
+        ); 
 
-        Task<IEnumerable<BsonDocument>> AvgPerDateStation(
+        //avg per month
+        Task<IEnumerable<BsonDocument>> avgPerMonth(
+            int StationId,
+            int SensorId,
+            long StartTimestamp,
+            long EndTimestamp
+        ); 
+
+        //avg per month
+        Task<IEnumerable<BsonDocument>> avgPerDateFromSensorTypeAndLocation(
+            int StationId,
             string SensorType,
             string SensorLocation,
             long StartTimestamp,
