@@ -135,21 +135,21 @@
         }
 
 
-        function addOnChange() {
-           $("#estacion_alerta"+i).change(function(){
+        function addOnChange(index) {
+           $("#estacion_alerta"+index).change(function(){
                 let id = $(this).val();
                 $.ajax({
                     url:"/api/Station/"+id+"/Sensor",
                     dataType:'json',
                     async: false,
                     success: function(response) {
-                        $("#sensor_alerta"+i).empty();
+                        $("#sensor_alerta"+index).empty();
                         $.each(response, function(idx, sensor) {
                             let option = $("<option></option>");
                             let name = sensor.Type + " - " + sensor.Location;
                             option.text(name);
                             option.attr("value",sensor.Id);
-                            $("#sensor_alerta"+i).append(option);
+                            $("#sensor_alerta"+index).append(option);
                         });
                     }
                 });
@@ -210,7 +210,7 @@
             $("#conditions").append(divContainer);
 
             addStations();
-            addOnChange();
+            addOnChange(i);
         }
 
         function buildField(nameFieldString, inputField, i=""){
