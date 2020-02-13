@@ -43,7 +43,7 @@
                 <label>Nombre: </label>
                 <input id="nombre_alerta" class="form-control" type="text" name="nombre_alerta" value="@Model.Name" required>
             </div>
-            <div class="form-group col-lg-12 col-md-12">
+            <div class="form-group col-md-9">
                 <label>Nivel: </label>
                 <select id="tipo_alerta" name="tipo_alerta" class="form-control" alerttype="@Model.AlertType" required="">
                     <option value="" hidden="">Escoja una opción</option>
@@ -51,6 +51,14 @@
                         <option value="2">2 - Emergencia Situacional</option>
                         <option value="1">1 - Crisis</option>
                 </select>
+            </div>
+
+            <div class="col-md-3">
+                <label>Frecuencia de notificación: </label>
+                <div class="form-row">
+                <input id="frecuencia_alerta" class="form-control col-3" type="text" name="frecuencia_alerta" value="@Model.Frecuency" required>
+                <span class="col-9">minutos</span>
+                </div>
             </div>
             <div class="col-lg-12 col-md-12">
                 <a id="info-niveles" class="text-muted" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Mas información sobre los niveles</a>
@@ -83,13 +91,13 @@
             <div id="conditions">
                 @for (var i = 1; i <= @Model.Conditions.Count(); i++)
                 {
-                    <div class="condition-container form-row align-items-center">
+                    <div class="condition-container form-row align-items-center" id="condition-container_@i">
                         <div class="col-auto">
                             <div class="input-group mb-2">
                                 <div class="input-group-prepend"> 
                                     <div class="input-group-text">Estación</div>
                                 </div>
-                                <select class="form-control" id='estacion_alerta_@i' name='estacion_alerta_@i' sel=@Model.Conditions[i-1].StationId>
+                                <select class="form-control" id='estacion_alerta_@i' name='estacion_alerta' sel=@Model.Conditions[i-1].StationId>
                                     <option hidden="" value="">Escoja una opción</option>
                                 </select>
                             </div>
@@ -99,7 +107,7 @@
                                 <div class="input-group-prepend"> 
                                     <div class="input-group-text">Sensor</div>
                                 </div>
-                                <select class="form-control" id="sensor_alerta_@i" name="sensor_alerta_@i" sel="@Model.Conditions[i-1].SensorId">
+                                <select class="form-control" id="sensor_alerta_@i" name="sensor_alerta" sel="@Model.Conditions[i-1].SensorId">
                                     <option hidden="" value="">Escoja una opción</option>
                                 </select>
                             </div>
@@ -109,7 +117,7 @@
                                 <div class="input-group-prepend"> 
                                     <div class="input-group-text">Condición</div>
                                 </div>
-                                <select class="form-control" id="condicion_alerta_@i" name="condicion_alerta_@i" sel="@Model.Conditions[i-1].Comparison">
+                                <select class="form-control" id="condicion_alerta_@i" name="condicion_alerta" sel="@Model.Conditions[i-1].Comparison">
                                 <option hidden="" value="">Escoja una opción</option>
                                 <option value="NO DATA" onclick="changeFreqLabel(@i)">no recibe datos</option>
                                 <option value="MAYOR QUE">mayor que</option>
@@ -123,10 +131,11 @@
                                 <div class="input-group-prepend"> 
                                     <div id="valor_div_@i" class="input-group-text">Valor</div>
                                 </div>
-                                <input class="form-control" id="threshold_alerta_@i" name="threshold_alerta_@i" type="text" value=@Model.Conditions[i-1].Threshold>
+                                <input class="form-control" id="threshold_alerta_@i" name="threshold_alerta" type="text" value=@Model.Conditions[i-1].Threshold>
                             </div>
                         </div>
-                        <a class="btn btn-danger" onclick="deleteConditionContainer(@i)"><i class="fa fa-x"></i></a>
+                        <a class="btn btn-danger" onclick="deleteConditionContainer(@i)"><i class="fa fa-remove"></i></a>
+                        
                     </div>
                 }
             </div>
@@ -250,7 +259,7 @@
 
         function addAttributes(input, inputname){
             input.attr('class', 'form-control');
-            input.attr('name', inputname+'_alerta_'+i);
+            input.attr('name', inputname+'_alerta');
             input.attr('id', inputname+'_alerta_'+i);
         }
 
@@ -369,7 +378,6 @@
         }
 
         function deleteConditionContainer(idx){
-            i--;
             $('#condition-container_'+idx).remove();
         }
 

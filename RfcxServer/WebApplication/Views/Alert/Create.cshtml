@@ -241,7 +241,7 @@
 
         function addAttributes(input, inputname){
             input.attr('class', 'form-control');
-            input.attr('name', inputname+'_alerta'+i);
+            input.attr('name', inputname+'_alerta');
             input.attr('id', inputname+'_alerta'+i);
         }
 
@@ -250,7 +250,6 @@
         }
 
         function deleteConditionContainer(idx){
-            i--;
             $('#condition-container_'+idx).remove();
         }
 

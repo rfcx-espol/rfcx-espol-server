@@ -79,21 +79,23 @@ namespace WebApplication.Controllers
         [HttpPost("api/[controller]/{id}")]
         public IActionResult Post(string id)
         {
+            Console.WriteLine(Request.Form["threshold_alerta"].Count);
             Alert alert = new Alert();
             alert.AlertId = id;
             List<Condition> condition_list = new List<Condition>();
             alert.Name = Request.Form["nombre_alerta"];
             alert.AlertType = Request.Form["tipo_alerta"];
+            alert.Frecuency = Int32.Parse(Request.Form["frecuencia_alerta"]);
             string mails = Request.Form["correos_notificacion"];
             alert.Mailto = mails.Split(";").ToList();
             alert.Message = Request.Form["mensaje_alerta"];
-            for (int i = 1; i <= Int32.Parse(Request.Form["conditions_number"]); i++)
+            for (int i = 0; i < Request.Form["estacion_alerta"].Count; i++)
             {
                 Condition condition = new Condition();
-                condition.StationId = Request.Form["estacion_alerta_" + i.ToString()];
-                condition.SensorId = Request.Form["sensor_alerta_" + i.ToString()];
-                condition.Comparison = Request.Form["condicion_alerta_" + i.ToString()];
-                condition.Threshold = Int32.Parse(Request.Form["threshold_alerta_" + i.ToString()]);
+                condition.StationId = Request.Form["estacion_alerta"][i];
+                condition.SensorId = Request.Form["sensor_alerta"][i];
+                condition.Comparison = Request.Form["condicion_alerta"][i];
+                condition.Threshold = Int32.Parse(Request.Form["threshold_alerta"][i]);
                 condition_list.Add(condition);
             }
             alert.Conditions = condition_list;
@@ -193,7 +195,7 @@ namespace WebApplication.Controllers
             var pageSize = 10;
             var alerts = _AlertRepository.GetAll().ToPagedList(pageNumber, pageSize);
             alertVM.Alerts = alerts;
-            string[] variables = new string[]{"createResult","editResult","deleteResult"};
+            string[] variables = new string[] { "createResult", "editResult", "deleteResult" };
             initializeTempData(variables);
             return View(alertVM);
         }
@@ -211,7 +213,7 @@ namespace WebApplication.Controllers
             return View(alertVM);
         }
          */
-         
+
         [Authorize(Policy = RolePolicy.PoliticaRoleAdminDev)]
         [HttpGet("[controller]/create")]
         public IActionResult Create()
