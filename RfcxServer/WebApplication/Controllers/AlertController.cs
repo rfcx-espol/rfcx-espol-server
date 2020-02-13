@@ -61,7 +61,7 @@ namespace WebApplication.Controllers
             string mails = Request.Form["correos_notificacion"];
             alert.Mailto = mails.Split(";").ToList();
             alert.Message = Request.Form["mensaje_alerta"];
-            for (int i = 1; i <= Int32.Parse(Request.Form["threshold_alerta"].Count); i++)
+            for (int i = 1; i < Request.Form["threshold_alerta"].Count; i++)
             {
                 Condition condition = new Condition();
                 condition.StationId = Request.Form["estacion_alerta"][i];
