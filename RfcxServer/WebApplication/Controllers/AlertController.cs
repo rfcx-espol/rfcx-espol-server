@@ -61,13 +61,13 @@ namespace WebApplication.Controllers
             string mails = Request.Form["correos_notificacion"];
             alert.Mailto = mails.Split(";").ToList();
             alert.Message = Request.Form["mensaje_alerta"];
-            for (int i = 1; i <= Int32.Parse(Request.Form["conditions_number"]); i++)
+            for (int i = 1; i <= Int32.Parse(Request.Form["threshold_alerta"].Count); i++)
             {
                 Condition condition = new Condition();
-                condition.StationId = Request.Form["estacion_alerta" + i.ToString()];
-                condition.SensorId = Request.Form["sensor_alerta" + i.ToString()];
-                condition.Comparison = Request.Form["condicion_alerta" + i.ToString()];
-                condition.Threshold = Int32.Parse(Request.Form["threshold_alerta" + i.ToString()]);
+                condition.StationId = Request.Form["estacion_alerta"][i];
+                condition.SensorId = Request.Form["sensor_alerta"][i];
+                condition.Comparison = Request.Form["condicion_alerta"][i];
+                condition.Threshold = Int32.Parse(Request.Form["threshold_alerta"][i]);
                 condition_list.Add(condition);
             }
             alert.Conditions = condition_list;
