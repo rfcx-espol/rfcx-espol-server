@@ -10,15 +10,18 @@ using WebApplication.Models;
 using WebApplication.ViewModel;
 using X.PagedList;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace WebApplication.Controllers
 {
     public class IncidentController : Controller
     {
         private readonly IIncidentRepository _IncidentRepository;
-        public IncidentController(IIncidentRepository IncidentRepository)
+        private readonly IAlertRepository _AlertRepository;
+        public IncidentController(IIncidentRepository IncidentRepository, IAlertRepository AlertRepository)
         {
             _IncidentRepository = IncidentRepository;
+            _AlertRepository = AlertRepository;
         }
 
         [HttpGet("api/[controller]/list")]
@@ -39,29 +42,53 @@ namespace WebApplication.Controllers
         [HttpPost("api/[controller]")]
         public async Task Post([FromBody] Incident incident)
         {
-            // var fromAddress = new MailAddress("mail@gmail.com", "Bosque Protector");
-            // var toAddress = new MailAddress("mail@hotmail.com", "");
-            // const string fromPassword = "";
-            // const string subject = "Incidente en tal estacion";
-            // const string body = "Se ha generado un incidente a tal hora en tal estacion, por favor visitar el link";
 
-            // var smtp = new SmtpClient
-            // {
-            //     Host = "smtp.gmail.com",
-            //     Port = 587,
-            //     EnableSsl = true,
-            //     DeliveryMethod = SmtpDeliveryMethod.Network,
-            //     UseDefaultCredentials = false,
-            //     Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
-            // };
-            // using (var message = new MailMessage(fromAddress, toAddress)
-            // {
-            //     Subject = subject,
-            //     Body = body
-            // })
-            // {
-            //     smtp.Send(message);
-            // }
+            
+            var cred = System.IO.File.ReadLines("/var/rfcx-espol-server/cred.txt");
+            var list = cred.ToList();
+            
+            Alert alert = _AlertRepository.getAlertObject(incident.RaisedAlertId);
+            var fromAdress = new MailAddress(list[0], "Bosque Protector");
+            string fromPassword = list[1];
+            List<string> mailto = alert.Mailto;
+            
+            const string subject = "Incidente en el bosque";
+            string htmlString = @"<html>
+                    <body>
+                    <p>Se ha detectado un incidente en el bosque:</p>
+                    <p>" + alert.Message +
+                    "<p>Alerta: " + incident.RaisedAlertName + @"</p>
+                    <p>Las siguientes condiciones se cumplieron: " + incident.RaisedCondition + @"</p>
+                    <p>Favor visitar <a href='http://200.126.14.250/alert/index'>Bosque Protector</a>
+                    </body>
+                    </html>";  
+
+
+            var smtp = new SmtpClient
+            {
+                
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new System.Net.NetworkCredential(fromAdress.Address, fromPassword)
+            };
+
+            var msg = new MailMessage();
+            msg.From = fromAdress;
+            foreach(string mail in mailto){
+                msg.To.Add(mail);
+            }
+            
+            msg.Subject = subject;
+            msg.Body = htmlString;
+            msg.IsBodyHtml= true;
+            try{
+                smtp.Send(msg);
+            }catch(Exception ex){
+                throw ex;
+            }
             await _IncidentRepository.AddIncident(incident);
         }
 

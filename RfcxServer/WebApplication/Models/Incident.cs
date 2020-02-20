@@ -12,7 +12,8 @@ namespace WebApplication.Models
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime IncidentTime { get; set; }
-        public String RaisedAlertName { get; set; }
+        public String RaisedAlertId { get; set; }
+        public String RaisedAlertName {get;set;}
         public String RaisedCondition { get; set; }
         public Boolean Status { get; set; }
 

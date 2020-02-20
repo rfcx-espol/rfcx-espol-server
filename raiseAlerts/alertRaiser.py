@@ -9,7 +9,6 @@ import json
 client = pymongo.MongoClient()
 db = client.BosqueProtector1
 
-
 def getAllActiveAlerts():
     """return all active alerts in a cursor object."""
 
@@ -21,7 +20,6 @@ def getAllActiveAlerts():
         frec = 60*alert["Frecuency"]
         if resta >= frec:
             neededAlerts.append(alert)
-
     return neededAlerts
 
 def getLatestDataByStation(timeFrame, stationId, sensorId):
@@ -144,6 +142,7 @@ def createIncident(alert, data):
     """
     headers = {'Content-type': 'application/json'}
     data = {'RaisedAlertName': alert['Name'],
+            'RaisedAlertId': str(alert['_id']),
             'RaisedCondition': stringifyCondition(alert, data)}
     r = requests.post(url="http://200.126.14.250/api/Incident",
                        data=json.dumps(data), headers=headers)
