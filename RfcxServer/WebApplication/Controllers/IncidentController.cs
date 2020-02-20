@@ -44,7 +44,7 @@ namespace WebApplication.Controllers
         {
 
             
-            var cred = System.IO.File.ReadLines("/var/rfcx-espol-server/cred.txt");
+            var cred = System.IO.File.ReadLines("/var/alert-daemon/cred.txt");
             var list = cred.ToList();
             
             Alert alert = _AlertRepository.getAlertObject(incident.RaisedAlertId);

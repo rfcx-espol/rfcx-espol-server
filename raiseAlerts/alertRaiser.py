@@ -159,10 +159,16 @@ def updateLastChecked(alert):
 
 def stringifyCondition(alert, datas):
     message = ""
+    stations = db.Station
+    sensors = db.Sensor
+    
     conditions = alert["Conditions"]
     for i in range(len(conditions)):
-        stationId = str(conditions[i]["StationId"])
-        sensorId = str(conditions[i]["SensorId"])
+        stationId = int(conditions[i]["StationId"])
+        station = stations.find_one({"Id": stationId})
+        sensorId = int(conditions[i]["SensorId"])
+        sensor = sensors.find_one({"Id": sensorId,
+                                    "StationId": stationId})
         threshold = str(conditions[i]["Threshold"])
         comparision = conditions[i]["Comparison"]
         value = str(datas[i])
@@ -171,8 +177,8 @@ def stringifyCondition(alert, datas):
 
         message += "["+timestamp+"]: "+ value + " " \
             + comparision + " "+ threshold \
-                +" en estación con id: " + stationId \
-                    + " usando el sensor con id: " + sensorId + "\n"
+                +" en "+ station["Name"] + " con id: " + str(stationId) \
+                    + " usando el sensor de "+ sensor["Type"] +" con id: " + str(sensorId) + "\n"
     return message  
 
 def checkLatestData():
